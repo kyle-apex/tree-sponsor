@@ -1,7 +1,7 @@
 ---
 name: Feature Request
 about: Suggest an idea for this project as a user story
-title: "[User Story]"
+title: ""
 labels: ''
 assignees: ''
 
