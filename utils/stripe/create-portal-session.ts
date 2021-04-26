@@ -9,6 +9,7 @@ const createPortalSessionForEmail = async function (email: string): Promise<Stri
   const customers: Stripe.ApiList<Stripe.Customer> = await stripe.customers.list({
     limit: 5,
     email: email,
+    expand: ['subscriptions'],
   });
 
   console.log('customers', customers);

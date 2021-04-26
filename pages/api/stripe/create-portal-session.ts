@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import createPortalSessionForEmail from '../../../utils/stripe/create-portal-session';
+import createPortalSessionForEmail from 'utils/stripe/create-portal-session';
 import { getSession } from 'next-auth/client';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
