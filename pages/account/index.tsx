@@ -16,14 +16,12 @@ const theme = createMuiTheme({
   },
 });
 
-const IndexPage = () => {
+const AccountPage = () => {
   const [session, loading] = useSession();
   return (
     <ThemeProvider theme={theme}>
       <Layout title='Home | Next.js + TypeScript Example'>
         <h1>Hello Next.js 👋</h1>
-
-        <Subscriptions></Subscriptions>
         <MapExample></MapExample>
         <p>
           <Link href='/about'>

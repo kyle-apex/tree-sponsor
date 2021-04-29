@@ -23,5 +23,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   console.log('subscriptions', subscriptions);
 
   //const portalSession = await createPortalSessionForEmail(session?.user?.email ?? '');
-  res.status(200).json({ subscriptions });
+  res.status(200).json(subscriptions);
 }
