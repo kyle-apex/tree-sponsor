@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Layout from 'components/Layout';
+import Layout from 'components/layout/Layout';
 import 'fontsource-roboto';
 import { Button, ThemeProvider, createMuiTheme } from '@material-ui/core';
 import { orange } from '@material-ui/core/colors';

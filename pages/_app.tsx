@@ -8,6 +8,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 // Utils
 import theme from '../utils/theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import '../styles.css';
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   React.useEffect(() => {
