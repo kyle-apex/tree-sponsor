@@ -1,7 +1,7 @@
-import { useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from 'react-query';
 import axios from 'axios';
 
-export const useGet = (path: string, key?: string, params?: Record<string, unknown>) => {
+export const useGet = <T>(path: string, key?: string, params?: Record<string, unknown>): QueryObserverResult<T> => {
   if (!path) {
     throw new Error('Path is required');
   }

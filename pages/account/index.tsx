@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import Layout from '../components/Layout';
+import Layout from 'components/Layout';
 import 'fontsource-roboto';
 import { Button, ThemeProvider, createMuiTheme } from '@material-ui/core';
 import { orange } from '@material-ui/core/colors';
-import MapExample from '../components/MapExample';
+import MapExample from 'components/MapExample';
 
 import { signIn, signOut, useSession } from 'next-auth/client';
 import Subscriptions from 'components/account/subscriptions/Subscriptions';
@@ -45,4 +45,4 @@ const AccountPage = () => {
   );
 };
 
-export default IndexPage;
+export default AccountPage;

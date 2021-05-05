@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Profile {
+  id     Int     @id @default(autoincrement())
+  bio    String?
+  user   User    @relation(fields: [userId], references: [id])
+  userId Int     @unique
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  name          String?
+  subscriptions Subscription[]
+  profile       Profile?
+}
+
+model Subscription {
+  id               Int       @id @default(autoincrement())
+  createdDate      DateTime?
+  expirationDate   DateTime?
+  status           String?   @db.VarChar(32)
+  stripeCustomerId String?   @db.VarChar(32)
+  stripeId         String?   @db.VarChar(32)
+  user             User?     @relation(fields: [userId], references: [id])
+  userId           Int?
+  product          Product?  @relation(fields: [productId], references: [id])
+  productId        Int?
+}
+
+model Product {
+  id            Int            @id @default(autoincrement())
+  stripeId      String?
+  name          String?
+  amount        Int?
+  subscriptions Subscription[]
+}
+
+model accounts {
+  id                   Int      @id @default(autoincrement())
+  compound_id          String   @unique @db.VarChar(255)
+  user_id              Int
+  provider_type        String   @db.VarChar(255)
+  provider_id          String   @db.VarChar(255)
+  provider_account_id  String   @db.VarChar(255)
+  refresh_token        String?  @db.Text
+  access_token         String?  @db.Text
+  access_token_expires DateTime @default(now()) @db.Timestamp(6)
+  created_at           DateTime @default(now()) @db.Timestamp(6)
+  updated_at           DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([provider_account_id], name: "provider_account_id")
+  @@index([provider_id], name: "provider_id")
+  @@index([user_id], name: "user_id")
+}
+
+model sessions {
+  id            Int      @id @default(autoincrement())
+  user_id       Int
+  expires       DateTime @default(now()) @db.Timestamp(6)
+  session_token String   @unique @db.VarChar(255)
+  access_token  String   @unique @db.VarChar(255)
+  created_at    DateTime @default(now()) @db.Timestamp(6)
+  updated_at    DateTime @default(now()) @db.Timestamp(6)
+}
+
+model tutorials_tbl {
+  tutorial_id     Int       @id @default(autoincrement())
+  tutorial_title  String    @db.VarChar(100)
+  tutorial_author String    @db.VarChar(40)
+  submission_date DateTime? @db.Date
+}
+
+model users {
+  id             Int      @id @default(autoincrement())
+  name           String?  @db.VarChar(255)
+  email          String?  @unique @db.VarChar(255)
+  email_verified DateTime @default(now()) @db.Timestamp(6)
+  image          String?  @db.VarChar(255)
+  created_at     DateTime @default(now()) @db.Timestamp(6)
+  updated_at     DateTime @default(now()) @db.Timestamp(6)
+}
+
+model verification_requests {
+  id         Int      @id @default(autoincrement())
+  identifier String   @db.VarChar(255)
+  token      String   @unique @db.VarChar(255)
+  expires    DateTime @default(now()) @db.Timestamp(6)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
+}

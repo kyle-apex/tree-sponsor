@@ -15,12 +15,12 @@ const MapExample = () => {
     zoom: 8,
   });
 
-  function showMarkerDetails(a) {
+  function showMarkerDetails(a: React.MouseEvent<HTMLElement>) {
     console.log('a', a);
   }
 
   return (
-    <MapGL {...viewport} onViewportChange={nextViewport => setViewport(nextViewport)} mapboxApiAccessToken={MAPBOX_TOKEN}>
+    <MapGL {...viewport} onViewportChange={(nextViewport: any) => setViewport(nextViewport)} mapboxApiAccessToken={MAPBOX_TOKEN}>
       <Marker latitude={37.78} longitude={-122.41} offsetLeft={-20} offsetTop={-10}>
         <img src='/logo.png' style={{ width: '30px', height: '30px' }} onClick={showMarkerDetails} />
       </Marker>

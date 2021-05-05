@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import { stripe, Stripe } from 'utils/stripe/init';
 import { getSession } from 'next-auth/client';
+import { Subscription, Product } from '@prisma/client';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });
@@ -13,19 +14,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   });
   console.log('customers', customers);
 
-  const subscriptions: Stripe.Subscription[] = [];
+  type PartialSubscription = Partial<Subscription & { product?: Partial<Product> }>;
+  type StripeSubscription = Stripe.Subscription & { plan?: { product?: string; amount: number } };
 
-  customers.data.forEach((customer: Stripe.Customer) => {
-    if (customer?.subscriptions) subscriptions.push(...customer.subscriptions.data);
-  });
-  console.log('subscriptions', subscriptions);
+  const subscriptions: PartialSubscription[] = [];
 
   const productIds: string[] = [];
 
-  subscriptions.forEach((sub: Stripe.Subscription) => {
-    const productId = sub.plan.product;
-    if (!productIds.includes(productId)) productIds.push(productId);
+  customers.data.forEach((customer: Stripe.Customer) => {
+    if (customer?.subscriptions) {
+      customer.subscriptions.data.forEach((sub: StripeSubscription) => {
+        console.log('mySub', sub);
+        const productId = sub.plan.product;
+        subscriptions.push({
+          product: { stripeId: productId, amount: Math.round(sub.plan.amount / 100) },
+          stripeId: sub.id,
+          stripeCustomerId: sub.customer as string,
+        });
+        if (!productIds.includes(productId)) productIds.push(productId);
+      });
+    }
+    //subscriptions.push(...customer.subscriptions.data);
   });
+  console.log('subscriptions', subscriptions);
   console.log('productIds', productIds);
 
   const products: Stripe.ApiList<Stripe.Product> = await stripe.products.list({
@@ -39,10 +50,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     productIdToNameMap[product.id] = product.name;
   });
 
-  subscriptions.forEach((sub: Stripe.Subscription) => {
-    sub.plan.product = productIdToNameMap[sub.plan.product];
+  subscriptions.forEach((sub: PartialSubscription) => {
+    if (sub.product?.stripeId) sub.product.name = productIdToNameMap[sub.product.stripeId];
   });
 
-  //const portalSession = await createPortalSessionForEmail(session?.user?.email ?? '');
   res.status(200).json(subscriptions);
 }
