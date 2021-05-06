@@ -12,7 +12,10 @@ type Props = {
 const Layout = ({ children, title = 'TreeFolksYP' }: Props) => (
   <>
     <Head>
-      <title>{title}</title>
+      <title>
+        {title}
+        {title != 'TreeFolksYP' ? ` - TreeFolksYP` : ``}
+      </title>
       <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
       <meta charSet='utf-8' />
       <meta name='viewport' content='initial-scale=1.0, width=device-width' />
@@ -28,6 +31,10 @@ const Layout = ({ children, title = 'TreeFolksYP' }: Props) => (
           background: #f9f9f9;
           overflow-x: hidden;
           padding: 0 !important;
+        }
+        html {
+          --secondary-text-color: #515154;
+          --light-text-color: #86868b;
         }
         #__next {
           min-height: 100vh;

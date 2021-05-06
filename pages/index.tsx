@@ -20,7 +20,7 @@ const IndexPage = () => {
   const [session, loading] = useSession();
   return (
     <ThemeProvider theme={theme}>
-      <Layout title='Home | Next.js + TypeScript Example'>
+      <Layout>
         <h1>Hello Next.js 👋</h1>
 
         <Subscriptions></Subscriptions>
