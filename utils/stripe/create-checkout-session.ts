@@ -1,4 +1,4 @@
-import { stripe } from '@/utils/stripe';
+/*import { stripe } from '@/utils/stripe';
 import { getUser } from '@/utils/supabase-admin';
 import { findOrCreateCustomer } from 'utils/stripe/find-or-create-customer';
 import { getURL } from '@/utils/helpers';
@@ -46,4 +46,4 @@ const createCheckoutSession = async (req, res) => {
   }
 };
 
-export default createCheckoutSession;
+export default createCheckoutSession;*/

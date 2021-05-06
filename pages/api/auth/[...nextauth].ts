@@ -1,5 +1,9 @@
 import NextAuth from 'next-auth';
 import Providers from 'next-auth/providers';
+import Adapters from 'next-auth/adapters';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export default NextAuth({
   providers: [
@@ -31,4 +35,5 @@ export default NextAuth({
   ],
   // Optional SQL or MongoDB database to persist users
   database: process.env.DATABASE_URL,
+  adapter: Adapters.Prisma.Adapter({ prisma }),
 });

@@ -9,6 +9,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import theme from '../utils/theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import '../styles.css';
+import { Provider as NextAuthProvider } from 'next-auth/client';
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   React.useEffect(() => {
@@ -22,16 +23,18 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const queryClient = new QueryClient();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Head>
-        <title>My App</title>
-        <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
-      </Head>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </QueryClientProvider>
+    <NextAuthProvider session={pageProps.session}>
+      <QueryClientProvider client={queryClient}>
+        <Head>
+          <title>My App</title>
+          <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
+        </Head>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </NextAuthProvider>
   );
 };
 

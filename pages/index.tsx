@@ -15,6 +15,9 @@ const theme = createMuiTheme({
     },
   },
 });
+const debug = (a: any) => {
+  console.log(a);
+};
 
 const IndexPage = () => {
   const [session, loading] = useSession();
@@ -22,7 +25,13 @@ const IndexPage = () => {
     <ThemeProvider theme={theme}>
       <Layout>
         <h1>Hello Next.js 👋</h1>
-
+        <button
+          onClick={() => {
+            debug(session);
+          }}
+        >
+          debug
+        </button>
         <Subscriptions></Subscriptions>
         <MapExample></MapExample>
         <p>
