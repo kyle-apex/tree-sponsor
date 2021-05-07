@@ -3,7 +3,8 @@
   "files.exclude": {
     "**/.git": true,
     "**/build": true,
-    "**/coverage": true
+    "**/coverage": true,
+    "node_modules": true
   },
   "editor.formatOnSave": true, // auto format the file on each save
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],

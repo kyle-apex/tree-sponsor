@@ -8,11 +8,11 @@ const Footer = () => {
       <div className='legal'>
         <div className='legal-copyright'>Copyright © 2021 TreeFolks Young Professionals. All rights reserved.</div>
         <div className='legal-links'>
-          <Link className='legal-link' href='/legal/privacy'>
-            <a>Privacy</a>
+          <Link href='/legal/privacy'>
+            <a className='legal-link'>Privacy</a>
           </Link>
-          <Link className='legal-link' href='/legal/terms'>
-            <a>Terms</a>
+          <Link href='/legal/terms'>
+            <a className='legal-link'>Terms</a>
           </Link>
         </div>
       </div>

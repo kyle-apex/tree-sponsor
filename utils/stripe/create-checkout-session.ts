@@ -1,3 +1,4 @@
+export {};
 /*import { stripe } from '@/utils/stripe';
 import { getUser } from '@/utils/supabase-admin';
 import { findOrCreateCustomer } from 'utils/stripe/find-or-create-customer';

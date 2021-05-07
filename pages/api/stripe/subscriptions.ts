@@ -3,9 +3,11 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { stripe, Stripe } from 'utils/stripe/init';
 import { getSession } from 'next-auth/client';
 import { Subscription, Product } from '@prisma/client';
+import { findOrCreateCustomer } from 'utils/stripe/find-or-create-customer';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });
+  await findOrCreateCustomer('kyle@kylehoskins.com');
 
   const customers: Stripe.ApiList<Stripe.Customer> = await stripe.customers.list({
     limit: 50,

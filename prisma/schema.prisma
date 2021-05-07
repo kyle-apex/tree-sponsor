@@ -50,15 +50,16 @@ model Session {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  name          String?
-  email         String?        @unique
-  emailVerified DateTime?      @map(name: "email_verified")
-  image         String?
-  createdAt     DateTime       @default(now()) @map(name: "created_at")
-  updatedAt     DateTime       @default(now()) @map(name: "updated_at")
-  subscriptions Subscription[]
-  profile       Profile?
+  id               Int            @id @default(autoincrement())
+  name             String?
+  email            String?        @unique
+  emailVerified    DateTime?      @map(name: "email_verified")
+  image            String?
+  createdAt        DateTime       @default(now()) @map(name: "created_at")
+  updatedAt        DateTime       @default(now()) @map(name: "updated_at")
+  stripeCustomerId String?        @db.VarChar(32)
+  subscriptions    Subscription[]
+  profile          Profile?
 
   @@map(name: "users")
 }
