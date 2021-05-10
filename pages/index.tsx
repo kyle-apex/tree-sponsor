@@ -1,58 +1,38 @@
 import Link from 'next/link';
 import Layout from '../components/layout/Layout';
 import 'fontsource-roboto';
-import { Button, ThemeProvider, createMuiTheme } from '@material-ui/core';
-import { orange } from '@material-ui/core/colors';
-import MapExample from '../components/MapExample';
+import { Button } from '@material-ui/core';
+import MapExample from 'components/MapExample';
 
 import { signIn, signOut, useSession } from 'next-auth/client';
-import Subscriptions from 'components/account/subscriptions/Subscriptions';
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: orange[500],
-    },
-  },
-});
-const debug = (a: any) => {
-  console.log(a);
-};
+import CheckoutButton from 'components/CheckoutButton';
 
 const IndexPage = () => {
   const [session, loading] = useSession();
   return (
-    <ThemeProvider theme={theme}>
-      <Layout>
-        <h1>Hello Next.js 👋</h1>
-        <button
-          onClick={() => {
-            debug(session);
-          }}
-        >
-          debug
-        </button>
-        <Subscriptions></Subscriptions>
-        <MapExample></MapExample>
-        <p>
-          <Link href='/about'>
-            <Button color='primary' variant='contained'>
-              About..
-            </Button>
-          </Link>
-        </p>
-        {!session && (
-          <>
-            Not signed in <br /> <button onClick={() => signIn()}>Sign in</button>
-          </>
-        )}
-        {session && (
-          <>
-            Signed in as {session?.user?.email} <br /> <button onClick={() => signOut()}>Sign out</button>
-          </>
-        )}
-      </Layout>
-    </ThemeProvider>
+    <Layout>
+      <h1>Hello Next.js 👋</h1>
+      <CheckoutButton></CheckoutButton>
+
+      <MapExample></MapExample>
+      <p>
+        <Link href='/about'>
+          <Button color='primary' variant='contained'>
+            About..
+          </Button>
+        </Link>
+      </p>
+      {!session && (
+        <>
+          Not signed in <br /> <button onClick={() => signIn()}>Sign in</button>
+        </>
+      )}
+      {session && (
+        <>
+          Signed in as {session?.user?.email} <br /> <button onClick={() => signOut()}>Sign out</button>
+        </>
+      )}
+    </Layout>
   );
 };
 
