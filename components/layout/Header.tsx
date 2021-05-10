@@ -26,15 +26,12 @@ const useStyles = makeStyles(theme => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
+    color: theme.palette.primary.main,
   },
   title: {
     flexGrow: 1,
     color: theme.palette.primary.main,
     marginLeft: theme.spacing(2),
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    color: theme.palette.primary.main,
   },
   hide: {
     display: 'none',
