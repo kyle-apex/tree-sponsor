@@ -79,18 +79,33 @@ model Subscription {
   id               Int       @id @default(autoincrement())
   createdDate      DateTime?
   expirationDate   DateTime?
+  lastPaymentDate  DateTime?
   status           String?   @db.VarChar(32)
   stripeCustomerId String?   @db.VarChar(32)
-  stripeId         String?   @db.VarChar(32)
+  stripeId         String?   @unique @db.VarChar(32)
   user             User?     @relation(fields: [userId], references: [id])
   userId           Int?
   product          Product?  @relation(fields: [productId], references: [id])
   productId        Int?
 }
 
+model SubscriptionWithDetails {
+  id               Int       @unique
+  createdDate      DateTime?
+  expirationDate   DateTime?
+  lastPaymentDate  DateTime?
+  status           String?
+  stripeId         String?
+  stripeCustomerId String?
+  stripeProductId  String?
+  userName         String?
+  email            String?
+  amount           Int
+}
+
 model Product {
   id            Int            @id @default(autoincrement())
-  stripeId      String?
+  stripeId      String?        @unique
   name          String?
   amount        Int?
   subscriptions Subscription[]

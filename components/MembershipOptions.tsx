@@ -2,8 +2,9 @@ import { Button, Card, CardActions, CardContent, CardHeader, Grid, makeStyles, T
 import StarIcon from '@material-ui/icons/Star';
 import React from 'react';
 
-const outlined: 'text' | 'outlined' | 'contained' = 'outlined';
-const contained: 'text' | 'outlined' | 'contained' = 'contained';
+type ButtonVariant = 'text' | 'outlined' | 'contained';
+const outlined: ButtonVariant = 'outlined';
+const contained: ButtonVariant = 'contained';
 
 const useStyles = makeStyles(theme => ({
   '@global': {

@@ -1,10 +1,5 @@
-// You can include shared interfaces/types in a separate file
-// and then use them in any component by importing them. For
-// example, to import the interface below do:
-//
-// import User from 'path/to/interfaces';
+import { Product, Subscription, User } from '@prisma/client';
+import { Stripe } from 'stripe';
 
-export type User = {
-  id: number;
-  name: string;
-};
+export type PartialSubscription = Partial<Subscription & { product?: Partial<Product> } & { user?: Partial<User> }>;
+export type StripeSubscription = Stripe.Subscription & { plan?: { product?: string; amount: number } };
