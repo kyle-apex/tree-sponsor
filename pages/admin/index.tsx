@@ -12,11 +12,13 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { Search } from '@material-ui/icons';
-import { TextField } from '@material-ui/core';
+import { FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { useGet } from 'utils/hooks/use-get';
 import { SubscriptionWithDetails } from '@prisma/client';
 import Layout from 'components/layout/Layout';
 import theme from 'utils/theme';
+import { usePost } from 'utils/hooks/use-post';
+import axios from 'axios';
 
 function descendingComparator(a: any, b: any, orderBy: string) {
   const aValue = typeof b[orderBy] === 'string' ? b[orderBy].toLowerCase() : b[orderBy];
@@ -90,6 +92,7 @@ const headCells = [
   { id: 'userName', numeric: false, disablePadding: false, label: 'Name' },
 
   { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
+  { id: 'shirtSize', numeric: false, disablePadding: false, label: 'Shirt' },
   { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
   /*{ id: 'startDate', numeric: true, disablePadding: false, label: 'Member Since' },*/
 ];
@@ -201,7 +204,11 @@ export default function EnhancedTable() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  //type PartialSubscription = Partial<Subscription & { product?: Partial<Product> }>;
+
+  const setShirtSize = async (row: SubscriptionWithDetails, size: string) => {
+    console.log('set size', row, size);
+    const result = await axios.post('/api/users/' + row.userId, { shirtSize: size });
+  };
 
   return (
     <Layout>
@@ -244,6 +251,28 @@ export default function EnhancedTable() {
                         {row.userName}
                       </TableCell>
                       <TableCell>{row.status.toUpperCase().replace('_', ' ')}</TableCell>
+                      <TableCell>
+                        <FormControl className={classes.full}>
+                          <Select
+                            displayEmpty
+                            value={row.shirtSize || ''}
+                            onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                              row.shirtSize = event.target.value as string;
+                              setShirtSize(row, event.target.value as string);
+                            }}
+                          >
+                            <MenuItem value=''>
+                              <em>None</em>
+                            </MenuItem>
+                            <MenuItem value='XS'>XS</MenuItem>
+                            <MenuItem value='S'>S</MenuItem>
+                            <MenuItem value='M'>M</MenuItem>
+                            <MenuItem value='L'>L</MenuItem>
+                            <MenuItem value='XL'>XL</MenuItem>
+                            <MenuItem value='XXL'>XXL</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </TableCell>
                       <TableCell>{row.email}</TableCell>
                     </StyledTableRow>
                   );

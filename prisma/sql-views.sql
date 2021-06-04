@@ -9,8 +9,10 @@ SELECT
     p.name as productName,
     p.amount as amount,
     p.stripeId as productStripeId,
+    u.id as userId,
     u.name as userName,
     u.email as email,
+    COALESCE(u.shirtSize, '') as shirtSize,
     s.createdDate,
     s.lastPaymentDate,
     s.expirationDate

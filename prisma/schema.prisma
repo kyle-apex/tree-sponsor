@@ -55,6 +55,7 @@ model User {
   email            String?        @unique
   emailVerified    DateTime?      @map(name: "email_verified")
   image            String?
+  shirtSize        String?
   createdAt        DateTime       @default(now()) @map(name: "created_at")
   updatedAt        DateTime       @default(now()) @map(name: "updated_at")
   stripeCustomerId String?        @db.VarChar(32)
@@ -98,8 +99,10 @@ model SubscriptionWithDetails {
   stripeId         String?
   stripeCustomerId String?
   stripeProductId  String?
+  userId           Int
   userName         String?
   email            String?
+  shirtSize        String?
   amount           Int
 }
 
