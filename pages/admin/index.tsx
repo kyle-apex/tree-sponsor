@@ -16,8 +16,6 @@ import { FormControl, InputLabel, MenuItem, Select, TextField } from '@material-
 import { useGet } from 'utils/hooks/use-get';
 import { SubscriptionWithDetails } from '@prisma/client';
 import Layout from 'components/layout/Layout';
-import theme from 'utils/theme';
-import { usePost } from 'utils/hooks/use-post';
 import axios from 'axios';
 
 function descendingComparator(a: any, b: any, orderBy: string) {
