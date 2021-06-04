@@ -87,10 +87,16 @@ const Header = () => {
     <>
       <AppBar position='static' color='inherit'>
         <Toolbar>
-          <Image src='/logo.png' alt='TreeFolks Young Professionals Logo' width={40} height={40} />
+          <Link href='/'>
+            <a>
+              <Image src='/logo.png' alt='TreeFolks Young Professionals Logo' width={40} height={40} />
+            </a>
+          </Link>
+
           <Typography variant='h6' className={classes.title}>
             TreeFolksYP
           </Typography>
+
           {!session && (
             <>
               <Button color='inherit' onClick={() => signIn()}>
