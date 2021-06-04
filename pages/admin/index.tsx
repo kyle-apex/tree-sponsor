@@ -18,10 +18,13 @@ import { SubscriptionWithDetails } from '@prisma/client';
 import Layout from 'components/layout/Layout';
 
 function descendingComparator(a: any, b: any, orderBy: string) {
-  if (b[orderBy] < a[orderBy]) {
+  const aValue = typeof b[orderBy] === 'string' ? b[orderBy].toLowerCase() : b[orderBy];
+  const bValue = typeof a[orderBy] === 'string' ? a[orderBy].toLowerCase() : a[orderBy];
+
+  if (bValue < aValue) {
     return -1;
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (bValue > aValue) {
     return 1;
   }
   return 0;
@@ -77,9 +80,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const headCells = [
-  { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
+  { id: 'userName', numeric: false, disablePadding: false, label: 'Name' },
+
+  { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
   { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
-  { id: 'status', numeric: true, disablePadding: false, label: 'Status' },
   /*{ id: 'startDate', numeric: true, disablePadding: false, label: 'Member Since' },*/
 ];
 
@@ -164,7 +168,10 @@ export default function EnhancedTable() {
       const filter = users.filter(state => {
         if (!state.userName) state.userName = state.email;
 
-        return state.userName.toLowerCase().includes(nameFilter.toLowerCase());
+        return (
+          state.userName.toLowerCase().includes(nameFilter.toLowerCase()) ||
+          (state.email && state.email.toLowerCase().includes(nameFilter.toLowerCase()))
+        );
       });
 
       setFilteredUsers(filter);
@@ -229,8 +236,8 @@ export default function EnhancedTable() {
                         <TableCell id={labelId} scope='row'>
                           {row.userName}
                         </TableCell>
+                        <TableCell>{row.status.toUpperCase().replace('_', ' ')}</TableCell>
                         <TableCell>{row.email}</TableCell>
-                        <TableCell align='right'>{row.status.toUpperCase().replace('_', ' ')}</TableCell>
                       </StyledTableRow>
                     );
                   })}

@@ -10,6 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const subscriptionWithDetails = await prisma.subscriptionWithDetails.findMany({
     orderBy: { lastPaymentDate: 'desc' },
+    distinct: ['email'],
   });
 
   //console.log('subscriptionWithDetails', subscriptionWithDetails);
