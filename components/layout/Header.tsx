@@ -17,6 +17,7 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 const drawerWidth = 240;
 
@@ -74,6 +75,8 @@ const Header = () => {
   const [session, loading] = useSession();
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
+
+  const router = useRouter();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -153,7 +156,13 @@ const Header = () => {
               </Button>
             )}
             {session && (
-              <Button color='secondary' variant='outlined' fullWidth className={classes.loginButton} onClick={() => signIn()}>
+              <Button
+                color='secondary'
+                variant='outlined'
+                fullWidth
+                className={classes.loginButton}
+                onClick={() => router.push('/account')}
+              >
                 Account
               </Button>
             )}

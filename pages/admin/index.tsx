@@ -16,6 +16,7 @@ import { TextField } from '@material-ui/core';
 import { useGet } from 'utils/hooks/use-get';
 import { SubscriptionWithDetails } from '@prisma/client';
 import Layout from 'components/layout/Layout';
+import theme from 'utils/theme';
 
 function descendingComparator(a: any, b: any, orderBy: string) {
   const aValue = typeof b[orderBy] === 'string' ? b[orderBy].toLowerCase() : b[orderBy];
@@ -76,6 +77,12 @@ const useStyles = makeStyles(theme => ({
   },
   white: {
     color: theme.palette.common.white + '!important',
+  },
+  full: {
+    width: '100%',
+  },
+  search: {
+    marginBottom: theme.spacing(2),
   },
 }));
 
@@ -199,61 +206,60 @@ export default function EnhancedTable() {
   return (
     <Layout>
       <div className={classes.root}>
-        <Paper className={classes.paper}>
-          <TextField
-            className={classes.margin}
-            id='input-with-icon-textfield'
-            label='Find a Member'
-            value={nameFilter}
-            onChange={event => {
-              setNameFilter(event.target.value);
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <TableContainer className={classes.tableContainer}>
-            <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
-              <EnhancedTableHead
-                classes={classes}
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={handleRequestSort}
-                rowCount={filteredUsers.length}
-              />
-              <TableBody>
-                {stableSort(filteredUsers, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    const labelId = `enhanced-table-checkbox-${index}`;
+        <h1>Admin</h1>
+        <TextField
+          className={classes.full + ' ' + classes.search}
+          id='input-with-icon-textfield'
+          label='Find a Member'
+          value={nameFilter}
+          onChange={event => {
+            setNameFilter(event.target.value);
+          }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position='start'>
+                <Search />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <TableContainer>
+          <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
+            <EnhancedTableHead
+              classes={classes}
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+              rowCount={filteredUsers.length}
+            />
+            <TableBody>
+              {stableSort(filteredUsers, getComparator(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => {
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                    return (
-                      <StyledTableRow tabIndex={-1} key={row.id}>
-                        <TableCell id={labelId} scope='row'>
-                          {row.userName}
-                        </TableCell>
-                        <TableCell>{row.status.toUpperCase().replace('_', ' ')}</TableCell>
-                        <TableCell>{row.email}</TableCell>
-                      </StyledTableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 50, 100]}
-            component='div'
-            count={filteredUsers.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
-        </Paper>
+                  return (
+                    <StyledTableRow tabIndex={-1} key={row.id}>
+                      <TableCell id={labelId} scope='row'>
+                        {row.userName}
+                      </TableCell>
+                      <TableCell>{row.status.toUpperCase().replace('_', ' ')}</TableCell>
+                      <TableCell>{row.email}</TableCell>
+                    </StyledTableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 50, 100]}
+          component='div'
+          count={filteredUsers.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
       </div>
     </Layout>
   );

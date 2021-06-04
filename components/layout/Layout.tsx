@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import Header from './Header';
 import Footer from './Footer';
+import { Box, Container } from '@material-ui/core';
 
 type Props = {
   children?: ReactNode;
@@ -22,7 +23,11 @@ const Layout = ({ children, title = 'TreeFolksYP' }: Props) => (
       <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css' rel='stylesheet' />
     </Head>
     <Header />
-    <main>{children}</main>
+    <main>
+      <Container maxWidth='lg'>
+        <Box mb={6}>{children}</Box>
+      </Container>
+    </main>
     <Footer />
     <style jsx global>
       {`
