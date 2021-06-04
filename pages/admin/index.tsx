@@ -17,6 +17,7 @@ import { useGet } from 'utils/hooks/use-get';
 import { SubscriptionWithDetails } from '@prisma/client';
 import Layout from 'components/layout/Layout';
 import axios from 'axios';
+import { TeeShirtSelect } from 'components/TeeShirtSelect';
 
 function descendingComparator(a: any, b: any, orderBy: string) {
   const aValue = typeof b[orderBy] === 'string' ? b[orderBy].toLowerCase() : b[orderBy];
@@ -166,7 +167,7 @@ export default function EnhancedTable() {
 
   const [nameFilter, setNameFilter] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const { data: users } = useGet<SubscriptionWithDetails[]>('/api/members', 'members');
+  const { data: users, refetch } = useGet<SubscriptionWithDetails[]>('/api/members', 'members');
 
   const debounceMilliseconds = 1;
 
@@ -206,6 +207,7 @@ export default function EnhancedTable() {
   const setShirtSize = async (row: SubscriptionWithDetails, size: string) => {
     console.log('set size', row, size);
     const result = await axios.post('/api/users/' + row.userId, { shirtSize: size });
+    refetch();
   };
 
   return (
@@ -250,26 +252,7 @@ export default function EnhancedTable() {
                       </TableCell>
                       <TableCell>{row.status.toUpperCase().replace('_', ' ')}</TableCell>
                       <TableCell>
-                        <FormControl className={classes.full}>
-                          <Select
-                            displayEmpty
-                            value={row.shirtSize || ''}
-                            onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                              row.shirtSize = event.target.value as string;
-                              setShirtSize(row, event.target.value as string);
-                            }}
-                          >
-                            <MenuItem value=''>
-                              <em>None</em>
-                            </MenuItem>
-                            <MenuItem value='XS'>XS</MenuItem>
-                            <MenuItem value='S'>S</MenuItem>
-                            <MenuItem value='M'>M</MenuItem>
-                            <MenuItem value='L'>L</MenuItem>
-                            <MenuItem value='XL'>XL</MenuItem>
-                            <MenuItem value='XXL'>XXL</MenuItem>
-                          </Select>
-                        </FormControl>
+                        <TeeShirtSelect size={row.shirtSize} userId={row.userId}></TeeShirtSelect>
                       </TableCell>
                       <TableCell>{row.email}</TableCell>
                     </StyledTableRow>
