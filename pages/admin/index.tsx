@@ -14,11 +14,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import { Search } from '@material-ui/icons';
 import { TextField } from '@material-ui/core';
 import { useGet } from 'utils/hooks/use-get';
-
-const users = [
-  { name: 'Kyle Hoskins', startDate: new Date() },
-  { name: 'Margot Piper', startDate: new Date() },
-];
+import { SubscriptionWithDetails } from '@prisma/client';
+import Layout from 'components/layout/Layout';
 
 function descendingComparator(a: any, b: any, orderBy: string) {
   if (b[orderBy] < a[orderBy]) {
@@ -46,53 +43,6 @@ function stableSort(array: any[], comparator: any) {
   return stabilizedThis.map(el => el[0]);
 }
 
-const headCells = [
-  { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-  { id: 'startDate', numeric: true, disablePadding: false, label: 'Member Since' },
-];
-
-function EnhancedTableHead(props: any) {
-  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-  const createSortHandler = (property: string) => (event: any) => {
-    onRequestSort(event, property);
-  };
-
-  return (
-    <TableHead>
-      <TableRow>
-        {headCells.map(headCell => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'default'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</span>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
-}
-
-EnhancedTableHead.propTypes = {
-  classes: PropTypes.object.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-};
-
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -102,7 +52,10 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(2),
   },
   table: {
-    minWidth: 750,
+    minWidth: 0,
+  },
+  tableContainer: {
+    padding: theme.spacing(1),
   },
   visuallyHidden: {
     border: 0,
@@ -118,7 +71,71 @@ const useStyles = makeStyles(theme => ({
   margin: {
     margin: theme.spacing(1),
   },
+  white: {
+    color: theme.palette.common.white + '!important',
+  },
 }));
+
+const headCells = [
+  { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
+  { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
+  { id: 'status', numeric: true, disablePadding: false, label: 'Status' },
+  /*{ id: 'startDate', numeric: true, disablePadding: false, label: 'Member Since' },*/
+];
+
+const StyledTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+function EnhancedTableHead(props: any) {
+  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  const createSortHandler = (property: string) => (event: any) => {
+    onRequestSort(event, property);
+  };
+  //const classes = useStyles();
+
+  return (
+    <TableHead>
+      <TableRow>
+        {headCells.map(headCell => (
+          <StyledTableCell
+            key={headCell.id}
+            align={headCell.numeric ? 'right' : 'left'}
+            padding={headCell.disablePadding ? 'none' : 'default'}
+            sortDirection={orderBy === headCell.id ? order : false}
+          >
+            <TableSortLabel
+              classes={{ active: classes.white, icon: classes.white }}
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : 'asc'}
+              onClick={createSortHandler(headCell.id)}
+            >
+              {headCell.label}
+              {orderBy === headCell.id ? (
+                <span className={classes.visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</span>
+              ) : null}
+            </TableSortLabel>
+          </StyledTableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  );
+}
+
+EnhancedTableHead.propTypes = {
+  classes: PropTypes.object.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired,
+};
 
 const StyledTableRow = withStyles(theme => ({
   root: {
@@ -133,24 +150,28 @@ export default function EnhancedTable() {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('name');
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(100);
 
   const [nameFilter, setNameFilter] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const { data: users } = useGet<SubscriptionWithDetails[]>('/api/members', 'members');
 
   const debounceMilliseconds = 1;
 
   useEffect(() => {
     const timer = setTimeout(() => {
+      if (!users) return;
       const filter = users.filter(state => {
-        return state.name.toLowerCase().includes(nameFilter.toLowerCase());
+        if (!state.userName) state.userName = state.email;
+
+        return state.userName.toLowerCase().includes(nameFilter.toLowerCase());
       });
 
       setFilteredUsers(filter);
     }, debounceMilliseconds);
 
     return () => clearTimeout(timer);
-  }, [nameFilter]);
+  }, [nameFilter, users]);
 
   const handleRequestSort = (_event: any, property: string) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -166,66 +187,67 @@ export default function EnhancedTable() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  type PartialSubscription = Partial<Subscription & { product?: Partial<Product> }>;
-
-  const { data: subscriptions } = useGet<PartialSubscription[]>('/api/stripe/subscriptions', 'subscriptions');
+  //type PartialSubscription = Partial<Subscription & { product?: Partial<Product> }>;
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <TextField
-          className={classes.margin}
-          id='input-with-icon-textfield'
-          label='Find a Member'
-          value={nameFilter}
-          onChange={event => {
-            setNameFilter(event.target.value);
-          }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position='start'>
-                <Search />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <TableContainer>
-          <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
-            <EnhancedTableHead
-              classes={classes}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-              rowCount={filteredUsers.length}
-            />
-            <TableBody>
-              {stableSort(filteredUsers, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
+    <Layout>
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          <TextField
+            className={classes.margin}
+            id='input-with-icon-textfield'
+            label='Find a Member'
+            value={nameFilter}
+            onChange={event => {
+              setNameFilter(event.target.value);
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TableContainer className={classes.tableContainer}>
+            <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
+              <EnhancedTableHead
+                classes={classes}
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+                rowCount={filteredUsers.length}
+              />
+              <TableBody>
+                {stableSort(filteredUsers, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <StyledTableRow tabIndex={-1} key={row.name}>
-                      <TableCell component='th' id={labelId} scope='row' padding='none'>
-                        {row.name}
-                      </TableCell>
-                      <TableCell align='right'>{row.calories}</TableCell>
-                    </StyledTableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component='div'
-          count={filteredUsers.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </div>
+                    return (
+                      <StyledTableRow tabIndex={-1} key={row.id}>
+                        <TableCell id={labelId} scope='row'>
+                          {row.userName}
+                        </TableCell>
+                        <TableCell>{row.email}</TableCell>
+                        <TableCell align='right'>{row.status.toUpperCase().replace('_', ' ')}</TableCell>
+                      </StyledTableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 50, 100]}
+            component='div'
+            count={filteredUsers.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Paper>
+      </div>
+    </Layout>
   );
 }

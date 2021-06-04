@@ -98,11 +98,6 @@ const Header = () => {
               </Button>
             </>
           )}
-          {session && (
-            <>
-              Signed in as {session?.user?.email} <br /> <button onClick={() => signOut()}>Sign out</button>
-            </>
-          )}
 
           <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' onClick={handleDrawerOpen}>
             <MenuIcon />
@@ -125,6 +120,13 @@ const Header = () => {
         </div>
         <Divider />
         <List>
+          {session && (
+            <Link href='admin'>
+              <ListItem button>
+                <ListItemText primary='Admin' />
+              </ListItem>
+            </Link>
+          )}
           <Link href='about'>
             <ListItem button>
               <ListItemText primary='About' />

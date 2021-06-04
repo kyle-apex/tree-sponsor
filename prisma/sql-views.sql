@@ -3,6 +3,7 @@ SELECT
     s.id,
     s.status,
     s.stripeCustomerId,
+    p.stripeId as stripeProductId,
     s.stripeId,
     s.productId,
     p.name as productName,
@@ -11,7 +12,8 @@ SELECT
     u.name as userName,
     u.email as email,
     s.createdDate,
-    s.lastPaymentDate
+    s.lastPaymentDate,
+    s.expirationDate
 FROM
     Subscription s,
     users u,
@@ -22,5 +24,6 @@ where
     and (
         p.name like '%TFYP%'
         or p.name like '%Young Profess%'
+        or p.name like '%Membership%'
     )
     and amount >= 20
