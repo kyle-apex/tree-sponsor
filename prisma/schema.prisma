@@ -61,8 +61,15 @@ model User {
   stripeCustomerId String?        @db.VarChar(32)
   subscriptions    Subscription[]
   profile          Profile?
+  roles            Role[]         @relation("UserToRole")
 
   @@map(name: "users")
+}
+
+model Role {
+  id    Int     @id @default(autoincrement())
+  name  String?
+  users User[]  @relation("UserToRole")
 }
 
 model VerificationRequest {

@@ -12,20 +12,7 @@ ADD
   COLUMN `lastPaymentDate` DATETIME(3);
 
 -- CreateTable
-CREATE TABLE `SubscriptionWithDetails` (
-  `id` INTEGER NOT NULL,
-  `createdDate` DATETIME(3),
-  `expirationDate` DATETIME(3),
-  `status` VARCHAR(191),
-  `stripeId` VARCHAR(191),
-  `stripeCustomerId` VARCHAR(191),
-  `stripeProductId` VARCHAR(191),
-  `userName` VARCHAR(191),
-  `email` VARCHAR(191),
-  `amount` INTEGER NOT NULL UNIQUE INDEX `SubscriptionWithDetails.id_unique`(`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-_ -- CreateIndex
+-- CreateIndex
 CREATE UNIQUE INDEX `Product.stripeId_unique` ON `Product`(`stripeId`);
 
 -- CreateIndex

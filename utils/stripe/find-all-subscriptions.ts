@@ -5,7 +5,7 @@ import { Stripe, stripe } from './init';
 
 export const findAllSubscriptions = async (): Promise<PartialSubscription[]> => {
   const customers: Stripe.ApiList<Stripe.Customer> = await stripe.customers.list({
-    limit: 100,
+    limit: 150,
     expand: ['data.subscriptions'],
   });
   //console.log('customers', customers);
