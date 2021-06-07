@@ -55,7 +55,7 @@ model User {
   email            String?        @unique
   emailVerified    DateTime?      @map(name: "email_verified")
   image            String?
-  shirtSize        String?
+  hasShirt         Boolean?       @default(false)
   createdAt        DateTime       @default(now()) @map(name: "created_at")
   updatedAt        DateTime       @default(now()) @map(name: "updated_at")
   stripeCustomerId String?        @db.VarChar(32)
@@ -109,7 +109,7 @@ model SubscriptionWithDetails {
   userId           Int
   userName         String?
   email            String?
-  shirtSize        String?
+  hasShirt         Boolean?  @default(false)
   amount           Int
 }
 

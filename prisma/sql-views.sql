@@ -12,7 +12,7 @@ SELECT
     u.id as userId,
     u.name as userName,
     u.email as email,
-    COALESCE(u.shirtSize, '') as shirtSize,
+    u.hasShirt,
     s.createdDate,
     s.lastPaymentDate,
     s.expirationDate

@@ -8,14 +8,14 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const TeeShirtSelect = ({ userId, size }: { userId: string; size: string }) => {
+export const TeeShirtSelect = ({ userId, hasShirt }: { userId: string; hasShirt: boolean }) => {
   const classes = useStyles();
-  const [shirtSize, setShirtSize] = useState(size);
+  const [userHasShirt, setUserHasShirt] = useState(hasShirt);
 
-  const updateSize = async (newSize: string) => {
-    setShirtSize(newSize);
+  const updateSize = async (hasShirt: boolean) => {
+    setUserHasShirt(hasShirt);
     try {
-      const result = await axios.post('/api/users/' + userId, { shirtSize: newSize });
+      const result = await axios.post('/api/users/' + userId, { hasShirt: !!hasShirt });
     } catch (error) {
       //return alert(error.message);
     } finally {
@@ -27,20 +27,13 @@ export const TeeShirtSelect = ({ userId, size }: { userId: string; size: string 
     <FormControl className={classes.full}>
       <Select
         displayEmpty
-        value={shirtSize}
+        value={userHasShirt ? 1 : 0}
         onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-          updateSize(event.target.value as string);
+          updateSize(event.target.value as boolean);
         }}
       >
-        <MenuItem value=''>
-          <em>None</em>
-        </MenuItem>
-        <MenuItem value='XS'>XS</MenuItem>
-        <MenuItem value='S'>S</MenuItem>
-        <MenuItem value='M'>M</MenuItem>
-        <MenuItem value='L'>L</MenuItem>
-        <MenuItem value='XL'>XL</MenuItem>
-        <MenuItem value='XXL'>XXL</MenuItem>
+        <MenuItem value={0}>No</MenuItem>
+        <MenuItem value={1}>Yes</MenuItem>
       </Select>
     </FormControl>
   );

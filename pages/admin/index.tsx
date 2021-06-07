@@ -91,7 +91,7 @@ const headCells = [
   { id: 'userName', numeric: false, disablePadding: false, label: 'Name' },
 
   { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
-  { id: 'shirtSize', numeric: false, disablePadding: false, label: 'Shirt' },
+  { id: 'hasShirt', numeric: false, disablePadding: false, label: 'Has Shirt' },
   { id: 'amount', numeric: true, disablePadding: false, label: 'Amount' },
   { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
   /*{ id: 'startDate', numeric: true, disablePadding: false, label: 'Member Since' },*/
@@ -253,7 +253,7 @@ export default function EnhancedTable() {
                       </TableCell>
                       <TableCell>{row.status.toUpperCase().replace('_', ' ')}</TableCell>
                       <TableCell>
-                        {row.amount >= 60 && <TeeShirtSelect size={row.shirtSize} userId={row.userId}></TeeShirtSelect>}
+                        {row.amount >= 60 && <TeeShirtSelect hasShirt={row.hasShirt} userId={row.userId}></TeeShirtSelect>}
                       </TableCell>
                       <TableCell align='right'>${row.amount}</TableCell>
                       <TableCell>{row.email}</TableCell>
