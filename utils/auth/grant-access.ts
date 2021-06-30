@@ -1,9 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { isCurrentUserAdmin } from './is-current-user-admin';
+import { AccessType } from './AccessType';
+import { isCurrentUserAuthorized } from './is-current-user-authorized';
 const prisma = new PrismaClient();
 
-export default async function grantAccess(userId: number, accessType: string): Promise<void> {
-  if (!(await isCurrentUserAdmin())) return;
+export default async function grantAccess(userId: number, accessType: AccessType): Promise<void> {
+  if (!(await isCurrentUserAuthorized('hasAuthManagement'))) return;
 
   const role = await prisma.role.findFirst({
     where: {
