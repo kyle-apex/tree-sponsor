@@ -1,3 +1,4 @@
+/* eslint-disable no-async-promise-executor */
 import { QueryObserverResult, useQuery } from 'react-query';
 import axios from 'axios';
 
