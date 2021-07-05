@@ -16,6 +16,7 @@ import Layout from 'components/layout/Layout';
 import axios from 'axios';
 import { TeeShirtSelect } from 'components/TeeShirtSelect';
 import { stableSort, getComparator } from 'utils/material-ui/table-helpers';
+import { StyledTableRow } from 'components/StyledTableRow';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -64,14 +65,6 @@ const headCells = [
   { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
   /*{ id: 'startDate', numeric: true, disablePadding: false, label: 'Member Since' },*/
 ];
-
-const StyledTableRow = withStyles(theme => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
 
 export default function EnhancedTable() {
   const classes = useStyles();

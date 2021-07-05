@@ -8,7 +8,6 @@ export const useGet = <T>(path: string, key?: string, params?: Record<string, un
   }
 
   const fetcher = () => {
-    console.log('fetched?');
     const source = axios.CancelToken.source();
 
     const promise = new Promise(async (resolve, reject) => {
