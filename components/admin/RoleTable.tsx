@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Role } from '@prisma/client';
 import { TableHeader } from 'components/TableHeader';
 import { StyledTableRow } from 'components/StyledTableRow';
-import { useGet } from 'utils/hooks/use-get';
 import axios from 'axios';
 import { QueryObserverResult, RefetchOptions } from 'react-query';
 
@@ -28,7 +27,6 @@ export default function RoleTable({
   refetch: (options?: RefetchOptions) => Promise<QueryObserverResult>;
 }) {
   const classes = useStyles();
-  //const roles: Role[] = [{ id: 1, name: 'Why', hasAuthManagement: true, isAdmin: false }];
   async function handleAcessTypeChange(roleId: number, accessType: string, value: boolean) {
     await axios.post('/api/roles/' + roleId, { [accessType]: value });
     refetch();

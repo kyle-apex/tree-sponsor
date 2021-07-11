@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Checkbox, Table, TableBody, TableCell, TableContainer } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Role, User } from '@prisma/client';
+import { Role } from '@prisma/client';
 import { TableHeader } from 'components/TableHeader';
 import { StyledTableRow } from 'components/StyledTableRow';
-import { useGet } from 'utils/hooks/use-get';
 import axios from 'axios';
-import { defaultHead } from 'next/head';
-import RolesPage from 'pages/admin/roles';
 import { QueryObserverResult, RefetchOptions } from 'react-query';
 import { PartialUser } from 'interfaces';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 0,
+  },
+  tableContainer: {
+    marginBottom: theme.spacing(3),
   },
 }));
 
@@ -56,39 +56,37 @@ export default function UserRoleTable({
   }, [roles]);
 
   return (
-    <div>
-      <TableContainer>
-        {roles && (
-          <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
-            <TableHeader classes={classes} headCells={headCells} />
-            {users && (
-              <TableBody>
-                {users.map(user => {
-                  return (
-                    <StyledTableRow tabIndex={-1} key={user.id}>
-                      <TableCell scope='row'>{user.name}</TableCell>
-                      <TableCell scope='row'>{user.email}</TableCell>
+    <TableContainer className={classes.tableContainer}>
+      {roles && (
+        <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
+          <TableHeader classes={classes} headCells={headCells} />
+          {users && (
+            <TableBody>
+              {users.map(user => {
+                return (
+                  <StyledTableRow tabIndex={-1} key={user.id}>
+                    <TableCell scope='row'>{user.name}</TableCell>
+                    <TableCell scope='row'>{user.email}</TableCell>
 
-                      {roles.map(role => {
-                        return (
-                          <TableCell key={role.name}>
-                            <Checkbox
-                              checked={userHasRole(user, role.id)}
-                              onChange={event => {
-                                handleRoleChange(user.id, role.name, event.target.checked);
-                              }}
-                            ></Checkbox>
-                          </TableCell>
-                        );
-                      })}
-                    </StyledTableRow>
-                  );
-                })}
-              </TableBody>
-            )}
-          </Table>
-        )}
-      </TableContainer>
-    </div>
+                    {roles.map(role => {
+                      return (
+                        <TableCell key={role.name}>
+                          <Checkbox
+                            checked={userHasRole(user, role.id)}
+                            onChange={event => {
+                              handleRoleChange(user.id, role.name, event.target.checked);
+                            }}
+                          ></Checkbox>
+                        </TableCell>
+                      );
+                    })}
+                  </StyledTableRow>
+                );
+              })}
+            </TableBody>
+          )}
+        </Table>
+      )}
+    </TableContainer>
   );
 }
