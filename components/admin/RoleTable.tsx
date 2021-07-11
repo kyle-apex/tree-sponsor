@@ -45,7 +45,7 @@ export default function RoleTable({
                 return (
                   <StyledTableRow tabIndex={-1} key={row.id}>
                     <TableCell scope='row'>{row.name}</TableCell>
-                    <TableCell align='right'>
+                    <TableCell>
                       <Checkbox
                         checked={row.isAdmin}
                         onChange={event => {
@@ -53,7 +53,7 @@ export default function RoleTable({
                         }}
                       ></Checkbox>
                     </TableCell>
-                    <TableCell align='right'>
+                    <TableCell>
                       <Checkbox
                         checked={row.hasAuthManagement}
                         onChange={event => {

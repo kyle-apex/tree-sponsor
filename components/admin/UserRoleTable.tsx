@@ -1,11 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Checkbox, Table, TableBody, TableCell, TableContainer } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Role } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import { TableHeader } from 'components/TableHeader';
 import { StyledTableRow } from 'components/StyledTableRow';
 import { useGet } from 'utils/hooks/use-get';
 import axios from 'axios';
+import { defaultHead } from 'next/head';
+import RolesPage from 'pages/admin/roles';
+import { QueryObserverResult, RefetchOptions } from 'react-query';
+import { PartialUser } from 'interfaces';
 
 const useStyles = makeStyles(() => ({
   table: {
@@ -13,58 +17,77 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const headCells = [
+const defaultHeadCells = [
   { id: 'name', numeric: false, disablePadding: false, label: 'User' },
-  { id: 'isAdmin', numeric: false, disablePadding: false, label: 'Is Admin?' },
-  { id: 'hasAuthManagement', numeric: false, disablePadding: false, label: 'Can Manage Authentication?' },
+  { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
 ];
 
-export default function UserRoleTable(props: { roles: Role[] }) {
+function userHasRole(user: PartialUser, roleId: number) {
+  return !!user.roles.find((role: Partial<Role>) => role.id === roleId);
+}
+
+export default function UserRoleTable({
+  roles,
+  users,
+  refetch: refetchUsers,
+}: {
+  roles: Role[];
+  users: PartialUser[];
+  refetch: (options?: RefetchOptions) => Promise<QueryObserverResult>;
+}) {
   const classes = useStyles();
-  const { data: roles, refetch: refetchRoles } = useGet<Role[]>('/api/roles', 'roles');
-  //const roles: Role[] = [{ id: 1, name: 'Why', hasAuthManagement: true, isAdmin: false }];
-  async function handleAcessTypeChange(roleId: number, accessType: string, value: boolean) {
-    await axios.post('/api/roles/' + roleId, { [accessType]: value });
-    refetchRoles();
+  const [headCells, setHeadCells] = useState(defaultHeadCells);
+
+  async function handleRoleChange(userId: number, roleName: string, hasRole: boolean) {
+    await axios.post('/api/users/' + userId + '/toggleRole', { roleName: roleName, hasRole: hasRole });
+    refetchUsers();
+  }
+
+  function getHeaderCells() {
+    const newHeadCells = [...defaultHeadCells];
+    for (const role of roles || []) {
+      newHeadCells.push({ id: role.name, label: role.name, disablePadding: false, numeric: false });
+    }
+    setHeadCells(newHeadCells);
   }
 
   useEffect(() => {
-    return;
-  }, [props.roles]);
+    getHeaderCells();
+  }, [roles]);
 
   return (
     <div>
       <TableContainer>
-        <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
-          <TableHeader classes={classes} headCells={headCells} />
-          {roles && (
-            <TableBody>
-              {roles.map(row => {
-                return (
-                  <StyledTableRow tabIndex={-1} key={row.id}>
-                    <TableCell scope='row'>{row.name}</TableCell>
-                    <TableCell align='right'>
-                      <Checkbox
-                        checked={row.isAdmin}
-                        onChange={event => {
-                          handleAcessTypeChange(row.id, 'isAdmin', event.target.checked);
-                        }}
-                      ></Checkbox>
-                    </TableCell>
-                    <TableCell align='right'>
-                      <Checkbox
-                        checked={row.hasAuthManagement}
-                        onChange={event => {
-                          handleAcessTypeChange(row.id, 'hasAuthManagement', event.target.checked);
-                        }}
-                      ></Checkbox>
-                    </TableCell>
-                  </StyledTableRow>
-                );
-              })}
-            </TableBody>
-          )}
-        </Table>
+        {roles && (
+          <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
+            <TableHeader classes={classes} headCells={headCells} />
+            {users && (
+              <TableBody>
+                {users.map(user => {
+                  return (
+                    <StyledTableRow tabIndex={-1} key={user.id}>
+                      <TableCell scope='row'>{user.name}</TableCell>
+                      <TableCell scope='row'>{user.email}</TableCell>
+
+                      {roles.map(role => {
+                        return (
+                          <TableCell key={role.name}>
+                            <Checkbox
+                              checked={userHasRole(user, role.id)}
+                              onChange={event => {
+                                handleRoleChange(user.id, role.name, event.target.checked);
+                              }}
+                            ></Checkbox>
+                          </TableCell>
+                        );
+                      })}
+                    </StyledTableRow>
+                  );
+                })}
+              </TableBody>
+            )}
+          </Table>
+        )}
       </TableContainer>
     </div>
   );

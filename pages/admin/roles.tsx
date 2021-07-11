@@ -10,11 +10,12 @@ import { Role } from '@prisma/client';
 
 const RolesPage = () => {
   const { data: roles, refetch: refetchRoles } = useGet<Role[]>('/api/roles', 'roles');
+  const { data: users, refetch: refetchUsers } = useGet<Role[]>('/api/users', 'users');
 
   return (
     <Layout title='Roles'>
       <h1>Manage Roles</h1>
-      <UserRoleTable roles={roles}></UserRoleTable>
+      <UserRoleTable roles={roles} users={users} refetch={refetchUsers}></UserRoleTable>
       <Divider></Divider>
       <RoleTable roles={roles} refetch={refetchRoles}></RoleTable>
       <AddByName></AddByName>

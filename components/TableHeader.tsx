@@ -3,6 +3,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import { withStyles } from '@material-ui/core';
+import { useEffect } from 'react';
 
 const StyledTableCell = withStyles(theme => ({
   head: {
@@ -21,7 +22,14 @@ type HeaderCellOptions = {
   label: string;
 };
 
-export function TableHeader(props: {
+export function TableHeader({
+  classes,
+  order,
+  orderBy,
+  rowCount,
+  onRequestSort,
+  headCells,
+}: {
   classes?: Record<string, string>;
   onRequestSort?: (event: any, property: string) => void;
   order?: 'asc' | 'desc';
@@ -29,10 +37,14 @@ export function TableHeader(props: {
   rowCount?: number;
   headCells: HeaderCellOptions[];
 }) {
-  const { classes, order, orderBy, rowCount, onRequestSort, headCells } = props;
+  //const { classes, order, orderBy, rowCount, onRequestSort, headCells } = props;
   const createSortHandler = (property: string) => (event: any) => {
     onRequestSort(event, property);
   };
+  useEffect(() => {
+    console.log('head cells updated', JSON.stringify(headCells));
+    return;
+  }, [headCells]);
   //const classes = useStyles();
 
   return (
