@@ -17,6 +17,7 @@ import axios from 'axios';
 import { TeeShirtSelect } from 'components/TeeShirtSelect';
 import { stableSort, getComparator } from 'utils/material-ui/table-helpers';
 import { StyledTableRow } from 'components/StyledTableRow';
+import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -79,6 +80,12 @@ export default function EnhancedTable() {
 
   const debounceMilliseconds = 1;
 
+  const updateUser = async (userId: number, attributes: Record<string, unknown>) => {
+    return await axios.post('/api/users/' + userId, { hasShirt: !!attributes.hasShirt });
+  };
+
+  const { updateById: updateHasShirt } = useUpdateQueryById('members', updateUser);
+
   useEffect(() => {
     const filterTimer = setTimeout(() => {
       if (!users) return;
@@ -110,12 +117,6 @@ export default function EnhancedTable() {
   const handleChangeRowsPerPage = (event: any) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  const setShirtSize = async (row: SubscriptionWithDetails, size: string) => {
-    console.log('set size', row, size);
-    const result = await axios.post('/api/users/' + row.userId, { shirtSize: size });
-    refetch();
   };
 
   return (
@@ -161,7 +162,9 @@ export default function EnhancedTable() {
                       </TableCell>
                       <TableCell>{row.status.toUpperCase().replace('_', ' ')}</TableCell>
                       <TableCell>
-                        {row.amount >= 60 && <TeeShirtSelect hasShirt={row.hasShirt} userId={row.userId}></TeeShirtSelect>}
+                        {row.amount >= 60 && (
+                          <TeeShirtSelect updateHasShirt={updateHasShirt} hasShirt={row.hasShirt} userId={row.userId}></TeeShirtSelect>
+                        )}
                       </TableCell>
                       <TableCell align='right'>${row.amount}</TableCell>
                       <TableCell>{row.email}</TableCell>

@@ -8,19 +8,29 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const TeeShirtSelect = ({ userId, hasShirt }: { userId: string; hasShirt: boolean }) => {
+export const TeeShirtSelect = ({
+  userId,
+  hasShirt,
+  updateHasShirt,
+}: {
+  userId: number;
+  hasShirt: boolean;
+  updateHasShirt: (id: number, attributes: Record<string, unknown>) => any;
+}) => {
   const classes = useStyles();
   const [userHasShirt, setUserHasShirt] = useState(hasShirt);
 
   const updateSize = async (hasShirt: boolean) => {
+    updateHasShirt(userId, { hasShirt: !!hasShirt });
     setUserHasShirt(hasShirt);
+    /*
     try {
       const result = await axios.post('/api/users/' + userId, { hasShirt: !!hasShirt });
     } catch (error) {
       //return alert(error.message);
     } finally {
       //
-    }
+    }*/
   };
 
   return (
