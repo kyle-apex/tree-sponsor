@@ -61,6 +61,7 @@ model User {
   stripeCustomerId String?        @db.VarChar(32)
   subscriptions    Subscription[]
   profile          Profile?
+  subscriptionsWithDetails         SubscriptionWithDetails[]
   roles            Role[]         @relation("UserToRole")
 
   @@map(name: "users")
@@ -113,6 +114,7 @@ model SubscriptionWithDetails {
   email            String?
   hasShirt         Boolean?  @default(false)
   amount           Int
+  user    User  @relation(fields: [userId], references: [id])
 }
 
 model Product {

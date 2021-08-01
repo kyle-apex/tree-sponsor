@@ -57,17 +57,20 @@ export function TableHeader({
             padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              classes={{ active: classes.white, icon: classes.white }}
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</span>
-              ) : null}
-            </TableSortLabel>
+            {onRequestSort && (
+              <TableSortLabel
+                classes={{ active: classes.white, icon: classes.white }}
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <span className={classes.visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</span>
+                ) : null}
+              </TableSortLabel>
+            )}
+            {!onRequestSort && headCell.label}
           </StyledTableCell>
         ))}
       </TableRow>

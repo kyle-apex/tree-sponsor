@@ -7,6 +7,7 @@ import { StyledTableRow } from 'components/StyledTableRow';
 import axios from 'axios';
 import { QueryObserverResult, RefetchOptions } from 'react-query';
 import { PartialUser } from 'interfaces';
+import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -14,6 +15,20 @@ const useStyles = makeStyles(theme => ({
   },
   tableContainer: {
     marginBottom: theme.spacing(3),
+  },
+  visuallyHidden: {
+    border: 0,
+    clip: 'rect(0 0 0 0)',
+    height: 1,
+    margin: -1,
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
+    top: 20,
+    width: 1,
+  },
+  white: {
+    color: theme.palette.common.white + '!important',
   },
 }));
 
@@ -23,7 +38,12 @@ const defaultHeadCells = [
 ];
 
 function userHasRole(user: PartialUser, roleId: number) {
+  if (!user?.roles) return false;
   return !!user.roles.find((role: Partial<Role>) => role.id === roleId);
+}
+
+async function handleRoleChange(userId: number, attributes: Record<string, unknown>) {
+  return await axios.post('/api/users/' + userId + '/toggleRole', attributes);
 }
 
 export default function UserRoleTable({
@@ -38,9 +58,16 @@ export default function UserRoleTable({
   const classes = useStyles();
   const [headCells, setHeadCells] = useState(defaultHeadCells);
 
-  async function handleRoleChange(userId: number, roleName: string, hasRole: boolean) {
-    await axios.post('/api/users/' + userId + '/toggleRole', { roleName: roleName, hasRole: hasRole });
-    refetchUsers();
+  const { updateById } = useUpdateQueryById('users', handleRoleChange);
+
+  function toggleUserRole(user: PartialUser, role: Role, hasRole: boolean) {
+    if (hasRole) user.roles.push(role);
+    else {
+      for (let i = 0; i < user.roles.length; i++) {
+        if (user.roles[i].id == role.id) user.roles.splice(i, 1);
+      }
+    }
+    updateById(user.id, { roleName: role.name, hasRole: hasRole });
   }
 
   function getHeaderCells() {
@@ -74,7 +101,7 @@ export default function UserRoleTable({
                           <Checkbox
                             checked={userHasRole(user, role.id)}
                             onChange={event => {
-                              handleRoleChange(user.id, role.name, event.target.checked);
+                              toggleUserRole(user, role, event.target.checked);
                             }}
                           ></Checkbox>
                         </TableCell>

@@ -130,13 +130,13 @@ const Header = () => {
         <Divider />
         <List>
           {session && (
-            <Link href='admin'>
+            <Link href='/admin'>
               <ListItem button>
                 <ListItemText primary='Admin' />
               </ListItem>
             </Link>
           )}
-          <Link href='about'>
+          <Link href='/about'>
             <ListItem button>
               <ListItemText primary='About' />
             </ListItem>

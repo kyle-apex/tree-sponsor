@@ -1,9 +1,18 @@
 import { PrismaClient } from '@prisma/client';
+import { NextApiRequest } from 'next';
+import { AccessType } from './AccessType';
 import { isCurrentUserAuthorized } from './is-current-user-authorized';
 const prisma = new PrismaClient();
 
-export default async function grantAccess(userId: number, roleId: number): Promise<void> {
-  if (!(await isCurrentUserAuthorized('hasAuthManagement'))) return;
+export default async function removeAccess(userId: number, accessType: AccessType, req?: NextApiRequest): Promise<void> {
+  if (!(await isCurrentUserAuthorized('hasAuthManagement', req))) return;
+
+  const role = await prisma.role.findFirst({
+    where: {
+      name: accessType,
+    },
+  });
+  console.log('role', role);
 
   await prisma.user.update({
     where: {
@@ -11,7 +20,7 @@ export default async function grantAccess(userId: number, roleId: number): Promi
     },
     data: {
       roles: {
-        disconnect: { id: roleId },
+        disconnect: { id: role.id },
       },
     },
   });

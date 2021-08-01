@@ -7,14 +7,23 @@ import UserRoleTable from 'components/admin/UserRoleTable';
 import { Divider } from '@material-ui/core';
 import { useGet } from 'utils/hooks/use-get';
 import { Role } from '@prisma/client';
+import axios from 'axios';
+import { useAddToQuery } from 'utils/hooks/use-add-to-query';
 
 const RolesPage = () => {
   const { data: roles, refetch: refetchRoles } = useGet<Role[]>('/api/roles', 'roles');
   const { data: users, refetch: refetchUsers } = useGet<Role[]>('/api/users', 'users');
 
+  const { add } = useAddToQuery('roles', addRoleToDatabase);
+
   async function addRole(roleName: string) {
     console.log('roleName', roleName);
-    return;
+    return add({ name: roleName });
+  }
+
+  async function addRoleToDatabase(role: Partial<Role>) {
+    const result = await axios.post('/api/roles', role);
+    return result.data;
   }
 
   return (

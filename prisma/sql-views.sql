@@ -1,3 +1,5 @@
+DROP Table SubscriptionWithDetails;
+
 CREATE VIEW SubscriptionWithDetails AS
 SELECT
     s.id,
