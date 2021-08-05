@@ -63,14 +63,14 @@ const headCells = [
   { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
   { id: 'hasShirt', numeric: false, disablePadding: false, label: 'Has Shirt' },
   { id: 'amount', numeric: true, disablePadding: false, label: 'Amount' },
+  { id: 'createdDate', numeric: false, disablePadding: false, label: 'Member Since' },
   { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
-  /*{ id: 'startDate', numeric: true, disablePadding: false, label: 'Member Since' },*/
 ];
 
 export default function EnhancedTable() {
   const classes = useStyles();
   const [order, setOrder] = useState('asc' as 'asc' | 'desc');
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('createdDate');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(100);
 
@@ -139,6 +139,15 @@ export default function EnhancedTable() {
             ),
           }}
         />
+        <TablePagination
+          rowsPerPageOptions={[10, 50, 100]}
+          component='div'
+          count={filteredUsers.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
         <TableContainer>
           <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
             <TableHeader
@@ -167,6 +176,7 @@ export default function EnhancedTable() {
                         )}
                       </TableCell>
                       <TableCell align='right'>${row.amount}</TableCell>
+                      <TableCell>{new Date(row.createdDate).toLocaleDateString()}</TableCell>
                       <TableCell>{row.email}</TableCell>
                     </StyledTableRow>
                   );
