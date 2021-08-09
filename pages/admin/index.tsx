@@ -18,6 +18,11 @@ import { TeeShirtSelect } from 'components/TeeShirtSelect';
 import { stableSort, getComparator } from 'utils/material-ui/table-helpers';
 import { StyledTableRow } from 'components/StyledTableRow';
 import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
+import { getSession, GetSessionOptions } from 'next-auth/client';
+import { GetServerSideProps } from 'next';
+import serverSideIsAdmin from 'utils/auth/server-side-is-admin';
+
+export const getServerSideProps = serverSideIsAdmin;
 
 const useStyles = makeStyles(theme => ({
   root: {

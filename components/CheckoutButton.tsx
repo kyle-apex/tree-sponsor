@@ -8,7 +8,7 @@ import { getStripe } from 'utils/stripe/get-stripe-client';
 import { useSession } from 'next-auth/client';
 import { RedirectToCheckoutOptions } from '@stripe/stripe-js';
 
-export default function CheckoutButton() {
+export default function CheckoutButton({ price }: { price: string }) {
   const router = useRouter();
   const [priceIdLoading, setPriceIdLoading] = useState(false);
   const [session] = useSession();
@@ -17,10 +17,10 @@ export default function CheckoutButton() {
     /*if (!session) {
       return router.push('/signin');
     }*/
-
+    price = price ?? 'price_1Ioq94KRkjW3h5nxlnL2qYXV';
     try {
       const { data } = await axios.post<RedirectToCheckoutOptions>('/api/stripe/create-checkout-session', {
-        price: 'price_1Ioq94KRkjW3h5nxlnL2qYXV',
+        price,
       });
       console.log('datadata', data);
       const stripe = await getStripe();

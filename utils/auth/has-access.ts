@@ -1,14 +1,9 @@
 import { PrismaClient } from '@prisma/client';
+import { hasAccessForQueriedUser } from 'utils/prisma/has-access-for-queried-user';
 import { AccessType } from './AccessType';
 
 const prisma = new PrismaClient();
 
 export default async function hasAccess(userId: number, accessType: AccessType): Promise<boolean> {
-  const userWithValidRoles = await prisma.user.findFirst({
-    where: {
-      id: userId,
-    },
-    include: { roles: { where: { [accessType]: true } } },
-  });
-  return userWithValidRoles?.roles?.length > 0;
+  return await hasAccessForQueriedUser({ id: userId }, accessType);
 }
