@@ -50,29 +50,30 @@ model Session {
 }
 
 model User {
-  id               Int            @id @default(autoincrement())
-  name             String?
-  email            String?        @unique
-  emailVerified    DateTime?      @map(name: "email_verified")
-  image            String?
-  hasShirt         Boolean?       @default(false)
-  createdAt        DateTime       @default(now()) @map(name: "created_at")
-  updatedAt        DateTime       @default(now()) @map(name: "updated_at")
-  stripeCustomerId String?        @db.VarChar(32)
-  subscriptions    Subscription[]
-  profile          Profile?
-  subscriptionsWithDetails         SubscriptionWithDetails[]
-  roles            Role[]         @relation("UserToRole")
+  id                       Int                       @id @default(autoincrement())
+  name                     String?
+  email                    String?                   @unique
+  emailVerified            DateTime?                 @map(name: "email_verified")
+  image                    String?
+  hasShirt                 Boolean?                  @default(false)
+  createdAt                DateTime                  @default(now()) @map(name: "created_at")
+  updatedAt                DateTime                  @default(now()) @map(name: "updated_at")
+  stripeCustomerId         String?                   @db.VarChar(32)
+  subscriptions            Subscription[]
+  profile                  Profile?
+  subscriptionsWithDetails SubscriptionWithDetails[]
+  roles                    Role[]                    @relation("UserToRole")
 
+  Sponsorship Sponsorship[]
   @@map(name: "users")
 }
 
 model Role {
-  id      Int     @id @default(autoincrement())
-  name    String?
-  isAdmin Boolean   @default(false)
+  id                Int     @id @default(autoincrement())
+  name              String?
+  isAdmin           Boolean @default(false)
   hasAuthManagement Boolean @default(false)
-  users User[]  @relation("UserToRole")
+  users             User[]  @relation("UserToRole")
 }
 
 model VerificationRequest {
@@ -114,7 +115,7 @@ model SubscriptionWithDetails {
   email            String?
   hasShirt         Boolean?  @default(false)
   amount           Int
-  user    User  @relation(fields: [userId], references: [id])
+  user             User      @relation(fields: [userId], references: [id])
 }
 
 model Product {
@@ -123,4 +124,33 @@ model Product {
   name          String?
   amount        Int?
   subscriptions Subscription[]
+}
+
+model Tree {
+  id           Int           @id @default(autoincrement())
+  name         String?
+  pictureUrl   String?
+  location     Location?     @relation(fields: [locationId], references: [id])
+  locationId   Int?
+  sponsorships Sponsorship[]
+}
+
+model Location {
+  id        Int     @id @default(autoincrement())
+  latitude  Decimal @db.Decimal(8, 5)
+  longitude Decimal @db.Decimal(9, 6)
+  trees     Tree[]
+}
+
+model Sponsorship {
+  id             Int       @id @default(autoincrement())
+  title          String?
+  description    String?
+  pictureUrl     String?
+  startDate      DateTime?
+  expirationDate DateTime?
+  user           User?     @relation(fields: [userId], references: [id])
+  userId         Int?
+  tree           Tree?     @relation(fields: [treeId], references: [id])
+  treeId         Int?
 }

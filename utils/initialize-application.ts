@@ -6,8 +6,8 @@ const prisma = new PrismaClient();
 
 export default async function initializeApplication() {
   // for some reason, full population requires calling this twice
-  //await upsertSubscriptions(await findAllSubscriptions());
-  //await upsertSubscriptions(await findAllSubscriptions());
+  await upsertSubscriptions(await findAllSubscriptions());
+  await upsertSubscriptions(await findAllSubscriptions());
 
   const ownerEmails: string[] = process.env.ownerEmails ? process.env.ownerEmails.split(',') : ['kyle@kylehoskins.com'];
   /*const emailQuery: any[] = [];
@@ -29,7 +29,7 @@ export default async function initializeApplication() {
 
   await Promise.all(
     ownerEmails.map((email: string) => {
-      console.log('update email', email, ownerRole.id);
+      console.log('update email', email, ownerRole);
       return prisma.user.update({
         where: {
           email: email,
