@@ -2,7 +2,9 @@ import { Button, Grid, makeStyles, TextField } from '@material-ui/core';
 import UploadButton from '@rpldy/upload-button';
 import Uploady from '@rpldy/uploady';
 import axios from 'axios';
+import { useSession } from 'next-auth/client';
 import React, { useEffect, useState, useRef } from 'react';
+import TreeDetails from './TreeDetails';
 
 const filterBySize = (file: any) => {
   //filter out images larger than 15MB
@@ -18,6 +20,7 @@ const useStyles = makeStyles(theme => ({
 const SponsorForm = () => {
   const fileInputRef = useRef();
   const classes = useStyles();
+  const [session] = useSession();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [latitude, setLatitude] = useState(0);
@@ -103,6 +106,9 @@ const SponsorForm = () => {
         >
           Start Sponsorship
         </Button>
+        <section>
+          <TreeDetails detail={{ title, description, pictureUrl: imageFileContent, user: session?.user }}></TreeDetails>
+        </section>
       </Grid>
     </form>
   );

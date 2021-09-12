@@ -4,11 +4,11 @@ import { Details } from '@material-ui/icons';
 import React from 'react';
 
 export type TreeDetail = {
-  title: string;
-  description: string;
-  user: Partial<User>;
-  pictureUrl: string;
-  startDate: Date;
+  title?: string;
+  description?: string;
+  user?: Partial<User>;
+  pictureUrl?: string;
+  startDate?: Date;
   expirationDate?: Date;
 };
 
@@ -33,10 +33,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const TreeDetails = () => {
+const TreeDetails = ({ detail }: { detail: TreeDetail }) => {
   const classes = useStyles();
   // read or input tree details
-  const detail: TreeDetail = {
+  detail = detail || {
     title: 'My Tree',
     description: 'Something about my tree',
     startDate: new Date(),
@@ -53,8 +53,13 @@ const TreeDetails = () => {
         <Grid item>
           <h2>{detail.title}</h2>
           <p className={classes.subtitle}>
-            Sponsored by {detail.user.name} - {detail.startDate.toLocaleString('default', { month: 'long', day: 'numeric' })}
-            {detail.startDate.getFullYear() != new Date().getFullYear() && <span>, {detail.startDate.getFullYear()}</span>}
+            {detail.user?.name && <span>Sponsored by {detail.user.name} - )</span>}
+            {detail.startDate && (
+              <span>
+                {detail.startDate.toLocaleString('default', { month: 'long', day: 'numeric' })}
+                {detail.startDate.getFullYear() != new Date().getFullYear() && <span>, {detail.startDate.getFullYear()}</span>}
+              </span>
+            )}
           </p>
         </Grid>
       </Grid>
