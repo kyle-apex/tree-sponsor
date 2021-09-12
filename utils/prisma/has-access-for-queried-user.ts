@@ -1,4 +1,4 @@
-import { PrismaClient, User, UserWhereInput } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { AccessType } from 'utils/auth/AccessType';
 
 const prisma = new PrismaClient();

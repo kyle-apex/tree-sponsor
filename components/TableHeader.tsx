@@ -15,11 +15,11 @@ const StyledTableCell = withStyles(theme => ({
   },
 }))(TableCell);
 
-type HeaderCellOptions = {
+export type HeaderCellOptions = {
   id: string;
   numeric?: boolean;
   disablePadding?: boolean;
-  label: string;
+  label?: string;
 };
 
 export function TableHeader({

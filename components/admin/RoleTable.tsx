@@ -3,7 +3,7 @@ import { Checkbox, IconButton, Table, TableBody, TableCell, TableContainer } fro
 import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
 import { Role } from '@prisma/client';
-import { TableHeader } from 'components/TableHeader';
+import { HeaderCellOptions, TableHeader } from 'components/TableHeader';
 import { StyledTableRow } from 'components/StyledTableRow';
 import axios from 'axios';
 import { QueryObserverResult, RefetchOptions } from 'react-query';
@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const headCells = [
+const headCells: HeaderCellOptions[] = [
   { id: 'name', numeric: false, disablePadding: false, label: 'Role' },
   { id: 'isAdmin', numeric: false, disablePadding: false, label: 'Is Admin?' },
   { id: 'hasAuthManagement', numeric: false, disablePadding: false, label: 'Can Manage Authentication?' },

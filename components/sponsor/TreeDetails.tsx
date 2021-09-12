@@ -9,7 +9,7 @@ export type TreeDetail = {
   user: Partial<User>;
   pictureUrl: string;
   startDate: Date;
-  expirationDate: Date;
+  expirationDate?: Date;
 };
 
 const useStyles = makeStyles(theme => ({
