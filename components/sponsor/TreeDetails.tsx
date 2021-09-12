@@ -53,7 +53,7 @@ const TreeDetails = ({ detail }: { detail: TreeDetail }) => {
         <Grid item>
           <h2>{detail.title}</h2>
           <p className={classes.subtitle}>
-            {detail.user?.name && <span>Sponsored by {detail.user.name} - )</span>}
+            {detail.user?.name && <span>Sponsored by {detail.user.name} - </span>}
             {detail.startDate && (
               <span>
                 {detail.startDate.toLocaleString('default', { month: 'long', day: 'numeric' })}

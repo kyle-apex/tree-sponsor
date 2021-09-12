@@ -25,8 +25,8 @@ const SponsorForm = () => {
   const [description, setDescription] = useState('');
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
-  const [imageFileContent, setImageFileContent] = useState('');
-  const [imageFileType, setImageFileType] = useState('');
+  const [imageFile, setImageFile] = useState<{ type: string; content: string }>();
+  const [imageUrl, setImageUrl] = useState('');
   const [subscriptions, setSubscriptions] = useState([]);
   const handleTitleChange = (event: { target: { value: React.SetStateAction<string> } }) => {
     setTitle(event.target.value);
@@ -36,8 +36,7 @@ const SponsorForm = () => {
       title,
       description,
       tree: { latitude, longitude },
-      imageFileContent,
-      imageFileType,
+      imageFile,
     });
   };
 
@@ -51,9 +50,10 @@ const SponsorForm = () => {
     reader.onload = function (e) {
       // Add the file name to the data URL
       //console.log(e.target.result);
-      setImageFileContent(String(e.target.result).split(',')[1]);
+      const imageUrl = String(e.target.result);
+      setImageUrl(imageUrl);
+      setImageFile({ type: file.type, content: imageUrl.split(',')[1] });
     };
-    setImageFileType(file.type);
     reader.readAsDataURL(file);
   };
 
@@ -107,7 +107,15 @@ const SponsorForm = () => {
           Start Sponsorship
         </Button>
         <section>
-          <TreeDetails detail={{ title, description, pictureUrl: imageFileContent, user: session?.user }}></TreeDetails>
+          <TreeDetails
+            detail={{
+              title: title || 'Title Preview',
+              description: description || 'Preview of your description',
+              pictureUrl: imageUrl,
+              user: session?.user,
+              startDate: new Date(),
+            }}
+          ></TreeDetails>
         </section>
       </Grid>
     </form>
