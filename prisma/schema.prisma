@@ -88,17 +88,18 @@ model VerificationRequest {
 }
 
 model Subscription {
-  id               Int       @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   createdDate      DateTime?
   expirationDate   DateTime?
   lastPaymentDate  DateTime?
-  status           String?   @db.VarChar(32)
-  stripeCustomerId String?   @db.VarChar(32)
-  stripeId         String?   @unique @db.VarChar(32)
-  user             User?     @relation(fields: [userId], references: [id])
+  status           String?       @db.VarChar(32)
+  stripeCustomerId String?       @db.VarChar(32)
+  stripeId         String?       @unique @db.VarChar(32)
+  user             User?         @relation(fields: [userId], references: [id])
   userId           Int?
-  product          Product?  @relation(fields: [productId], references: [id])
+  product          Product?      @relation(fields: [productId], references: [id])
   productId        Int?
+  sponsorships     Sponsorship[]
 }
 
 model SubscriptionWithDetails {
@@ -130,27 +131,22 @@ model Tree {
   id           Int           @id @default(autoincrement())
   name         String?
   pictureUrl   String?
-  location     Location?     @relation(fields: [locationId], references: [id])
-  locationId   Int?
+  latitude     Decimal?      @db.Decimal(8, 5)
+  longitude    Decimal?      @db.Decimal(9, 6)
   sponsorships Sponsorship[]
 }
 
-model Location {
-  id        Int     @id @default(autoincrement())
-  latitude  Decimal @db.Decimal(8, 5)
-  longitude Decimal @db.Decimal(9, 6)
-  trees     Tree[]
-}
-
 model Sponsorship {
-  id             Int       @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
   title          String?
   description    String?
   pictureUrl     String?
   startDate      DateTime?
   expirationDate DateTime?
-  user           User?     @relation(fields: [userId], references: [id])
+  user           User?         @relation(fields: [userId], references: [id])
   userId         Int?
-  tree           Tree?     @relation(fields: [treeId], references: [id])
+  tree           Tree?         @relation(fields: [treeId], references: [id])
   treeId         Int?
+  Subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  subscriptionId Int?
 }
