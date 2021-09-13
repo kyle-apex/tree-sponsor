@@ -36,6 +36,7 @@ export default NextAuth({
   // Optional SQL or MongoDB database to persist users
   database: process.env.DATABASE_URL,
   adapter: Adapters.Prisma.Adapter({ prisma }),
+  linkOAuthWithExistingUser: true,
   callbacks: {
     async session(session, user) {
       console.log('got session', session);

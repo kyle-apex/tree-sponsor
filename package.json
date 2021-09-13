@@ -23,7 +23,7 @@
     "fontsource-roboto": "^3.1.5",
     "mysql": "^2.18.1",
     "next": "^10.1.3",
-    "next-auth": "^3.17.2",
+    "next-auth": "npm:auto-link-oauth-next-auth@^0.0.4",
     "prisma": "^2.21.2",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
