@@ -1,7 +1,8 @@
-import { Button, Grid, makeStyles, TextField } from '@material-ui/core';
+import { Button, Grid, makeStyles, Step, StepButton, Stepper, TextField } from '@material-ui/core';
 import UploadButton from '@rpldy/upload-button';
 import Uploady from '@rpldy/uploady';
 import axios from 'axios';
+import LocationSelector from 'components/LocationSelector';
 import { useSession } from 'next-auth/client';
 import React, { useEffect, useState, useRef } from 'react';
 import TreeDetails from './TreeDetails';
@@ -17,10 +18,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const steps = ['Location', 'Picture', 'Details'];
+
 const SponsorForm = () => {
   const fileInputRef = useRef();
   const classes = useStyles();
+
+  const [activeStep, setActiveStep] = useState(0);
+  const [completed, setCompleted] = useState<{ [k: number]: boolean }>({});
+
   const [session] = useSession();
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [latitude, setLatitude] = useState(0);
@@ -38,6 +46,10 @@ const SponsorForm = () => {
       tree: { latitude, longitude },
       imageFile,
     });
+  };
+
+  const handleStep = (step: number) => () => {
+    setActiveStep(step);
   };
 
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,60 +75,74 @@ const SponsorForm = () => {
   return (
     <form>
       <Grid container direction='column'>
-        <TextField label='Title' variant='filled' onChange={handleTitleChange}></TextField>
-        <TextField
-          label='Description'
-          variant='filled'
-          multiline
-          rows={3}
-          onChange={event => {
-            setDescription(event.target.value);
-          }}
-        ></TextField>
-        <TextField
-          label='Latitude'
-          variant='filled'
-          type='number'
-          onChange={event => {
-            setLatitude(Number(event.target.value));
-          }}
-        ></TextField>
-        <TextField
-          label='Longitude'
-          variant='filled'
-          type='number'
-          onChange={event => {
-            setLongitude(Number(event.target.value));
-          }}
-        ></TextField>
-        <input type='file' ref={fileInputRef} accept='image/*' className={classes.hidden} onChange={onSelectFile} />
-        <Button
-          variant='outlined'
-          onClick={() => {
-            fileInputRef?.current && fileInputRef.current.click();
-          }}
-        >
-          Upload Image
-        </Button>
-        <Button
-          variant='outlined'
-          onClick={() => {
-            createSponsorship();
-          }}
-        >
-          Start Sponsorship
-        </Button>
-        <section>
-          <TreeDetails
-            detail={{
-              title: title || 'Title Preview',
-              description: description || 'Preview of your description',
-              pictureUrl: imageUrl,
-              user: session?.user,
-              startDate: new Date(),
+        <Stepper nonLinear activeStep={activeStep}>
+          {steps.map((label, index) => (
+            <Step key={label}>
+              <StepButton onClick={handleStep(index)} completed={completed[index]}>
+                {label}
+              </StepButton>
+            </Step>
+          ))}
+        </Stepper>
+        {activeStep == 0 && (
+          <LocationSelector
+            onViewportChange={({ latitude, longitude }) => {
+              setLatitude(latitude), setLongitude(longitude);
             }}
-          ></TreeDetails>
-        </section>
+          ></LocationSelector>
+        )}
+
+        {activeStep == 1 && (
+          <>
+            <input type='file' ref={fileInputRef} accept='image/*' className={classes.hidden} onChange={onSelectFile} />
+            <Button
+              variant='outlined'
+              onClick={() => {
+                fileInputRef?.current && fileInputRef.current.click();
+              }}
+            >
+              Upload Image
+            </Button>
+            {imageUrl && (
+              <div>
+                <p>Preview:</p>
+                <img width='100%' src={imageUrl} />
+              </div>
+            )}
+          </>
+        )}
+        {activeStep == 2 && (
+          <>
+            <TextField label='Title' variant='filled' onChange={handleTitleChange}></TextField>
+            <TextField
+              label='Description'
+              variant='filled'
+              multiline
+              rows={3}
+              onChange={event => {
+                setDescription(event.target.value);
+              }}
+            ></TextField>
+
+            <Button
+              variant='outlined'
+              onClick={() => {
+                createSponsorship();
+              }}
+            >
+              Start Sponsorship
+            </Button>
+            <TreeDetails
+              detail={{
+                title: title || 'Title Preview',
+                description: description || 'Preview of your description',
+                pictureUrl: imageUrl,
+                user: session?.user,
+                startDate: new Date(),
+              }}
+            ></TreeDetails>
+          </>
+        )}
       </Grid>
     </form>
   );
