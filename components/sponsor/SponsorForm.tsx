@@ -1,4 +1,4 @@
-import { Button, Grid, makeStyles, Step, StepButton, Stepper, TextField } from '@material-ui/core';
+import { Box, Button, Grid, makeStyles, Step, StepButton, Stepper, TextField } from '@material-ui/core';
 import UploadButton from '@rpldy/upload-button';
 import Uploady from '@rpldy/uploady';
 import axios from 'axios';
@@ -6,6 +6,8 @@ import LocationSelector from 'components/LocationSelector';
 import { useSession } from 'next-auth/client';
 import React, { useEffect, useState, useRef } from 'react';
 import TreeDetails from './TreeDetails';
+import { flexbox } from '@material-ui/system';
+import SplitRow from 'components/layout/SplitRow';
 
 const filterBySize = (file: any) => {
   //filter out images larger than 15MB
@@ -85,11 +87,25 @@ const SponsorForm = () => {
           ))}
         </Stepper>
         {activeStep == 0 && (
-          <LocationSelector
-            onViewportChange={({ latitude, longitude }) => {
-              setLatitude(latitude), setLongitude(longitude);
-            }}
-          ></LocationSelector>
+          <>
+            <LocationSelector
+              onViewportChange={({ latitude, longitude }) => {
+                setLatitude(latitude), setLongitude(longitude);
+              }}
+            ></LocationSelector>
+            <SplitRow>
+              <></>
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={() => {
+                  setActiveStep(activeStep + 1);
+                }}
+              >
+                Next
+              </Button>
+            </SplitRow>
+          </>
         )}
 
         {activeStep == 1 && (
@@ -109,6 +125,24 @@ const SponsorForm = () => {
                 <img width='100%' src={imageUrl} />
               </div>
             )}
+            <SplitRow>
+              <Button
+                onClick={() => {
+                  setActiveStep(activeStep - 1);
+                }}
+              >
+                Back
+              </Button>
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={() => {
+                  setActiveStep(activeStep + 1);
+                }}
+              >
+                Next
+              </Button>
+            </SplitRow>
           </>
         )}
         {activeStep == 2 && (
@@ -123,15 +157,25 @@ const SponsorForm = () => {
                 setDescription(event.target.value);
               }}
             ></TextField>
+            <SplitRow>
+              <Button
+                onClick={() => {
+                  setActiveStep(activeStep - 1);
+                }}
+              >
+                Back
+              </Button>
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={() => {
+                  createSponsorship();
+                }}
+              >
+                Start Sponsorship
+              </Button>
+            </SplitRow>
 
-            <Button
-              variant='outlined'
-              onClick={() => {
-                createSponsorship();
-              }}
-            >
-              Start Sponsorship
-            </Button>
             <TreeDetails
               detail={{
                 title: title || 'Title Preview',
