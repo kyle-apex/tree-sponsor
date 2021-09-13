@@ -49,11 +49,11 @@ async function handleRoleChange(userId: number, attributes: Record<string, unkno
 export default function UserRoleTable({
   roles,
   users,
-  refetch: refetchUsers,
-}: {
+}: //refetch: refetchUsers,
+{
   roles: Role[];
   users: PartialUser[];
-  refetch: (options?: RefetchOptions) => Promise<QueryObserverResult>;
+  //refetch: (options?: RefetchOptions) => Promise<QueryObserverResult>;
 }) {
   const classes = useStyles();
   const [headCells, setHeadCells] = useState(defaultHeadCells);

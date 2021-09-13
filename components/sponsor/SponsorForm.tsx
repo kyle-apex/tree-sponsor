@@ -14,7 +14,7 @@ const filterBySize = (file: any) => {
   return file.size <= 15242880;
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   hidden: {
     display: 'none',
   },
@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 const steps = ['Location', 'Picture', 'Details'];
 
 const SponsorForm = () => {
-  const fileInputRef = useRef();
+  const fileInputRef = useRef<HTMLInputElement>();
   const classes = useStyles();
 
   const [activeStep, setActiveStep] = useState(0);
@@ -71,8 +71,12 @@ const SponsorForm = () => {
     reader.readAsDataURL(file);
   };
 
-  useEffect(async () => {
+  const getSubscriptions = async () => {
     setSubscriptions(await axios.get('/api/availableSponsorships'));
+  };
+
+  useEffect(() => {
+    getSubscriptions();
   }, []);
   return (
     <form>
@@ -114,7 +118,7 @@ const SponsorForm = () => {
             <Button
               variant='outlined'
               onClick={() => {
-                fileInputRef?.current && fileInputRef.current.click();
+                fileInputRef?.current?.click();
               }}
             >
               Upload Image

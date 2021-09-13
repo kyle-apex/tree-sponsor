@@ -26,8 +26,8 @@ export default function CheckoutButton({ price }: { price: string }) {
       const stripe = await getStripe();
       console.log('stripe', stripe);
       stripe.redirectToCheckout(data);
-    } catch (error) {
-      return alert(error.message);
+    } catch (error: unknown) {
+      return alert((error as Error).message);
     } finally {
       setPriceIdLoading(false);
     }

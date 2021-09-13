@@ -1,7 +1,6 @@
 import { upsertSubscriptions } from './prisma/upsert-subscriptions';
 import { findAllSubscriptions } from './stripe/find-all-subscriptions';
 import { PrismaClient, User } from '@prisma/client';
-import { PrismaClientRustPanicError } from '@prisma/client/runtime';
 
 const prisma = new PrismaClient();
 

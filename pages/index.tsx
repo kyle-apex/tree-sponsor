@@ -12,7 +12,6 @@ const IndexPage = () => {
   return (
     <Layout>
       <h1>Hello Next.js 👋</h1>
-      <CheckoutButton></CheckoutButton>
 
       <MapExample></MapExample>
       <p>

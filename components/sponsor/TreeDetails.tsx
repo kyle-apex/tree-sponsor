@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const TreeDetails = ({ detail }: { detail: TreeDetail }) => {
+const TreeDetails = ({ detail }: { detail?: TreeDetail }) => {
   const classes = useStyles();
   // read or input tree details
   detail = detail || {

@@ -28,9 +28,9 @@ const LocationSelector = ({
         {...viewport}
         width='100%'
         height='50vh'
-        onViewportChange={(e: React.SetStateAction<{ longitude: number; latitude: number; zoom: number }>) => {
+        onViewportChange={(e: { longitude: number; latitude: number; zoom: number }) => {
           setViewport(e);
-          onViewportChange(e);
+          onViewportChange({ latitude: e.latitude, longitude: e.longitude, zoom: e.zoom });
         }}
         mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         mapStyle='mapbox://styles/mapbox/satellite-v9'

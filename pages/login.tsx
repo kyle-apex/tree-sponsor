@@ -2,12 +2,12 @@ import { Button, makeStyles } from '@material-ui/core';
 import { signIn, useSession, signOut } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import React from 'react';
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   loginButton: {},
 }));
 
 const Login = () => {
-  const [session, loading] = useSession();
+  const [session] = useSession();
   const router = useRouter();
 
   const classes = useStyles();

@@ -29,7 +29,7 @@ const RolesPage = () => {
   return (
     <Layout title='Roles'>
       <h1>Manage Roles</h1>
-      <UserRoleTable roles={roles} users={users} refetch={refetchUsers}></UserRoleTable>
+      <UserRoleTable roles={roles} users={users}></UserRoleTable>
       <Divider></Divider>
       <RoleTable roles={roles} refetch={refetchRoles}></RoleTable>
       <AddByName label='Add a Role' buttonText='Add Role' action={addRole}></AddByName>

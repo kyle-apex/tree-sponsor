@@ -26,7 +26,6 @@ export function TableHeader({
   classes,
   order,
   orderBy,
-  rowCount,
   onRequestSort,
   headCells,
 }: {
