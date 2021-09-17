@@ -8,19 +8,35 @@ import React, { useEffect, useState, useRef } from 'react';
 import TreeDetails from './TreeDetails';
 import { flexbox } from '@material-ui/system';
 import SplitRow from 'components/layout/SplitRow';
+import { AccessAlarm, ThreeDRotation, NaturePeopleSharp } from '@material-ui/icons';
 
 const filterBySize = (file: any) => {
   //filter out images larger than 15MB
   return file.size <= 15242880;
 };
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   hidden: {
     display: 'none',
   },
+  stepButton: {
+    marginTop: theme.spacing(2),
+  },
+  description: {
+    marginTop: theme.spacing(2),
+  },
+  uploadButton: {
+    height: '200px',
+    marginTop: theme.spacing(2),
+    display: 'block',
+  },
 }));
 
-const steps = ['Location', 'Picture', 'Details'];
+const steps = [
+  { label: 'Location', icon: <AccessAlarm /> },
+  { label: 'Picture', icon: <AccessAlarm /> },
+  { label: 'Details', icon: <AccessAlarm /> },
+];
 
 const SponsorForm = () => {
   const fileInputRef = useRef<HTMLInputElement>();
@@ -82,10 +98,10 @@ const SponsorForm = () => {
     <form>
       <Grid container direction='column'>
         <Stepper nonLinear activeStep={activeStep}>
-          {steps.map((label, index) => (
-            <Step key={label}>
+          {steps.map((step, index) => (
+            <Step key={step.label}>
               <StepButton onClick={handleStep(index)} completed={completed[index]}>
-                {label}
+                {step.label}
               </StepButton>
             </Step>
           ))}
@@ -100,6 +116,7 @@ const SponsorForm = () => {
             <SplitRow>
               <></>
               <Button
+                className={classes.stepButton}
                 variant='contained'
                 color='primary'
                 onClick={() => {
@@ -116,12 +133,15 @@ const SponsorForm = () => {
           <>
             <input type='file' ref={fileInputRef} accept='image/*' className={classes.hidden} onChange={onSelectFile} />
             <Button
+              className={classes.uploadButton}
               variant='outlined'
+              color='secondary'
               onClick={() => {
                 fileInputRef?.current?.click();
               }}
             >
-              Upload Image
+              <NaturePeopleSharp color='secondary' fontSize='large' />
+              <div>Upload Image</div>
             </Button>
             {imageUrl && (
               <div>
@@ -131,6 +151,7 @@ const SponsorForm = () => {
             )}
             <SplitRow>
               <Button
+                className={classes.stepButton}
                 onClick={() => {
                   setActiveStep(activeStep - 1);
                 }}
@@ -138,6 +159,7 @@ const SponsorForm = () => {
                 Back
               </Button>
               <Button
+                className={classes.stepButton}
                 variant='contained'
                 color='primary'
                 onClick={() => {
@@ -155,6 +177,8 @@ const SponsorForm = () => {
             <TextField
               label='Description'
               variant='filled'
+              value={description}
+              className={classes.description}
               multiline
               rows={3}
               onChange={event => {
@@ -163,6 +187,7 @@ const SponsorForm = () => {
             ></TextField>
             <SplitRow>
               <Button
+                className={classes.stepButton}
                 onClick={() => {
                   setActiveStep(activeStep - 1);
                 }}
@@ -170,6 +195,7 @@ const SponsorForm = () => {
                 Back
               </Button>
               <Button
+                className={classes.stepButton}
                 variant='contained'
                 color='primary'
                 onClick={() => {

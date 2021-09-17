@@ -48,7 +48,7 @@ const TreeDetails = ({ detail }: { detail?: TreeDetail }) => {
     <Grid>
       <Grid container direction='row' spacing={2} alignItems='center'>
         <Grid item>
-          <div className={classes.thumbnail} style={{ backgroundImage: `url(${detail.pictureUrl})` }}></div>
+          <div className={`${classes.thumbnail} box-shadow`} style={{ backgroundImage: `url(${detail.pictureUrl})` }}></div>
         </Grid>
         <Grid item>
           <h2>{detail.title}</h2>
@@ -65,7 +65,7 @@ const TreeDetails = ({ detail }: { detail?: TreeDetail }) => {
       </Grid>
 
       <p>{detail.description}</p>
-      <img src={detail.pictureUrl} className={classes.fullImage}></img>
+      <img src={detail.pictureUrl} className={`${classes.fullImage} box-shadow`}></img>
     </Grid>
   );
 };

@@ -7,6 +7,7 @@ const SponsorPage = () => {
   return (
     <Layout>
       <Container maxWidth='sm'>
+        <h1>Sponsor a Tree</h1>
         <SponsorForm></SponsorForm>
       </Container>
     </Layout>
