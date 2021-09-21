@@ -2,8 +2,7 @@ import { Card, CardActionArea, CardContent, CardActions, Button, Grid } from '@m
 import React from 'react';
 import { useGet } from 'utils/hooks/use-get';
 import { useSession } from 'next-auth/client';
-import { PrismaClient, Product, Subscription, User } from '@prisma/client';
-import TreeDetailsCard from 'components/sponsor/TreeDetailsCard';
+import { Product, Subscription } from '@prisma/client';
 import AddTreeButton from 'components/sponsor/AddTreeButton';
 import { useRemoveFromQuery } from 'utils/hooks/use-remove-from-query';
 import axios from 'axios';

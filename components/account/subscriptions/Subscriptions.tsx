@@ -3,10 +3,7 @@ import React from 'react';
 import { useGet } from 'utils/hooks/use-get';
 import { useSession } from 'next-auth/client';
 import axios from 'axios';
-import Stripe from 'stripe';
-import { PrismaClient, Product, Subscription, User } from '@prisma/client';
-import { LensTwoTone } from '@material-ui/icons';
-//const prisma = new PrismaClient();
+import { Product, Subscription, SubscriptionWithDetails } from '@prisma/client';
 
 const useStyles = makeStyles(theme => ({
   cardHeader: {
@@ -32,17 +29,11 @@ const Subscriptions = () => {
   const [session, loading] = useSession();
   type PartialSubscription = Partial<Subscription & { product?: Partial<Product> }>;
   const { data: subscriptions, isFetched, isFetching } = useGet<SubscriptionWithDetails[]>('/api/me/subscriptions', 'subscriptions');
-  //if (!subscriptions) subscriptions = [];
-  //const subscriptions: any[] = [];
+
   const launchClientPortal = async (customerId?: string) => {
     const { data } = await axios.get('/api/stripe/portal-session?customerId=' + customerId);
     window.location.href = data.url;
   };
-  //const subs2 = await prisma.user.findMany({ include: { subscriptions: true } });
-
-  //console.log('subs2', subs2); //  const subs2: User = await prisma.user.create({ data: { name: 'kyle', email: 'what@who.com' } });
-
-  //const subscriptions: any[] = [{ id: 'whatever' }, { id: 'another' }];
   return (
     <>
       <h2>Subscriptions</h2>

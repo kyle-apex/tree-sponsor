@@ -1,13 +1,9 @@
 import { Box, Button, Grid, makeStyles, Step, StepButton, Stepper, TextField } from '@material-ui/core';
-import UploadButton from '@rpldy/upload-button';
-import Uploady from '@rpldy/uploady';
 import axios from 'axios';
 import LocationSelector from 'components/LocationSelector';
 import { useSession } from 'next-auth/client';
 import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
-import TreeDetails from './TreeDetails';
-import { flexbox } from '@material-ui/system';
 import SplitRow from 'components/layout/SplitRow';
 import { AccessAlarm, ThreeDRotation, NaturePeopleSharp } from '@material-ui/icons';
 
@@ -85,11 +81,7 @@ const SponsorForm = () => {
     // Read the image via FileReader API and save image result in state.
     reader.onload = function (e) {
       // Add the file name to the data URL
-      //console.log(e.target.result);
       img.src = e.target.result as string;
-      //window['img'] = img;
-      const imageUrl = String(e.target.result);
-      //console.log('img', img.height, img.width, img);
 
       const MAX_WIDTH = 800;
       const MAX_HEIGHT = 600;
@@ -111,15 +103,8 @@ const SponsorForm = () => {
       canvas.height = height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
-      window['canvas'] = canvas;
-
-      console.log('ctx', ctx);
 
       const dataUrl = canvas.toDataURL();
-
-      canvas.toBlob((blob: any) => {
-        console.log('blob', blob);
-      }, file.type);
 
       setImageUrl(dataUrl);
       setImageFile({ type: file.type, content: dataUrl.split(',')[1] });
@@ -245,16 +230,6 @@ const SponsorForm = () => {
                 Start Sponsorship
               </Button>
             </SplitRow>
-
-            <TreeDetails
-              detail={{
-                title: title || 'Title Preview',
-                description: description || 'Preview of your description',
-                pictureUrl: imageUrl,
-                user: session?.user,
-                startDate: new Date(),
-              }}
-            ></TreeDetails>
           </>
         )}
       </Grid>

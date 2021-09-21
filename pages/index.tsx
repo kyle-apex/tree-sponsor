@@ -3,11 +3,9 @@ import Layout from '../components/layout/Layout';
 import 'fontsource-roboto';
 import { Button, Box, Grid, makeStyles, Typography } from '@material-ui/core';
 import MapExample from 'components/MapExample';
-import TreeDetailsCard from 'components/sponsor/TreeDetailsCard';
 
 import { signIn, signOut, useSession } from 'next-auth/client';
 import CheckoutButton from 'components/CheckoutButton';
-import TreeDetails from 'components/sponsor/TreeDetails';
 
 const useStyles = makeStyles(theme => ({
   headlineContainer: {
@@ -59,14 +57,10 @@ const IndexPage = () => {
         </Typography>
         <Grid container spacing={5} direction='row' justify='space-around'>
           <Grid item>
-            <TreeDetailsCard />
+            <div>Sponsor Display</div>
           </Grid>
-          <Grid item>
-            <TreeDetailsCard />
-          </Grid>
-          <Grid item>
-            <TreeDetailsCard />
-          </Grid>
+          <Grid item></Grid>
+          <Grid item></Grid>
         </Grid>
       </Grid>
       {false && (

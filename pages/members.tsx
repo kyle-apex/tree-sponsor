@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { lighten, makeStyles, withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -50,8 +49,17 @@ const headCells = [
   { id: 'startDate', numeric: true, disablePadding: false, label: 'Member Since' },
 ];
 
-function EnhancedTableHead(props: any) {
-  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+function EnhancedTableHead({
+  classes,
+  order,
+  orderBy,
+  onRequestSort,
+}: {
+  classes: any;
+  onRequestSort: (e: any, property: string) => void;
+  order: 'asc' | 'desc';
+  orderBy: string;
+}) {
   const createSortHandler = (property: string) => (event: any) => {
     onRequestSort(event, property);
   };
@@ -82,15 +90,6 @@ function EnhancedTableHead(props: any) {
     </TableHead>
   );
 }
-
-EnhancedTableHead.propTypes = {
-  classes: PropTypes.object.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-};
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -129,7 +128,7 @@ const StyledTableRow = withStyles(theme => ({
 
 export default function EnhancedTable() {
   const classes = useStyles();
-  const [order, setOrder] = useState('asc');
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState('name');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -187,13 +186,7 @@ export default function EnhancedTable() {
         />
         <TableContainer>
           <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
-            <EnhancedTableHead
-              classes={classes}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-              rowCount={filteredUsers.length}
-            />
+            <EnhancedTableHead classes={classes} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
             <TableBody>
               {stableSort(filteredUsers, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
