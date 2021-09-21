@@ -5,7 +5,7 @@ export async function getAvailableSponsorships(userId: number, count?: number): 
   const currentSponsorships = await prisma.sponsorship.findMany({
     where: { userId: userId, expirationDate: { gt: new Date() } },
   });
-  console.log('currentSponsorships', currentSponsorships);
+  //', currentSponsorships);
 
   const oneYearAgo = new Date();
   oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
@@ -16,8 +16,8 @@ export async function getAvailableSponsorships(userId: number, count?: number): 
     orderBy: { lastPaymentDate: 'desc' },
     take: count ?? 100000,
   });
-  console.log('currentSubscriptions', currentSubscriptions);
-  console.log('userId', userId);
+  //console.log('currentSubscriptions', currentSubscriptions);
+  //console.log('userId', userId);
 
   return currentSubscriptions;
 }

@@ -113,6 +113,8 @@ model SubscriptionWithDetails {
   stripeProductId  String?
   userId           Int
   userName         String?
+  productId        Int
+  productName      String?
   email            String?
   hasShirt         Boolean?  @default(false)
   amount           Int

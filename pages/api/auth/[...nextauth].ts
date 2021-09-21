@@ -47,6 +47,6 @@ export default NextAuth({
   },
   pages: {
     signIn: '/signin',
-    verifyRequest: '/signin?message=hello',
+    verifyRequest: '/signin?message=A%20sign%20in%20link%20has%20been%20sent%20to%20your%20email%20address',
   },
 });

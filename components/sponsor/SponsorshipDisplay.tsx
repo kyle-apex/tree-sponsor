@@ -19,7 +19,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import React from 'react';
+import React, { useState } from 'react';
+import { PartialSponsorship } from 'interfaces';
+import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 
 export type TreeDetail = {
   title?: string;
@@ -56,19 +58,21 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const TreeDetailsCard = ({
-  detail,
+const SponsorshipDisplay = ({
+  sponsorship,
   isEditMode,
   onDelete,
 }: {
-  detail?: TreeDetail;
+  sponsorship?: PartialSponsorship;
   isEditMode?: boolean;
   onDelete?: (id: number) => void;
 }) => {
   const classes = useStyles();
 
+  const [isDeleteConfirmation, setIsDeleteConfirmation] = useState(false);
+
   // read or input tree details
-  detail = detail || {
+  sponsorship = sponsorship || {
     title: 'My Tree',
     description: 'Something about my tree',
     startDate: new Date(),
@@ -85,18 +89,20 @@ const TreeDetailsCard = ({
               R
             </Avatar>
           }
-          title={detail.title}
+          title={sponsorship.title}
           subheader={
-            <span>
-              {detail.startDate.toLocaleString('default', { month: 'long', day: 'numeric' })}
-              {detail.startDate.getFullYear() != new Date().getFullYear() && <span>, {detail.startDate.getFullYear()}</span>}
-            </span>
+            sponsorship.startDate && (
+              <span>
+                {sponsorship.startDate.toLocaleString('default', { month: 'long', day: 'numeric' })}
+                {sponsorship.startDate.getFullYear() != new Date().getFullYear() && <span>, {sponsorship.startDate.getFullYear()}</span>}
+              </span>
+            )
           }
         />
-        <CardMedia className={classes.media} image={detail.pictureUrl} title='Paella dish' />
+        <CardMedia className={classes.media} image={sponsorship.pictureUrl} title={sponsorship.title} />
         <CardContent>
           <Typography variant='body2' color='textSecondary' component='p'>
-            {detail.description}
+            {sponsorship.description}
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
@@ -110,12 +116,19 @@ const TreeDetailsCard = ({
               </IconButton>
               <IconButton
                 onClick={() => {
-                  onDelete(sponsorship.id);
+                  setIsDeleteConfirmation(true);
                 }}
-                aria-label='edit'
+                aria-label='delete'
               >
                 <DeleteIcon />
               </IconButton>
+              <DeleteConfirmationDialog
+                open={isDeleteConfirmation}
+                setOpen={setIsDeleteConfirmation}
+                onConfirm={() => {
+                  onDelete(sponsorship.id);
+                }}
+              ></DeleteConfirmationDialog>
             </>
           )}
         </CardActions>
@@ -124,4 +137,4 @@ const TreeDetailsCard = ({
   );
 };
 
-export default TreeDetailsCard;
+export default SponsorshipDisplay;

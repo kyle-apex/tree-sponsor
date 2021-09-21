@@ -10,8 +10,8 @@ import uploadImage from 'utils/aws/upload-image';
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log('idex');
   const session = await getSession({ req });
-  console.log('session', session);
 
   if (!session?.user?.id) return throwUnauthenticated(res);
 
@@ -48,6 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const subscription = availableSponsorships[0];
     subscription.lastPaymentDate.setFullYear(subscription.lastPaymentDate.getFullYear() + 1);
     sponsorship.expirationDate = subscription.lastPaymentDate;
+    sponsorship.startDate = new Date();
     sponsorship.subscriptionId = subscription.id;
 
     console.log('creating sponsorship', sponsorship);
@@ -61,6 +62,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       sponsorship.imageFile.type,
       getSponsorImageKey(userId, sponsorship),
     );
+
+    sponsorship.pictureUrl = uploadedURL;
+
     delete sponsorship.imageFile;
 
     const newSponsorship = await prisma.sponsorship.create({ data: sponsorship });

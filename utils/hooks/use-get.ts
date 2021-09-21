@@ -1,6 +1,7 @@
 /* eslint-disable no-async-promise-executor */
 import { QueryObserverResult, useQuery } from 'react-query';
 import axios from 'axios';
+import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 
 export const useGet = <T>(path: string, key?: string, params?: Record<string, unknown>): QueryObserverResult<T> => {
   if (!path) {
@@ -17,6 +18,7 @@ export const useGet = <T>(path: string, key?: string, params?: Record<string, un
           cancelToken: source.token,
           params: params,
         });
+        parseResponseDateStrings(result.data);
         resolve(result.data);
       } catch (err) {
         reject(err);

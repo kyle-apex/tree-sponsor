@@ -6,14 +6,19 @@ export const useRemoveFromQuery = (key: string, removeFunction: (id: number) => 
 
   function removeQueryListItem(id: number) {
     const previousList: any[] = queryClient.getQueryData(queryKey);
-    const indexOfItem = previousList.find(item => {
+
+    const item = previousList.find(item => {
       return item.id == id;
     });
 
-    if (indexOfItem === -1) return;
+    if (!item) return;
+
+    const indexOfItem = previousList.indexOf(item);
 
     const updatedList = [...previousList];
     updatedList.splice(indexOfItem, 1);
+    console.log('updatedList', updatedList);
+    console.log('indexOfItem', indexOfItem);
 
     queryClient.setQueryData(queryKey, updatedList);
 

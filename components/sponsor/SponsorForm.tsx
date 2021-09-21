@@ -5,6 +5,7 @@ import axios from 'axios';
 import LocationSelector from 'components/LocationSelector';
 import { useSession } from 'next-auth/client';
 import React, { useEffect, useState, useRef } from 'react';
+import { useRouter } from 'next/router';
 import TreeDetails from './TreeDetails';
 import { flexbox } from '@material-ui/system';
 import SplitRow from 'components/layout/SplitRow';
@@ -42,6 +43,8 @@ const SponsorForm = () => {
   const fileInputRef = useRef<HTMLInputElement>();
   const classes = useStyles();
 
+  const router = useRouter();
+
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState<{ [k: number]: boolean }>({});
 
@@ -57,13 +60,14 @@ const SponsorForm = () => {
   const handleTitleChange = (event: { target: { value: React.SetStateAction<string> } }) => {
     setTitle(event.target.value);
   };
-  const createSponsorship = () => {
-    axios.post('/api/sponsorships', {
+  const createSponsorship = async () => {
+    await axios.post('/api/sponsorships', {
       title,
       description,
       tree: { latitude, longitude },
       imageFile,
     });
+    router.push('/account');
   };
 
   const handleStep = (step: number) => () => {
@@ -75,14 +79,50 @@ const SponsorForm = () => {
     if (!e?.target?.files?.length) return;
     const reader = new FileReader();
     const file = e.target.files[0];
+    const img = document.createElement('img');
+    const canvas = document.createElement('canvas');
 
     // Read the image via FileReader API and save image result in state.
     reader.onload = function (e) {
       // Add the file name to the data URL
       //console.log(e.target.result);
+      img.src = e.target.result as string;
+      //window['img'] = img;
       const imageUrl = String(e.target.result);
-      setImageUrl(imageUrl);
-      setImageFile({ type: file.type, content: imageUrl.split(',')[1] });
+      //console.log('img', img.height, img.width, img);
+
+      const MAX_WIDTH = 800;
+      const MAX_HEIGHT = 600;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > MAX_WIDTH) {
+          height *= MAX_WIDTH / width;
+          width = MAX_WIDTH;
+        }
+      } else {
+        if (height > MAX_HEIGHT) {
+          width *= MAX_HEIGHT / height;
+          height = MAX_HEIGHT;
+        }
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      window['canvas'] = canvas;
+
+      console.log('ctx', ctx);
+
+      const dataUrl = canvas.toDataURL();
+
+      canvas.toBlob((blob: any) => {
+        console.log('blob', blob);
+      }, file.type);
+
+      setImageUrl(dataUrl);
+      setImageFile({ type: file.type, content: dataUrl.split(',')[1] });
     };
     reader.readAsDataURL(file);
   };

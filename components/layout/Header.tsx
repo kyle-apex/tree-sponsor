@@ -151,8 +151,14 @@ const Header = () => {
         <List>
           <ListItem button>
             {!session && (
-              <Button color='secondary' variant='outlined' fullWidth className={classes.loginButton} onClick={() => signIn()}>
-                Login
+              <Button
+                color='secondary'
+                variant='outlined'
+                fullWidth
+                className={classes.loginButton}
+                onClick={() => signIn('', { callbackUrl: 'https://google.com/whatever' })}
+              >
+                Login1
               </Button>
             )}
             {session && (
@@ -170,7 +176,7 @@ const Header = () => {
         </List>
         {!session && (
           <ListItem button>
-            <Button color='primary' fullWidth variant='contained' className={classes.loginButton} onClick={() => signIn()}>
+            <Button color='primary' fullWidth variant='contained' className={classes.loginButton} onClick={() => router.push('/sponsor')}>
               Become a Member
             </Button>
           </ListItem>

@@ -1,4 +1,4 @@
-import React from 'react'; // eslint-disable-line no-unused-vars
+import React, { useState } from 'react'; // eslint-disable-line no-unused-vars
 import { providers, signIn, getSession, csrfToken } from 'next-auth/client';
 import { Container, Button, Box, TextField, makeStyles } from '@material-ui/core';
 import Layout from 'components/layout/Layout';
@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
     border: 'solid 1px',
     padding: '10px 20px 30px',
     backgroundColor: 'white',
-    minHeight: '300px',
+    minHeight: '380px',
   },
 }));
 
@@ -26,18 +26,18 @@ const useStyles = makeStyles(theme => ({
 export default function signin({
   providers,
   csrfToken,
-  callbackUrl,
+  message: warningMessage,
   error: errorType,
 }: {
   providers: any;
   csrfToken: any;
-  callbackUrl: string;
+  message: string;
   error: any;
 }) {
   const classes = useStyles();
+  const [message, setMessage] = useState(warningMessage);
 
   // We only want to render providers
-  console.log('providers', providers, csrfToken, callbackUrl);
 
   const errors: Record<string, string> = {
     Signin: 'Try signing with a different account.',
@@ -68,45 +68,64 @@ export default function signin({
                 <p>{error}</p>
               </div>
             )}
-            {Object.values(providers).map((provider: any) => {
-              return (
-                <div key={provider.name} className='provider'>
-                  {provider.type === 'oauth' && (
-                    <Button variant='outlined' fullWidth color='primary' onClick={() => signIn(provider.id)}>
-                      Sign in with {provider.name}
-                    </Button>
-                  )}
-                  {provider.type === 'email' && (
-                    <>
-                      <p className='center'>OR</p>
-                      <form action={provider.signinUrl} method='POST'>
-                        <input type='hidden' name='csrfToken' value={csrfToken} />
+            {message && (
+              <div className='center'>
+                <h2>Check your email</h2>
+                <p>
+                  {message}: {email || ''}
+                </p>
+                <Button
+                  fullWidth
+                  variant='outlined'
+                  color='primary'
+                  onClick={() => {
+                    setMessage('');
+                  }}
+                >
+                  Retry Login
+                </Button>
+              </div>
+            )}
+            {!message &&
+              Object.values(providers).map((provider: any) => {
+                return (
+                  <div key={provider.name} className='provider'>
+                    {provider.type === 'oauth' && (
+                      <Button variant='outlined' fullWidth color='primary' onClick={() => signIn(provider.id)}>
+                        Sign in with {provider.name}
+                      </Button>
+                    )}
+                    {provider.type === 'email' && (
+                      <>
+                        <p className='center'>OR</p>
+                        <form action={provider.signinUrl} method='POST'>
+                          <input type='hidden' name='csrfToken' value={csrfToken} />
 
-                        <TextField
-                          color='primary'
-                          fullWidth
-                          id={`input-email-for-${provider.id}-provider`}
-                          autoFocus
-                          type='text'
-                          name='email'
-                          value={email}
-                          size='medium'
-                          onChange={e => {
-                            setEmail(e.target.value);
-                          }}
-                          placeholder='email@example.com'
-                          variant='outlined'
-                          margin='dense'
-                        />
-                        <Button color='primary' fullWidth variant='outlined' type='submit'>
-                          Sign in with {provider.name}
-                        </Button>
-                      </form>
-                    </>
-                  )}
-                </div>
-              );
-            })}
+                          <TextField
+                            color='primary'
+                            fullWidth
+                            id={`input-email-for-${provider.id}-provider`}
+                            autoFocus
+                            type='text'
+                            name='email'
+                            value={email}
+                            size='medium'
+                            onChange={e => {
+                              setEmail(e.target.value);
+                            }}
+                            placeholder='email@example.com'
+                            variant='outlined'
+                            margin='dense'
+                          />
+                          <Button color='primary' fullWidth variant='outlined' type='submit'>
+                            Sign in with {provider.name}
+                          </Button>
+                        </form>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
           </Box>
         </Box>
       </Container>
@@ -114,13 +133,12 @@ export default function signin({
   );
 }
 export async function getServerSideProps(context: any) {
-  console.log('called', context);
   const { req } = context;
   const session = await getSession({ req });
 
   if (session) {
     return {
-      redirect: { destination: context.query.callbackUrl || '/' },
+      redirect: { destination: '/account' || context.query.callbackUrl || '/' },
     };
   }
 
