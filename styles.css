@@ -21,3 +21,7 @@ body {
 .__next-auth-theme-dark {
   --color-background: blue;
 }
+.compressed {
+  padding: 0 !important;
+  margin: 0 !important;
+}

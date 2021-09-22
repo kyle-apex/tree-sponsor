@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Checkbox, IconButton, Table, TableBody, TableCell, TableContainer } from '@material-ui/core';
+import { Checkbox, IconButton, LinearProgress, Table, TableBody, TableCell, TableContainer, TableRow } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
 import { Role } from '@prisma/client';
@@ -42,9 +42,11 @@ const headCells: HeaderCellOptions[] = [
 export default function RoleTable({
   roles,
   refetch,
+  isFetching,
 }: {
   roles: Role[];
   refetch: (options?: RefetchOptions) => Promise<QueryObserverResult>;
+  isFetching: boolean;
 }) {
   const classes = useStyles();
   const { remove } = useRemoveFromQuery('roles', handleDelete);
@@ -64,6 +66,13 @@ export default function RoleTable({
         <TableHeader classes={classes} headCells={headCells} />
         {roles && (
           <TableBody>
+            {isFetching && (
+              <TableRow>
+                <TableCell colSpan={6} className='compressed'>
+                  <LinearProgress />
+                </TableCell>
+              </TableRow>
+            )}
             {roles.map(row => {
               return (
                 <StyledTableRow tabIndex={-1} key={row.id}>

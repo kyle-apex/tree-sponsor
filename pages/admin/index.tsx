@@ -9,7 +9,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { Search } from '@material-ui/icons';
-import { FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import { Button, FormControl, InputLabel, LinearProgress, MenuItem, Select, TextField } from '@material-ui/core';
 import { useGet } from 'utils/hooks/use-get';
 import { SubscriptionWithDetails } from '@prisma/client';
 import Layout from 'components/layout/Layout';
@@ -21,6 +21,7 @@ import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
 import { getSession, GetSessionOptions } from 'next-auth/client';
 import { GetServerSideProps } from 'next';
 import serverSideIsAdmin from 'utils/auth/server-side-is-admin';
+import Link from 'next/link';
 
 export const getServerSideProps = serverSideIsAdmin;
 
@@ -37,6 +38,9 @@ const useStyles = makeStyles(theme => ({
   },
   tableContainer: {
     padding: theme.spacing(1),
+  },
+  backLink: {
+    marginTop: theme.spacing(3),
   },
   visuallyHidden: {
     border: 0,
@@ -81,7 +85,7 @@ export default function EnhancedTable() {
 
   const [nameFilter, setNameFilter] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const { data: users, refetch } = useGet<SubscriptionWithDetails[]>('/api/members', 'members');
+  const { data: users, refetch, isFetching } = useGet<SubscriptionWithDetails[]>('/api/members', 'members');
 
   const debounceMilliseconds = 1;
 
@@ -127,7 +131,13 @@ export default function EnhancedTable() {
   return (
     <Layout>
       <div className={classes.root}>
+        <Link href='/admin/roles'>
+          <Button variant='outlined' className={classes.backLink}>
+            Manage Roles
+          </Button>
+        </Link>
         <h1>Admin</h1>
+
         <TextField
           className={classes.full + ' ' + classes.search}
           id='input-with-icon-textfield'
@@ -163,7 +173,15 @@ export default function EnhancedTable() {
               rowCount={filteredUsers.length}
               headCells={headCells}
             />
+
             <TableBody>
+              {isFetching && (
+                <TableRow>
+                  <TableCell colSpan={6} className='compressed'>
+                    <LinearProgress />
+                  </TableCell>
+                </TableRow>
+              )}
               {stableSort(filteredUsers, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {

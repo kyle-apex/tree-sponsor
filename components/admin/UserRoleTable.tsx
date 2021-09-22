@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Checkbox, Table, TableBody, TableCell, TableContainer } from '@material-ui/core';
+import { Checkbox, LinearProgress, Table, TableBody, TableCell, TableContainer, TableRow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Role } from '@prisma/client';
 import { TableHeader } from 'components/TableHeader';
@@ -49,10 +49,12 @@ async function handleRoleChange(userId: number, attributes: Record<string, unkno
 export default function UserRoleTable({
   roles,
   users,
+  isFetching,
 }: //refetch: refetchUsers,
 {
   roles: Role[];
   users: PartialUser[];
+  isFetching: boolean;
   //refetch: (options?: RefetchOptions) => Promise<QueryObserverResult>;
 }) {
   const classes = useStyles();
@@ -89,6 +91,13 @@ export default function UserRoleTable({
           <TableHeader classes={classes} headCells={headCells} />
           {users && (
             <TableBody>
+              {isFetching && (
+                <TableRow>
+                  <TableCell colSpan={6} className='compressed'>
+                    <LinearProgress />
+                  </TableCell>
+                </TableRow>
+              )}
               {users.map(user => {
                 return (
                   <StyledTableRow tabIndex={-1} key={user.id}>
