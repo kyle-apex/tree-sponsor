@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { lighten, makeStyles, withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
+import { lighten } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import withStyles from '@mui/styles/withStyles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
 import { TableHeader } from 'components/TableHeader';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import { Search } from '@material-ui/icons';
-import { Button, FormControl, InputLabel, LinearProgress, MenuItem, Select, TextField } from '@material-ui/core';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import InputAdornment from '@mui/material/InputAdornment';
+import { Search } from '@mui/icons-material';
+import { Button, FormControl, InputLabel, LinearProgress, MenuItem, Select, TextField } from '@mui/material';
 import { useGet } from 'utils/hooks/use-get';
 import { SubscriptionWithDetails } from '@prisma/client';
 import Layout from 'components/layout/Layout';
@@ -28,6 +30,9 @@ export const getServerSideProps = serverSideIsAdmin;
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
+  },
+  condensedCell: {
+    padding: '0px 6px',
   },
   paper: {
     width: '100%',
@@ -193,7 +198,7 @@ export default function EnhancedTable() {
                         {row.userName}
                       </TableCell>
                       <TableCell>{row.status.toUpperCase().replace('_', ' ')}</TableCell>
-                      <TableCell>
+                      <TableCell className={classes.condensedCell}>
                         {row.amount >= 60 && (
                           <TeeShirtSelect updateHasShirt={updateHasShirt} hasShirt={row.hasShirt} userId={row.userId}></TeeShirtSelect>
                         )}

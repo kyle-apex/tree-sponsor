@@ -1,4 +1,4 @@
-import { Card, CardActionArea, CardContent, CardActions, Button, Grid } from '@material-ui/core';
+import { Card, CardActionArea, CardContent, CardActions, Button, Grid } from '@mui/material';
 import React from 'react';
 import { useGet } from 'utils/hooks/use-get';
 import { useSession } from 'next-auth/client';

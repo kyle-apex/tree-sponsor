@@ -1,24 +1,13 @@
 import { User } from '.prisma/client';
-import {
-  Grid,
-  makeStyles,
-  Collapse,
-  Card,
-  CardHeader,
-  CardContent,
-  Avatar,
-  IconButton,
-  CardMedia,
-  Typography,
-  CardActions,
-} from '@material-ui/core';
-import { Details } from '@material-ui/icons';
-import ShareIcon from '@material-ui/icons/Share';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { Grid, Collapse, Card, CardHeader, CardContent, Avatar, IconButton, CardMedia, Typography, CardActions } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { Details } from '@mui/icons-material';
+import ShareIcon from '@mui/icons-material/Share';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import React, { useState } from 'react';
 import { PartialSponsorship } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
@@ -106,12 +95,12 @@ const SponsorshipDisplay = ({
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
-          <IconButton aria-label='share'>
+          <IconButton aria-label='share' size='large'>
             <ShareIcon />
           </IconButton>
           {isEditMode && (
             <>
-              <IconButton aria-label='edit'>
+              <IconButton aria-label='edit' size='large'>
                 <EditIcon />
               </IconButton>
               <IconButton
@@ -119,6 +108,7 @@ const SponsorshipDisplay = ({
                   setIsDeleteConfirmation(true);
                 }}
                 aria-label='delete'
+                size='large'
               >
                 <DeleteIcon />
               </IconButton>

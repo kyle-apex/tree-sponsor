@@ -1,21 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/client';
-import {
-  Button,
-  IconButton,
-  makeStyles,
-  Toolbar,
-  Typography,
-  AppBar,
-  Drawer,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-} from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { Button, IconButton, Toolbar, Typography, AppBar, Drawer, Divider, List, ListItem, ListItemText } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
@@ -108,7 +97,7 @@ const Header = () => {
             </>
           )}
 
-          <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' onClick={handleDrawerOpen}>
+          <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' onClick={handleDrawerOpen} size='large'>
             <MenuIcon />
           </IconButton>
         </Toolbar>
@@ -123,7 +112,7 @@ const Header = () => {
         onClose={handleDrawerClose}
       >
         <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={handleDrawerClose} size='large'>
             <ChevronRightIcon />
           </IconButton>
         </div>

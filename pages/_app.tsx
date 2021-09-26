@@ -3,13 +3,18 @@ import React from 'react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 // MUI Core
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { ThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider, Theme, StyledEngineProvider } from '@mui/material/styles';
 // Utils
 import theme from '../utils/theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import '../styles.css';
 import { Provider as NextAuthProvider } from 'next-auth/client';
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   React.useEffect(() => {
@@ -29,10 +34,12 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           <title>My App</title>
           <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
         </Head>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Component {...pageProps} />
-        </ThemeProvider>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </StyledEngineProvider>
       </QueryClientProvider>
     </NextAuthProvider>
   );

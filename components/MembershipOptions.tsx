@@ -1,5 +1,6 @@
-import { Button, Card, CardActions, CardContent, CardHeader, Grid, makeStyles, Typography } from '@material-ui/core';
-import StarIcon from '@material-ui/icons/Star';
+import { Button, Card, CardActions, CardContent, CardHeader, Grid, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import StarIcon from '@mui/icons-material/Star';
 import React from 'react';
 
 type ButtonVariant = 'text' | 'outlined' | 'contained';
@@ -30,7 +31,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(8, 0, 6),
   },
   cardHeader: {
-    backgroundColor: theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[700],
+    backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[700],
   },
   cardPricing: {
     display: 'flex',

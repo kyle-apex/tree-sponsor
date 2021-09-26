@@ -1,6 +1,6 @@
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import React, { ReactNode } from 'react';
-import { flexbox } from '@material-ui/system';
+import { flexbox } from '@mui/system';
 
 const SplitRow = ({ children }: { children: any }) => {
   const counter = 0;

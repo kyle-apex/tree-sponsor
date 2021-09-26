@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { FormControl, makeStyles, MenuItem, Select } from '@material-ui/core';
+import { FormControl, MenuItem, Select } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(() => ({
   full: {
@@ -38,9 +40,10 @@ export const TeeShirtSelect = ({
       <Select
         displayEmpty
         value={userHasShirt ? 1 : 0}
-        onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-          updateSize(event.target.value as boolean);
+        onChange={event => {
+          updateSize(!!event.target.value);
         }}
+        size='small'
       >
         <MenuItem value={0}>No</MenuItem>
         <MenuItem value={1}>Yes</MenuItem>

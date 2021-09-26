@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import axios from 'axios';
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 
 import { getStripe } from 'utils/stripe/get-stripe-client';
 

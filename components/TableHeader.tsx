@@ -1,8 +1,8 @@
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import { withStyles } from '@material-ui/core';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TableSortLabel from '@mui/material/TableSortLabel';
+import withStyles from '@mui/styles/withStyles';
 import { useEffect } from 'react';
 
 const StyledTableCell = withStyles(theme => ({

@@ -1,7 +1,8 @@
-import { Button, makeStyles, TextField, Box } from '@material-ui/core';
+import { Button, TextField, Box } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { useState } from 'react';
-import AddIcon from '@material-ui/icons/Add';
-import { flexbox } from '@material-ui/system';
+import AddIcon from '@mui/icons-material/Add';
+import { flexbox } from '@mui/system';
 
 const useStyles = makeStyles(theme => ({
   container: {

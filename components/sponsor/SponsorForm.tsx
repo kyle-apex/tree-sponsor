@@ -1,11 +1,12 @@
-import { Box, Button, Grid, makeStyles, Step, StepButton, Stepper, TextField } from '@material-ui/core';
+import { Box, Button, Grid, Step, StepButton, Stepper, TextField } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import axios from 'axios';
 import LocationSelector from 'components/LocationSelector';
 import { useSession } from 'next-auth/client';
 import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import SplitRow from 'components/layout/SplitRow';
-import { AccessAlarm, ThreeDRotation, NaturePeopleSharp } from '@material-ui/icons';
+import { AccessAlarm, ThreeDRotation, NaturePeopleSharp } from '@mui/icons-material';
 
 const filterBySize = (file: any) => {
   //filter out images larger than 15MB
@@ -124,10 +125,8 @@ const SponsorForm = () => {
       <Grid container direction='column'>
         <Stepper nonLinear activeStep={activeStep}>
           {steps.map((step, index) => (
-            <Step key={step.label}>
-              <StepButton onClick={handleStep(index)} completed={completed[index]}>
-                {step.label}
-              </StepButton>
+            <Step key={step.label} completed={completed[index]}>
+              <StepButton onClick={handleStep(index)}>{step.label}</StepButton>
             </Step>
           ))}
         </Stepper>
