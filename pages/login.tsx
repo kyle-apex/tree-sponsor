@@ -1,4 +1,5 @@
-import { Button, makeStyles } from '@material-ui/core';
+import { Button } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { signIn, useSession, signOut } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import React from 'react';

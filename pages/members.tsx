@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { lighten, makeStyles, withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Paper from '@material-ui/core/Paper';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import { Search } from '@material-ui/icons';
-import { TextField } from '@material-ui/core';
+import { lighten } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import withStyles from '@mui/styles/withStyles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import TableSortLabel from '@mui/material/TableSortLabel';
+import Paper from '@mui/material/Paper';
+import InputAdornment from '@mui/material/InputAdornment';
+import { Search } from '@mui/icons-material';
+import { TextField } from '@mui/material';
 
 const users = [
   { name: 'Kyle Hoskins', startDate: new Date() },
@@ -71,7 +73,7 @@ function EnhancedTableHead({
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'default'}
+            padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel

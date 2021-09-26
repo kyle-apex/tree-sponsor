@@ -1,8 +1,9 @@
-import { Card, CardContent, CardHeader, makeStyles } from '@material-ui/core';
+import { Card, CardContent, CardHeader } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { useRouter } from 'next/router';
 import React from 'react';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import { FullscreenExitTwoTone } from '@material-ui/icons';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { FullscreenExitTwoTone } from '@mui/icons-material';
 
 const useStyles = makeStyles(() => ({
   addIcon: {

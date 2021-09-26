@@ -1,7 +1,7 @@
 import React from 'react';
 import MapGL, { Marker, GeolocateControl, NavigationControl } from 'react-map-gl';
-import RoomSharpIcon from '@material-ui/icons/RoomSharp';
-import { makeStyles } from '@material-ui/core';
+import RoomSharpIcon from '@mui/icons-material/RoomSharp';
+import makeStyles from '@mui/styles/makeStyles';
 
 const geolocateControlStyle = {
   right: 10,

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import Header from './Header';
 import Footer from './Footer';
-import { Box, Container } from '@material-ui/core';
+import { Box, Container } from '@mui/material';
 
 type Props = {
   children?: ReactNode;

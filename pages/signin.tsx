@@ -1,6 +1,7 @@
 import React, { useState } from 'react'; // eslint-disable-line no-unused-vars
 import { providers, signIn, getSession, csrfToken } from 'next-auth/client';
-import { Container, Button, Box, TextField, makeStyles } from '@material-ui/core';
+import { Container, Button, Box, TextField } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import Layout from 'components/layout/Layout';
 import Image from 'next/image';
 

@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import Layout from '../components/layout/Layout';
 import 'fontsource-roboto';
-import { Button, Box, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Button, Box, Grid, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import MapExample from 'components/MapExample';
 
 import { signIn, signOut, useSession } from 'next-auth/client';
@@ -23,7 +24,7 @@ const IndexPage = () => {
   return (
     <Layout>
       <Grid container className={classes.headlineContainer} direction='row' spacing={5}>
-        <Grid md={5} spacing={4} justify='center' container item direction='column'>
+        <Grid md={5} spacing={4} justifyContent='center' container item direction='column'>
           <h1>TreeFolksYP Tree Sponsorship</h1>
           <Typography variant='subtitle1' className={classes.headlineSubTitle}>
             Make your mark with a tree sponsorship through TreeFolks Young Professionals (TreeFolksYP)
@@ -45,7 +46,7 @@ const IndexPage = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item md={7} direction='column' container alignContent='center' justify='center'>
+        <Grid item md={7} direction='column' container alignContent='center' justifyContent='center'>
           <MapExample></MapExample>
         </Grid>
       </Grid>
@@ -55,7 +56,7 @@ const IndexPage = () => {
           Your sponsorship is a 100% tax deductible donation to TreeFolks to plant, care for, and give away trees in the Austin and Central
           Texas Community
         </Typography>
-        <Grid container spacing={5} direction='row' justify='space-around'>
+        <Grid container spacing={5} direction='row' justifyContent='space-around'>
           <Grid item>
             <div>Sponsor Display</div>
           </Grid>

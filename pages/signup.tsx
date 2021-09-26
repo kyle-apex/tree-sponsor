@@ -1,4 +1,4 @@
-import { Container, Grid, TextField } from '@material-ui/core';
+import { Container, Grid, TextField } from '@mui/material';
 import CheckoutButton from 'components/CheckoutButton';
 import React from 'react';
 import Layout from 'components/layout/Layout';

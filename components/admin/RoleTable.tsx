@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Checkbox, IconButton, LinearProgress, Table, TableBody, TableCell, TableContainer, TableRow } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { makeStyles } from '@material-ui/core/styles';
+import { Checkbox, IconButton, LinearProgress, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import makeStyles from '@mui/styles/makeStyles';
 import { Role } from '@prisma/client';
 import { HeaderCellOptions, TableHeader } from 'components/TableHeader';
 import { StyledTableRow } from 'components/StyledTableRow';
@@ -98,6 +98,7 @@ export default function RoleTable({
                       onClick={() => {
                         remove(row.id);
                       }}
+                      size='large'
                     >
                       <DeleteIcon></DeleteIcon>
                     </IconButton>

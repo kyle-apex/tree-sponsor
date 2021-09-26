@@ -25,4 +25,5 @@ app.prepare().then(() => {
   });
   http.createServer(server).listen(ports.http);
   https.createServer(options, server).listen(ports.https);
+  console.log('Running https at', 'https://localhost:3443');
 });

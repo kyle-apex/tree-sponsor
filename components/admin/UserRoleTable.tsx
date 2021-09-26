@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Checkbox, LinearProgress, Table, TableBody, TableCell, TableContainer, TableRow } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Checkbox, LinearProgress, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { Role } from '@prisma/client';
 import { TableHeader } from 'components/TableHeader';
 import { StyledTableRow } from 'components/StyledTableRow';
