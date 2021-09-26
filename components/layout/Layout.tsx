@@ -33,7 +33,8 @@ const Layout = ({ children, title = 'TreeFolksYP' }: Props) => (
       {`
         html,
         body {
-          background: #f9f9f9;
+          /*background: #f9f9f9;*/
+          background: url(background.svg);
           overflow-x: hidden;
           padding: 0 !important;
         }
