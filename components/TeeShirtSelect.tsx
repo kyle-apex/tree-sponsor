@@ -40,8 +40,8 @@ export const TeeShirtSelect = ({
       <Select
         displayEmpty
         value={userHasShirt ? 1 : 0}
-        onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-          updateSize(event.target.value as boolean);
+        onChange={event => {
+          updateSize(!!event.target.value);
         }}
         size='small'
       >
