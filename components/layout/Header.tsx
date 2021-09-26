@@ -136,9 +136,16 @@ const Header = () => {
               </ListItem>
             </Link>
           )}
-          <Link href='/about'>
+          {false && (
+            <Link href='/about'>
+              <ListItem button>
+                <ListItemText primary='About' />
+              </ListItem>
+            </Link>
+          )}
+          <Link href='/contact'>
             <ListItem button>
-              <ListItemText primary='About' />
+              <ListItemText primary='Contact' />
             </ListItem>
           </Link>
           {session && (
@@ -158,7 +165,7 @@ const Header = () => {
                 className={classes.loginButton}
                 onClick={() => signIn('', { callbackUrl: 'https://google.com/whatever' })}
               >
-                Login1
+                Login
               </Button>
             )}
             {session && (

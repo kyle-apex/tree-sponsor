@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'white',
     minHeight: '380px',
     minWidth: '400px',
-    maxWidth: '90%',
+    marginTop: theme.spacing(2),
   },
   formField: {
     marginBottom: theme.spacing(2),

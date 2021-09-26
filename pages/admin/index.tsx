@@ -160,8 +160,8 @@ export default function EnhancedTable() {
           count={filteredUsers.length}
           rowsPerPage={rowsPerPage}
           page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
         />
         <TableContainer>
           <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
@@ -213,8 +213,8 @@ export default function EnhancedTable() {
           count={filteredUsers.length}
           rowsPerPage={rowsPerPage}
           page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </div>
     </Layout>

@@ -1,10 +1,13 @@
 import { withStyles } from '@material-ui/core/styles';
 import TableRow from '@material-ui/core/TableRow';
 
-export const StyledTableRow = withStyles(theme => ({
+export const StyledTableRow = withStyles(() => ({
   root: {
     '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
+      backgroundColor: 'var(--table-odd)',
+    },
+    '&:nth-of-type(even)': {
+      backgroundColor: 'var(--table-even)',
     },
   },
 }))(TableRow);

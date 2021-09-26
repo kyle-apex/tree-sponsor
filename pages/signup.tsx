@@ -2,7 +2,7 @@ import { Container, Grid, TextField } from '@material-ui/core';
 import CheckoutButton from 'components/CheckoutButton';
 import React from 'react';
 import Layout from 'components/layout/Layout';
-import TreeDetail from 'components/sponsor/TreeDetails';
+//import TreeDetail from 'components/sponsor/TreeDetails';
 
 const SignupPage = () => {
   return (
@@ -12,7 +12,6 @@ const SignupPage = () => {
           <TextField label='Name'></TextField>
           <CheckoutButton price=''></CheckoutButton>CheckoutButton goes to stripe checkout...Under Construction
         </Grid>
-        <TreeDetail></TreeDetail>
       </Container>
     </Layout>
   );

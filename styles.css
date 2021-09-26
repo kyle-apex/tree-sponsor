@@ -17,6 +17,8 @@ body {
 }
 :root {
   --color-background: brown;
+  --table-odd: #fafafa;
+  --table-even: #f1f1f1;
 }
 .__next-auth-theme-dark {
   --color-background: blue;
