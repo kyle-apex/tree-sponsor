@@ -53,7 +53,7 @@ export function TableHeader({
           <StyledTableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'default'}
+            padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             {onRequestSort && (
