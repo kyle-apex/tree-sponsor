@@ -21,6 +21,9 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'white',
     minHeight: '380px',
   },
+  button: {
+    marginBottom: theme.spacing(1),
+  },
 }));
 
 //https://javascript.plainenglish.io/how-to-create-a-custom-sign-in-page-in-next-auth-1612dc17beb7
@@ -92,7 +95,7 @@ export default function signin({
                 return (
                   <div key={provider.name} className='provider'>
                     {provider.type === 'oauth' && (
-                      <Button variant='outlined' fullWidth color='primary' onClick={() => signIn(provider.id)}>
+                      <Button variant='outlined' className={classes.button} fullWidth color='primary' onClick={() => signIn(provider.id)}>
                         Sign in with {provider.name}
                       </Button>
                     )}
@@ -110,7 +113,7 @@ export default function signin({
                             type='text'
                             name='email'
                             value={email}
-                            size='medium'
+                            size='small'
                             onChange={e => {
                               setEmail(e.target.value);
                             }}
@@ -138,6 +141,8 @@ export async function getServerSideProps(context: any) {
   const session = await getSession({ req });
 
   if (session) {
+    console.log('something about context %j', context);
+    console.log('session from logout', session);
     return {
       redirect: { destination: '/account' || context.query.callbackUrl || '/' },
     };

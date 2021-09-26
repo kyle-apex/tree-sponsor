@@ -138,7 +138,7 @@ const Header = () => {
             </ListItem>
           </Link>
           {session && (
-            <ListItem button onClick={() => signOut()}>
+            <ListItem button onClick={() => signOut({ callbackUrl: '/' })}>
               <ListItemText primary='Logout' />
             </ListItem>
           )}
@@ -152,7 +152,7 @@ const Header = () => {
                 variant='outlined'
                 fullWidth
                 className={classes.loginButton}
-                onClick={() => signIn('', { callbackUrl: 'https://google.com/whatever' })}
+                onClick={() => signIn('', { callbackUrl: '/account' })}
               >
                 Login
               </Button>

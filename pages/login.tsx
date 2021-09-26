@@ -30,7 +30,13 @@ const Login = () => {
           <Button color='secondary' variant='outlined' fullWidth className={classes.loginButton} onClick={() => router.push('/account')}>
             Continue to Account
           </Button>
-          <Button color='secondary' variant='outlined' fullWidth className={classes.loginButton} onClick={() => signOut()}>
+          <Button
+            color='secondary'
+            variant='outlined'
+            fullWidth
+            className={classes.loginButton}
+            onClick={() => signOut({ callbackUrl: '/' })}
+          >
             Logout
           </Button>
         </div>

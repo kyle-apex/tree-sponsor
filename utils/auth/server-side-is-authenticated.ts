@@ -2,12 +2,12 @@ import { getSession, GetSessionOptions } from 'next-auth/client';
 
 export default async function serverSideIsAuthenticated(ctx: GetSessionOptions) {
   const session = await getSession(ctx);
-  console.log('session', session);
+  //console.log('session', session);
 
   if (!session?.user) {
     return {
       redirect: {
-        destination: '/api/auth/signin',
+        destination: '/signin',
         permanent: false,
       },
     };
