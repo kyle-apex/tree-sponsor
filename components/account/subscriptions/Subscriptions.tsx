@@ -1,10 +1,11 @@
-import { Card, CardActionArea, CardContent, CardActions, Button, Grid, CardHeader } from '@mui/material';
+import { Card, CardActionArea, CardContent, CardActions, Button, Grid, CardHeader, IconButton } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import React from 'react';
+import React, { useState } from 'react';
 import { useGet } from 'utils/hooks/use-get';
 import { useSession } from 'next-auth/client';
 import axios from 'axios';
 import { Product, Subscription, SubscriptionWithDetails } from '@prisma/client';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 const useStyles = makeStyles(theme => ({
   cardHeader: {
@@ -23,13 +24,30 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.secondary.main,
     textAlign: 'center',
   },
+  headingWithIcon: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 }));
 
 const Subscriptions = () => {
   const classes = useStyles();
   const [session, loading] = useSession();
+  const [isRefreshing, setIsRefreshing] = useState(false);
   type PartialSubscription = Partial<Subscription & { product?: Partial<Product> }>;
-  const { data: subscriptions, isFetched, isFetching } = useGet<SubscriptionWithDetails[]>('/api/me/subscriptions', 'subscriptions');
+  const { data: subscriptions, isFetched, isFetching, refetch } = useGet<SubscriptionWithDetails[]>(
+    '/api/me/subscriptions',
+    'subscriptions',
+  );
+
+  const refreshFromStripe = async () => {
+    setIsRefreshing(true);
+    await axios.post('/api/me/update-from-stripe', { email: session?.user?.email });
+    await refetch();
+    setIsRefreshing(false);
+  };
 
   const launchClientPortal = async (customerId?: string) => {
     const { data } = await axios.get('/api/stripe/portal-session?customerId=' + customerId);
@@ -37,7 +55,12 @@ const Subscriptions = () => {
   };
   return (
     <>
-      <h2>Subscriptions</h2>
+      <h2 className={classes.headingWithIcon}>
+        Subscriptions
+        <IconButton onClick={refreshFromStripe}>
+          <RefreshIcon fontSize='large' className={isRefreshing ? 'spin' : ''} />
+        </IconButton>
+      </h2>
       {!isFetched && <div>Loading...</div>}
       {isFetched && subscriptions?.length > 0 ? (
         <Grid container spacing={4}>

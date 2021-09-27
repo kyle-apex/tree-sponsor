@@ -10,13 +10,18 @@ import theme from '../utils/theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import '../styles.css';
 import { Provider as NextAuthProvider } from 'next-auth/client';
+import axios from 'axios';
+import { getSession } from 'utils/auth/get-session';
+import { NextPageContext } from 'next';
+import { upsertSubscriptions } from 'utils/prisma/upsert-subscriptions';
+import { findAllSubscriptionsForUser } from 'utils/stripe/find-all-subscriptions-for-user';
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DefaultTheme extends Theme {}
 }
 
-const MyApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({ Component, pageProps }: AppProps) => {
   React.useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
@@ -44,5 +49,22 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     </NextAuthProvider>
   );
 };
+
+// THIS DOES NOT WORK
+/*
+MyApp.getInitialProps = async ({ req, query }: NextPageContext) => {
+  console.log('what', query);
+  // if refresh, do refresh
+  if (query?.refresh === 'me') {
+    const session = await getSession({ req });
+    console.log('doing refresh', session);
+    if (session?.user?.email) {
+      await upsertSubscriptions(await findAllSubscriptionsForUser(session?.user?.email));
+    }
+    delete query.refresh;
+  }
+
+  return {};
+};*/
 
 export default MyApp;

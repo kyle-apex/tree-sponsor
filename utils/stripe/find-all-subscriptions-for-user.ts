@@ -2,11 +2,15 @@ import { PartialSubscription, StripeSubscription } from 'interfaces';
 import { getCustomerName } from './get-customer-name';
 import { getLastPaymentDateForSubscription } from './get-last-payment-date-for-subscription';
 import { Stripe, stripe } from './init';
+import { PrismaClient } from '@prisma/client';
 
-export const findAllSubscriptions = async (): Promise<PartialSubscription[]> => {
+const prisma = new PrismaClient();
+
+export const findAllSubscriptionsForUser = async (email: string): Promise<PartialSubscription[]> => {
   let t1 = new Date().getTime();
   const customers: Stripe.ApiList<Stripe.Customer> = await stripe.customers.list({
-    limit: 200,
+    limit: 150,
+    email: email,
     expand: ['data.subscriptions'],
   });
   console.log('getCustomers Time', new Date().getTime() - t1);
@@ -46,15 +50,19 @@ export const findAllSubscriptions = async (): Promise<PartialSubscription[]> => 
   );
   console.log('getPayment Details Time', new Date().getTime() - t1);
   t1 = new Date().getTime();
-  const products: Stripe.ApiList<Stripe.Product> = await stripe.products.list({
+  /*const products: Stripe.ApiList<Stripe.Product> = await stripe.products.list({
     limit: 50,
     ids: productIds,
+  });*/
+  const products = await prisma.product.findMany({
+    where: { stripeId: { in: productIds } },
   });
+
   console.log('list products time', new Date().getTime() - t1);
   //console.log('products', products);
 
   const productIdToNameMap: Record<string, string> = {};
-  products?.data?.forEach((product: Stripe.Product) => {
+  products?.forEach(product => {
     productIdToNameMap[product.id] = product.name;
   });
 

@@ -39,8 +39,6 @@ export default NextAuth({
   linkOAuthWithExistingUser: true,
   callbacks: {
     async session(session, user) {
-      console.log('got session', session);
-      console.log('user', user);
       session.user = user;
       return session;
     },

@@ -6,7 +6,9 @@ const prisma = new PrismaClient();
 
 export default async function initializeApplication() {
   // for some reason, full population requires calling this twice
+  const t1 = new Date().getTime();
   await upsertSubscriptions(await findAllSubscriptions());
+  console.log('upsert total time', new Date().getTime() - t1);
   await upsertSubscriptions(await findAllSubscriptions());
 
   const ownerEmails: string[] = process.env.ownerEmails ? process.env.ownerEmails.split(',') : ['kyle@kylehoskins.com'];
