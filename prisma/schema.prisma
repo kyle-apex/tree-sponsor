@@ -138,6 +138,13 @@ model Tree {
   sponsorships Sponsorship[]
 }
 
+enum ReviewStatus {
+  New
+  Approved
+  Rejected
+  Modified
+}
+
 model Sponsorship {
   id             Int           @id @default(autoincrement())
   title          String?
@@ -145,6 +152,8 @@ model Sponsorship {
   pictureUrl     String?
   startDate      DateTime?
   expirationDate DateTime?
+  isPrivate      Boolean?
+  reviewStatus   ReviewStatus
   user           User?         @relation(fields: [userId], references: [id])
   userId         Int?
   tree           Tree?         @relation(fields: [treeId], references: [id])

@@ -4,6 +4,7 @@ import 'fontsource-roboto';
 import { Button, Box, Grid, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import MapExample from 'components/MapExample';
+import SponsorshipMap from 'components/sponsor/SponsorshipMap';
 
 import { signIn, signOut, useSession } from 'next-auth/client';
 import CheckoutButton from 'components/CheckoutButton';
@@ -47,7 +48,7 @@ const IndexPage = () => {
           </Grid>
         </Grid>
         <Grid item md={7} direction='column' container alignContent='center' justifyContent='center'>
-          <MapExample></MapExample>
+          <SponsorshipMap></SponsorshipMap>
         </Grid>
       </Grid>
       <Grid container className={classes.treeDetailsContainer} alignItems='center' direction='column' spacing={5}>
