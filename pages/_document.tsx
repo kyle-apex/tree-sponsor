@@ -4,6 +4,9 @@ import Document, { Html, Head, Main, NextScript } from 'next/document';
 import ServerStyleSheets from '@mui/styles/ServerStyleSheets';
 // Utils
 import theme from '../utils/theme';
+import { getSession } from 'utils/auth/get-session';
+import { upsertSubscriptions } from 'utils/prisma/upsert-subscriptions';
+import { findAllSubscriptionsForUser } from 'utils/stripe/find-all-subscriptions-for-user';
 
 class MyDocument extends Document {
   render() {
@@ -56,6 +59,19 @@ MyDocument.getInitialProps = async ctx => {
     originalRenderPage({
       enhanceApp: App => props => sheets.collect(<App {...props} />),
     });
+
+  const { query, req } = ctx;
+
+  console.log('what', query);
+  // if refresh, do refresh
+  if (query?.refresh === 'me') {
+    const session = await getSession({ req });
+    console.log('doing refresh', session);
+    if (session?.user?.email) {
+      await upsertSubscriptions(await findAllSubscriptionsForUser(session?.user?.email));
+    }
+    delete query.refresh;
+  }
 
   const initialProps = await Document.getInitialProps(ctx);
 

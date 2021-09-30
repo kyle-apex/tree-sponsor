@@ -4,9 +4,8 @@ import { getLastPaymentDateForSubscription } from './get-last-payment-date-for-s
 import { Stripe, stripe } from './init';
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
-
 export const findAllSubscriptionsForUser = async (email: string): Promise<PartialSubscription[]> => {
+  const prisma = new PrismaClient();
   let t1 = new Date().getTime();
   const customers: Stripe.ApiList<Stripe.Customer> = await stripe.customers.list({
     limit: 150,
