@@ -22,27 +22,34 @@ const SponsorshipMap = () => {
   }
 
   return (
-    <MapGL
-      {...viewport}
-      onViewportChange={(nextViewport: any) => setViewport(nextViewport)}
-      mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-    >
-      {sponsorships?.map(sponsorship => (
-        <Marker
-          key={sponsorship.id}
-          latitude={Number(sponsorship.tree.latitude)}
-          longitude={Number(sponsorship.tree.longitude)}
-          offsetLeft={-20}
-          offsetTop={-10}
-        >
-          <img src='/logo.png' style={{ width: '30px', height: '30px' }} onClick={() => showMarkerDetails(sponsorship.id)} />
-        </Marker>
-      ))}
+    <>
+      {viewport?.zoom}
+      <MapGL
+        {...viewport}
+        onViewportChange={(nextViewport: any) => setViewport(nextViewport)}
+        mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+      >
+        {sponsorships?.map(sponsorship => (
+          <Marker
+            key={sponsorship.id}
+            latitude={Number(sponsorship.tree.latitude)}
+            longitude={Number(sponsorship.tree.longitude)}
+            offsetLeft={-20}
+            offsetTop={-10}
+          >
+            <img
+              src='/pin-default.svg'
+              style={{ width: (40 * viewport.zoom) / 10 + 'px', cursor: 'pointer' }}
+              onClick={() => showMarkerDetails(sponsorship.id)}
+            />
+          </Marker>
+        ))}
 
-      <Marker latitude={30.28} longitude={-97.69} offsetLeft={-20} offsetTop={-10}>
-        <img src='/logo.png' style={{ width: '30px', height: '30px' }} />
-      </Marker>
-    </MapGL>
+        <Marker latitude={30.28} longitude={-97.69} offsetLeft={-20} offsetTop={-10}>
+          <img src='/logo.png' style={{ width: '30px', height: '30px' }} />
+        </Marker>
+      </MapGL>
+    </>
   );
 };
 
