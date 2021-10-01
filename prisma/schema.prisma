@@ -24,8 +24,8 @@ model Account {
   providerType       String    @map(name: "provider_type")
   providerId         String    @map(name: "provider_id")
   providerAccountId  String    @map(name: "provider_account_id")
-  refreshToken       String?   @map(name: "refresh_token")
-  accessToken        String?   @map(name: "access_token")
+  refreshToken       String?   @map(name: "refresh_token") @db.Text
+  accessToken        String?   @map(name: "access_token") @db.Text
   accessTokenExpires DateTime? @map(name: "access_token_expires")
   createdAt          DateTime  @default(now()) @map(name: "created_at")
   updatedAt          DateTime  @default(now()) @map(name: "updated_at")
@@ -153,7 +153,7 @@ model Sponsorship {
   startDate      DateTime?
   expirationDate DateTime?
   isPrivate      Boolean?
-  reviewStatus   ReviewStatus
+  reviewStatus   ReviewStatus? @default(New)
   user           User?         @relation(fields: [userId], references: [id])
   userId         Int?
   tree           Tree?         @relation(fields: [treeId], references: [id])

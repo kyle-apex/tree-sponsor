@@ -63,68 +63,70 @@ const SponsorshipDisplay = ({
   const [isDeleteConfirmation, setIsDeleteConfirmation] = useState(false);
 
   // read or input tree details
-  sponsorship = sponsorship || {
+  /*sponsorship = sponsorship || {
     title: 'My Tree',
     description: 'Something about my tree',
     startDate: new Date(),
     user: { id: 1, name: 'Kyle Hoskins' },
     pictureUrl: 'https://www.nwf.org/-/media/NEW-WEBSITE/Shared-Folder/Wildlife/Plants-and-Fungi/plant_southern-live-oak_600x300.ashx',
-  };
+  };*/
   //
   return (
     <>
-      <Card>
-        <CardHeader
-          avatar={
-            <Avatar aria-label='recipe' className={classes.avatar}>
-              R
-            </Avatar>
-          }
-          title={sponsorship.title}
-          subheader={
-            sponsorship.startDate && (
-              <span>
-                {sponsorship.startDate.toLocaleString('default', { month: 'long', day: 'numeric' })}
-                {sponsorship.startDate.getFullYear() != new Date().getFullYear() && <span>, {sponsorship.startDate.getFullYear()}</span>}
-              </span>
-            )
-          }
-        />
-        <CardMedia className={classes.media} image={sponsorship.pictureUrl} title={sponsorship.title} />
-        <CardContent>
-          <Typography variant='body2' color='textSecondary' component='p'>
-            {sponsorship.description}
-          </Typography>
-        </CardContent>
-        <CardActions disableSpacing>
-          <IconButton aria-label='share' size='large'>
-            <ShareIcon />
-          </IconButton>
-          {isEditMode && (
-            <>
-              <IconButton aria-label='edit' size='large'>
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                onClick={() => {
-                  setIsDeleteConfirmation(true);
-                }}
-                aria-label='delete'
-                size='large'
-              >
-                <DeleteIcon />
-              </IconButton>
-              <DeleteConfirmationDialog
-                open={isDeleteConfirmation}
-                setOpen={setIsDeleteConfirmation}
-                onConfirm={() => {
-                  onDelete(sponsorship.id);
-                }}
-              ></DeleteConfirmationDialog>
-            </>
-          )}
-        </CardActions>
-      </Card>
+      {sponsorship?.id && (
+        <Card>
+          <CardHeader
+            avatar={
+              <Avatar aria-label='recipe' className={classes.avatar}>
+                R
+              </Avatar>
+            }
+            title={sponsorship.title}
+            subheader={
+              sponsorship.startDate && (
+                <span>
+                  {sponsorship.startDate.toLocaleString('default', { month: 'long', day: 'numeric' })}
+                  {sponsorship.startDate.getFullYear() != new Date().getFullYear() && <span>, {sponsorship.startDate.getFullYear()}</span>}
+                </span>
+              )
+            }
+          />
+          <CardMedia className={classes.media} image={sponsorship.pictureUrl} title={sponsorship.title} />
+          <CardContent>
+            <Typography variant='body2' color='textSecondary' component='p'>
+              {sponsorship.description}
+            </Typography>
+          </CardContent>
+          <CardActions disableSpacing>
+            <IconButton aria-label='share' size='large'>
+              <ShareIcon />
+            </IconButton>
+            {isEditMode && (
+              <>
+                <IconButton aria-label='edit' size='large'>
+                  <EditIcon />
+                </IconButton>
+                <IconButton
+                  onClick={() => {
+                    setIsDeleteConfirmation(true);
+                  }}
+                  aria-label='delete'
+                  size='large'
+                >
+                  <DeleteIcon />
+                </IconButton>
+                <DeleteConfirmationDialog
+                  open={isDeleteConfirmation}
+                  setOpen={setIsDeleteConfirmation}
+                  onConfirm={() => {
+                    onDelete(sponsorship.id);
+                  }}
+                ></DeleteConfirmationDialog>
+              </>
+            )}
+          </CardActions>
+        </Card>
+      )}
     </>
   );
 };

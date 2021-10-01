@@ -7,18 +7,28 @@ import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log('id');
-  const session = await getSession({ req });
+  let session, userId;
 
-  if (!session?.user?.id) return throwUnauthenticated(res);
+  if (req.method !== 'GET') {
+    session = await getSession({ req });
+
+    if (!session?.user?.id) return throwUnauthenticated(res);
+
+    userId = session.user.id;
+  }
 
   const id = Number(req.query.id);
 
   if (!id) return throwError(res, 'No sponsorship specified');
 
-  const userId = session.user.id;
-
-  if (req.method === 'DELETE') {
+  if (req.method === 'GET') {
+    const sponsorships = await prisma.sponsorship.findFirst({
+      where: { id: id },
+      include: { tree: {} },
+      orderBy: { startDate: 'desc' },
+    });
+    res.status(200).json(sponsorships);
+  } else if (req.method === 'DELETE') {
     const sponsorship = await prisma.sponsorship.findFirst({ where: { userId: userId, id: id } });
 
     if (!sponsorship) throwError(res, 'You are not authorized to delete this sponsorship');

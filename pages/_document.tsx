@@ -62,11 +62,9 @@ MyDocument.getInitialProps = async ctx => {
 
   const { query, req } = ctx;
 
-  console.log('what', query);
   // if refresh, do refresh
   if (query?.refresh === 'me') {
     const session = await getSession({ req });
-    console.log('doing refresh', session);
     if (session?.user?.email) {
       await upsertSubscriptions(await findAllSubscriptionsForUser(session?.user?.email));
     }

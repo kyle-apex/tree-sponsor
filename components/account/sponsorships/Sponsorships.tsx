@@ -36,16 +36,9 @@ const Sponsorships = () => {
         </Grid>
       ) : (
         isFetched && (
-          <Card>
-            <CardActionArea>
-              <CardContent>No subscription found relating to the email associated with this account: {session?.user?.email}</CardContent>
-            </CardActionArea>
-            <CardActions>
-              <Button size='medium' color='primary'>
-                Become a Member
-              </Button>
-            </CardActions>
-          </Card>
+          <Grid item xs={12} sm={6} md={3} key={-1}>
+            <AddTreeButton></AddTreeButton>
+          </Grid>
         )
       )}
     </>

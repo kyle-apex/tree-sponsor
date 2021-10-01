@@ -11,7 +11,8 @@ import CheckoutButton from 'components/CheckoutButton';
 
 const useStyles = makeStyles(theme => ({
   headlineContainer: {
-    height: 'calc(100vh - 120px)',
+    height: 'calc(100vh - 40px)',
+    minHeight: '600px',
   },
   treeDetailsContainer: {},
   headlineSubTitle: {

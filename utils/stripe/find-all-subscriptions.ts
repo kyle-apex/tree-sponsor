@@ -6,10 +6,10 @@ import { Stripe, stripe } from './init';
 export const findAllSubscriptions = async (): Promise<PartialSubscription[]> => {
   let t1 = new Date().getTime();
   const customers: Stripe.ApiList<Stripe.Customer> = await stripe.customers.list({
-    limit: 200,
+    limit: 100,
     expand: ['data.subscriptions'],
   });
-  console.log('getCustomers Time', new Date().getTime() - t1);
+  console.log('getCustomers Time', customers.data.length, new Date().getTime() - t1);
   //console.log('customers', customers);
 
   const subscriptions: PartialSubscription[] = [];
