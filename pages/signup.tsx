@@ -21,11 +21,6 @@ import Layout from 'components/layout/Layout';
 import { Check, CheckCircle, HighlightOff, Nature, Room } from '@mui/icons-material';
 //import TreeDetail from 'components/sponsor/TreeDetails';
 
-const useStyles = makeStyles(theme => ({
-  tabs: { width: '100%' },
-  tab: {},
-}));
-
 const TabLabel = ({ title, pricing, subtitle }: { title: string; pricing: string; subtitle: string }) => (
   <>
     <Box sx={{ fontSize: '.8rem', fontWeight: 'normal' }}>{title}</Box>
@@ -43,7 +38,6 @@ const SignupPage = ({
   stripePriceIdMedium: string;
   stripePriceIdHigh: string;
 }) => {
-  const classes = useStyles();
   const memberships = [
     { trees: 1, price: 20, hasShirt: false, stripePriceId: stripePriceIdLow },
     { trees: 3, price: 60, hasShirt: true, stripePriceId: stripePriceIdMedium },

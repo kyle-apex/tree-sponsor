@@ -51,12 +51,12 @@ const SponsorshipDisplay = ({
   sponsorship,
   isEditMode,
   onDelete,
-  onChange,
-}: {
+}: //onChange,
+{
   sponsorship?: PartialSponsorship;
   isEditMode?: boolean;
   onDelete?: (id: number) => void;
-  onChange?: (id: number, attributes: Record<string, any>) => void;
+  //onChange?: (id: number, attributes: Record<string, any>) => void;
 }) => {
   const classes = useStyles();
 
