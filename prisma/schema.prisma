@@ -147,6 +147,7 @@ enum ReviewStatus {
 
 model Sponsorship {
   id             Int           @id @default(autoincrement())
+  displayName    String?
   title          String?
   description    String?
   pictureUrl     String?
