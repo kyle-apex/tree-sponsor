@@ -1,41 +1,46 @@
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import axios from 'axios';
-import { Button } from '@mui/material';
+import LoadingButton from 'components/LoadingButton';
 
 import { getStripe } from 'utils/stripe/get-stripe-client';
 
-import { useSession } from 'next-auth/client';
 import { RedirectToCheckoutOptions } from '@stripe/stripe-js';
 
 export default function CheckoutButton({ price }: { price: string }) {
-  const router = useRouter();
-  const [priceIdLoading, setPriceIdLoading] = useState(false);
-  const [session] = useSession();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCheckout = async () => {
     /*if (!session) {
       return router.push('/signin');
     }*/
     price = price ?? 'price_1Ioq94KRkjW3h5nxlnL2qYXV';
+    setIsLoading(true);
     try {
       const { data } = await axios.post<RedirectToCheckoutOptions>('/api/stripe/create-checkout-session', {
         price,
       });
-      console.log('datadata', data);
       const stripe = await getStripe();
-      console.log('stripe', stripe);
       stripe.redirectToCheckout(data);
     } catch (error: unknown) {
+      setIsLoading(false);
       return alert((error as Error).message);
     } finally {
-      setPriceIdLoading(false);
+      //
     }
   };
 
   return (
-    <Button size='large' className='full-width' variant='contained' color='secondary' onClick={() => handleCheckout()}>
-      Subscribe
-    </Button>
+    <>
+      <LoadingButton
+        size='large'
+        isLoading={isLoading}
+        className={'full-width'}
+        variant='contained'
+        color='secondary'
+        onClick={() => handleCheckout()}
+      >
+        Subscribe
+      </LoadingButton>
+    </>
   );
 }

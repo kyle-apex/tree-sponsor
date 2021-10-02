@@ -90,11 +90,9 @@ const Header = () => {
           </Typography>
 
           {!session && (
-            <>
-              <Button color='inherit' onClick={() => signIn()}>
-                Become a Member
-              </Button>
-            </>
+            <Link href='/signup'>
+              <Button color='inherit'>Become a Member</Button>
+            </Link>
           )}
 
           <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' onClick={handleDrawerOpen} size='large'>

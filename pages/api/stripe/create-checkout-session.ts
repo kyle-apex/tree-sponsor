@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           metadata,
         },
         success_url: `${getURL()}/signup-success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${getURL()}/`,
+        cancel_url: `${getURL()}/signup`,
       });
 
       return res.status(200).json({ sessionId: stripeSession.id });

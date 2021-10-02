@@ -1,4 +1,19 @@
-import { Card, CardContent, Container, Grid, TextField, Tab, Tabs, TableCell, TableRow, Table, Box, Chip, Button } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  TextField,
+  Tab,
+  Tabs,
+  TableCell,
+  TableRow,
+  Table,
+  Box,
+  Chip,
+  Button,
+  TableBody,
+} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import CheckoutButton from 'components/CheckoutButton';
 import React, { useState } from 'react';
@@ -67,49 +82,51 @@ const SignupPage = ({
           <Tab label={<TabLabel title='Forest' pricing='$100/yr' subtitle='Most Trees!'></TabLabel>} value={2} />
         </Tabs>
         <Table>
-          <TableRow>
-            <TableCell>Tree Sponsorships</TableCell>
-            <TableCell>
-              <Chip
-                label={memberships[activeMembershipIndex].trees}
-                sx={{
-                  '& img': { marginLeft: '10px !important', marginRight: '-4px !important', height: '18px' },
-                  '& .MuiChip-label': { fontWeight: 600 },
-                }}
-                icon={<img src='/tree-small.svg' />}
-                color='primary'
-              ></Chip>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>TreeFolks Donation</TableCell>
-            <TableCell>
-              <div>${memberships[activeMembershipIndex].price}/yr</div>
-              <Box sx={{ fontSize: '.75em', color: 'gray' }}>(Thanks!)</Box>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Tee Shirt</TableCell>
-            <TableCell>
-              {memberships[activeMembershipIndex].hasShirt ? (
+          <TableBody>
+            <TableRow>
+              <TableCell>Tree Sponsorships</TableCell>
+              <TableCell>
+                <Chip
+                  label={memberships[activeMembershipIndex].trees}
+                  sx={{
+                    '& img': { marginLeft: '10px !important', marginRight: '-4px !important', height: '18px' },
+                    '& .MuiChip-label': { fontWeight: 600 },
+                  }}
+                  icon={<img src='/tree-small.svg' />}
+                  color='primary'
+                ></Chip>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>TreeFolks Donation</TableCell>
+              <TableCell>
+                <div>${memberships[activeMembershipIndex].price}/yr</div>
+                <Box sx={{ fontSize: '.75em', color: 'gray' }}>(Thanks!)</Box>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Tee Shirt</TableCell>
+              <TableCell>
+                {memberships[activeMembershipIndex].hasShirt ? (
+                  <CheckCircle color='primary'></CheckCircle>
+                ) : (
+                  <HighlightOff color='secondary'></HighlightOff>
+                )}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>TreeFolksYP Membership</TableCell>
+              <TableCell>
                 <CheckCircle color='primary'></CheckCircle>
-              ) : (
-                <HighlightOff color='secondary'></HighlightOff>
-              )}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>TreeFolksYP Membership</TableCell>
-            <TableCell>
-              <CheckCircle color='primary'></CheckCircle>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Slack & Facebook Group Access</TableCell>
-            <TableCell>
-              <CheckCircle color='primary'></CheckCircle>
-            </TableCell>
-          </TableRow>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Slack & Facebook Group Access</TableCell>
+              <TableCell>
+                <CheckCircle color='primary'></CheckCircle>
+              </TableCell>
+            </TableRow>
+          </TableBody>
         </Table>
         <Box sx={{ textAlign: 'center', marginTop: '16px' }}>
           <CheckoutButton price={memberships[activeMembershipIndex].stripePriceId}></CheckoutButton>
