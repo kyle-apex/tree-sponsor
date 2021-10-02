@@ -1,9 +1,9 @@
-import { Card, CardContent, Container, Grid, TextField, Tab, Tabs, TableCell, TableRow, Table, Box, Chip } from '@mui/material';
+import { Card, CardContent, Container, Grid, TextField, Tab, Tabs, TableCell, TableRow, Table, Box, Chip, Button } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import CheckoutButton from 'components/CheckoutButton';
 import React, { useState } from 'react';
 import Layout from 'components/layout/Layout';
-import { Check, CheckCircle, Nature, Room } from '@mui/icons-material';
+import { Check, CheckCircle, HighlightOff, Nature, Room } from '@mui/icons-material';
 //import TreeDetail from 'components/sponsor/TreeDetails';
 
 const useStyles = makeStyles(theme => ({
@@ -19,12 +19,25 @@ const TabLabel = ({ title, pricing, subtitle }: { title: string; pricing: string
   </>
 );
 
-const SignupPage = () => {
+const SignupPage = ({
+  stripePriceIdLow,
+  stripePriceIdMedium,
+  stripePriceIdHigh,
+}: {
+  stripePriceIdLow: string;
+  stripePriceIdMedium: string;
+  stripePriceIdHigh: string;
+}) => {
   const classes = useStyles();
-  const [activeMembership, setActiveMembership] = useState('Grove');
+  const memberships = [
+    { trees: 1, price: 20, hasShirt: false, stripePriceId: stripePriceIdLow },
+    { trees: 3, price: 60, hasShirt: true, stripePriceId: stripePriceIdMedium },
+    { trees: 5, price: 100, hasShirt: true, stripePriceId: stripePriceIdHigh },
+  ];
+  const [activeMembershipIndex, setActiveMembershipIndex] = useState(1);
 
-  const handleChange = (_event: any, newValue: string) => {
-    setActiveMembership(newValue);
+  const handleChange = (_event: any, newValue: number) => {
+    setActiveMembershipIndex(newValue);
   };
 
   return (
@@ -46,19 +59,19 @@ const SignupPage = () => {
               border: 'solid lightgray 1px',
             },
           }}
-          value={activeMembership}
+          value={activeMembershipIndex}
           onChange={handleChange}
         >
-          <Tab label={<TabLabel title='Single' pricing='$20/yr' subtitle='Most Affordable'></TabLabel>} value='Single' />
-          <Tab label={<TabLabel title='Grove' pricing='$60/yr' subtitle='Most Popular'></TabLabel>} value='Grove' />
-          <Tab label={<TabLabel title='Forest' pricing='$100/yr' subtitle='Most Trees!'></TabLabel>} value='Forest' />
+          <Tab label={<TabLabel title='Single' pricing='$20/yr' subtitle='Most Affordable'></TabLabel>} value={0} />
+          <Tab label={<TabLabel title='Grove' pricing='$60/yr' subtitle='Most Popular'></TabLabel>} value={1} />
+          <Tab label={<TabLabel title='Forest' pricing='$100/yr' subtitle='Most Trees!'></TabLabel>} value={2} />
         </Tabs>
         <Table>
           <TableRow>
             <TableCell>Tree Sponsorships</TableCell>
             <TableCell>
               <Chip
-                label='3'
+                label={memberships[activeMembershipIndex].trees}
                 sx={{
                   '& img': { marginLeft: '10px !important', marginRight: '-4px !important', height: '18px' },
                   '& .MuiChip-label': { fontWeight: 600 },
@@ -71,14 +84,18 @@ const SignupPage = () => {
           <TableRow>
             <TableCell>TreeFolks Donation</TableCell>
             <TableCell>
-              <div>$60/yr</div>
+              <div>${memberships[activeMembershipIndex].price}/yr</div>
               <Box sx={{ fontSize: '.75em', color: 'gray' }}>(Thanks!)</Box>
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Tee Shirt</TableCell>
             <TableCell>
-              <CheckCircle color='primary'></CheckCircle>
+              {memberships[activeMembershipIndex].hasShirt ? (
+                <CheckCircle color='primary'></CheckCircle>
+              ) : (
+                <HighlightOff color='secondary'></HighlightOff>
+              )}
             </TableCell>
           </TableRow>
           <TableRow>
@@ -94,8 +111,21 @@ const SignupPage = () => {
             </TableCell>
           </TableRow>
         </Table>
+        <Box sx={{ textAlign: 'center', marginTop: '16px' }}>
+          <CheckoutButton price={memberships[activeMembershipIndex].stripePriceId}></CheckoutButton>
+        </Box>
       </Container>
     </Layout>
   );
 };
 export default SignupPage;
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      stripePriceIdLow: process.env.STRIPE_PRICE_ID_LOW,
+      stripePriceIdMedium: process.env.STRIPE_PRICE_ID_MEDIUM,
+      stripePriceIdHigh: process.env.STRIPE_PRICE_ID_HIGH,
+    },
+  };
+}

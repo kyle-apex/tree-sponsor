@@ -33,5 +33,9 @@ export default function CheckoutButton({ price }: { price: string }) {
     }
   };
 
-  return <Button onClick={() => handleCheckout()}>Subscribe</Button>;
+  return (
+    <Button size='large' className='full-width' variant='contained' color='secondary' onClick={() => handleCheckout()}>
+      Subscribe
+    </Button>
+  );
 }

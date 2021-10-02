@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { findOrCreateCustomer } from 'utils/stripe/find-or-create-customer';
+import { findCustomer } from 'utils/stripe/find-customer';
 import { getSession } from 'utils/auth/get-session';
-import { Stripe, stripe } from 'utils/stripe/init';
+import { stripe } from 'utils/stripe/init';
 import { getURL } from 'utils/get-application-url';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const user = session ? session.user : null;
       let customerId: string;
 
-      if (user?.email) customerId = user?.stripeCustomerId ? user.stripeCustomerId : await findOrCreateCustomer(user.email as string);
+      if (user?.email) customerId = user?.stripeCustomerId ? user.stripeCustomerId : await findCustomer(user.email as string);
 
       const stripeSession = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           trial_from_plan: true,
           metadata,
         },
-        success_url: `${getURL()}/account`,
+        success_url: `${getURL()}/signup-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${getURL()}/`,
       });
 
