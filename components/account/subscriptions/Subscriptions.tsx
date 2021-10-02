@@ -1,4 +1,4 @@
-import { Card, CardActionArea, CardContent, CardActions, Button, Grid, CardHeader, IconButton } from '@mui/material';
+import { Card, CardActionArea, CardContent, CardActions, Button, Grid, CardHeader, IconButton, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { useState } from 'react';
 import { useGet } from 'utils/hooks/use-get';
@@ -55,12 +55,12 @@ const Subscriptions = () => {
   };
   return (
     <>
-      <h2 className={classes.headingWithIcon}>
+      <Typography color='primary' variant='h2' className={classes.headingWithIcon}>
         Subscriptions
         <IconButton onClick={refreshFromStripe}>
           <RefreshIcon fontSize='large' className={isRefreshing ? 'spin' : ''} />
         </IconButton>
-      </h2>
+      </Typography>
       {!isFetched && <div>Loading...</div>}
       {isFetched && subscriptions?.length > 0 ? (
         <Grid container spacing={4}>

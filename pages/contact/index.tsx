@@ -1,4 +1,4 @@
-import { Container, TextField, Box, Button, LinearProgress } from '@mui/material';
+import { Container, TextField, Box, Button, LinearProgress, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import Layout from 'components/layout/Layout';
 import React, { useEffect, useState } from 'react';
@@ -17,7 +17,6 @@ const useStyles = makeStyles(theme => ({
     padding: '10px 20px 30px',
     backgroundColor: 'white',
     minHeight: '380px',
-    minWidth: '400px',
     marginTop: theme.spacing(2),
   },
   formField: {
@@ -59,9 +58,11 @@ const Contact = () => {
   return (
     <Layout>
       <Container maxWidth='xs' className={classes.container}>
-        <Box display='flex' justifyContent='center' alignItems='center'>
-          <Box flexDirection='column' display='flex' justifyContent='center' className={classes.signinContainer + ' box-shadow'}>
-            <h1>Contact Us</h1>
+        <Box display='flex' className='full-width' justifyContent='center' alignItems='center'>
+          <Box flexDirection='column' display='flex' justifyContent='center' className={classes.signinContainer + ' box-shadow full-width'}>
+            <Typography color='secondary' variant='h1'>
+              Contact Us
+            </Typography>
             <TextField
               label='Email'
               value={email}

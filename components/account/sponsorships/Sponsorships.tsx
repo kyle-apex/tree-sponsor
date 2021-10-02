@@ -1,4 +1,4 @@
-import { Card, CardActionArea, CardContent, CardActions, Button, Grid } from '@mui/material';
+import { Card, CardActionArea, CardContent, CardActions, Button, Grid, Typography } from '@mui/material';
 import React from 'react';
 import { useGet } from 'utils/hooks/use-get';
 import { useSession } from 'next-auth/client';
@@ -21,7 +21,9 @@ const Sponsorships = () => {
 
   return (
     <>
-      <h2>Sponsorships</h2>
+      <Typography color='primary' variant='h2' mt={3}>
+        Sponsorships
+      </Typography>
       {!isFetched && <div>Loading...</div>}
       {isFetched && sponsorships?.length > 0 ? (
         <Grid container spacing={4}>

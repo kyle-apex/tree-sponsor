@@ -1,4 +1,6 @@
 import { createTheme } from '@mui/material/styles';
+import { ThemeContext } from '@mui/styled-engine';
+import { spacing } from '@mui/system';
 
 const theme = createTheme({
   palette: {
@@ -7,6 +9,16 @@ const theme = createTheme({
     },
     secondary: {
       main: '#6e4854',
+    },
+  },
+  typography: {
+    h1: {
+      fontSize: '2.4rem',
+      marginBottom: '1rem',
+    },
+    h2: {
+      fontSize: '1.8rem',
+      marginBottom: '1rem',
     },
   },
 });

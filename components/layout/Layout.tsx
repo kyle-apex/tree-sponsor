@@ -24,7 +24,7 @@ const Layout = ({ children, title = 'TreeFolksYP' }: Props) => (
     </Head>
     <Header />
     <main>
-      <Container maxWidth='lg'>
+      <Container maxWidth='lg' sx={{ paddingTop: theme => theme.spacing(2) }}>
         <Box mb={6}>{children}</Box>
       </Container>
     </main>

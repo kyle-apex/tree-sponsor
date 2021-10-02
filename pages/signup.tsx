@@ -13,6 +13,10 @@ import {
   Chip,
   Button,
   TableBody,
+  Typography,
+  FormControlLabel,
+  FormGroup,
+  Checkbox,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import CheckoutButton from 'components/CheckoutButton';
@@ -49,9 +53,18 @@ const SignupPage = ({
     setActiveMembershipIndex(newValue);
   };
 
+  const [isMembership, setIsMembership] = useState(true);
+
   return (
     <Layout>
       <Container maxWidth='sm'>
+        <Typography color='secondary' variant='h1' sx={{ fontSize: '2rem' }}>
+          Sponsor a Tree / Start a Membership
+        </Typography>
+        <p>
+          Whether you want to sponsor trees, join TreeFolks Young Professionals (TreeFolksYP), or both, you are in the right place. Please
+          select a TreeFolks donation level below:
+        </p>
         <Tabs
           sx={{
             width: '100%',
@@ -111,18 +124,34 @@ const SignupPage = ({
             <TableRow>
               <TableCell>TreeFolksYP Membership</TableCell>
               <TableCell>
-                <CheckCircle color='primary'></CheckCircle>
+                {isMembership ? <CheckCircle color='primary'></CheckCircle> : <HighlightOff color='secondary'></HighlightOff>}
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>Slack & Facebook Group Access</TableCell>
               <TableCell>
-                <CheckCircle color='primary'></CheckCircle>
+                {isMembership ? <CheckCircle color='primary'></CheckCircle> : <HighlightOff color='secondary'></HighlightOff>}
               </TableCell>
             </TableRow>
           </TableBody>
         </Table>
-        <Box sx={{ textAlign: 'center', marginTop: '16px' }}>
+        <Box sx={{ marginTop: 2 }}>
+          <FormGroup sx={{ marginBottom: 2, marginLeft: 2, marginRight: 2 }}>
+            <FormControlLabel
+              sx={{ '& .MuiFormControlLabel-label': { fontSize: '.8rem' } }}
+              control={
+                <Checkbox
+                  checked={isMembership}
+                  onChange={e => {
+                    setIsMembership(e.target.checked);
+                  }}
+                  color='secondary'
+                  defaultChecked
+                />
+              }
+              label='In addition to my tree sponsorship, I would like to be a part of TreeFolks Young Professionals and receive email updates for events and volunteer opportunities'
+            />
+          </FormGroup>
           <CheckoutButton price={memberships[activeMembershipIndex].stripePriceId}></CheckoutButton>
         </Box>
       </Container>
