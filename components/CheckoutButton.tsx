@@ -6,7 +6,7 @@ import { getStripe } from 'utils/stripe/get-stripe-client';
 
 import { RedirectToCheckoutOptions } from '@stripe/stripe-js';
 
-export default function CheckoutButton({ price }: { price: string }) {
+export default function CheckoutButton({ price, metadata }: { price: string; metadata?: Record<string, string> }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCheckout = async () => {
@@ -18,6 +18,7 @@ export default function CheckoutButton({ price }: { price: string }) {
     try {
       const { data } = await axios.post<RedirectToCheckoutOptions>('/api/stripe/create-checkout-session', {
         price,
+        metadata,
       });
       const stripe = await getStripe();
       stripe.redirectToCheckout(data);

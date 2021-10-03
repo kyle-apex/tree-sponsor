@@ -33,6 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           trial_from_plan: true,
           metadata,
         },
+        metadata: metadata,
         success_url: `${getURL()}/signup-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${getURL()}/signup`,
       });

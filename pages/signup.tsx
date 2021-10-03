@@ -152,7 +152,10 @@ const SignupPage = ({
               label='In addition to my tree sponsorship, I would like to be a part of TreeFolks Young Professionals and receive email updates for events and volunteer opportunities'
             />
           </FormGroup>
-          <CheckoutButton price={memberships[activeMembershipIndex].stripePriceId}></CheckoutButton>
+          <CheckoutButton
+            metadata={{ 'Email Subscribe': isMembership ? 'Yes' : 'No' }}
+            price={memberships[activeMembershipIndex].stripePriceId}
+          ></CheckoutButton>
         </Box>
       </Container>
     </Layout>
