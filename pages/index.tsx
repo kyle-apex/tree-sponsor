@@ -46,7 +46,7 @@ const IndexPage = () => {
   return (
     <Layout>
       <Grid mt={-4} container className={classes.headlineContainer} direction='row' spacing={5}>
-        <Grid md={5} spacing={4} justifyContent='center' sx={{ display: 'flex' }} item direction='column'>
+        <Grid md={5} justifyContent='center' sx={{ display: 'flex', flexDirection: 'column' }} item>
           <Typography variant='h2' color='secondary'>
             TreeFolksYP Tree Sponsorship
           </Typography>
@@ -76,7 +76,7 @@ const IndexPage = () => {
           </Box>
         </Grid>
       </Grid>
-      <Grid mt={0} className={classes.treeDetailsContainer} alignItems='center' direction='column' spacing={5}>
+      <Grid mt={0} className={classes.treeDetailsContainer} alignItems='center'>
         <Typography variant='h2' color='secondary'>
           Support the Urban Forest
         </Typography>

@@ -30,14 +30,9 @@ const SponsorshipDisplayDialog = ({ open, setOpen, id }: { open: boolean; setOpe
   };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle className={classes.title}>
-        <IconButton onClick={handleClose}>
-          <Clear></Clear>
-        </IconButton>
-      </DialogTitle>
-      <DialogContent className={classes.content}>
-        <SponsorshipDisplay sponsorship={sponsorship} />
+    <Dialog open={open} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px' } }} onClose={handleClose}>
+      <DialogContent sx={{ padding: 0 }} className={classes.content}>
+        <SponsorshipDisplay sponsorship={sponsorship} handleClose={handleClose} />
       </DialogContent>
     </Dialog>
   );

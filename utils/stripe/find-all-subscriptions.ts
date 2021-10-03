@@ -1,6 +1,7 @@
 import { PartialSubscription, StripeSubscription } from 'interfaces';
 import { getCustomerName } from './get-customer-name';
 import { getLastPaymentDateForSubscription } from './get-last-payment-date-for-subscription';
+import getProductIdToNameMap from './get-product-id-to-name-map';
 import { Stripe, stripe } from './init';
 
 export const findAllSubscriptions = async (): Promise<PartialSubscription[]> => {
@@ -45,18 +46,8 @@ export const findAllSubscriptions = async (): Promise<PartialSubscription[]> => 
     }),
   );
   console.log('getPayment Details Time', new Date().getTime() - t1);
-  t1 = new Date().getTime();
-  const products: Stripe.ApiList<Stripe.Product> = await stripe.products.list({
-    limit: 50,
-    ids: productIds,
-  });
-  console.log('list products time', new Date().getTime() - t1);
-  //console.log('products', products);
 
-  const productIdToNameMap: Record<string, string> = {};
-  products?.data?.forEach((product: Stripe.Product) => {
-    productIdToNameMap[product.id] = product.name;
-  });
+  const productIdToNameMap = await getProductIdToNameMap(productIds);
 
   subscriptions.forEach((sub: PartialSubscription) => {
     if (sub.product?.stripeId) sub.product.name = productIdToNameMap[sub.product.stripeId];

@@ -3,21 +3,20 @@ import { getCustomerName } from './get-customer-name';
 import { getLastPaymentDateForSubscription } from './get-last-payment-date-for-subscription';
 import { Stripe, stripe } from './init';
 import { PrismaClient } from '@prisma/client';
+import getProductIdToNameMap from './get-product-id-to-name-map';
 
 export const findAllSubscriptionsForUser = async (email: string): Promise<PartialSubscription[]> => {
   const prisma = new PrismaClient();
-  let t1 = new Date().getTime();
+
   const customers: Stripe.ApiList<Stripe.Customer> = await stripe.customers.list({
     limit: 150,
     email: email,
     expand: ['data.subscriptions'],
   });
-  console.log('getCustomers Time', new Date().getTime() - t1);
-  //console.log('customers', customers);
 
   const subscriptions: PartialSubscription[] = [];
   const productIds: string[] = [];
-  t1 = new Date().getTime();
+
   await Promise.all(
     customers.data.map(async (customer: Stripe.Customer) => {
       if (customer?.subscriptions) {
@@ -26,9 +25,8 @@ export const findAllSubscriptionsForUser = async (email: string): Promise<Partia
             const productId = sub.plan.product;
 
             const customerName: string = getCustomerName(customer);
-            const t2 = new Date().getTime();
             const lastPaymentDate: Date = await getLastPaymentDateForSubscription(sub);
-            console.log('getLastPayment Time', new Date().getTime() - t2);
+
             const subscription: PartialSubscription = {
               product: { stripeId: productId, amount: Math.round(sub.plan.amount / 100) },
               stripeId: sub.id,
@@ -47,23 +45,18 @@ export const findAllSubscriptionsForUser = async (email: string): Promise<Partia
       }
     }),
   );
-  console.log('getPayment Details Time', new Date().getTime() - t1);
-  t1 = new Date().getTime();
-  /*const products: Stripe.ApiList<Stripe.Product> = await stripe.products.list({
-    limit: 50,
-    ids: productIds,
-  });*/
+
   const products = await prisma.product.findMany({
     where: { stripeId: { in: productIds } },
   });
 
-  console.log('list products time', new Date().getTime() - t1);
-  //console.log('products', products);
+  let productIdToNameMap: Record<string, string> = {};
 
-  const productIdToNameMap: Record<string, string> = {};
-  products?.forEach(product => {
-    productIdToNameMap[product.id] = product.name;
-  });
+  if (products?.length > 0)
+    products?.forEach(product => {
+      productIdToNameMap[product.id] = product.name;
+    });
+  else productIdToNameMap = await getProductIdToNameMap(productIds);
 
   subscriptions.forEach((sub: PartialSubscription) => {
     if (sub.product?.stripeId) sub.product.name = productIdToNameMap[sub.product.stripeId];

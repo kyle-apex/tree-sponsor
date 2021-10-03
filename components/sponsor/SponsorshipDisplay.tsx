@@ -1,7 +1,7 @@
 import { User } from '.prisma/client';
 import { Grid, Collapse, Card, CardHeader, CardContent, Avatar, IconButton, CardMedia, Typography, CardActions } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import { Details } from '@mui/icons-material';
+import { Clear, Details } from '@mui/icons-material';
 import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -51,11 +51,13 @@ const SponsorshipDisplay = ({
   sponsorship,
   isEditMode,
   onDelete,
+  handleClose,
 }: //onChange,
 {
   sponsorship?: PartialSponsorship;
   isEditMode?: boolean;
   onDelete?: (id: number) => void;
+  handleClose?: () => void;
   //onChange?: (id: number, attributes: Record<string, any>) => void;
 }) => {
   const classes = useStyles();
@@ -90,6 +92,13 @@ const SponsorshipDisplay = ({
                 </span>
               )
             }
+            action={
+              handleClose && (
+                <IconButton onClick={handleClose}>
+                  <Clear></Clear>
+                </IconButton>
+              )
+            }
           />
           <CardMedia className={classes.media} image={sponsorship.pictureUrl} title={sponsorship.title} />
           <CardContent>
@@ -97,34 +106,38 @@ const SponsorshipDisplay = ({
               {sponsorship.description}
             </Typography>
           </CardContent>
-          <CardActions disableSpacing>
-            <IconButton aria-label='share' size='large'>
-              <ShareIcon />
-            </IconButton>
-            {isEditMode && (
-              <>
-                <IconButton aria-label='edit' size='large'>
-                  <EditIcon />
+          {isEditMode && (
+            <CardActions disableSpacing>
+              {false && (
+                <IconButton aria-label='share' size='large'>
+                  <ShareIcon />
                 </IconButton>
-                <IconButton
-                  onClick={() => {
-                    setIsDeleteConfirmation(true);
-                  }}
-                  aria-label='delete'
-                  size='large'
-                >
-                  <DeleteIcon />
-                </IconButton>
-                <DeleteConfirmationDialog
-                  open={isDeleteConfirmation}
-                  setOpen={setIsDeleteConfirmation}
-                  onConfirm={() => {
-                    onDelete(sponsorship.id);
-                  }}
-                ></DeleteConfirmationDialog>
-              </>
-            )}
-          </CardActions>
+              )}
+              {isEditMode && (
+                <>
+                  <IconButton aria-label='edit' size='large'>
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => {
+                      setIsDeleteConfirmation(true);
+                    }}
+                    aria-label='delete'
+                    size='large'
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                  <DeleteConfirmationDialog
+                    open={isDeleteConfirmation}
+                    setOpen={setIsDeleteConfirmation}
+                    onConfirm={() => {
+                      onDelete(sponsorship.id);
+                    }}
+                  ></DeleteConfirmationDialog>
+                </>
+              )}
+            </CardActions>
+          )}
         </Card>
       )}
     </>
