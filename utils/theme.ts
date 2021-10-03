@@ -20,6 +20,9 @@ const theme = createTheme({
       fontSize: '1.8rem',
       marginBottom: '1rem',
     },
+    subtitle1: {
+      fontSize: '1.2rem',
+    },
   },
 });
 

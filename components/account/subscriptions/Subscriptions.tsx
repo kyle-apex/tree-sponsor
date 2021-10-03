@@ -1,4 +1,4 @@
-import { Card, CardActionArea, CardContent, CardActions, Button, Grid, CardHeader, IconButton, Typography } from '@mui/material';
+import { Card, CardActionArea, CardContent, CardActions, Button, Grid, CardHeader, IconButton, Typography, Link } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { useState } from 'react';
 import { useGet } from 'utils/hooks/use-get';
@@ -105,9 +105,11 @@ const Subscriptions = () => {
               <CardContent>No subscription found relating to the email associated with this account: {session?.user?.email}</CardContent>
             </CardActionArea>
             <CardActions>
-              <Button size='medium' color='primary'>
-                Become a Member
-              </Button>
+              <Link href='/signup'>
+                <Button size='medium' color='primary'>
+                  Become a Member
+                </Button>
+              </Link>
             </CardActions>
           </Card>
         )

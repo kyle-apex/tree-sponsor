@@ -1,17 +1,24 @@
 import Link from 'next/link';
 import Layout from '../components/layout/Layout';
+import { useEffect, useState } from 'react';
 import 'fontsource-roboto';
 import { Button, Box, Grid, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import MapExample from 'components/MapExample';
 import SponsorshipMap from 'components/sponsor/SponsorshipMap';
+import SponsorshipDisplay from 'components/sponsor/SponsorshipDisplay';
+import TFYPAboutSection from 'components/index/TFYPAboutSection';
+
+import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 
 import { signIn, signOut, useSession } from 'next-auth/client';
 import CheckoutButton from 'components/CheckoutButton';
+import { PartialSponsorship } from 'interfaces';
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   headlineContainer: {
-    height: 'calc(100vh - 40px)',
+    height: 'calc(100vh - 100px)',
     minHeight: '600px',
   },
   treeDetailsContainer: {},
@@ -22,12 +29,27 @@ const useStyles = makeStyles(theme => ({
 
 const IndexPage = () => {
   const [session, loading] = useSession();
+  const [sponsorships, setSponsorships] = useState<PartialSponsorship[]>([]);
+
+  const getSponsorships = async () => {
+    const results = await axios.get('/api/sponsorships/home');
+
+    parseResponseDateStrings(results.data);
+    setSponsorships(results.data);
+  };
+
+  useEffect(() => {
+    getSponsorships();
+  }, []);
+
   const classes = useStyles();
   return (
     <Layout>
-      <Grid container className={classes.headlineContainer} direction='row' spacing={5}>
-        <Grid md={5} spacing={4} justifyContent='center' container item direction='column'>
-          <h1>TreeFolksYP Tree Sponsorship</h1>
+      <Grid mt={-4} container className={classes.headlineContainer} direction='row' spacing={5}>
+        <Grid md={5} spacing={4} justifyContent='center' sx={{ display: 'flex' }} item direction='column'>
+          <Typography variant='h2' color='secondary'>
+            TreeFolksYP Tree Sponsorship
+          </Typography>
           <Typography variant='subtitle1' className={classes.headlineSubTitle}>
             Make your mark with a tree sponsorship through TreeFolks Young Professionals (TreeFolksYP)
           </Typography>
@@ -35,12 +57,12 @@ const IndexPage = () => {
             <Grid item>
               <Link href='/about'>
                 <Button variant='outlined' color='secondary'>
-                  Learn about TreeFolks YP
+                  Explore the Map
                 </Button>
               </Link>
             </Grid>
             <Grid item>
-              <Link href='/sponsor'>
+              <Link href='/signup'>
                 <Button variant='contained' color='primary'>
                   Sponsor a Tree
                 </Button>
@@ -49,23 +71,37 @@ const IndexPage = () => {
           </Grid>
         </Grid>
         <Grid item md={7} direction='column' container alignContent='center' justifyContent='center'>
-          <SponsorshipMap></SponsorshipMap>
+          <Box sx={{ height: '475px', maxHeight: 'calc(75vh)', width: '100%', display: 'flex', flexDirection: 'column' }}>
+            <SponsorshipMap></SponsorshipMap>
+          </Box>
         </Grid>
       </Grid>
-      <Grid container className={classes.treeDetailsContainer} alignItems='center' direction='column' spacing={5}>
-        <h2>Support the Urban Forest</h2>
+      <Grid mt={0} className={classes.treeDetailsContainer} alignItems='center' direction='column' spacing={5}>
+        <Typography variant='h2' color='secondary'>
+          Support the Urban Forest
+        </Typography>
         <Typography variant='subtitle1' className={classes.headlineSubTitle}>
           Your sponsorship is a 100% tax deductible donation to TreeFolks to plant, care for, and give away trees in the Austin and Central
           Texas Community
         </Typography>
-        <Grid container spacing={5} direction='row' justifyContent='space-around'>
-          <Grid item>
-            <div>Sponsor Display</div>
-          </Grid>
-          <Grid item></Grid>
-          <Grid item></Grid>
+        <Grid mb={10} container spacing={5} direction='row' justifyContent='space-around'>
+          {sponsorships.map(sponsorship => (
+            <Grid md={4} key={sponsorship.id} item>
+              <SponsorshipDisplay sponsorship={sponsorship}></SponsorshipDisplay>
+            </Grid>
+          ))}
         </Grid>
       </Grid>
+      <Box mt={5} p={5} className='index detail-section'>
+        <Typography variant='h2'>What is TreeFolks Young Professionals?</Typography>
+        <Typography variant='subtitle1' className={classes.headlineSubTitle}>
+          TreeFolks Young Professionals (ages 21 – 40ish) volunteer, educate, fundraise, and build community in support of the mission of
+          TreeFolks: planting, caring for, and giving people free trees to plant!
+        </Typography>
+      </Box>
+      <Box mt={-15} className='index'>
+        <TFYPAboutSection></TFYPAboutSection>
+      </Box>
       {false && (
         <p>
           TreeFolks Young Professionals (TreeFolksYP) supports planting, caring for, and giving away free trees throughout Austin and

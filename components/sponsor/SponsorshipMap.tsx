@@ -13,7 +13,7 @@ const SponsorshipMap = () => {
 
   const [viewport, setViewport] = useState({
     width: '100%',
-    height: 475,
+    height: '100%',
     latitude: 30.2594625,
     longitude: -97.7505386,
     zoom: 10.7,

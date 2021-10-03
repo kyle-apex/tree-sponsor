@@ -15,7 +15,6 @@ const useStyles = makeStyles(theme => ({
     borderRadius: '5px',
     border: 'solid 1px',
     padding: '10px 20px 30px',
-    backgroundColor: 'white',
     minHeight: '380px',
     marginTop: theme.spacing(2),
   },
@@ -59,7 +58,12 @@ const Contact = () => {
     <Layout>
       <Container maxWidth='xs' className={classes.container}>
         <Box display='flex' className='full-width' justifyContent='center' alignItems='center'>
-          <Box flexDirection='column' display='flex' justifyContent='center' className={classes.signinContainer + ' box-shadow full-width'}>
+          <Box
+            flexDirection='column'
+            display='flex'
+            justifyContent='center'
+            className={classes.signinContainer + ' box-shadow full-width section-background'}
+          >
             <Typography color='secondary' variant='h1'>
               Contact Us
             </Typography>

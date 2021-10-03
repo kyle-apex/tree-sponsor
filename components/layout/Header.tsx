@@ -91,7 +91,9 @@ const Header = () => {
 
           {!session && (
             <Link href='/signup'>
-              <Button color='inherit'>Become a Member</Button>
+              <Button sx={{ marginRight: 2 }} color='inherit'>
+                Sponrsor a tree
+              </Button>
             </Link>
           )}
 
@@ -142,6 +144,20 @@ const Header = () => {
           )}
         </List>
         <Divider />
+        {!session && (
+          <ListItem button>
+            <Button
+              sx={{ marginTop: 1 }}
+              color='primary'
+              fullWidth
+              variant='contained'
+              className={classes.loginButton}
+              onClick={() => router.push('/signup')}
+            >
+              Sponsor a Tree
+            </Button>
+          </ListItem>
+        )}
         <List>
           <ListItem button>
             {!session && (
@@ -168,13 +184,6 @@ const Header = () => {
             )}
           </ListItem>
         </List>
-        {!session && (
-          <ListItem button>
-            <Button color='primary' fullWidth variant='contained' className={classes.loginButton} onClick={() => router.push('/sponsor')}>
-              Become a Member
-            </Button>
-          </ListItem>
-        )}
       </Drawer>
     </>
   );
