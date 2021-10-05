@@ -4,23 +4,11 @@ import { Container, Button, Box, TextField } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import Layout from 'components/layout/Layout';
 import Image from 'next/image';
+import LogoMessage from 'components/layout/LogoMessage';
 
 import useLocalStorage from 'utils/hooks/use-local-storage';
 
 const useStyles = makeStyles(theme => ({
-  container: {
-    minHeight: 'calc(100vh - 170px)',
-    marginBottom: 0,
-    display: 'flex',
-  },
-  signinContainer: {
-    borderColor: theme.palette.primary.main,
-    borderRadius: '5px',
-    border: 'solid 1px',
-    padding: '10px 20px 30px',
-    backgroundColor: 'white',
-    minHeight: '380px',
-  },
   button: {
     marginBottom: theme.spacing(1),
   },
@@ -61,78 +49,71 @@ export default function signin({
 
   return (
     <Layout>
-      <Container maxWidth='xs' className={classes.container}>
-        <Box display='flex' justifyContent='center' alignItems='center'>
-          <Box flexDirection='column' display='flex' justifyContent='center' className={classes.signinContainer + ' box-shadow'}>
-            <Box className='center' m={3}>
-              <Image src='/logo.png' alt='TreeFolks Young Professionals Logo' width={100} height={100} />
-            </Box>
-            {error && (
-              <div className='center'>
-                <p>{error}</p>
-              </div>
-            )}
-            {message && (
-              <div className='center'>
-                <h2>Check your email</h2>
-                <p>
-                  {message}: {email || ''}
-                </p>
-                <Button
-                  fullWidth
-                  variant='outlined'
-                  color='primary'
-                  onClick={() => {
-                    setMessage('');
-                  }}
-                >
-                  Retry Login
-                </Button>
-              </div>
-            )}
-            {!message &&
-              Object.values(providers).map((provider: any) => {
-                return (
-                  <div key={provider.name} className='provider'>
-                    {provider.type === 'oauth' && (
-                      <Button variant='outlined' className={classes.button} fullWidth color='primary' onClick={() => signIn(provider.id)}>
+      <LogoMessage>
+        {error && (
+          <div className='center'>
+            <p>{error}</p>
+          </div>
+        )}
+        {message && (
+          <div className='center'>
+            <h2>Check your email</h2>
+            <p>
+              {message}: {email || ''}
+            </p>
+            <Button
+              fullWidth
+              variant='outlined'
+              color='primary'
+              onClick={() => {
+                setMessage('');
+              }}
+            >
+              Retry Login
+            </Button>
+          </div>
+        )}
+        {!message &&
+          Object.values(providers).map((provider: any) => {
+            return (
+              <div key={provider.name} className='provider'>
+                {provider.type === 'oauth' && (
+                  <Button variant='outlined' className={classes.button} fullWidth color='primary' onClick={() => signIn(provider.id)}>
+                    Sign in with {provider.name}
+                  </Button>
+                )}
+                {provider.type === 'email' && (
+                  <>
+                    <p className='center'>OR</p>
+                    <form action={provider.signinUrl} method='POST'>
+                      <input type='hidden' name='csrfToken' value={csrfToken} />
+
+                      <TextField
+                        color='primary'
+                        fullWidth
+                        id={`input-email-for-${provider.id}-provider`}
+                        autoFocus
+                        type='text'
+                        name='email'
+                        value={email}
+                        size='small'
+                        onChange={e => {
+                          setEmail(e.target.value);
+                        }}
+                        placeholder='email@example.com'
+                        variant='outlined'
+                        margin='dense'
+                      />
+                      <Button color='primary' fullWidth variant='outlined' type='submit'>
                         Sign in with {provider.name}
                       </Button>
-                    )}
-                    {provider.type === 'email' && (
-                      <>
-                        <p className='center'>OR</p>
-                        <form action={provider.signinUrl} method='POST'>
-                          <input type='hidden' name='csrfToken' value={csrfToken} />
-
-                          <TextField
-                            color='primary'
-                            fullWidth
-                            id={`input-email-for-${provider.id}-provider`}
-                            autoFocus
-                            type='text'
-                            name='email'
-                            value={email}
-                            size='small'
-                            onChange={e => {
-                              setEmail(e.target.value);
-                            }}
-                            placeholder='email@example.com'
-                            variant='outlined'
-                            margin='dense'
-                          />
-                          <Button color='primary' fullWidth variant='outlined' type='submit'>
-                            Sign in with {provider.name}
-                          </Button>
-                        </form>
-                      </>
-                    )}
-                  </div>
-                );
-              })}
-          </Box>
-        </Box>
-      </Container>
+                    </form>
+                  </>
+                )}
+              </div>
+            );
+          })}
+      </LogoMessage>
     </Layout>
   );
 }

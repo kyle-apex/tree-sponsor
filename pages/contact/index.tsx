@@ -1,23 +1,12 @@
 import { Container, TextField, Box, Button, LinearProgress, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import Layout from 'components/layout/Layout';
+import LogoMessage from 'components/layout/LogoMessage';
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
-  container: {
-    minHeight: 'calc(100vh - 170px)',
-    marginBottom: 0,
-    display: 'flex',
-  },
-  signinContainer: {
-    borderColor: theme.palette.primary.main,
-    borderRadius: '5px',
-    border: 'solid 1px',
-    padding: '10px 20px 30px',
-    minHeight: '380px',
-    marginTop: theme.spacing(2),
-  },
   formField: {
     marginBottom: theme.spacing(2),
   },
@@ -56,79 +45,70 @@ const Contact = () => {
 
   return (
     <Layout>
-      <Container maxWidth='xs' className={classes.container}>
-        <Box display='flex' className='full-width' justifyContent='center' alignItems='center'>
-          <Box
-            flexDirection='column'
-            display='flex'
-            justifyContent='center'
-            className={classes.signinContainer + ' box-shadow full-width section-background'}
-          >
-            <Typography color='secondary' variant='h1'>
-              Contact Us
-            </Typography>
-            <TextField
-              label='Email'
-              value={email}
-              key={email}
-              onChange={e => {
-                setStatus('');
-                setEmail(e.target.value);
-              }}
-              variant='outlined'
-              className={classes.formField}
-              disabled={status == 'sending'}
-            ></TextField>
-            <TextField
-              label='Name'
-              value={name}
-              onChange={e => {
-                setStatus('');
-                setName(e.target.value);
-              }}
-              variant='outlined'
-              className={classes.formField}
-              disabled={status == 'sending'}
-            ></TextField>
+      <LogoMessage hideLogo={true}>
+        <Typography color='secondary' variant='h1'>
+          Contact Us
+        </Typography>
+        <TextField
+          label='Email'
+          value={email}
+          key={email}
+          onChange={e => {
+            setStatus('');
+            setEmail(e.target.value);
+          }}
+          variant='outlined'
+          className={classes.formField}
+          disabled={status == 'sending'}
+        ></TextField>
+        <TextField
+          label='Name'
+          value={name}
+          onChange={e => {
+            setStatus('');
+            setName(e.target.value);
+          }}
+          variant='outlined'
+          className={classes.formField}
+          disabled={status == 'sending'}
+        ></TextField>
 
-            <TextField
-              value={subject}
-              onChange={e => {
-                setStatus('');
-                setSubject(e.target.value);
-              }}
-              label='Subject'
-              variant='outlined'
-              className={classes.formField}
-              disabled={status == 'sending'}
-            ></TextField>
-            <TextField
-              label='Message'
-              multiline={true}
-              value={message}
-              rows={5}
-              onChange={e => {
-                setStatus('');
-                setMessage(e.target.value);
-              }}
-              variant='outlined'
-              className={classes.formField}
-              disabled={status == 'sending'}
-            ></TextField>
-            <Button
-              variant='contained'
-              color='secondary'
-              onClick={() => submitMessage()}
-              size='large'
-              disabled={status == 'sending' || !(email && message && subject)}
-            >
-              Send Message
-            </Button>
-            {status === 'sent' && <p>Thank you for contacting us. Your message will be reviewed shortly.</p>}
-            {status === 'sending' && <LinearProgress></LinearProgress>}
-          </Box>
-        </Box>
-      </Container>
+        <TextField
+          value={subject}
+          onChange={e => {
+            setStatus('');
+            setSubject(e.target.value);
+          }}
+          label='Subject'
+          variant='outlined'
+          className={classes.formField}
+          disabled={status == 'sending'}
+        ></TextField>
+        <TextField
+          label='Message'
+          multiline={true}
+          value={message}
+          rows={5}
+          onChange={e => {
+            setStatus('');
+            setMessage(e.target.value);
+          }}
+          variant='outlined'
+          className={classes.formField}
+          disabled={status == 'sending'}
+        ></TextField>
+        <Button
+          variant='contained'
+          color='secondary'
+          onClick={() => submitMessage()}
+          size='large'
+          disabled={status == 'sending' || !(email && message && subject)}
+        >
+          Send Message
+        </Button>
+        {status === 'sent' && <p>Thank you for contacting us. Your message will be reviewed shortly.</p>}
+        {status === 'sending' && <LinearProgress></LinearProgress>}
+      </LogoMessage>
     </Layout>
   );
 };

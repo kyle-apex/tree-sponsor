@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/client';
 import React, { useEffect } from 'react';
 import { Stripe, stripe } from 'utils/stripe/init';
 import Image from 'next/image';
+import LogoMessage from 'components/layout/LogoMessage';
 
 const SignupSuccess = ({ name, email }: { name?: string; email?: string }) => {
   useEffect(() => {
@@ -11,44 +12,24 @@ const SignupSuccess = ({ name, email }: { name?: string; email?: string }) => {
   }, []);
   return (
     <Layout>
-      <Container maxWidth='xs' sx={{ minHeight: 'calc(100vh - 170px)', marginBottom: 0, display: 'flex' }}>
-        <Box display='flex' justifyContent='center' alignItems='center'>
-          <Box
-            flexDirection='column'
-            display='flex'
-            justifyContent='center'
-            className='box-shadow'
-            sx={{
-              borderColor: theme => theme.palette.primary.main,
-              borderRadius: '5px',
-              border: 'solid 1px',
-              padding: '10px 20px 30px',
-              backgroundColor: 'white',
-              minHeight: '380px',
-            }}
-          >
-            <Box className='center' m={3}>
-              <Image src='/logo.png' alt='TreeFolks Young Professionals Logo' width={100} height={100} />
-            </Box>
-            {!email && (
-              <div className='center'>
-                <p>Error!</p>
-              </div>
+      <LogoMessage>
+        {!email && (
+          <div className='center'>
+            <p>Error!</p>
+          </div>
+        )}
+        {email && (
+          <div className='center'>
+            <h2>Thanks for your donation!</h2>
+            <p>A login link to get started with your account was sent to your email address: {email || ''}</p>
+            {false && (
+              <Button fullWidth variant='outlined' color='primary'>
+                Retry Login
+              </Button>
             )}
-            {email && (
-              <div className='center'>
-                <h2>Thanks for your donation!</h2>
-                <p>A login link to get started with your account was sent to your email address: {email || ''}</p>
-                {false && (
-                  <Button fullWidth variant='outlined' color='primary'>
-                    Retry Login
-                  </Button>
-                )}
-              </div>
-            )}
-          </Box>
-        </Box>
-      </Container>
+          </div>
+        )}
+      </LogoMessage>
     </Layout>
   );
 };
