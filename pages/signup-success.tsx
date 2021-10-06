@@ -5,6 +5,7 @@ import React, { useEffect } from 'react';
 import { Stripe, stripe } from 'utils/stripe/init';
 import Image from 'next/image';
 import LogoMessage from 'components/layout/LogoMessage';
+import SponsorshipAddForm from 'components/sponsor/SponsorshipAddForm';
 
 const SignupSuccess = ({ name, email }: { name?: string; email?: string }) => {
   useEffect(() => {
@@ -13,6 +14,7 @@ const SignupSuccess = ({ name, email }: { name?: string; email?: string }) => {
   return (
     <Layout>
       <LogoMessage>
+        <SponsorshipAddForm></SponsorshipAddForm>
         {!email && (
           <div className='center'>
             <p>Error!</p>
