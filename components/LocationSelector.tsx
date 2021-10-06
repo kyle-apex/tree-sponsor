@@ -14,6 +14,8 @@ const navControlStyle = {
   top: 10,
 };
 
+const START_LOCATION = { longitude: -97.7405213210974, latitude: 30.27427678853506 };
+
 const useStyles = makeStyles(() => ({
   marker: { color: '#EA4335' },
   container: {
@@ -74,7 +76,7 @@ const LocationSelector = ({
           mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
           position='top-left'
           onViewportChange={handleViewportChange}
-          proximity={{ longitude: -97.7405213210974, latitude: 30.27427678853506 }}
+          proximity={START_LOCATION}
         />
         <Marker latitude={viewport.latitude} longitude={viewport.longitude} offsetLeft={-25} offsetTop={-46}>
           <RoomSharpIcon style={{ fontSize: 50 }} className={classes.marker}></RoomSharpIcon>
