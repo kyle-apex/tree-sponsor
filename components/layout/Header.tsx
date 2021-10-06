@@ -92,7 +92,7 @@ const Header = () => {
           {!session && (
             <Link href='/signup'>
               <Button sx={{ marginRight: 2 }} color='inherit'>
-                Sponrsor a tree
+                Sponsor a tree
               </Button>
             </Link>
           )}

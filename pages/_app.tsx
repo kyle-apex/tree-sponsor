@@ -33,6 +33,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <Head>
           <title>My App</title>
           <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
+          <link href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css' rel='stylesheet' />{' '}
         </Head>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={theme}>
