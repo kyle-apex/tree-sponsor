@@ -10,6 +10,7 @@ import SponsorshipAddForm from 'components/sponsor/SponsorshipAddForm';
 const SignupSuccess = ({ name, email }: { name?: string; email?: string }) => {
   useEffect(() => {
     if (email) signIn('email', { email: email, redirect: false });
+    console.log('name', name);
   }, []);
   return (
     <Layout>
