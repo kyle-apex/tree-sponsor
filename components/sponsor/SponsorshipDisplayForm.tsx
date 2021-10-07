@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useSession } from 'next-auth/client';
 import Image from 'next/image';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
+import { FileWithContent } from 'interfaces';
 
 const useStyles = makeStyles(theme => ({
   thumbnail: {
@@ -38,19 +39,16 @@ const SponsorshipDisplayForm = ({
   setTitle,
   description,
   setDescription,
-  setImageFile,
+  imageUrl,
+  setImageUrl,
 }: //onChange,
 {
   title: string;
   setTitle: (param: string) => void;
   description: string;
   setDescription: (param: string) => void;
-  setImageFile: React.Dispatch<
-    React.SetStateAction<{
-      type: string;
-      content: string;
-    }>
-  >;
+  imageUrl: string;
+  setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const classes = useStyles();
   const [session] = useSession();
@@ -79,7 +77,7 @@ const SponsorshipDisplayForm = ({
         <CardHeader
           avatar={
             <Avatar aria-label='recipe' className={classes.avatar}>
-              {session?.user?.image ? <Image src={session.user.image} width={50} height={50}></Image> : <span>{getAbbreviation()}</span>}
+              {session?.user?.image ? <img src={session.user.image} width={40} height={40}></img> : <span>{getAbbreviation()}</span>}
             </Avatar>
           }
           title={
@@ -100,13 +98,10 @@ const SponsorshipDisplayForm = ({
           className={classes.media}
           title={title}
         >
-          <ImageUploadAndPreview setImageFile={setImageFile} />
+          <ImageUploadAndPreview imageUrl={imageUrl} setImageUrl={setImageUrl} />
         </CardMedia>
 
         <CardContent>
-          <Typography variant='body2' color='textSecondary' component='p'>
-            {description}
-          </Typography>
           <TextField
             multiline={true}
             rows={3}

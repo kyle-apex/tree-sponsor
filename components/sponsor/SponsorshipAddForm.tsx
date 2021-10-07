@@ -7,6 +7,7 @@ import axios from 'axios';
 import SponsorshipDisplayForm from './SponsorshipDisplayForm';
 import LocationSelector from 'components/LocationSelector';
 import SplitRow from 'components/layout/SplitRow';
+import { FileWithContent } from 'interfaces';
 
 const useStyles = makeStyles(theme => ({
   thumbnail: {
@@ -48,23 +49,32 @@ const SponsorshipAddForm = () => {
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
 
-  const [imageFile, setImageFile] = useState<{ type: string; content: string }>();
+  const [imageUrl, setImageUrl] = useState('');
 
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState<{ [k: number]: boolean }>({});
+  const [isUpserting, setIsUpserting] = useState(false);
 
-  const createSponsorship = async () => {
-    await axios.post('/api/sponsorships', {
+  const upsertSponsorship = async () => {
+    const updatedSponsorship = await axios.post('/api/sponsorships', {
       title,
       description,
-      //tree: { latitude, longitude },
-      imageFile,
+      tree: { latitude, longitude },
+      imageUrl,
     });
+
     //router.push('/account');
   };
 
   const handleStep = (step: number) => () => {
     setActiveStep(step);
+  };
+
+  const saveStep = async (step: number) => {
+    setActiveStep(step);
+    setIsUpserting(true);
+    await upsertSponsorship();
+    setIsUpserting(false);
   };
 
   const steps = [{ label: 'Details' }, { label: 'Location' }];
@@ -85,16 +95,18 @@ const SponsorshipAddForm = () => {
             setTitle={setTitle}
             description={description}
             setDescription={setDescription}
-            setImageFile={setImageFile}
+            imageUrl={imageUrl}
+            setImageUrl={setImageUrl}
           ></SponsorshipDisplayForm>
           <SplitRow>
             <></>
             <Button
+              disabled={isUpserting}
               className={classes.stepButton}
               variant='contained'
               color='primary'
               onClick={() => {
-                setActiveStep(activeStep + 1);
+                saveStep(activeStep + 1);
               }}
             >
               Next
@@ -111,19 +123,21 @@ const SponsorshipAddForm = () => {
           ></LocationSelector>
           <SplitRow>
             <Button
+              disabled={isUpserting}
               className={classes.stepButton}
               onClick={() => {
-                setActiveStep(activeStep - 1);
+                saveStep(activeStep - 1);
               }}
             >
               Back
             </Button>
             <Button
+              disabled={isUpserting}
               className={classes.stepButton}
               variant='contained'
               color='primary'
               onClick={() => {
-                setActiveStep(activeStep + 1);
+                saveStep(activeStep + 1);
               }}
             >
               Next

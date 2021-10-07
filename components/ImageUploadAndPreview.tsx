@@ -4,17 +4,13 @@ import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 
 const ImageUploadAndPreview = ({
-  setImageFile,
+  imageUrl,
+  setImageUrl,
 }: {
-  setImageFile: React.Dispatch<
-    React.SetStateAction<{
-      type: string;
-      content: string;
-    }>
-  >;
+  imageUrl: string;
+  setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const fileInputRef = useRef<HTMLInputElement>();
-  const [imageUrl, setImageUrl] = useState('');
   //const [imageFile, setImageFile] = useState<{ type: string; content: string }>();
 
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,10 +48,9 @@ const ImageUploadAndPreview = ({
         ctx.drawImage(img, 0, 0, width, height);
 
         const dataUrl = canvas.toDataURL();
-        console.log('dataUrl', width, height, dataUrl);
+        console.log('dataUrl', width, height, dataUrl, file.type);
 
         setImageUrl(dataUrl);
-        setImageFile({ type: file.type, content: dataUrl.split(',')[1] });
       };
       img.src = e.target.result as string;
     };

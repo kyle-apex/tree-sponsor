@@ -140,6 +140,7 @@ model Tree {
 
 enum ReviewStatus {
   New
+  Draft
   Approved
   Rejected
   Modified
