@@ -14,7 +14,6 @@ const ImageUploadAndPreview = ({
   //const [imageFile, setImageFile] = useState<{ type: string; content: string }>();
 
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('inonselectfile');
     if (!e?.target?.files?.length) return;
     const reader = new FileReader();
     const file = e.target.files[0];
@@ -26,8 +25,8 @@ const ImageUploadAndPreview = ({
       // Add the file name to the data URL
       console.log('result', e.target.result);
       img.onload = () => {
-        const MAX_WIDTH = 800;
-        const MAX_HEIGHT = 600;
+        const MAX_WIDTH = 600;
+        const MAX_HEIGHT = 500;
         let width = img.width;
         let height = img.height;
 

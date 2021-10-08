@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Subscriptions = () => {
+const Subscriptions = ({ setActiveDonationAmount }: { setActiveDonationAmount?: React.Dispatch<React.SetStateAction<number>> }) => {
   const classes = useStyles();
   const [session, loading] = useSession();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -55,8 +55,15 @@ const Subscriptions = () => {
   };
 
   useEffect(() => {
-    console.log('got session', session);
-  }, [session]);
+    if (!subscriptions || !setActiveDonationAmount) return;
+    let activeDonationAmount = 0;
+    subscriptions.forEach(subscription => {
+      if (subscription.status === 'active') activeDonationAmount += subscription.amount;
+    });
+    console.log('activeDonationAmount', activeDonationAmount, subscriptions);
+    setActiveDonationAmount(activeDonationAmount);
+  }, [subscriptions]);
+
   return (
     <>
       <Typography color='primary' variant='h2' className={classes.headingWithIcon}>

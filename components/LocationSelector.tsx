@@ -16,8 +16,6 @@ const navControlStyle = {
   top: 10,
 };
 
-const START_LOCATION = { longitude: -97.7405213210974, latitude: 30.27427678853506 };
-
 const useStyles = makeStyles(() => ({
   marker: { color: '#EA4335' },
   markerContainer: { marginTop: '-50px', marginLeft: '-25px' },
@@ -26,15 +24,25 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const SEARCH_LOCATION = { longitude: -97.7405213210974, latitude: 30.27427678853506 };
+
 const LocationSelector = ({
   onViewportChange,
+  latitude,
+  longitude,
 }: {
   onViewportChange: (viewport: { longitude: number; latitude: number; zoom: number }) => void;
+  longitude?: number;
+  latitude?: number;
 }) => {
   const mapRef = useRef();
+
+  const START_LONGITUDE = longitude || -97.7405213210974;
+  const START_LATITUDE = latitude || 30.27427678853506;
+
   const [viewport, setViewport] = React.useState({
-    longitude: -97.7405213210974,
-    latitude: 30.27427678853506,
+    longitude: START_LONGITUDE,
+    latitude: START_LATITUDE,
     //longitude: -97.85117098722235,
     //latitude: 30.476811100617866,
     zoom: 16,
@@ -43,18 +51,6 @@ const LocationSelector = ({
   //30.476811100617866, -97.85117098722235
 
   const handleViewportChange = useCallback(newViewport => setViewport(newViewport), []);
-
-  const handleGeocoderViewportChange = useCallback(
-    (newViewport: any) => {
-      const geocoderDefaultOverrides = { transitionDuration: 1000 };
-
-      return handleViewportChange({
-        ...newViewport,
-        ...geocoderDefaultOverrides,
-      });
-    },
-    [handleViewportChange],
-  );
 
   const classes = useStyles();
   return (
@@ -83,7 +79,7 @@ const LocationSelector = ({
           mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
           position='top-left'
           onViewportChange={handleViewportChange}
-          proximity={START_LOCATION}
+          proximity={SEARCH_LOCATION}
         />
         <Marker latitude={viewport.latitude} longitude={viewport.longitude} className={classes.markerContainer}>
           <RoomSharpIcon style={{ fontSize: 50 }} className={classes.marker}></RoomSharpIcon>

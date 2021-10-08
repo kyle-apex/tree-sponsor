@@ -18,6 +18,10 @@ body {
   display: none;
 }
 
+.marker {
+  margin-top: -12px;
+}
+
 .MuiTab-root,
 input.MuiOutlinedInput-input,
 .MuiInputBase-multiline {

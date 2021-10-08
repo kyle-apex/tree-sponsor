@@ -1,12 +1,13 @@
 import { User } from '.prisma/client';
 import { Stepper, Step, StepButton, Button } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/client';
 import axios from 'axios';
 import SponsorshipDisplayForm from './SponsorshipDisplayForm';
 import LocationSelector from 'components/LocationSelector';
 import SplitRow from 'components/layout/SplitRow';
+import { PartialSponsorship } from 'interfaces';
 
 const useStyles = makeStyles(theme => ({
   thumbnail: {
@@ -39,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const SponsorshipAddForm = () => {
+const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: PartialSponsorship; onComplete?: () => void }) => {
   const classes = useStyles();
   const [session] = useSession();
 
@@ -79,9 +80,19 @@ const SponsorshipAddForm = () => {
     setIsUpserting(true);
     await upsertSponsorship();
     setIsUpserting(false);
+    if (onComplete) onComplete();
   };
 
   const steps = [{ label: 'Details' }, { label: 'Location' }];
+
+  useEffect(() => {
+    if (sponsorship) {
+      setTitle(sponsorship.title);
+      setDescription(sponsorship.description);
+      setId(sponsorship.id);
+      setImageUrl(sponsorship.pictureUrl);
+    }
+  }, [sponsorship]);
 
   return (
     <>
@@ -103,7 +114,19 @@ const SponsorshipAddForm = () => {
             setImageUrl={setImageUrl}
           ></SponsorshipDisplayForm>
           <SplitRow>
-            <></>
+            {onComplete ? (
+              <Button
+                disabled={isUpserting}
+                className={classes.stepButton}
+                onClick={() => {
+                  onComplete();
+                }}
+              >
+                Cancel
+              </Button>
+            ) : (
+              <></>
+            )}
             <Button
               disabled={isUpserting}
               className={classes.stepButton}
@@ -112,8 +135,9 @@ const SponsorshipAddForm = () => {
               onClick={() => {
                 saveStep(activeStep + 1);
               }}
+              disabled={!imageUrl}
             >
-              Next
+              Save and Continue
             </Button>
           </SplitRow>
         </>
@@ -124,6 +148,8 @@ const SponsorshipAddForm = () => {
             onViewportChange={({ latitude, longitude }) => {
               setLatitude(latitude), setLongitude(longitude);
             }}
+            latitude={sponsorship?.tree?.latitude ? Number(sponsorship?.tree?.latitude) : null}
+            longitude={sponsorship?.tree?.longitude ? Number(sponsorship?.tree?.longitude) : null}
           ></LocationSelector>
           <SplitRow>
             <Button
@@ -144,7 +170,7 @@ const SponsorshipAddForm = () => {
                 saveStep(activeStep + 1);
               }}
             >
-              Next
+              Save and Finish
             </Button>
           </SplitRow>
         </>

@@ -47,19 +47,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     sponsorship.user = { connect: { id: userId } };
 
-    if (sponsorship?.imageUrl) {
-      const imageUrl = sponsorship?.imageUrl;
-      const uploadedURL = await uploadImage(
-        imageUrl.split(',')[1],
-        imageUrl.substring(imageUrl.indexOf(':') + 1, imageUrl.indexOf(';')),
-        getSponsorImageKey(userId, sponsorship),
-      );
-
-      delete sponsorship.imageUrl;
-
-      sponsorship.pictureUrl = uploadedURL;
-    }
-
     const tree = sponsorship.tree;
 
     if (tree?.id || tree?.latitude) {
@@ -74,6 +61,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       };
     }
 
+    const imageUrl = sponsorship?.imageUrl;
+
+    delete sponsorship.imageUrl;
     delete sponsorship.imageFile;
     delete sponsorship.tree;
 
@@ -91,7 +81,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log('prismaQuery', prismaQuery);
 
-    const result = await prisma.sponsorship.upsert(prismaQuery);
-    res.status(200).json(result);
+    const upsertedSponsorship = await prisma.sponsorship.upsert(prismaQuery);
+
+    if (imageUrl && !imageUrl.includes('http')) {
+      const uploadedURL = await uploadImage(
+        imageUrl.split(',')[1],
+        imageUrl.substring(imageUrl.indexOf(':') + 1, imageUrl.indexOf(';')),
+        getSponsorImageKey(userId, upsertedSponsorship),
+      );
+
+      await prisma.sponsorship.update({ where: { id: upsertedSponsorship.id }, data: { pictureUrl: uploadedURL } });
+    }
+
+    res.status(200).json(upsertedSponsorship);
   }
 }

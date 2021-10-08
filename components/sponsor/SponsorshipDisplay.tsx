@@ -14,6 +14,7 @@ import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 import SponsorshipAvatar from 'components/sponsor/SponsorshipAvatar';
 import SponsorshipSubTitle from 'components/sponsor/SponsorshipSubTitle';
 import { DEFAULT_DESCRIPTION } from 'consts';
+import SponsorshipAddEditDialog from './SponsorshipAddEditDialog';
 
 export type TreeDetail = {
   title?: string;
@@ -66,6 +67,8 @@ const SponsorshipDisplay = ({
   const classes = useStyles();
 
   const [isDeleteConfirmation, setIsDeleteConfirmation] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [activeSponsorship, setActiveSponsorship] = useState<PartialSponsorship>();
 
   // read or input tree details
   /*sponsorship = sponsorship || {
@@ -107,7 +110,14 @@ const SponsorshipDisplay = ({
               )}
               {isEditMode && (
                 <>
-                  <IconButton aria-label='edit' size='large'>
+                  <IconButton
+                    aria-label='edit'
+                    size='large'
+                    onClick={() => {
+                      setActiveSponsorship(sponsorship);
+                      setIsEditDialogOpen(true);
+                    }}
+                  >
                     <EditIcon />
                   </IconButton>
                   <IconButton
@@ -132,6 +142,7 @@ const SponsorshipDisplay = ({
           )}
         </Card>
       )}
+      <SponsorshipAddEditDialog sponsorship={activeSponsorship} isOpen={isEditDialogOpen} setIsOpen={setIsEditDialogOpen} />
     </>
   );
 };

@@ -1,4 +1,5 @@
 //import { Decimal } from 'decimal.js';
+import { makeStyles } from '@mui/material';
 import * as React from 'react';
 import { useState } from 'react';
 import MapGL, { Marker } from 'react-map-gl';
@@ -6,6 +7,12 @@ import { useGet } from 'utils/hooks/use-get';
 import SponsorshipDisplayDialog from './SponsorshipDisplayDialog';
 
 // documentation: https://visgl.github.io/react-map-gl/docs/api-reference/marker
+/*
+const useStyles = makeStyles(() => ({
+  marker: {
+
+  }
+})*/
 
 const SponsorshipMap = () => {
   const [activeSponsorshipId, setActiveSponsorshipId] = useState<number>();
@@ -38,13 +45,18 @@ const SponsorshipMap = () => {
         {sponsorships?.map(sponsorship => {
           if (sponsorship?.tree?.latitude) {
             return (
-              <Marker key={sponsorship.id} latitude={Number(sponsorship.tree.latitude)} longitude={Number(sponsorship.tree.longitude)}>
+              <Marker
+                key={sponsorship.id}
+                className='marker'
+                latitude={Number(sponsorship.tree.latitude)}
+                longitude={Number(sponsorship.tree.longitude)}
+              >
                 <img
                   src='/pin-ring.svg'
                   style={{
                     width: (50 * viewport.zoom) / 10 + 'px',
-                    marginTop: -1 * ((50 * viewport.zoom) / 10) * 1.2 + 'px',
                     marginLeft: (-50 * viewport.zoom) / 20 + 'px',
+                    marginTop: -1 * ((50 * viewport.zoom) / 10) * 1.3,
                     cursor: 'pointer',
                   }}
                   onClick={() => showMarkerDetails(sponsorship.id)}
