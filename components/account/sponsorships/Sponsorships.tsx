@@ -46,7 +46,7 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
           </>
         )}
         {isFetched && availableSponsorshipCount > 0
-          ? [...Array(availableSponsorshipCount)].map((a, idx) => (
+          ? [...Array(availableSponsorshipCount)].map((_a, idx) => (
               <Grid item xs={12} sm={6} md={3} key={idx}>
                 <AddTreeButton
                   onAddClick={() => {

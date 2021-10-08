@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { FullscreenExitTwoTone } from '@mui/icons-material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   addIcon: {
     fontSize: '80px',
   },
