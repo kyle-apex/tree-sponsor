@@ -54,6 +54,13 @@ export default NextAuth({
       session.user = user;
       return session;
     },
+    async signIn(user, _account, profile) {
+      if (user?.id && !user.image && typeof profile?.picture === 'string') {
+        user.image = profile.picture;
+        prisma.user.update({ where: { id: user.id as number }, data: { image: user.image } });
+      }
+      return true;
+    },
   },
   pages: {
     signIn: '/signin',

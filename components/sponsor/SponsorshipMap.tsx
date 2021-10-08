@@ -35,24 +35,35 @@ const SponsorshipMap = () => {
         mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         className='index-map mapboxgl-map box-shadow'
       >
-        {sponsorships?.map(sponsorship => (
-          <Marker
-            key={sponsorship.id}
-            latitude={Number(sponsorship.tree.latitude)}
-            longitude={Number(sponsorship.tree.longitude)}
-            offsetLeft={-20}
-            offsetTop={-10}
-          >
-            <img
-              src='/pin-ring.svg'
-              style={{ width: (50 * viewport.zoom) / 10 + 'px', cursor: 'pointer' }}
-              onClick={() => showMarkerDetails(sponsorship.id)}
-            />
-          </Marker>
-        ))}
+        {sponsorships?.map(sponsorship => {
+          if (sponsorship?.tree?.latitude) {
+            return (
+              <Marker key={sponsorship.id} latitude={Number(sponsorship.tree.latitude)} longitude={Number(sponsorship.tree.longitude)}>
+                <img
+                  src='/pin-ring.svg'
+                  style={{
+                    width: (50 * viewport.zoom) / 10 + 'px',
+                    marginTop: -1 * ((50 * viewport.zoom) / 10) * 1.2 + 'px',
+                    marginLeft: (-50 * viewport.zoom) / 20 + 'px',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => showMarkerDetails(sponsorship.id)}
+                />
+              </Marker>
+            );
+          }
+        })}
 
         <Marker latitude={30.28} longitude={-97.69} offsetLeft={-20} offsetTop={-10}>
-          <img src='/pin-ring.svg' style={{ width: (50 * viewport.zoom) / 10 + 'px', cursor: 'pointer' }} />
+          <img
+            src='/pin-ring.svg'
+            style={{
+              width: (50 * viewport.zoom) / 10 + 'px',
+              marginTop: -1 * ((50 * viewport.zoom) / 10) * 1.2 + 'px',
+              marginLeft: (-50 * viewport.zoom) / 20 + 'px',
+              cursor: 'pointer',
+            }}
+          />
         </Marker>
       </MapGL>
       <SponsorshipDisplayDialog open={isDialogOpen} setOpen={setIsDialogOpen} id={activeSponsorshipId}></SponsorshipDisplayDialog>

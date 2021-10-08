@@ -83,7 +83,7 @@ const SponsorshipDisplay = ({
                 R
               </Avatar>
             }
-            title={sponsorship.title}
+            title={sponsorship.title || 'Sponsored by ' + sponsorship.user?.name}
             subheader={
               sponsorship.startDate && (
                 <span>

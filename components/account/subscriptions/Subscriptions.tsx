@@ -1,6 +1,6 @@
 import { Card, CardActionArea, CardContent, CardActions, Button, Grid, CardHeader, IconButton, Typography, Link } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGet } from 'utils/hooks/use-get';
 import { useSession } from 'next-auth/client';
 import axios from 'axios';
@@ -53,6 +53,10 @@ const Subscriptions = () => {
     const { data } = await axios.get('/api/stripe/portal-session?customerId=' + customerId);
     window.location.href = data.url;
   };
+
+  useEffect(() => {
+    console.log('got session', session);
+  }, [session]);
   return (
     <>
       <Typography color='primary' variant='h2' className={classes.headingWithIcon}>

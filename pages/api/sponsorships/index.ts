@@ -30,7 +30,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!sponsorship.reviewStatus) sponsorship.reviewStatus = 'Draft';
 
-    if (!sponsorship.id) {
+    const sponsorshipId = sponsorship.id;
+
+    // remove id if it's 0 for the upsert to work correctly
+    delete sponsorship.id;
+
+    if (!sponsorshipId) {
       const availableSponsorships = await getAvailableSponsorships(userId, 1);
 
       if (availableSponsorships?.length < 1) return throwError(res, 'You do not have any more available sponsorships!');
@@ -73,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     delete sponsorship.tree;
 
     const prismaQuery = {
-      where: { id: sponsorship.id || -1 },
+      where: { id: sponsorshipId || -1 },
       create: {
         ...sponsorship,
         tree: treeQuery,

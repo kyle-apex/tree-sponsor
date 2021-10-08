@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     const sponsorships = await prisma.sponsorship.findFirst({
       where: { id: id },
-      include: { tree: {} },
+      include: { tree: {}, user: { select: { name: true, image: true } } },
       orderBy: { startDate: 'desc' },
     });
     res.status(200).json(sponsorships);

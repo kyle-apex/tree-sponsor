@@ -18,6 +18,7 @@ const START_LOCATION = { longitude: -97.7405213210974, latitude: 30.274276788535
 
 const useStyles = makeStyles(() => ({
   marker: { color: '#EA4335' },
+  markerContainer: { marginTop: '-50px', marginLeft: '-25px' },
   container: {
     boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
   },
@@ -30,10 +31,14 @@ const LocationSelector = ({
 }) => {
   const mapRef = useRef();
   const [viewport, setViewport] = React.useState({
-    longitude: -97.7405213210974,
-    latitude: 30.27427678853506,
+    //longitude: -97.7405213210974,
+    //latitude: 30.27427678853506,
+    longitude: -97.85117098722235,
+    latitude: 30.476811100617866,
     zoom: 16,
   });
+
+  //30.476811100617866, -97.85117098722235
 
   const handleViewportChange = useCallback(newViewport => setViewport(newViewport), []);
 
@@ -69,7 +74,7 @@ const LocationSelector = ({
           style={geolocateControlStyle}
           positionOptions={{ enableHighAccuracy: true }}
           trackUserLocation={true}
-          fitBoundsOptions={{ maxZoom: 18 }}
+          fitBoundsOptions={{ maxZoom: 21 }}
         />
         <Geocoder
           mapRef={mapRef}
@@ -78,7 +83,7 @@ const LocationSelector = ({
           onViewportChange={handleViewportChange}
           proximity={START_LOCATION}
         />
-        <Marker latitude={viewport.latitude} longitude={viewport.longitude} offsetLeft={-25} offsetTop={-46}>
+        <Marker latitude={viewport.latitude} longitude={viewport.longitude} className={classes.markerContainer}>
           <RoomSharpIcon style={{ fontSize: 50 }} className={classes.marker}></RoomSharpIcon>
         </Marker>
         <NavigationControl style={navControlStyle} showCompass={false} />

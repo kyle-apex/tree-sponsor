@@ -7,7 +7,6 @@ import axios from 'axios';
 import SponsorshipDisplayForm from './SponsorshipDisplayForm';
 import LocationSelector from 'components/LocationSelector';
 import SplitRow from 'components/layout/SplitRow';
-import { FileWithContent } from 'interfaces';
 
 const useStyles = makeStyles(theme => ({
   thumbnail: {
@@ -48,6 +47,7 @@ const SponsorshipAddForm = () => {
   const [title, setTitle] = useState('');
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
+  const [id, setId] = useState(0);
 
   const [imageUrl, setImageUrl] = useState('');
 
@@ -57,12 +57,16 @@ const SponsorshipAddForm = () => {
 
   const upsertSponsorship = async () => {
     const updatedSponsorship = await axios.post('/api/sponsorships', {
+      id,
       title,
       description,
       tree: { latitude, longitude },
       imageUrl,
     });
 
+    console.log('updatedSponsorship.data', updatedSponsorship.data, updatedSponsorship);
+
+    if (updatedSponsorship?.data?.id) setId(updatedSponsorship.data.id);
     //router.push('/account');
   };
 

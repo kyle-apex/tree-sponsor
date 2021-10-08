@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useSession } from 'next-auth/client';
 import Image from 'next/image';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
-import { FileWithContent } from 'interfaces';
 
 const useStyles = makeStyles(theme => ({
   thumbnail: {
