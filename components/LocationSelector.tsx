@@ -1,5 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import MapGL, { Marker, GeolocateControl, NavigationControl } from 'react-map-gl';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import Geocoder from 'react-map-gl-geocoder';
 import RoomSharpIcon from '@mui/icons-material/RoomSharp';
 import makeStyles from '@mui/styles/makeStyles';
