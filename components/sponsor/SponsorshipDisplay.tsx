@@ -12,6 +12,7 @@ import React, { useState } from 'react';
 import { PartialSponsorship } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 import SponsorshipAvatar from 'components/sponsor/SponsorshipAvatar';
+import SponsorshipSubTitle from 'components/sponsor/SponsorshipSubTitle';
 
 export type TreeDetail = {
   title?: string;
@@ -81,14 +82,7 @@ const SponsorshipDisplay = ({
           <CardHeader
             avatar={<SponsorshipAvatar image={sponsorship.user?.image} name={sponsorship.user?.name} />}
             title={sponsorship.title || 'Sponsored by ' + sponsorship.user?.name}
-            subheader={
-              sponsorship.startDate && (
-                <span>
-                  {sponsorship.startDate.toLocaleString('default', { month: 'long', day: 'numeric' })}
-                  {sponsorship.startDate.getFullYear() != new Date().getFullYear() && <span>, {sponsorship.startDate.getFullYear()}</span>}
-                </span>
-              )
-            }
+            subheader={<SponsorshipSubTitle startDate={sponsorship.startDate} />}
             action={
               handleClose && (
                 <IconButton onClick={handleClose}>

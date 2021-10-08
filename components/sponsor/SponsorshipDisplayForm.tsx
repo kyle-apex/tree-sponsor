@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/client';
 import Image from 'next/image';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import SponsorshipAvatar from 'components/sponsor/SponsorshipAvatar';
+import SponsorshipSubTitle from 'components/sponsor/SponsorshipSubTitle';
 
 const useStyles = makeStyles(theme => ({
   thumbnail: {
@@ -76,7 +77,7 @@ const SponsorshipDisplayForm = ({
               className='full-width'
             ></TextField>
           }
-          subheader={<span>{startDate.toLocaleString('default', { month: 'long', day: 'numeric' })}</span>}
+          subheader={<SponsorshipSubTitle startDate={startDate} />}
         />
 
         <CardMedia
