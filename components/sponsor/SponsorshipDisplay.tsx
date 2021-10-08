@@ -11,6 +11,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import React, { useState } from 'react';
 import { PartialSponsorship } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
+import SponsorshipAvatar from 'components/sponsor/SponsorshipAvatar';
 
 export type TreeDetail = {
   title?: string;
@@ -78,11 +79,7 @@ const SponsorshipDisplay = ({
       {sponsorship?.id && (
         <Card>
           <CardHeader
-            avatar={
-              <Avatar aria-label='recipe' className={classes.avatar}>
-                R
-              </Avatar>
-            }
+            avatar={<SponsorshipAvatar image={sponsorship.user?.image} name={sponsorship.user?.name} />}
             title={sponsorship.title || 'Sponsored by ' + sponsorship.user?.name}
             subheader={
               sponsorship.startDate && (

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useSession } from 'next-auth/client';
 import Image from 'next/image';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
+import SponsorshipAvatar from 'components/sponsor/SponsorshipAvatar';
 
 const useStyles = makeStyles(theme => ({
   thumbnail: {
@@ -57,15 +58,6 @@ const SponsorshipDisplayForm = ({
 
   const startDate = new Date();
 
-  const getAbbreviation = (): string => {
-    if (session?.user?.name) {
-      const nameSplit = session.user.name.split(' ');
-      if (nameSplit.length == 1) return nameSplit[0].charAt(0).toUpperCase();
-      else return nameSplit[0].charAt(0).toUpperCase() + nameSplit[nameSplit.length - 1].charAt(0).toUpperCase();
-    } else {
-      return 'AN';
-    }
-  };
   const getName = (): string => {
     return session?.user?.name ? session.user.name : 'Anonymous';
   };
@@ -74,11 +66,7 @@ const SponsorshipDisplayForm = ({
     <>
       <Card>
         <CardHeader
-          avatar={
-            <Avatar aria-label='recipe' className={classes.avatar}>
-              {session?.user?.image ? <img src={session.user.image} width={40} height={40}></img> : <span>{getAbbreviation()}</span>}
-            </Avatar>
-          }
+          avatar={<SponsorshipAvatar image={session?.user?.image} name={session?.user?.name} />}
           title={
             <TextField
               size='small'

@@ -16,8 +16,8 @@ const AccountPage = () => {
       <Typography color='secondary' variant='h1'>
         Account
       </Typography>
-      <Subscriptions></Subscriptions>
       <Sponsorships></Sponsorships>
+      <Subscriptions></Subscriptions>
     </Layout>
   );
 };
