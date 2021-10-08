@@ -5,6 +5,7 @@
 !/pages/api/availableSponsorships/index.ts
 !/pages/api/sponsorships/index.ts
 !/pages/api/contact/index.ts
+!/consts/index.ts
 # dependencies
 /node_modules
 /.pnp

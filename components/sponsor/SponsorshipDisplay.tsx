@@ -13,6 +13,7 @@ import { PartialSponsorship } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 import SponsorshipAvatar from 'components/sponsor/SponsorshipAvatar';
 import SponsorshipSubTitle from 'components/sponsor/SponsorshipSubTitle';
+import { DEFAULT_DESCRIPTION } from 'consts';
 
 export type TreeDetail = {
   title?: string;
@@ -94,7 +95,7 @@ const SponsorshipDisplay = ({
           <CardMedia className={classes.media} image={sponsorship.pictureUrl} title={sponsorship.title} />
           <CardContent>
             <Typography variant='body2' color='textSecondary' component='p'>
-              {sponsorship.description}
+              {sponsorship.description || DEFAULT_DESCRIPTION}
             </Typography>
           </CardContent>
           {isEditMode && (
