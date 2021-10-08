@@ -29,7 +29,7 @@ input.MuiOutlinedInput-input,
 }
 
 .section-background {
-  background-color: #fcfcfc;
+  background-color: #fcfcfc !important;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -37,6 +37,10 @@ input.MuiOutlinedInput-input,
     --color-background: #486e62;
   }
 }
+.MuiStepIcon-root.Mui-active circle {
+  color: #6e4854;
+}
+
 :root {
   --color-background: brown;
   --table-odd: #fafafa;

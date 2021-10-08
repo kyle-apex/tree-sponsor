@@ -72,7 +72,7 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
   };
 
   const handleStep = (step: number) => () => {
-    setActiveStep(step);
+    if (!(step == 1 && !imageUrl)) setActiveStep(step);
   };
 
   const saveStep = async (step: number) => {
@@ -96,10 +96,12 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
 
   return (
     <>
-      <Stepper nonLinear sx={{ marginBottom: 3 }} activeStep={activeStep}>
+      <Stepper color='secondary' nonLinear sx={{ marginBottom: 3 }} activeStep={activeStep}>
         {steps.map((step, index) => (
-          <Step key={step.label} completed={completed[index]}>
-            <StepButton onClick={handleStep(index)}>{step.label}</StepButton>
+          <Step color='secondary' key={step.label} completed={completed[index]}>
+            <StepButton color='secondary' sx={{ color: 'red' }} onClick={handleStep(index)} disabled={index == 1 && !imageUrl}>
+              {step.label}
+            </StepButton>
           </Step>
         ))}
       </Stepper>
@@ -118,6 +120,7 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
               <Button
                 disabled={isUpserting}
                 className={classes.stepButton}
+                color='inherit'
                 onClick={() => {
                   onComplete();
                 }}
@@ -128,14 +131,13 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
               <></>
             )}
             <Button
-              disabled={isUpserting}
+              disabled={isUpserting || !imageUrl}
               className={classes.stepButton}
               variant='contained'
               color='primary'
               onClick={() => {
                 saveStep(activeStep + 1);
               }}
-              disabled={!imageUrl}
             >
               Save and Continue
             </Button>
@@ -155,6 +157,7 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
             <Button
               disabled={isUpserting}
               className={classes.stepButton}
+              color='inherit'
               onClick={() => {
                 saveStep(activeStep - 1);
               }}

@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from '@mui/material';
+import { Dialog, DialogContent, Typography } from '@mui/material';
 import { PartialSponsorship } from 'interfaces';
 import React from 'react';
 import SponsorshipAddForm from './SponsorshipAddForm';
@@ -18,7 +18,10 @@ const SponsorshipAddEditDialog = ({
 
   return (
     <Dialog open={isOpen} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px' } }} onClose={handleClose}>
-      <DialogContent>
+      <DialogContent className='section-background'>
+        <Typography mb={3} variant='h2'>
+          Tell us about your tree
+        </Typography>
         <SponsorshipAddForm
           sponsorship={sponsorship}
           onComplete={() => {
