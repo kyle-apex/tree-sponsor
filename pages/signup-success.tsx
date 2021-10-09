@@ -15,7 +15,6 @@ const SignupSuccess = ({ name, email }: { name?: string; email?: string }) => {
   return (
     <Layout>
       <LogoMessage>
-        <SponsorshipAddForm></SponsorshipAddForm>
         {!email && (
           <div className='center'>
             <p>Error!</p>

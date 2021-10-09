@@ -32,6 +32,10 @@ input.MuiOutlinedInput-input,
   background-color: #fcfcfc !important;
 }
 
+.sponsorship-section {
+  margin-bottom: 50px;
+}
+
 @media (prefers-color-scheme: dark) {
   .__next-auth-theme-auto {
     --color-background: #486e62;

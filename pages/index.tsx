@@ -8,6 +8,7 @@ import MapExample from 'components/MapExample';
 import SponsorshipMap from 'components/sponsor/SponsorshipMap';
 import SponsorshipDisplay from 'components/sponsor/SponsorshipDisplay';
 import TFYPAboutSection from 'components/index/TFYPAboutSection';
+import SponsorshipDisplayLoading from 'components/sponsor/SponsorshipDisplayLoading';
 
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 
@@ -30,12 +31,15 @@ const useStyles = makeStyles(theme => ({
 const IndexPage = () => {
   const [session, loading] = useSession();
   const [sponsorships, setSponsorships] = useState<PartialSponsorship[]>([]);
+  const [isLoadingSponsorships, setIsLoadingSponsorships] = useState(false);
 
   const getSponsorships = async () => {
+    setIsLoadingSponsorships(true);
     const results = await axios.get('/api/sponsorships/home');
 
     parseResponseDateStrings(results.data);
     setSponsorships(results.data);
+    setIsLoadingSponsorships(false);
   };
 
   useEffect(() => {
@@ -85,11 +89,18 @@ const IndexPage = () => {
           Texas Community
         </Typography>
         <Grid mb={10} container spacing={5} direction='row' justifyContent='space-around'>
-          {sponsorships.map(sponsorship => (
-            <Grid md={4} key={sponsorship.id} item>
-              <SponsorshipDisplay sponsorship={sponsorship}></SponsorshipDisplay>
-            </Grid>
-          ))}
+          {isLoadingSponsorships &&
+            [...Array(3)].map((_item, index) => (
+              <Grid md={4} key={index} item>
+                <SponsorshipDisplayLoading />
+              </Grid>
+            ))}
+          {!isLoadingSponsorships &&
+            sponsorships.map(sponsorship => (
+              <Grid md={4} key={sponsorship.id} item>
+                <SponsorshipDisplay sponsorship={sponsorship}></SponsorshipDisplay>
+              </Grid>
+            ))}
         </Grid>
       </Grid>
       <Box mt={5} p={5} className='index detail-section'>

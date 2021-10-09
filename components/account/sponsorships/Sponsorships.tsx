@@ -1,4 +1,4 @@
-import { Card, CardActionArea, CardContent, CardActions, Button, Grid, Typography } from '@mui/material';
+import { Card, CardActionArea, CardContent, CardActions, Button, Grid, Typography, Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useGet } from 'utils/hooks/use-get';
 import { useSession } from 'next-auth/client';
@@ -8,6 +8,7 @@ import { useRemoveFromQuery } from 'utils/hooks/use-remove-from-query';
 import axios from 'axios';
 import SponsorshipDisplay from 'components/sponsor/SponsorshipDisplay';
 import SponsorshipAddEditDialog from 'components/sponsor/SponsorshipAddEditDialog';
+import SponsorshipDisplayLoading from 'components/sponsor/SponsorshipDisplayLoading';
 
 const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number }) => {
   const [session, loading] = useSession();
@@ -30,12 +31,17 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
   }, [activeDonationAmount, sponsorships]);
 
   return (
-    <>
+    <Box sx={{ marginBottom: '60px' }}>
       <Typography color='primary' variant='h2' mt={3}>
         Sponsorships
       </Typography>
-      {!isFetched && <div>Loading...</div>}
+
       <Grid container spacing={4}>
+        {!isFetched && (
+          <Grid item xs={12} sm={6} md={3}>
+            <SponsorshipDisplayLoading />
+          </Grid>
+        )}
         {isFetched && sponsorships?.length > 0 && (
           <>
             {sponsorships.map(sponsorship => (
@@ -58,7 +64,7 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
           : isFetched && <AddTreeButton isStartSubscription={true}></AddTreeButton>}
       </Grid>
       <SponsorshipAddEditDialog isOpen={isAddDialogOpen} setIsOpen={setIsAddDialogOpen} />
-    </>
+    </Box>
   );
 };
 
