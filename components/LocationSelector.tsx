@@ -65,7 +65,7 @@ const LocationSelector = ({
           onViewportChange({ latitude: e.latitude, longitude: e.longitude, zoom: e.zoom });
         }}
         mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-        mapStyle='mapbox://styles/mapbox/satellite-v9'
+        mapStyle='mapbox://styles/mapbox/satellite-streets-v11'
       >
         <GeolocateControl
           auto={true}

@@ -59,7 +59,7 @@ const IndexPage = () => {
           </Typography>
           <Grid container direction='row' spacing={2}>
             <Grid item>
-              <Link href='/about'>
+              <Link href='/explore'>
                 <Button variant='outlined' color='secondary'>
                   Explore the Map
                 </Button>

@@ -1,22 +1,31 @@
-//import { Decimal } from 'decimal.js';
-import { makeStyles } from '@mui/material';
-import * as React from 'react';
-import { useState } from 'react';
-import MapGL, { Marker } from 'react-map-gl';
+import React, { useState, useCallback, useRef } from 'react';
+import MapGL, { GeolocateControl, Marker, NavigationControl } from 'react-map-gl';
 import { useGet } from 'utils/hooks/use-get';
 import SponsorshipDisplayDialog from './SponsorshipDisplayDialog';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import Geocoder from 'react-map-gl-geocoder';
+import { Button, ButtonGroup } from '@mui/material';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import NaturePeopleIcon from '@mui/icons-material/NaturePeople';
 
-// documentation: https://visgl.github.io/react-map-gl/docs/api-reference/marker
-/*
-const useStyles = makeStyles(() => ({
-  marker: {
+const geolocateControlStyle = {
+  right: 10,
+  top: 80,
+};
 
-  }
-})*/
+const navControlStyle = {
+  right: 10,
+  top: 10,
+};
 
-const SponsorshipMap = () => {
+const SEARCH_LOCATION = { longitude: -97.7405213210974, latitude: 30.27427678853506 };
+
+const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
   const [activeSponsorshipId, setActiveSponsorshipId] = useState<number>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [style, setStyle] = useState('mapbox://styles/mapbox/streets-v11');
+  const mapRef = useRef();
 
   const [viewport, setViewport] = useState({
     width: '100%',
@@ -26,10 +35,11 @@ const SponsorshipMap = () => {
     zoom: 10.7,
   });
 
+  const handleViewportChange = useCallback(newViewport => setViewport(newViewport), []);
+
   const { data: sponsorships, isFetched, isFetching } = useGet<any[]>('/api/sponsorships/locations', 'sponsorship-locations');
 
   function showMarkerDetails(id: number) {
-    console.log('id', id);
     setActiveSponsorshipId(id);
     setIsDialogOpen(true);
   }
@@ -38,9 +48,11 @@ const SponsorshipMap = () => {
     <>
       <MapGL
         {...viewport}
+        ref={mapRef}
         onViewportChange={(nextViewport: any) => setViewport(nextViewport)}
         mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         className='index-map mapboxgl-map box-shadow'
+        mapStyle={isExploreMode ? style : 'mapbox://styles/mapbox/light-v10'}
       >
         {sponsorships?.map(sponsorship => {
           if (sponsorship?.tree?.latitude) {
@@ -52,7 +64,7 @@ const SponsorshipMap = () => {
                 longitude={Number(sponsorship.tree.longitude)}
               >
                 <img
-                  src='/pin-ring.svg'
+                  src={isExploreMode ? 'pin-right-bright.svg' : '/pin-ring.svg'}
                   style={{
                     width: (50 * viewport.zoom) / 10 + 'px',
                     marginLeft: (-50 * viewport.zoom) / 20 + 'px',
@@ -65,8 +77,55 @@ const SponsorshipMap = () => {
             );
           }
         })}
+        {isExploreMode && (
+          <>
+            <GeolocateControl
+              auto={true}
+              style={geolocateControlStyle}
+              positionOptions={{ enableHighAccuracy: true }}
+              trackUserLocation={true}
+              fitBoundsOptions={{ maxZoom: 21 }}
+            />
+            <Geocoder
+              mapRef={mapRef}
+              mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+              position='top-left'
+              onViewportChange={handleViewportChange}
+              proximity={SEARCH_LOCATION}
+            />
+            <NavigationControl style={navControlStyle} showCompass={false} />
+            <div className='' style={{ position: 'absolute', right: '10px', bottom: '25px' }}>
+              <ButtonGroup variant='outlined' aria-label='outlined button group' sx={{ backgroundColor: 'white' }}>
+                <Button
+                  color='inherit'
+                  onClick={() => {
+                    setStyle('mapbox://styles/mapbox/streets-v11');
+                  }}
+                >
+                  <DirectionsCarIcon />
+                </Button>
+                <Button
+                  color='inherit'
+                  onClick={() => {
+                    setStyle('mapbox://styles/mapbox/satellite-streets-v11');
+                  }}
+                >
+                  <NaturePeopleIcon />
+                </Button>
+              </ButtonGroup>
+            </div>
+          </>
+        )}
+      </MapGL>
+      <SponsorshipDisplayDialog open={isDialogOpen} setOpen={setIsDialogOpen} id={activeSponsorshipId}></SponsorshipDisplayDialog>
+    </>
+  );
+};
 
-        <Marker latitude={30.28} longitude={-97.69} offsetLeft={-20} offsetTop={-10}>
+export default SponsorshipMap;
+
+/*
+<Marker latitude={30.28} longitude={-97.69} offsetLeft={-20} offsetTop={-10}>
           <img
             src='/pin-ring.svg'
             style={{
@@ -76,11 +135,4 @@ const SponsorshipMap = () => {
               cursor: 'pointer',
             }}
           />
-        </Marker>
-      </MapGL>
-      <SponsorshipDisplayDialog open={isDialogOpen} setOpen={setIsDialogOpen} id={activeSponsorshipId}></SponsorshipDisplayDialog>
-    </>
-  );
-};
-
-export default SponsorshipMap;
+        </Marker>*/
