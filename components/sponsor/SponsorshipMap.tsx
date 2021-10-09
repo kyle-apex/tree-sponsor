@@ -24,7 +24,7 @@ const SEARCH_LOCATION = { longitude: -97.7405213210974, latitude: 30.27427678853
 const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
   const [activeSponsorshipId, setActiveSponsorshipId] = useState<number>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [style, setStyle] = useState('mapbox://styles/mapbox/streets-v11');
+  const [style, setStyle] = useState('mapbox://styles/mapbox/satellite-streets-v11');
   const mapRef = useRef();
 
   const [viewport, setViewport] = useState({
@@ -99,18 +99,18 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
                 <Button
                   color='inherit'
                   onClick={() => {
-                    setStyle('mapbox://styles/mapbox/streets-v11');
-                  }}
-                >
-                  <DirectionsCarIcon />
-                </Button>
-                <Button
-                  color='inherit'
-                  onClick={() => {
                     setStyle('mapbox://styles/mapbox/satellite-streets-v11');
                   }}
                 >
                   <NaturePeopleIcon />
+                </Button>
+                <Button
+                  color='inherit'
+                  onClick={() => {
+                    setStyle('mapbox://styles/mapbox/streets-v11');
+                  }}
+                >
+                  <DirectionsCarIcon />
                 </Button>
               </ButtonGroup>
             </div>
