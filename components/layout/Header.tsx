@@ -112,6 +112,7 @@ const Header = () => {
         onClose={handleDrawerClose}
       >
         <div className={classes.drawerHeader}>
+          <Image src='/logo.png' alt='TreeFolks Young Professionals Logo' width={40} height={40} />
           <IconButton onClick={handleDrawerClose} size='large'>
             <ChevronRightIcon />
           </IconButton>

@@ -104,14 +104,18 @@ input.MuiOutlinedInput-input,
   .hidden-mobile {
     display: none;
   }
+}
+
+@media only screen and (max-width: 600px) {
   div.headline-section {
-    height: auto;
-    margin-bottom: 80px;
+    height: auto !important;
+    margin-bottom: 80px !important;
   }
   .index.detail-section {
     margin-top: 80px;
   }
 }
+
 /*
 @keyframes bounce {
   from {
