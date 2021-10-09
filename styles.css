@@ -168,3 +168,26 @@ input.MuiOutlinedInput-input,
   animation-name: bounce;
 }
 */
+
+.mapboxgl-ctrl-geocoder {
+  width: 600px;
+  max-width: 58vw;
+  font-size: 11px;
+  min-width: 100px;
+}
+
+@media screen and (min-width: 640px) {
+  .mapboxgl-ctrl-geocoder {
+    width: 50%;
+    font-size: 15px;
+    line-height: 20px;
+    min-width: 300px;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .mapboxgl-ctrl-geocoder {
+    width: 50%;
+    font-size: 15px;
+    line-height: 20px;
+  }
+}

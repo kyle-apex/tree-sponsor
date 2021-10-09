@@ -17,7 +17,7 @@ const SponsorshipAddEditDialog = ({
   };
 
   return (
-    <Dialog open={isOpen} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px' } }} onClose={handleClose}>
+    <Dialog open={isOpen} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px', margin: '0px' } }} onClose={handleClose}>
       <DialogContent className='section-background'>
         <Typography mb={3} variant='h2'>
           Tell us about your tree
