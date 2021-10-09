@@ -49,8 +49,8 @@ const IndexPage = () => {
   const classes = useStyles();
   return (
     <Layout>
-      <Grid mt={-4} container className={classes.headlineContainer} direction='row' spacing={5}>
-        <Grid md={5} justifyContent='center' sx={{ display: 'flex', flexDirection: 'column' }} item>
+      <Grid mt={-4} container className={classes.headlineContainer + ' headline-section'} direction='column' spacing={5}>
+        <Grid md={5} sm={12} justifyContent='center' sx={{ display: 'flex', flexDirection: 'column' }} item>
           <Typography variant='h2' color='secondary'>
             TreeFolksYP Tree Sponsorship
           </Typography>
@@ -74,7 +74,7 @@ const IndexPage = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item md={7} direction='column' container alignContent='center' justifyContent='center'>
+        <Grid item md={7} sm={12} direction='column' container alignContent='center' justifyContent='center'>
           <Box sx={{ height: '475px', maxHeight: 'calc(75vh)', width: '100%', display: 'flex', flexDirection: 'column' }}>
             <SponsorshipMap></SponsorshipMap>
           </Box>

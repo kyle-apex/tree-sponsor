@@ -104,6 +104,13 @@ input.MuiOutlinedInput-input,
   .hidden-mobile {
     display: none;
   }
+  div.headline-section {
+    height: auto;
+    margin-bottom: 80px;
+  }
+  .index.detail-section {
+    margin-top: 80px;
+  }
 }
 /*
 @keyframes bounce {
