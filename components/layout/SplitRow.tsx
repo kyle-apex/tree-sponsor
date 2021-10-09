@@ -9,7 +9,7 @@ const SplitRow = ({ children }: { children: any }) => {
       <Box flex='auto' display='flex' justifyContent='start'>
         {children[0]}
       </Box>
-      <Box flex='auto' display='flex' justifyContent='end'>
+      <Box flex='auto' display='flex' justifyContent='flex-end'>
         {children[1]}
       </Box>
     </Box>
