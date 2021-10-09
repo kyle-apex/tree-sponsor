@@ -5,8 +5,7 @@ import ServerStyleSheets from '@mui/styles/ServerStyleSheets';
 // Utils
 import theme from '../utils/theme';
 import { getSession } from 'utils/auth/get-session';
-import { upsertSubscriptions } from 'utils/prisma/upsert-subscriptions';
-import { findAllSubscriptionsForUser } from 'utils/stripe/find-all-subscriptions-for-user';
+import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
 
 class MyDocument extends Document {
   render() {
@@ -66,7 +65,7 @@ MyDocument.getInitialProps = async ctx => {
   if (query?.refresh === 'me') {
     const session = await getSession({ req });
     if (session?.user?.email) {
-      await upsertSubscriptions(await findAllSubscriptionsForUser(session?.user?.email));
+      await updateSubscriptionsForUser(session?.user?.email);
     }
     delete query.refresh;
   }

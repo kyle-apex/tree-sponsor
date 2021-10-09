@@ -6,7 +6,9 @@ const Footer = () => {
     <footer>
       <hr />
       <div className='legal'>
-        <div className='legal-copyright'>Copyright © 2021 TreeFolksYP. All rights reserved.</div>
+        <div className='legal-copyright'>
+          Copyright © 2021 TreeFolksYP. <span className='hidden-mobile'>All rights reserved.</span>
+        </div>
         <div className='legal-links'>
           <Link href='/legal/privacy'>
             <a className='legal-link'>Privacy</a>

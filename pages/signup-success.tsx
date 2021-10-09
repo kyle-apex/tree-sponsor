@@ -6,12 +6,17 @@ import { Stripe, stripe } from 'utils/stripe/init';
 
 import Image from 'next/image';
 import LogoMessage from 'components/layout/LogoMessage';
-import SponsorshipAddForm from 'components/sponsor/SponsorshipAddForm';
 import Link from 'next/link';
+
+import { PrismaClient } from '@prisma/client';
+import { getURL } from 'utils/get-application-url';
+import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
+
+const prisma = new PrismaClient();
 
 const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: string; isSignedIn: boolean }) => {
   useEffect(() => {
-    if (email) signIn('email', { email: email, redirect: false });
+    if (email && !isSignedIn) signIn('email', { email: email, redirect: false, callbackUrl: window.origin + '/account' });
     console.log('name', name);
   }, []);
   return (
@@ -36,7 +41,7 @@ const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: str
         {isSignedIn && (
           <div className='center'>
             <h2>Thanks for your donation!</h2>
-            <p>You can manager your sponsored trees in your account:</p>
+            <p>You can manage your sponsored trees in your account:</p>
             <Link href='/account'>
               <Button fullWidth variant='outlined' color='primary'>
                 View My Account
@@ -60,18 +65,36 @@ export async function getServerSideProps(context: any) {
 
   props.isSignedIn = !!session?.user;
 
+  let email = session?.user?.email;
+
+  const stripeSessionId = req.query.session_id;
+  delete req.query.session_id;
+
   if (!props.isSignedIn) {
     try {
-      const stripeSession = await stripe.checkout.sessions.retrieve(req.query.session_id);
+      const stripeSession = await stripe.checkout.sessions.retrieve(stripeSessionId);
       console.log('session', stripeSession);
       const customer = (await stripe.customers.retrieve(stripeSession.customer as string)) as Stripe.Customer;
 
+      email = customer.email;
+
       props.name = customer.name;
-      props.email = customer.email;
+      props.email = email;
+
+      await prisma.user.upsert({
+        where: { email: customer.email },
+        create: { name: customer.name, email, stripeCustomerId: customer.id },
+        update: { name: customer.name },
+      });
+
       console.log('customer', customer);
     } catch (err: unknown) {
       props.name = null;
     }
+  }
+
+  if (stripeSessionId && email) {
+    updateSubscriptionsForUser(email);
   }
 
   return {
