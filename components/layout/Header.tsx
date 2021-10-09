@@ -86,7 +86,7 @@ const Header = () => {
           </Link>
 
           <Typography variant='h6' className={classes.title}>
-            TreeFolksYP
+            <span className='hidden-mobile'>TreeFolksYP</span>
           </Typography>
 
           {!session && (

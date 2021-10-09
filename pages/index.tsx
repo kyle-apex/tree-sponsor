@@ -88,7 +88,7 @@ const IndexPage = () => {
           Your sponsorship is a 100% tax deductible donation to TreeFolks to plant, care for, and give away trees in the Austin and Central
           Texas Community
         </Typography>
-        <Grid mb={10} container spacing={5} direction='row' justifyContent='space-around'>
+        <Grid mb={12} container spacing={5} direction='row' justifyContent='space-around'>
           {isLoadingSponsorships &&
             [...Array(3)].map((_item, index) => (
               <Grid md={4} key={index} item>
@@ -103,7 +103,7 @@ const IndexPage = () => {
             ))}
         </Grid>
       </Grid>
-      <Box mt={5} p={5} className='index detail-section'>
+      <Box mt={8} p={5} className='index detail-section'>
         <Typography variant='h2'>What is TreeFolks Young Professionals?</Typography>
         <Typography variant='subtitle1' className={classes.headlineSubTitle}>
           TreeFolks Young Professionals (ages 21 – 40ish) volunteer, educate, fundraise, and build community in support of the mission of
