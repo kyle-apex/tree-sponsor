@@ -2,6 +2,7 @@ import Layout from 'components/layout/Layout';
 
 import Subscriptions from 'components/account/subscriptions/Subscriptions';
 import Sponsorships from 'components/account/sponsorships/Sponsorships';
+import EditProfile from 'components/account/profile/EditProfile';
 
 import Link from 'next/link';
 import serverSideIsAuthenticated from 'utils/auth/server-side-is-authenticated';
@@ -36,6 +37,9 @@ const AccountPage = () => {
       </Box>
       <Box hidden={1 != activeTab}>
         <Subscriptions setActiveDonationAmount={setActiveDonationAmount} isSectionActive={1 === activeTab}></Subscriptions>
+      </Box>
+      <Box hidden={2 != activeTab}>
+        <EditProfile />
       </Box>
     </Layout>
   );

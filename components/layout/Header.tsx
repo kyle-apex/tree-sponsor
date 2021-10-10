@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/client';
 import { Button, IconButton, Toolbar, Typography, AppBar, Drawer, Divider, List, ListItem, ListItemText } from '@mui/material';
@@ -7,6 +7,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 
 const drawerWidth = 240;
 
@@ -63,7 +64,8 @@ const useStyles = makeStyles(theme => ({
 
 const Header = () => {
   const [session, loading] = useSession();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const classes = useStyles();
 
   const router = useRouter();
@@ -75,6 +77,16 @@ const Header = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const checkIsAdmin = async () => {
+    const result = await axios.get('/api/me/is-admin');
+    console.log('result', result);
+    setIsAdmin(result.data);
+  };
+
+  useEffect(() => {
+    checkIsAdmin();
+  }, [session]);
 
   return (
     <>
@@ -125,7 +137,7 @@ const Header = () => {
               <ListItemText primary='Tree Map' />
             </ListItem>
           </Link>
-          {session && (
+          {session && isAdmin && (
             <Link href='/admin'>
               <ListItem button>
                 <ListItemText primary='Admin' />
