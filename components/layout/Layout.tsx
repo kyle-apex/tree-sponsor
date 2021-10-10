@@ -30,7 +30,7 @@ const Layout = ({ children, title = 'TreeFolksYP', isFullWidth }: Props) => (
           <Box mb={6}>{children}</Box>
         </Box>
       ) : (
-        <Container maxWidth='lg' sx={{ paddingTop: theme => theme.spacing(2) }}>
+        <Container maxWidth='lg' sx={{ paddingTop: theme => theme.spacing(3) }}>
           <Box mb={6}>{children}</Box>
         </Container>
       )}
