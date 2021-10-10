@@ -19,7 +19,7 @@ import axios from 'axios';
 // wave generator: https://codepedia.info/svg-wave-generator/
 const useStyles = makeStyles(theme => ({
   headlineContainer: {
-    height: 'calc(100vh - 100px)',
+    height: 'calc(100vh - 275px)',
     minHeight: '600px',
   },
   treeDetailsContainer: {},
@@ -89,7 +89,7 @@ const IndexPage = () => {
         </Grid>
       </Container>
       <div style={{ height: '150px', width: '100%', overflow: 'hidden' }}>
-        <svg viewBox='0 0 500 150' preserveAspectRatio='none' style={{ height: '100%', width: '100%;' }}>
+        <svg viewBox='0 0 500 150' preserveAspectRatio='none' style={{ height: '100%', width: '100%' }}>
           <path
             d='M-12.57,88.06 C161.18,180.06 283.68,5.08 527.42,136.06 L500.00,150.00 L-0.00,150.00 Z'
             style={{ stroke: 'none', fill: 'rgb(113, 153, 140)' }}
@@ -136,7 +136,7 @@ const IndexPage = () => {
         </Container>
       </div>
       <div style={{ height: '150px', width: '100%', overflow: 'hidden', transform: 'scaleY(-1) scaleX(-1)' }}>
-        <svg viewBox='0 0 500 150' preserveAspectRatio='none' style={{ height: '100%', width: '100%;' }}>
+        <svg viewBox='0 0 500 150' preserveAspectRatio='none' style={{ height: '100%', width: '100%' }}>
           <path
             d='M-21.52,182.05 C505.96,216.07 610.96,158.05 612.21,157.07 L532.84,149.07 L-47.77,73.06 Z'
             style={{ stroke: 'none', fill: 'rgb(72, 110, 98)' }}

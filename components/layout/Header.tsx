@@ -120,6 +120,11 @@ const Header = () => {
         </div>
         <Divider />
         <List>
+          <Link href='/explore'>
+            <ListItem button>
+              <ListItemText primary='Tree Map' />
+            </ListItem>
+          </Link>
           {session && (
             <Link href='/admin'>
               <ListItem button>
@@ -185,6 +190,20 @@ const Header = () => {
               </Button>
             )}
           </ListItem>
+          {session && (
+            <ListItem button>
+              <Button
+                sx={{ marginTop: 1 }}
+                color='primary'
+                fullWidth
+                variant='contained'
+                className={classes.loginButton}
+                onClick={() => router.push('/signup')}
+              >
+                Sponsor More Trees
+              </Button>
+            </ListItem>
+          )}
         </List>
       </Drawer>
     </>

@@ -32,10 +32,6 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
 
   return (
     <Box sx={{ marginBottom: '60px' }}>
-      <Typography color='primary' variant='h2' mt={3}>
-        Sponsorships
-      </Typography>
-
       <Grid container spacing={4}>
         {!isFetched && (
           <Grid item xs={12} sm={6} md={3}>
@@ -61,7 +57,11 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
                 ></AddTreeButton>
               </Grid>
             ))
-          : isFetched && <AddTreeButton isStartSubscription={true}></AddTreeButton>}
+          : isFetched && (
+              <Grid item xs={12} sm={6} md={3}>
+                <AddTreeButton isStartSubscription={true}></AddTreeButton>
+              </Grid>
+            )}
       </Grid>
       <SponsorshipAddEditDialog isOpen={isAddDialogOpen} setIsOpen={setIsAddDialogOpen} />
     </Box>

@@ -32,7 +32,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Subscriptions = ({ setActiveDonationAmount }: { setActiveDonationAmount?: React.Dispatch<React.SetStateAction<number>> }) => {
+const Subscriptions = ({
+  setActiveDonationAmount,
+  isSectionActive,
+}: {
+  setActiveDonationAmount?: React.Dispatch<React.SetStateAction<number>>;
+  isSectionActive?: boolean;
+}) => {
   const classes = useStyles();
   const [session, loading] = useSession();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -64,14 +70,19 @@ const Subscriptions = ({ setActiveDonationAmount }: { setActiveDonationAmount?: 
     setActiveDonationAmount(activeDonationAmount);
   }, [subscriptions]);
 
+  useEffect(() => {
+    if (isSectionActive == true) refreshFromStripe();
+  }, [isSectionActive]);
+
   return (
     <>
-      <Typography color='primary' variant='h2' className={classes.headingWithIcon}>
-        Subscriptions
-        <IconButton onClick={refreshFromStripe}>
-          <RefreshIcon fontSize='large' className={isRefreshing ? 'spin' : ''} />
-        </IconButton>
-      </Typography>
+      {false && (
+        <Typography color='primary' variant='h2' className={classes.headingWithIcon}>
+          <IconButton onClick={refreshFromStripe}>
+            <RefreshIcon fontSize='large' className={isRefreshing ? 'spin' : ''} />
+          </IconButton>
+        </Typography>
+      )}
       {!isFetched && <div>Loading...</div>}
       {isFetched && subscriptions?.length > 0 ? (
         <Grid container spacing={4}>
