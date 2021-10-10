@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 const LogoMessage = ({ children, hideLogo }: { children: React.ReactNode; hideLogo?: boolean }) => {
   return (
-    <Container maxWidth='xs' sx={{ minHeight: 'calc(100vh - 170px)', marginBottom: 0, display: 'flex' }}>
+    <Container maxWidth='xs' sx={{ minHeight: 'calc(100vh - 185px)', marginBottom: 0, display: 'flex' }}>
       <Box display='flex' justifyContent='center' alignItems='center' sx={{ width: '100%' }}>
         <Box
           flexDirection='column'
