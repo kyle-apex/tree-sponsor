@@ -130,6 +130,9 @@ input.MuiOutlinedInput-input,
   .hidden-mobile {
     display: none;
   }
+  .account-tabs button {
+    font-size: 0.7rem;
+  }
 }
 
 @media only screen and (max-width: 600px) {

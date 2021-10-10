@@ -26,9 +26,9 @@ const AccountPage = () => {
         Account
       </Typography>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} mb={4}>
-        <Tabs value={activeTab} onChange={handleTabChange} variant='fullWidth' aria-label='basic tabs example'>
+        <Tabs className='account-tabs' value={activeTab} onChange={handleTabChange} variant='fullWidth' aria-label='basic tabs example'>
           <Tab label='Sponsorships' />
-          <Tab label='Subscriptions' />
+          <Tab label='Billing' />
           <Tab label='Profile' />
         </Tabs>
       </Box>
