@@ -91,6 +91,10 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
       setDescription(sponsorship.description);
       setId(sponsorship.id);
       setImageUrl(sponsorship.pictureUrl);
+      if (sponsorship.tree?.latitude) {
+        setLatitude(Number(sponsorship.tree.latitude));
+        setLongitude(Number(sponsorship.tree.longitude));
+      }
     }
   }, [sponsorship]);
 

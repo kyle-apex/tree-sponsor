@@ -210,20 +210,8 @@ const IndexPage = () => {
               <Grid item xs={12}>
                 {!isLoadingSponsorships && (
                   <>
-                    <VirtualizeSwipeableViews
-                      slideRenderer={slideRenderer}
-                      index={activeStep}
-                      onChangeIndex={handleStepChange}
-                      enableMouseEvents
-                    />
-                    {false && (
-                      <SwipeableViews axis='x' index={activeStep} onChangeIndex={handleStepChange} enableMouseEvents>
-                        {sponsorships.map(sponsorship => (
-                          <SponsorshipDisplay key={sponsorship.id} sponsorship={sponsorship}></SponsorshipDisplay>
-                        ))}
-                      </SwipeableViews>
-                    )}
                     <MobileStepper
+                      sx={{ paddingTop: '3px', paddingBottom: '0px' }}
                       steps={maxSteps}
                       position='static'
                       activeStep={mod(activeStep, 3)}
@@ -238,6 +226,20 @@ const IndexPage = () => {
                         </Button>
                       }
                     />
+                    <VirtualizeSwipeableViews
+                      style={{ marginTop: '-5px' }}
+                      slideRenderer={slideRenderer}
+                      index={activeStep}
+                      onChangeIndex={handleStepChange}
+                      enableMouseEvents
+                    />
+                    {false && (
+                      <SwipeableViews axis='x' index={activeStep} onChangeIndex={handleStepChange} enableMouseEvents>
+                        {sponsorships.map(sponsorship => (
+                          <SponsorshipDisplay key={sponsorship.id} sponsorship={sponsorship}></SponsorshipDisplay>
+                        ))}
+                      </SwipeableViews>
+                    )}
                   </>
                 )}
                 {isLoadingSponsorships && <SponsorshipDisplayLoading />}

@@ -30,6 +30,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!sponsorship.reviewStatus) sponsorship.reviewStatus = 'Draft';
 
+    if ((sponsorship.tree?.latitude || sponsorship.treeId) && sponsorship.imageUrl && sponsorship.reviewStatus === 'Draft')
+      sponsorship.reviewStatus = 'New';
+
     const sponsorshipId = sponsorship.id;
 
     // remove id if it's 0 for the upsert to work correctly
