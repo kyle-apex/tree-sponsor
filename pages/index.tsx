@@ -177,7 +177,7 @@ const IndexPage = () => {
       <div style={{ height: '150px', width: '100%', overflow: 'hidden', transform: 'scaleY(-1) scaleX(-1)' }}>
         <svg viewBox='0 0 500 150' preserveAspectRatio='none' style={{ height: '100%', width: '100%' }}>
           <path
-            d='M-21.52,182.05 C505.96,216.07 610.96,158.05 612.21,157.07 L532.84,149.07 L-47.77,73.06 Z'
+            d='M-17.21,138.05 C272.77,142.05 394.02,89.06 519.65,132.06 L507.15,160.06 L-0.00,150.00 Z'
             style={{ stroke: 'none', fill: 'rgb(72, 110, 98)' }}
           ></path>
         </svg>
