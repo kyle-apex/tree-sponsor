@@ -8,9 +8,10 @@ import { Box, Container } from '@mui/material';
 type Props = {
   children?: ReactNode;
   title?: string;
+  isFullWidth?: boolean;
 };
 
-const Layout = ({ children, title = 'TreeFolksYP' }: Props) => (
+const Layout = ({ children, title = 'TreeFolksYP', isFullWidth }: Props) => (
   <>
     <Head>
       <title>
@@ -24,9 +25,15 @@ const Layout = ({ children, title = 'TreeFolksYP' }: Props) => (
     </Head>
     <Header />
     <main>
-      <Container maxWidth='lg' sx={{ paddingTop: theme => theme.spacing(2) }}>
-        <Box mb={6}>{children}</Box>
-      </Container>
+      {isFullWidth ? (
+        <Box sx={{ paddingTop: theme => theme.spacing(2) }}>
+          <Box mb={6}>{children}</Box>
+        </Box>
+      ) : (
+        <Container maxWidth='lg' sx={{ paddingTop: theme => theme.spacing(2) }}>
+          <Box mb={6}>{children}</Box>
+        </Container>
+      )}
     </main>
     <Footer />
     <style jsx global>

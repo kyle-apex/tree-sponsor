@@ -90,6 +90,32 @@ input.MuiOutlinedInput-input,
   box-shadow: 0 5px 5px 0 rgb(66 66 66 / 8%), 0 3px 3px 3px rgb(66 66 66 / 16%);
 }
 
+.wide-container {
+  background-color: #486e62;
+  color: white;
+  padding: 30px 0px;
+  margin-top: -5px;
+}
+.index .step-number {
+  padding-top: 3px;
+  padding-left: 1px;
+  font-weight: 600;
+  font-size: 30px;
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+  color: white;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #71998c;
+  text-align: center;
+  margin-top: 20px;
+}
+.index .step-text {
+  padding: 30px;
+  text-align: center;
+}
+
 .index .detail-title {
   font-weight: 400;
   font-size: 20px;

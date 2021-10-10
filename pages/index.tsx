@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Layout from '../components/layout/Layout';
 import { useEffect, useState } from 'react';
 import 'fontsource-roboto';
-import { Button, Box, Grid, Typography } from '@mui/material';
+import { Button, Box, Grid, Typography, Container } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import MapExample from 'components/MapExample';
 import SponsorshipMap from 'components/sponsor/SponsorshipMap';
@@ -16,7 +16,7 @@ import { signIn, signOut, useSession } from 'next-auth/client';
 import CheckoutButton from 'components/CheckoutButton';
 import { PartialSponsorship } from 'interfaces';
 import axios from 'axios';
-
+// wave generator: https://codepedia.info/svg-wave-generator/
 const useStyles = makeStyles(theme => ({
   headlineContainer: {
     height: 'calc(100vh - 100px)',
@@ -48,83 +48,142 @@ const IndexPage = () => {
 
   const classes = useStyles();
   return (
-    <Layout>
-      <Grid
-        mt={-4}
-        container
-        className={classes.headlineContainer + ' headline-section'}
-        direction={{ xs: 'column', sm: 'row', md: 'row' }}
-        spacing={5}
-      >
-        <Grid sm={5} md={5} xs={12} justifyContent='center' sx={{ display: 'flex', flexDirection: 'column' }} item>
-          <Typography variant='h2' color='secondary'>
-            TreeFolksYP Tree Sponsorship
-          </Typography>
-          <Typography variant='subtitle1' className={classes.headlineSubTitle}>
-            Make your mark with a tree sponsorship through TreeFolks Young Professionals (TreeFolksYP)
-          </Typography>
-          <Grid container direction='row' spacing={2}>
-            <Grid item>
-              <Link href='/explore'>
-                <Button variant='outlined' color='secondary'>
-                  Explore the Map
-                </Button>
-              </Link>
+    <Layout isFullWidth={true}>
+      <Container maxWidth='lg'>
+        <Grid
+          mt={-4}
+          container
+          className={classes.headlineContainer + ' headline-section index'}
+          direction={{ xs: 'column', sm: 'row', md: 'row' }}
+          spacing={5}
+        >
+          <Grid sm={5} md={5} xs={12} justifyContent='center' sx={{ display: 'flex', flexDirection: 'column' }} item>
+            <Typography variant='h2' color='secondary'>
+              TreeFolksYP Tree Sponsorship
+            </Typography>
+            <Typography variant='subtitle1' className={classes.headlineSubTitle}>
+              Make your mark with a tree sponsorship through TreeFolks Young Professionals (TreeFolksYP)
+            </Typography>
+            <Grid container direction='row' spacing={2}>
+              <Grid item>
+                <Link href='/explore'>
+                  <Button variant='outlined' color='secondary'>
+                    Explore the Map
+                  </Button>
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href='/signup'>
+                  <Button variant='contained' color='primary'>
+                    Sponsor a Tree
+                  </Button>
+                </Link>
+              </Grid>
             </Grid>
-            <Grid item>
+          </Grid>
+          <Grid item md={7} sm={7} xs={12} direction='column' container alignContent='center' justifyContent='center'>
+            <Box sx={{ height: '475px', maxHeight: 'calc(75vh)', width: '100%', display: 'flex', flexDirection: 'column' }}>
+              <SponsorshipMap></SponsorshipMap>
+            </Box>
+          </Grid>
+        </Grid>
+      </Container>
+      <div style={{ height: '150px', width: '100%', overflow: 'hidden' }}>
+        <svg viewBox='0 0 500 150' preserveAspectRatio='none' style={{ height: '100%', width: '100%;' }}>
+          <path
+            d='M-12.57,88.06 C161.18,180.06 283.68,5.08 527.42,136.06 L500.00,150.00 L-0.00,150.00 Z'
+            style={{ stroke: 'none', fill: 'rgb(113, 153, 140)' }}
+          ></path>
+          <path
+            d='M-5.69,119.06 C116.80,190.06 335.55,51.07 523.68,156.06 L500.00,150.00 L-0.00,150.00 Z'
+            style={{ stroke: 'none', fill: 'rgb(72, 110, 98)' }}
+          ></path>
+        </svg>
+      </div>
+      <div className='wide-container index'>
+        <Container maxWidth='lg'>
+          <Grid container direction={{ xs: 'column', sm: 'row' }}>
+            <Grid item sm={4}>
+              <Box>
+                <Box className='step-number'>1</Box>
+              </Box>
+              <Typography variant='subtitle1' className='step-text'>
+                Start an annual donation to TreeFolks of $20 per tree
+              </Typography>
+            </Grid>
+            <Grid item sm={4}>
+              <Box>
+                <Box className='step-number'>2</Box>
+              </Box>
+              <Typography variant='subtitle1' className='step-text'>
+                Snag a picture of your special tree(s)
+              </Typography>
+            </Grid>
+            <Grid item sm={4} className='center'>
+              <Box>
+                <Box className='step-number'>3</Box>
+              </Box>
+              <Typography variant='subtitle1' className='step-text'>
+                Add trees to our sponsored tree map!
+              </Typography>
               <Link href='/signup'>
-                <Button variant='contained' color='primary'>
-                  Sponsor a Tree
+                <Button variant='outlined' color='inherit'>
+                  Get Started
                 </Button>
               </Link>
             </Grid>
           </Grid>
+        </Container>
+      </div>
+      <div style={{ height: '150px', width: '100%', overflow: 'hidden', transform: 'scaleY(-1) scaleX(-1)' }}>
+        <svg viewBox='0 0 500 150' preserveAspectRatio='none' style={{ height: '100%', width: '100%;' }}>
+          <path
+            d='M-21.52,182.05 C505.96,216.07 610.96,158.05 612.21,157.07 L532.84,149.07 L-47.77,73.06 Z'
+            style={{ stroke: 'none', fill: 'rgb(72, 110, 98)' }}
+          ></path>
+        </svg>
+      </div>
+      <Container maxWidth='lg'>
+        <Grid mt={0} className={classes.treeDetailsContainer} alignItems='center'>
+          <Typography variant='h2' color='secondary'>
+            Support the Urban Forest
+          </Typography>
+          <Typography variant='subtitle1' className={classes.headlineSubTitle}>
+            Your sponsorship is a 100% tax deductible donation to TreeFolks to plant, care for, and give away trees in the Austin and
+            Central Texas Community
+          </Typography>
+          <Grid mb={12} container spacing={5} direction='row' justifyContent='space-around'>
+            {isLoadingSponsorships &&
+              [...Array(3)].map((_item, index) => (
+                <Grid md={4} key={index} item>
+                  <SponsorshipDisplayLoading />
+                </Grid>
+              ))}
+            {!isLoadingSponsorships &&
+              sponsorships.map(sponsorship => (
+                <Grid md={4} key={sponsorship.id} item>
+                  <SponsorshipDisplay sponsorship={sponsorship}></SponsorshipDisplay>
+                </Grid>
+              ))}
+          </Grid>
         </Grid>
-        <Grid item md={7} sm={7} xs={12} direction='column' container alignContent='center' justifyContent='center'>
-          <Box sx={{ height: '475px', maxHeight: 'calc(75vh)', width: '100%', display: 'flex', flexDirection: 'column' }}>
-            <SponsorshipMap></SponsorshipMap>
-          </Box>
-        </Grid>
-      </Grid>
-      <Grid mt={0} className={classes.treeDetailsContainer} alignItems='center'>
-        <Typography variant='h2' color='secondary'>
-          Support the Urban Forest
-        </Typography>
-        <Typography variant='subtitle1' className={classes.headlineSubTitle}>
-          Your sponsorship is a 100% tax deductible donation to TreeFolks to plant, care for, and give away trees in the Austin and Central
-          Texas Community
-        </Typography>
-        <Grid mb={12} container spacing={5} direction='row' justifyContent='space-around'>
-          {isLoadingSponsorships &&
-            [...Array(3)].map((_item, index) => (
-              <Grid md={4} key={index} item>
-                <SponsorshipDisplayLoading />
-              </Grid>
-            ))}
-          {!isLoadingSponsorships &&
-            sponsorships.map(sponsorship => (
-              <Grid md={4} key={sponsorship.id} item>
-                <SponsorshipDisplay sponsorship={sponsorship}></SponsorshipDisplay>
-              </Grid>
-            ))}
-        </Grid>
-      </Grid>
-      <Box mt={8} p={5} className='index detail-section'>
-        <Typography variant='h2'>What is TreeFolks Young Professionals?</Typography>
-        <Typography variant='subtitle1' className={classes.headlineSubTitle}>
-          TreeFolks Young Professionals (ages 21 – 40ish) volunteer, educate, fundraise, and build community in support of the mission of
-          TreeFolks: planting, caring for, and giving people free trees to plant!
-        </Typography>
-      </Box>
-      <Box mt={-15} className='index'>
-        <TFYPAboutSection></TFYPAboutSection>
-      </Box>
-      {false && (
-        <p>
-          TreeFolks Young Professionals (TreeFolksYP) supports planting, caring for, and giving away free trees throughout Austin and
-          Central Texas. TreeFolksYP membership includes tree sponsorship, but you do not have to be a member to be a sponsor!
-        </p>
-      )}
+        <Box mt={8} p={5} className='index detail-section'>
+          <Typography variant='h2'>What is TreeFolks Young Professionals?</Typography>
+          <Typography variant='subtitle1' className={classes.headlineSubTitle}>
+            TreeFolks Young Professionals (ages 21 – 40ish) volunteer, educate, fundraise, and build community in support of the mission of
+            TreeFolks: planting, caring for, and giving people free trees to plant!
+          </Typography>
+        </Box>
+        <Box mt={-15} className='index'>
+          <TFYPAboutSection></TFYPAboutSection>
+        </Box>
+        {false && (
+          <p>
+            TreeFolks Young Professionals (TreeFolksYP) supports planting, caring for, and giving away free trees throughout Austin and
+            Central Texas. TreeFolksYP membership includes tree sponsorship, but you do not have to be a member to be a sponsor!
+          </p>
+        )}
+      </Container>
     </Layout>
   );
 };
