@@ -27,7 +27,7 @@ const IndexPage = () => {
   const getSponsorships = async () => {
     setIsLoadingSponsorships(true);
     const results = await parsedGet<PartialSponsorship[]>('sponsorships/home');
-
+    console.log('results', results);
     setSponsorships(results);
     setIsLoadingSponsorships(false);
   };

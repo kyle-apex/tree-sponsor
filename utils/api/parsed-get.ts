@@ -12,6 +12,8 @@ const parsedGet = async <T>(path: string): Promise<T> => {
   const results = await axios.get(path);
 
   parseResponseDateStrings(results.data);
+
+  return results.data;
 };
 
 export default parsedGet;

@@ -64,13 +64,6 @@ const SponsorshipGallery = ({ sponsorships }: { sponsorships: PartialSponsorship
         onChangeIndex={handleStepChange}
         enableMouseEvents
       />
-      {false && (
-        <SwipeableViews axis='x' index={activeStep} onChangeIndex={handleStepChange} enableMouseEvents>
-          {sponsorships.map(sponsorship => (
-            <SponsorshipDisplay key={sponsorship.id} sponsorship={sponsorship}></SponsorshipDisplay>
-          ))}
-        </SwipeableViews>
-      )}
     </>
   );
 };
