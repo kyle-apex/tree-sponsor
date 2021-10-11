@@ -1,29 +1,14 @@
 import Link from 'next/link';
 import Layout from '../components/layout/Layout';
 import { useEffect, useState } from 'react';
-import 'fontsource-roboto';
-import { Button, Box, Grid, Typography, Container, useMediaQuery, useTheme, MobileStepper } from '@mui/material';
+import { Button, Box, Grid, Typography, Container, useMediaQuery, useTheme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import MapExample from 'components/MapExample';
-import SponsorshipMap from 'components/sponsor/SponsorshipMap';
-import SponsorshipDisplay from 'components/sponsor/SponsorshipDisplay';
+import { SponsorshipMap, SponsorshipDisplay, SponsorshipGallery, SponsorshipDisplayLoading } from 'components/sponsor';
 import TFYPAboutSection from 'components/index/TFYPAboutSection';
-import SponsorshipDisplayLoading from 'components/sponsor/SponsorshipDisplayLoading';
-import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import parsedGet from 'utils/api/parsed-get';
 
-import SwipeableViews from 'react-swipeable-views';
-import { virtualize } from 'react-swipeable-views-utils';
-import { mod } from 'react-swipeable-views-core';
-
-const VirtualizeSwipeableViews = virtualize(SwipeableViews);
-
-import { signIn, signOut, useSession } from 'next-auth/client';
-import CheckoutButton from 'components/CheckoutButton';
 import { PartialSponsorship } from 'interfaces';
-import axios from 'axios';
-// wave generator: https://codepedia.info/svg-wave-generator/
+
 const useStyles = makeStyles(theme => ({
   headlineContainer: {
     height: 'calc(100vh - 275px)',
@@ -36,44 +21,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const IndexPage = () => {
-  const [session, loading] = useSession();
   const [sponsorships, setSponsorships] = useState<PartialSponsorship[]>([]);
   const [isLoadingSponsorships, setIsLoadingSponsorships] = useState(false);
 
-  const [activeStep, setActiveStep] = useState(0);
-  const maxSteps = 3;
-
-  const handleNext = () => {
-    setActiveStep(prevActiveStep => {
-      const newStep = prevActiveStep + 1;
-      return newStep; // >= 3 ? 0 : newStep;
-    });
-  };
-
-  const slideRenderer = (params: { index: number; key: any }) => {
-    const { index, key } = params;
-    const sponsorship = sponsorships[mod(index, 3)];
-    console.log('index', index, sponsorship);
-    return <SponsorshipDisplay key={key} sponsorship={sponsorship}></SponsorshipDisplay>;
-  };
-
-  const handleBack = () => {
-    setActiveStep(prevActiveStep => {
-      const newStep = prevActiveStep - 1;
-      return newStep; // < 0 ? 2 : newStep;
-    });
-  };
-
-  const handleStepChange = (step: number) => {
-    setActiveStep(step);
-  };
-
   const getSponsorships = async () => {
     setIsLoadingSponsorships(true);
-    const results = await axios.get('/api/sponsorships/home');
+    const results = await parsedGet<PartialSponsorship[]>('sponsorships/home');
 
-    parseResponseDateStrings(results.data);
-    setSponsorships(results.data);
+    setSponsorships(results);
     setIsLoadingSponsorships(false);
   };
 
@@ -208,40 +163,7 @@ const IndexPage = () => {
               ))}
             {hasGallery && (
               <Grid item xs={12}>
-                {!isLoadingSponsorships && (
-                  <>
-                    <MobileStepper
-                      sx={{ paddingTop: '3px', paddingBottom: '0px' }}
-                      steps={maxSteps}
-                      position='static'
-                      activeStep={mod(activeStep, 3)}
-                      nextButton={
-                        <Button size='small' onClick={handleNext}>
-                          {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-                        </Button>
-                      }
-                      backButton={
-                        <Button size='small' onClick={handleBack}>
-                          {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-                        </Button>
-                      }
-                    />
-                    <VirtualizeSwipeableViews
-                      style={{ marginTop: '-5px' }}
-                      slideRenderer={slideRenderer}
-                      index={activeStep}
-                      onChangeIndex={handleStepChange}
-                      enableMouseEvents
-                    />
-                    {false && (
-                      <SwipeableViews axis='x' index={activeStep} onChangeIndex={handleStepChange} enableMouseEvents>
-                        {sponsorships.map(sponsorship => (
-                          <SponsorshipDisplay key={sponsorship.id} sponsorship={sponsorship}></SponsorshipDisplay>
-                        ))}
-                      </SwipeableViews>
-                    )}
-                  </>
-                )}
+                {!isLoadingSponsorships && <SponsorshipGallery sponsorships={sponsorships} />}
                 {isLoadingSponsorships && <SponsorshipDisplayLoading />}
               </Grid>
             )}

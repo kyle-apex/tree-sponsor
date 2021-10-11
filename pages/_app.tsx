@@ -8,6 +8,7 @@ import { ThemeProvider, Theme, StyledEngineProvider } from '@mui/material/styles
 // Utils
 import theme from '../utils/theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import 'fontsource-roboto';
 import '../styles.css';
 import { Provider as NextAuthProvider } from 'next-auth/client';
 

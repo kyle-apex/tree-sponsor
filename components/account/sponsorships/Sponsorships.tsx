@@ -1,17 +1,12 @@
-import { Card, CardActionArea, CardContent, CardActions, Button, Grid, Typography, Box } from '@mui/material';
+import { Grid, Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useGet } from 'utils/hooks/use-get';
-import { useSession } from 'next-auth/client';
-import { Product, Subscription } from '@prisma/client';
 import AddTreeButton from 'components/sponsor/AddTreeButton';
 import { useRemoveFromQuery } from 'utils/hooks/use-remove-from-query';
 import axios from 'axios';
-import SponsorshipDisplay from 'components/sponsor/SponsorshipDisplay';
-import SponsorshipAddEditDialog from 'components/sponsor/SponsorshipAddEditDialog';
-import SponsorshipDisplayLoading from 'components/sponsor/SponsorshipDisplayLoading';
+import { SponsorshipDisplay, SponsorshipAddEditDialog, SponsorshipDisplayLoading } from 'components/sponsor';
 
 const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number }) => {
-  const [session, loading] = useSession();
   const [availableSponsorshipCount, setAvailableSponsorshipCount] = useState(0);
   const { data: sponsorships, isFetched, isFetching } = useGet<any[]>('/api/me/sponsorships', 'my-sponsorships');
 
@@ -26,7 +21,6 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
   useEffect(() => {
     if (!sponsorships) return;
     const totalSponsorshipCount = activeDonationAmount / 20;
-    console.log('availablesponsorships', totalSponsorshipCount);
     setAvailableSponsorshipCount(Math.max(0, totalSponsorshipCount - sponsorships.length));
   }, [activeDonationAmount, sponsorships]);
 
