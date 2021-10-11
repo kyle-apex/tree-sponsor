@@ -1,39 +1,8 @@
-import { Card, CardHeader, CardContent, Avatar, IconButton, CardMedia, Typography, CardActions, TextField } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import React, { useState } from 'react';
+import { Card, CardHeader, CardContent, CardMedia, TextField } from '@mui/material';
+import React from 'react';
 import { useSession } from 'next-auth/client';
-import Image from 'next/image';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
-import SponsorshipAvatar from 'components/sponsor/SponsorshipAvatar';
-import SponsorshipSubTitle from 'components/sponsor/SponsorshipSubTitle';
-
-const useStyles = makeStyles(theme => ({
-  thumbnail: {
-    width: '45px',
-    height: '45px',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  },
-  fullImage: {
-    width: '100%',
-  },
-  title: {
-    marginTop: '10px',
-  },
-  avatar: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
-  },
-  media: {
-    minHeight: '200px',
-  },
-  subtitle: {
-    color: theme.palette.grey[600],
-    //fontStyle: 'italic',
-    //fontSize: theme.typography.subtitle1.fontSize,
-    marginTop: '-20px',
-  },
-}));
+import { SponsorshipAvatar, SponsorshipSubTitle } from 'components/sponsor';
 
 const SponsorshipDisplayForm = ({
   title,
@@ -42,8 +11,7 @@ const SponsorshipDisplayForm = ({
   setDescription,
   imageUrl,
   setImageUrl,
-}: //onChange,
-{
+}: {
   title: string;
   setTitle: (param: string) => void;
   description: string;
@@ -51,11 +19,7 @@ const SponsorshipDisplayForm = ({
   imageUrl: string;
   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 }) => {
-  const classes = useStyles();
   const [session] = useSession();
-
-  //const [isEditingTitle, setIsEditingTitle] = useState(false);
-  //const [isEditingDescription, setIsEditingDescription] = useState(false);
 
   const startDate = new Date();
 
@@ -81,9 +45,15 @@ const SponsorshipDisplayForm = ({
         />
 
         <CardMedia
-          sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f1f1f1', cursor: 'pointer' }}
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#f1f1f1',
+            cursor: 'pointer',
+            minHeight: '200px',
+          }}
           component='div'
-          className={classes.media}
           title={title}
         >
           <ImageUploadAndPreview imageUrl={imageUrl} setImageUrl={setImageUrl} />

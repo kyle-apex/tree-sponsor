@@ -1,18 +1,14 @@
 import { User } from '.prisma/client';
-import { Grid, Collapse, Card, CardHeader, CardContent, Avatar, IconButton, CardMedia, Typography, CardActions } from '@mui/material';
+import { Card, CardHeader, CardContent, IconButton, CardMedia, Typography, CardActions } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { Clear, Details } from '@mui/icons-material';
 import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import React, { useState } from 'react';
 import { PartialSponsorship } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
-import SponsorshipAvatar from 'components/sponsor/SponsorshipAvatar';
-import SponsorshipSubTitle from 'components/sponsor/SponsorshipSubTitle';
+import { SponsorshipAvatar, SponsorshipSubTitle } from 'components/sponsor';
 import { DEFAULT_DESCRIPTION } from 'consts';
 import SponsorshipAddEditDialog from './SponsorshipAddEditDialog';
 
