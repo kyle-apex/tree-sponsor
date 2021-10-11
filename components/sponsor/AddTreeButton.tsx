@@ -1,9 +1,8 @@
-import { Card, CardContent, CardActions, CardHeader, Skeleton, Typography } from '@mui/material';
+import { Card, CardContent, CardHeader, Skeleton, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { useRouter } from 'next/router';
 import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
-import { FullscreenExitTwoTone } from '@mui/icons-material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 const useStyles = makeStyles(() => ({

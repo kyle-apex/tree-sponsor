@@ -25,7 +25,6 @@ const SponsorshipGallery = ({ sponsorships }: { sponsorships: PartialSponsorship
   const slideRenderer = (params: { index: number; key: any }) => {
     const { index, key } = params;
     const sponsorship = sponsorships[mod(index, 3)];
-    console.log('index', index, sponsorship);
     return <SponsorshipDisplay key={key} sponsorship={sponsorship}></SponsorshipDisplay>;
   };
 

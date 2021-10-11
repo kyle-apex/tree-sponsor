@@ -1,7 +1,6 @@
 import { Box } from '@mui/system';
 import ImageIcon from '@mui/icons-material/Image';
-import React, { useState, useRef } from 'react';
-import Image from 'next/image';
+import React, { useRef } from 'react';
 
 const ImageUploadAndPreview = ({
   imageUrl,

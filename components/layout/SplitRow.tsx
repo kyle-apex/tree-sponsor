@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { flexbox } from '@mui/system';
 
 const SplitRow = ({ children }: { children: any }) => {

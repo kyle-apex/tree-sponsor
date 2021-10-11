@@ -36,15 +36,12 @@ export function TableHeader({
   rowCount?: number;
   headCells: HeaderCellOptions[];
 }) {
-  //const { classes, order, orderBy, rowCount, onRequestSort, headCells } = props;
   const createSortHandler = (property: string) => (event: any) => {
     onRequestSort(event, property);
   };
   useEffect(() => {
-    console.log('head cells updated', JSON.stringify(headCells));
     return;
   }, [headCells]);
-  //const classes = useStyles();
 
   return (
     <TableHead>

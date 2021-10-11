@@ -43,8 +43,6 @@ const LocationSelector = ({
   const [viewport, setViewport] = React.useState({
     longitude: START_LONGITUDE,
     latitude: START_LATITUDE,
-    //longitude: -97.85117098722235,
-    //latitude: 30.476811100617866,
     zoom: 16,
   });
 

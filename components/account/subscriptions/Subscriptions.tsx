@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useGet } from 'utils/hooks/use-get';
 import { useSession } from 'next-auth/client';
 import axios from 'axios';
-import { Product, Subscription, SubscriptionWithDetails } from '@prisma/client';
+import { SubscriptionWithDetails } from '@prisma/client';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 const useStyles = makeStyles(theme => ({

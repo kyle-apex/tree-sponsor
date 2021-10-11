@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { FormControl, MenuItem, Select } from '@mui/material';
 
 import makeStyles from '@mui/styles/makeStyles';
@@ -25,14 +24,6 @@ export const TeeShirtSelect = ({
   const updateSize = async (hasShirt: boolean) => {
     updateHasShirt(userId, { hasShirt: !!hasShirt });
     setUserHasShirt(hasShirt);
-    /*
-    try {
-      const result = await axios.post('/api/users/' + userId, { hasShirt: !!hasShirt });
-    } catch (error) {
-      //return alert(error.message);
-    } finally {
-      //
-    }*/
   };
 
   return (

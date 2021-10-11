@@ -1,9 +1,5 @@
 import {
-  Card,
-  CardContent,
   Container,
-  Grid,
-  TextField,
   Tab,
   Tabs,
   TableCell,
@@ -11,19 +7,16 @@ import {
   Table,
   Box,
   Chip,
-  Button,
   TableBody,
   Typography,
   FormControlLabel,
   FormGroup,
   Checkbox,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import CheckoutButton from 'components/CheckoutButton';
 import React, { useState } from 'react';
 import Layout from 'components/layout/Layout';
-import { Check, CheckCircle, HighlightOff, Nature, Room } from '@mui/icons-material';
-//import TreeDetail from 'components/sponsor/TreeDetails';
+import { CheckCircle, HighlightOff } from '@mui/icons-material';
 
 const TabLabel = ({ title, pricing, subtitle }: { title: string; pricing: string; subtitle: string }) => (
   <>

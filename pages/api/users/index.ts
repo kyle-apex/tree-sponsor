@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -20,6 +20,5 @@ export default async function handler(_req: NextApiRequest, res: NextApiResponse
   users.sort((a, b) => {
     return a.roles.length > b.roles.length ? -1 : a.name > b.name ? 0 : 1;
   });
-  //const users = [{ name: 'Kyle', id: 1, email: 'kyle@kylehoskins.com', roles: [{ name: 'Admin', id: 1 }] }];
   res.status(200).json(users);
 }

@@ -1,7 +1,7 @@
 import { User } from '.prisma/client';
 import { Card, CardHeader, CardContent, IconButton, CardMedia, Typography, CardActions } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import { Clear, Details } from '@mui/icons-material';
+import { Clear } from '@mui/icons-material';
 import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -41,8 +41,6 @@ const useStyles = makeStyles(theme => ({
   },
   subtitle: {
     color: theme.palette.grey[600],
-    //fontStyle: 'italic',
-    //fontSize: theme.typography.subtitle1.fontSize,
     marginTop: '-20px',
   },
 }));
@@ -52,13 +50,11 @@ const SponsorshipDisplay = ({
   isEditMode,
   onDelete,
   handleClose,
-}: //onChange,
-{
+}: {
   sponsorship?: PartialSponsorship;
   isEditMode?: boolean;
   onDelete?: (id: number) => void;
   handleClose?: () => void;
-  //onChange?: (id: number, attributes: Record<string, any>) => void;
 }) => {
   const classes = useStyles();
 
@@ -66,15 +62,6 @@ const SponsorshipDisplay = ({
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [activeSponsorship, setActiveSponsorship] = useState<PartialSponsorship>();
 
-  // read or input tree details
-  /*sponsorship = sponsorship || {
-    title: 'My Tree',
-    description: 'Something about my tree',
-    startDate: new Date(),
-    user: { id: 1, name: 'Kyle Hoskins' },
-    pictureUrl: 'https://www.nwf.org/-/media/NEW-WEBSITE/Shared-Folder/Wildlife/Plants-and-Fungi/plant_southern-live-oak_600x300.ashx',
-  };*/
-  //
   return (
     <>
       {sponsorship?.id && (

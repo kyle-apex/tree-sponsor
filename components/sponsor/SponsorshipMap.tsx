@@ -123,16 +123,3 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
 };
 
 export default SponsorshipMap;
-
-/*
-<Marker latitude={30.28} longitude={-97.69} offsetLeft={-20} offsetTop={-10}>
-          <img
-            src='/pin-ring.svg'
-            style={{
-              width: (50 * viewport.zoom) / 10 + 'px',
-              marginTop: -1 * ((50 * viewport.zoom) / 10) * 1.2 + 'px',
-              marginLeft: (-50 * viewport.zoom) / 20 + 'px',
-              cursor: 'pointer',
-            }}
-          />
-        </Marker>*/

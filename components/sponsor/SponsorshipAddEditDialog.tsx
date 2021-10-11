@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, Typography } from '@mui/material';
 import { PartialSponsorship } from 'interfaces';
-import React from 'react';
 import SponsorshipAddForm from './SponsorshipAddForm';
 
 const SponsorshipAddEditDialog = ({

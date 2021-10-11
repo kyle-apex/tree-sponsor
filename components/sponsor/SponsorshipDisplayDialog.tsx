@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from '@mui/material';
+import { Dialog, DialogContent } from '@mui/material';
 import SponsorshipDisplay from './SponsorshipDisplay';
 import { Sponsorship } from '@prisma/client';
-import axios from 'axios';
-import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
-import { Clear } from '@mui/icons-material';
 import { makeStyles } from '@mui/styles';
 import SponsorshipDisplayLoading from './SponsorshipDisplayLoading';
+import parsedGet from 'utils/api/parsed-get';
 
 const useStyles = makeStyles(theme => ({
   title: { paddingBottom: 0, paddingTop: theme.spacing(1), paddingRight: theme.spacing(1), textAlign: 'right' },
@@ -20,13 +18,12 @@ const SponsorshipDisplayDialog = ({ open, setOpen, id }: { open: boolean; setOpe
 
   const readSponsorship = async () => {
     setIsLoading(true);
-    const result = await axios.get(`/api/sponsorships/${id}`);
-    setSponsorship(parseResponseDateStrings(result.data));
+    const result = await parsedGet<Sponsorship>(`/sponsorships/${id}`);
+    setSponsorship(result);
     setIsLoading(false);
   };
 
   useEffect(() => {
-    //if (sponsorship?.id != id) setSponsorship(null);
     if (open) readSponsorship();
   }, [open, id]);
 

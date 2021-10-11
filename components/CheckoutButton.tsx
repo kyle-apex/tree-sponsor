@@ -10,9 +10,6 @@ export default function CheckoutButton({ price, metadata }: { price: string; met
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCheckout = async () => {
-    /*if (!session) {
-      return router.push('/signin');
-    }*/
     price = price ?? 'price_1Ioq94KRkjW3h5nxlnL2qYXV';
     setIsLoading(true);
     try {

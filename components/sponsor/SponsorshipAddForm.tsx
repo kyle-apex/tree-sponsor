@@ -1,4 +1,3 @@
-import { User } from '.prisma/client';
 import { Stepper, Step, StepButton, Button } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { useEffect, useState } from 'react';

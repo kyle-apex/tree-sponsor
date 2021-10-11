@@ -1,4 +1,4 @@
-import { Container, TextField, Box, Button, LinearProgress, Typography } from '@mui/material';
+import { TextField, Button, LinearProgress, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import Layout from 'components/layout/Layout';
 import LogoMessage from 'components/layout/LogoMessage';
@@ -22,7 +22,7 @@ const Contact = () => {
     // eslint-disable-next-line no-empty
   } catch (err) {}
 
-  const [email, setEmail] = useState(''); //useLocalStorage('signInEmail', '');
+  const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
 
