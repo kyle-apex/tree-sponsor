@@ -1,14 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient, Sponsorship } from '@prisma/client';
+import { Sponsorship } from '@prisma/client';
 import { getSession } from 'utils/auth/get-session';
 import throwError from 'utils/api/throw-error';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
-import { hasAvailableSponsorship } from 'utils/prisma/has-available-sponsorship';
 import { getAvailableSponsorships } from 'utils/prisma/get-available-sponsorships';
 import uploadImage from 'utils/aws/upload-image';
 import { listenerCount } from 'process';
-
-const prisma = new PrismaClient();
+import { prisma } from 'utils/prisma/init';
 
 function getSponsorImageKey(userId: number, sponsorship: Sponsorship) {
   return `${userId}/${sponsorship.subscriptionId}/tree`;

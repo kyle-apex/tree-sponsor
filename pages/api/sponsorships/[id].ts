@@ -1,10 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient, Sponsorship } from '@prisma/client';
+import { Sponsorship } from '@prisma/client';
 import { getSession } from 'utils/auth/get-session';
 import throwError from 'utils/api/throw-error';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
-
-const prisma = new PrismaClient();
+import { prisma } from 'utils/prisma/init';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   let session, userId;

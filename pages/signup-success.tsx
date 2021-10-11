@@ -7,12 +7,10 @@ import { Stripe, stripe } from 'utils/stripe/init';
 import Image from 'next/image';
 import LogoMessage from 'components/layout/LogoMessage';
 import Link from 'next/link';
-
-import { PrismaClient } from '@prisma/client';
 import { getURL } from 'utils/get-application-url';
 import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
 
-const prisma = new PrismaClient();
+import { prisma } from 'utils/prisma/init';
 
 const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: string; isSignedIn: boolean }) => {
   useEffect(() => {

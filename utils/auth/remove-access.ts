@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
 import { NextApiRequest } from 'next';
 import { AccessType } from './AccessType';
 import { isCurrentUserAuthorized } from './is-current-user-authorized';
-const prisma = new PrismaClient();
+import { prisma } from 'utils/prisma/init';
 
 export default async function removeAccess(userId: number, accessType: AccessType, req?: NextApiRequest): Promise<void> {
   if (!(await isCurrentUserAuthorized('hasAuthManagement', req))) return;

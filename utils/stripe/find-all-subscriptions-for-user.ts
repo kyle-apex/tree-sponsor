@@ -2,12 +2,10 @@ import { PartialSubscription, StripeSubscription } from 'interfaces';
 import { getCustomerName } from './get-customer-name';
 import { getLastPaymentDateForSubscription } from './get-last-payment-date-for-subscription';
 import { Stripe, stripe } from './init';
-import { PrismaClient } from '@prisma/client';
 import getProductIdToNameMap from './get-product-id-to-name-map';
+import { prisma } from 'utils/prisma/init';
 
 export const findAllSubscriptionsForUser = async (email: string): Promise<PartialSubscription[]> => {
-  const prisma = new PrismaClient();
-
   const customers: Stripe.ApiList<Stripe.Customer> = await stripe.customers.list({
     limit: 150,
     email: email,

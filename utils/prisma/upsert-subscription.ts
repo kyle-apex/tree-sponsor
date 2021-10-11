@@ -1,8 +1,7 @@
 import { PartialSubscription } from 'interfaces';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from 'utils/prisma/init';
 
 export const upsertSubscription = async (subscription: PartialSubscription): Promise<void> => {
-  const prisma = new PrismaClient();
   await prisma.subscription.upsert({
     where: { stripeId: subscription.stripeId },
     create: {

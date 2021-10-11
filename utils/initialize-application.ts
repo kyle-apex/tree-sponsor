@@ -1,8 +1,6 @@
 import { upsertSubscriptions } from './prisma/upsert-subscriptions';
 import { findAllSubscriptions } from './stripe/find-all-subscriptions';
-import { PrismaClient, User } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from 'utils/prisma/init';
 
 export default async function initializeApplication() {
   // for some reason, full population requires calling this twice

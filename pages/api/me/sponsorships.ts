@@ -1,9 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { getSession } from 'utils/auth/get-session';
-
-const prisma = new PrismaClient();
+import { prisma } from 'utils/prisma/init';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });

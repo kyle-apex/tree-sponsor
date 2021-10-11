@@ -1,8 +1,8 @@
-// @ts-ignore
-import { PrismaClient, UserWhereInput } from '@prisma/client';
 import { AccessType } from 'utils/auth/AccessType';
-
-const prisma = new PrismaClient();
+import { prisma } from 'utils/prisma/init';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { UserWhereInput } from '@prisma/client';
 
 export const hasAccessForQueriedUser = async (query: UserWhereInput, accessType: AccessType): Promise<boolean> => {
   const userWithValidRoles = await prisma.user.findFirst({

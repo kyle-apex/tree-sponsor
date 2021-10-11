@@ -80,7 +80,6 @@ const Header = () => {
 
   const checkIsAdmin = async () => {
     const result = await axios.get('/api/me/is-admin');
-    console.log('result', result);
     setIsAdmin(result.data);
   };
 

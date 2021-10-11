@@ -1,9 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import grantAccess from 'utils/auth/grant-access';
 import removeAccess from 'utils/auth/remove-access';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from 'utils/prisma/init';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = Number(req.query.id);

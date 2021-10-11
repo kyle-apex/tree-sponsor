@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { prisma } from 'utils/prisma/init';
 
 export async function hasAvailableSponsorship(userId: number): Promise<boolean> {
   const currentSponsorships = await prisma.sponsorship.findMany({
