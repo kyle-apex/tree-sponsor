@@ -12,10 +12,6 @@ export default async function initializeApplication() {
   await upsertSubscriptions(await findAllSubscriptions());
 
   const ownerEmails: string[] = process.env.ownerEmails ? process.env.ownerEmails.split(',') : ['kyle@kylehoskins.com'];
-  /*const emailQuery: any[] = [];
-  adminEmails.forEach(email => {
-    emailQuery.push({ email });
-  });*/
 
   let ownerRole = await prisma.role.findFirst({ where: { name: 'Owner' } });
   console.log('first owner role', ownerRole, ownerEmails);
