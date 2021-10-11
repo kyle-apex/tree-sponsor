@@ -145,6 +145,17 @@ input.MuiOutlinedInput-input,
   }
 }
 
+.same-height .MuiCard-root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.same-height.start .MuiCard-root {
+  justify-content: flex-start;
+}
+
 /*
 @keyframes bounce {
   from {

@@ -191,7 +191,7 @@ const IndexPage = () => {
             Your sponsorship is a 100% tax deductible donation to TreeFolks to plant, care for, and give away trees in the Austin and
             Central Texas Community. Checkout a few sponsored trees:
           </Typography>
-          <Grid mb={12} container spacing={5} direction='row' justifyContent='space-around'>
+          <Grid mb={12} container spacing={5} direction='row' justifyContent='space-around' alignItems='stretch'>
             {isLoadingSponsorships &&
               !hasGallery &&
               [...Array(3)].map((_item, index) => (
@@ -202,7 +202,7 @@ const IndexPage = () => {
             {!isLoadingSponsorships &&
               !hasGallery &&
               sponsorships.map(sponsorship => (
-                <Grid md={4} key={sponsorship.id} item>
+                <Grid md={4} key={sponsorship.id} item className='same-height start'>
                   <SponsorshipDisplay sponsorship={sponsorship}></SponsorshipDisplay>
                 </Grid>
               ))}

@@ -41,7 +41,7 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
         {isFetched && sponsorships?.length > 0 && (
           <>
             {sponsorships.map(sponsorship => (
-              <Grid item xs={12} sm={6} md={3} key={sponsorship.id}>
+              <Grid item xs={12} sm={6} md={3} key={sponsorship.id} className='same-height'>
                 <SponsorshipDisplay isEditMode={true} sponsorship={sponsorship} onDelete={remove} />
               </Grid>
             ))}
