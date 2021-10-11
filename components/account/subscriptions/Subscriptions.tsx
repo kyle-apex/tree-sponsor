@@ -42,7 +42,6 @@ const Subscriptions = ({
   const classes = useStyles();
   const [session, loading] = useSession();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  type PartialSubscription = Partial<Subscription & { product?: Partial<Product> }>;
   const { data: subscriptions, isFetched, isFetching, refetch } = useGet<SubscriptionWithDetails[]>(
     '/api/me/subscriptions',
     'subscriptions',

@@ -1,10 +1,8 @@
 import { Grid, Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useGet } from 'utils/hooks/use-get';
-import AddTreeButton from 'components/sponsor/AddTreeButton';
-import { useRemoveFromQuery } from 'utils/hooks/use-remove-from-query';
+import { useGet, useRemoveFromQuery } from 'utils/hooks';
 import axios from 'axios';
-import { SponsorshipDisplay, SponsorshipAddEditDialog, SponsorshipDisplayLoading } from 'components/sponsor';
+import { SponsorshipDisplay, SponsorshipAddEditDialog, SponsorshipDisplayLoading, AddTreeButton } from 'components/sponsor';
 
 const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number }) => {
   const [availableSponsorshipCount, setAvailableSponsorshipCount] = useState(0);

@@ -7,6 +7,7 @@
 !/pages/api/contact/index.ts
 !/consts/index.ts
 !/components/sponsor/index.ts
+!/utils/hooks/index.ts
 # dependencies
 /node_modules
 /.pnp
