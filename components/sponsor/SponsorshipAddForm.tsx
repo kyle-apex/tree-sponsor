@@ -7,6 +7,7 @@ import SponsorshipDisplayForm from './SponsorshipDisplayForm';
 import LocationSelector from 'components/LocationSelector';
 import SplitRow from 'components/layout/SplitRow';
 import { PartialSponsorship } from 'interfaces';
+import LoadingButton from 'components/LoadingButton';
 
 const useStyles = makeStyles(theme => ({
   thumbnail: {
@@ -74,12 +75,12 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
     if (!(step == 1 && !imageUrl)) setActiveStep(step);
   };
 
-  const saveStep = async (step: number) => {
+  const saveStep = async (step: number, isCompleted?: boolean) => {
     setActiveStep(step);
     setIsUpserting(true);
     await upsertSponsorship();
     setIsUpserting(false);
-    if (onComplete) onComplete();
+    if (onComplete && isCompleted) onComplete();
   };
 
   const steps = [{ label: 'Details' }, { label: 'Location' }];
@@ -167,17 +168,18 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
             >
               Back
             </Button>
-            <Button
+            <LoadingButton
               disabled={isUpserting}
+              isLoading={isUpserting}
               className={classes.stepButton}
               variant='contained'
               color='primary'
               onClick={() => {
-                saveStep(activeStep + 1);
+                saveStep(activeStep, true);
               }}
             >
               Save and Finish
-            </Button>
+            </LoadingButton>
           </SplitRow>
         </>
       )}

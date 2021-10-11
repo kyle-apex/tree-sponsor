@@ -9,6 +9,7 @@ const LoadingButton = ({
   color = 'primary',
   onClick,
   isLoading,
+  disabled,
 }: {
   children?: React.ReactNode;
   size?: 'small' | 'medium' | 'large';
@@ -17,12 +18,13 @@ const LoadingButton = ({
   color?: 'inherit' | 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning';
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   isLoading?: boolean;
+  disabled?: boolean;
 }) => {
   return (
     <Button
       size={size}
       sx={{ height: '40px' }}
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       className={className}
       variant={variant}
       color={color}

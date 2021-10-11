@@ -1,12 +1,13 @@
 import { Grid, Box } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import { useGet, useRemoveFromQuery } from 'utils/hooks';
 import axios from 'axios';
 import { SponsorshipDisplay, SponsorshipAddEditDialog, SponsorshipDisplayLoading, AddTreeButton } from 'components/sponsor';
+import { createTypeReferenceDirectiveResolutionCache } from 'typescript';
 
 const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number }) => {
   const [availableSponsorshipCount, setAvailableSponsorshipCount] = useState(0);
-  const { data: sponsorships, isFetched, isFetching } = useGet<any[]>('/api/me/sponsorships', 'my-sponsorships');
+  const { data: sponsorships, isFetched, isFetching, refetch } = useGet<any[]>('/api/me/sponsorships', 'my-sponsorships');
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
@@ -21,6 +22,11 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
     const totalSponsorshipCount = activeDonationAmount / 20;
     setAvailableSponsorshipCount(Math.max(0, totalSponsorshipCount - sponsorships.length));
   }, [activeDonationAmount, sponsorships]);
+
+  const handleDialogClose = (isOpen: SetStateAction<boolean>) => {
+    setIsAddDialogOpen(isOpen);
+    refetch();
+  };
 
   return (
     <Box sx={{ marginBottom: '60px' }}>
@@ -55,7 +61,7 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
               </Grid>
             )}
       </Grid>
-      <SponsorshipAddEditDialog isOpen={isAddDialogOpen} setIsOpen={setIsAddDialogOpen} />
+      <SponsorshipAddEditDialog isOpen={isAddDialogOpen} setIsOpen={handleDialogClose} />
     </Box>
   );
 };
