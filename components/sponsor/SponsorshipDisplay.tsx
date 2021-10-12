@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
   avatar: {},
   media: {
     height: 0,
-    paddingTop: '56.25%', // 16:9
+    // paddingTop: '56.25%', // 16:9
   },
   subtitle: {
     color: theme.palette.grey[600],
@@ -50,11 +50,13 @@ const SponsorshipDisplay = ({
   isEditMode,
   onDelete,
   handleClose,
+  hasFullHeightImage,
 }: {
   sponsorship?: PartialSponsorship;
   isEditMode?: boolean;
   onDelete?: (id: number) => void;
   handleClose?: () => void;
+  hasFullHeightImage?: boolean;
 }) => {
   const classes = useStyles();
 
@@ -78,7 +80,12 @@ const SponsorshipDisplay = ({
               )
             }
           />
-          <CardMedia className={classes.media} image={sponsorship.pictureUrl} title={sponsorship.title} />
+          <CardMedia
+            sx={{ paddingTop: hasFullHeightImage ? '100%' : '56.25%' }}
+            className={classes.media}
+            image={sponsorship.pictureUrl}
+            title={sponsorship.title}
+          />
           <CardContent>
             <Typography variant='body2' color='textSecondary' component='p'>
               {sponsorship.description || DEFAULT_DESCRIPTION}

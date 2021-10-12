@@ -9,7 +9,7 @@ import { listenerCount } from 'process';
 import { prisma } from 'utils/prisma/init';
 
 function getSponsorImageKey(userId: number, sponsorship: Sponsorship) {
-  return `${userId}/${sponsorship.subscriptionId}/tree`;
+  return `${userId}/${sponsorship.id}/tree`;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

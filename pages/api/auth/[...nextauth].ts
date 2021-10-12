@@ -1,8 +1,18 @@
-import NextAuth from 'next-auth';
+import NextAuth, { Profile } from 'next-auth';
 import Providers from 'next-auth/providers';
 import { createTransport } from 'nodemailer';
 import Adapters from 'next-auth/adapters';
 import { prisma } from 'utils/prisma/init';
+
+function getProfilePictureUrl(profile: Profile): string {
+  if (typeof profile?.picture === 'string') return profile.picture;
+  else if (profile?.picture) {
+    const picture = profile.picture as Record<string, any>;
+    return picture.data.url;
+  }
+
+  return '';
+}
 
 export default NextAuth({
   providers: [
@@ -53,10 +63,23 @@ export default NextAuth({
       return session;
     },
     async signIn(user, _account, profile) {
-      if (user?.id && !user.image && typeof profile?.picture === 'string') {
-        user.image = profile.picture;
-        await prisma.user.update({ where: { id: user.id as number }, data: { image: user.image } });
+      console.log('profile', profile);
+      const profilePictureUrl = getProfilePictureUrl(profile);
+      let hasUpdate;
+      const updateData: { image?: string; name?: string } = {};
+      if (user?.id && !user.image && profilePictureUrl) {
+        user.image = profilePictureUrl;
+        updateData.image = user.image;
+        hasUpdate = true;
       }
+
+      if (user?.id && !user.name && typeof profile?.name === 'string') {
+        user.name = profile.name;
+        updateData.name = user.name;
+        hasUpdate = true;
+      }
+
+      if (hasUpdate) await prisma.user.update({ where: { id: user.id as number }, data: updateData });
       return true;
     },
   },
