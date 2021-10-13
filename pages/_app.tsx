@@ -11,13 +11,22 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import 'fontsource-roboto';
 import '../styles.css';
 import { Provider as NextAuthProvider } from 'next-auth/client';
+import { CacheProvider, EmotionCache } from '@emotion/react';
+import createEmotionCache from 'utils/create-emotion-cache';
+
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache();
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DefaultTheme extends Theme {}
 }
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache;
+}
+
+const MyApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: MyAppProps) => {
   React.useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
@@ -31,17 +40,20 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <NextAuthProvider session={pageProps.session}>
       <QueryClientProvider client={queryClient}>
-        <Head>
-          <title>My App</title>
-          <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
-          <link href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css' rel='stylesheet' />{' '}
-        </Head>
-        <StyledEngineProvider injectFirst>
+        <CacheProvider value={emotionCache}>
+          <Head>
+            <title>My App</title>
+            <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
+            <link
+              href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css'
+              rel='stylesheet'
+            />{' '}
+          </Head>
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <Component {...pageProps} />
           </ThemeProvider>
-        </StyledEngineProvider>
+        </CacheProvider>
       </QueryClientProvider>
     </NextAuthProvider>
   );

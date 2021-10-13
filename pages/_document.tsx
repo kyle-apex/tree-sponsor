@@ -10,6 +10,8 @@ import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-fo
 import createEmotionServer from '@emotion/server/create-instance';
 import { JssProvider } from 'react-jss';
 
+// https://stackoverflow.com/questions/55528172/fouc-when-using-material-ui-core-with-nextjs-react
+
 class MyDocument extends Document {
   render() {
     return (
