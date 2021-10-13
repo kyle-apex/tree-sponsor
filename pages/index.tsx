@@ -27,7 +27,6 @@ const IndexPage = () => {
   const getSponsorships = async () => {
     setIsLoadingSponsorships(true);
     const results = await parsedGet<PartialSponsorship[]>('sponsorships/home');
-    console.log('results', results);
     setSponsorships(results);
     setIsLoadingSponsorships(false);
   };
@@ -82,7 +81,7 @@ const IndexPage = () => {
           </Grid>
         </Grid>
       </Container>
-      <div style={{ height: '150px', width: '100%', overflow: 'hidden' }}>
+      <div style={{ height: '150px', width: '100%', marginTop: '-40px', overflow: 'hidden' }}>
         <svg viewBox='0 0 500 150' preserveAspectRatio='none' style={{ height: '100%', width: '100%' }}>
           <path
             d='M-12.57,88.06 C161.18,180.06 283.68,5.08 527.42,136.06 L500.00,150.00 L-0.00,150.00 Z'
@@ -158,7 +157,7 @@ const IndexPage = () => {
               !hasGallery &&
               sponsorships.map(sponsorship => (
                 <Grid md={4} key={sponsorship.id} item className='same-height start'>
-                  <SponsorshipDisplay sponsorship={sponsorship}></SponsorshipDisplay>
+                  <SponsorshipDisplay hasFullHeightImage={true} sponsorship={sponsorship}></SponsorshipDisplay>
                 </Grid>
               ))}
             {hasGallery && (
