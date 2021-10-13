@@ -191,3 +191,11 @@ const IndexPage = () => {
 };
 
 export default IndexPage;
+
+export async function getStaticProps() {
+  return {
+    props: {},
+    //asks next to re render page at most once every 10 minutes
+    revalidate: 600,
+  };
+}
