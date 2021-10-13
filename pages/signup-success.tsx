@@ -58,7 +58,9 @@ const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: str
 export default SignupSuccess;
 
 export async function getServerSideProps(context: any) {
-  const { req } = context;
+  const { req, query } = context;
+
+  const queryObj = query || req.query;
 
   const session = await getSession(context);
 
@@ -68,10 +70,18 @@ export async function getServerSideProps(context: any) {
 
   let email = session?.user?.email;
 
-  const stripeSessionId = req.query.session_id;
-  delete req.query.session_id;
+  console.log('query %j', query);
 
-  if (!props.isSignedIn) {
+  console.log('queryObj %j', queryObj);
+  let stripeSessionId;
+  if (queryObj) {
+    stripeSessionId = queryObj.session_id;
+    delete queryObj.session_id;
+  }
+
+  console.log('stripeSessionId', stripeSessionId);
+
+  if (!props.isSignedIn && stripeSessionId) {
     try {
       const stripeSession = await stripe.checkout.sessions.retrieve(stripeSessionId);
       console.log('session', stripeSession);
