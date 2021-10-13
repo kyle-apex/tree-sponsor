@@ -3,9 +3,11 @@ import React from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import ServerStyleSheets from '@mui/styles/ServerStyleSheets';
 // Utils
-import theme from '../utils/theme';
+import theme from 'utils/theme';
+import createEmotionCache from 'utils/create-emotion-cache';
 import { getSession } from 'utils/auth/get-session';
 import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
+import createEmotionServer from '@emotion/server/create-instance';
 
 class MyDocument extends Document {
   render() {
@@ -54,9 +56,16 @@ MyDocument.getInitialProps = async ctx => {
   const sheets = new ServerStyleSheets();
   const originalRenderPage = ctx.renderPage;
 
-  ctx.renderPage = () =>
+  /* ctx.renderPage = () =>
     originalRenderPage({
       enhanceApp: App => props => sheets.collect(<App {...props} />),
+    });
+*/
+  const cache = createEmotionCache();
+  const { extractCriticalToChunks } = createEmotionServer(cache);
+  ctx.renderPage = () =>
+    originalRenderPage({
+      enhanceApp: (App: any) => props => sheets.collect(<App emotionCache={cache} {...props} />),
     });
 
   const { query, req } = ctx;
@@ -72,10 +81,21 @@ MyDocument.getInitialProps = async ctx => {
 
   const initialProps = await Document.getInitialProps(ctx);
 
+  const emotionStyles = extractCriticalToChunks(initialProps.html);
+  const emotionStyleTags = emotionStyles.styles.map(style => (
+    <style
+      data-emotion={`${style.key} ${style.ids.join(' ')}`}
+      key={style.key}
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: style.css }}
+    />
+  ));
+
   return {
     ...initialProps,
     // Styles fragment is rendered after the app and page rendering finish.
-    styles: [...React.Children.toArray(initialProps.styles), sheets.getStyleElement()],
+    styles: [...React.Children.toArray(initialProps.styles), sheets.getStyleElement(), ...emotionStyleTags], // sheets.getStyleElement()],
+    materialStyle: sheets.getStyleElement(),
   };
 };
 
