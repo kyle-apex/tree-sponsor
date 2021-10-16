@@ -5,11 +5,12 @@ AWS.config.update({
   signatureVersion: 'v4',
 });
 const s3 = new AWS.S3();
-export default async function uploadImage(fileContent: string, fileType: string, key: string) {
+export default async function uploadImage(fileContent: string | Buffer, fileType: string, key: string) {
+  const body = fileContent instanceof Buffer ? fileContent : Buffer.from(fileContent, 'base64');
   const params = {
     Key: key,
     ContentType: fileType,
-    Body: Buffer.from(fileContent, 'base64'),
+    Body: body,
     ACL: 'public-read',
     Bucket: process.env.AWS_BUCKET_NAME,
   };

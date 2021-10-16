@@ -7,11 +7,16 @@ import { getAvailableSponsorships } from 'utils/prisma/get-available-sponsorship
 import uploadImage from 'utils/aws/upload-image';
 import { prisma } from 'utils/prisma/init';
 import { v4 as uuidv4 } from 'uuid';
+import uploadTreeImages from 'utils/aws/upload-tree-images';
+import getTreeImagePath from 'utils/aws/get-tree-image-path';
 
-function getSponsorImageKey(sponsorship: Sponsorship) {
-  const directory = process.env.AWS_TREE_IMAGE_DIRECTORY ?? 'tree-images';
-  return `${directory}/${sponsorship.primaryImageUuid}`;
-}
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '8mb',
+    },
+  },
+};
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   let t2 = new Date().getTime();
@@ -88,28 +93,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (imageUrl && !imageUrl.includes('http')) {
-      const imagePath = getSponsorImageKey(sponsorship);
+      const imagePath = getTreeImagePath(sponsorship.primaryImageUuid);
+      sponsorship.pictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}/small`;
 
-      uploadImage(imageUrl.split(',')[1], imageUrl.substring(imageUrl.indexOf(':') + 1, imageUrl.indexOf(';')), imagePath);
-      sponsorship.pictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}`;
+      uploadTreeImages(imageUrl, sponsorship.primaryImageUuid);
     }
 
-    /*const prismaQuery = {
-      where: { id: sponsorshipId || -1 },
-      create: {
-        ...sponsorship,
-        tree: treeQuery,
-        images: {
-          connect,
-        },
-      },
-      update: {
-        ...sponsorship,
-        tree: treeQuery,
-      },
-    };*/
-
-    //console.log('prismaQuery', prismaQuery);
     console.log('before upsert', new Date().getTime() - t2);
     t2 = new Date().getTime();
     const upsertedSponsorship = await prisma.sponsorship.upsert({

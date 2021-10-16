@@ -1,6 +1,7 @@
 import { Box } from '@mui/system';
 import ImageIcon from '@mui/icons-material/Image';
 import React, { useRef } from 'react';
+import EditIcon from '@mui/icons-material/Edit';
 
 const ImageUploadAndPreview = ({
   imageUrl,
@@ -22,10 +23,9 @@ const ImageUploadAndPreview = ({
     // Read the image via FileReader API and save image result in state.
     reader.onload = function (e) {
       // Add the file name to the data URL
-      console.log('result', e.target.result);
       img.onload = () => {
-        const MAX_WIDTH = 600;
-        const MAX_HEIGHT = 500;
+        const MAX_WIDTH = 1100;
+        const MAX_HEIGHT = 900;
         let width = img.width;
         let height = img.height;
 
@@ -45,7 +45,7 @@ const ImageUploadAndPreview = ({
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
 
-        const dataUrl = canvas.toDataURL();
+        const dataUrl = canvas.toDataURL('image/jpeg');
         console.log('dataUrl', width, height, dataUrl, file.type);
 
         setImageUrl(dataUrl);
@@ -65,6 +65,7 @@ const ImageUploadAndPreview = ({
         alignItems: 'center',
         backgroundColor: '#f1f1f1',
         cursor: 'pointer',
+        flexDirection: 'column',
       }}
       component='div'
       onClick={() => {
@@ -79,6 +80,23 @@ const ImageUploadAndPreview = ({
       )}
       {imageUrl && (
         <>
+          <Box alignSelf='end' sx={{ marginBottom: '-45px', zIndex: '1' }}>
+            <Box
+              sx={{
+                width: '35px',
+                height: '35px',
+                backgroundColor: '#9c9c9c',
+                borderRadius: '50%',
+                border: 'solid 1px white',
+                marginRight: '10px',
+                float: 'right',
+                textAlign: 'center',
+              }}
+            >
+              <EditIcon sx={{ color: 'white', marginTop: '3px' }} />
+            </Box>
+          </Box>
+
           <img src={imageUrl} className='full-width'></img>
         </>
       )}

@@ -1,5 +1,5 @@
 import { User } from '.prisma/client';
-import { Card, CardHeader, CardContent, IconButton, CardMedia, Typography, CardActions } from '@mui/material';
+import { Card, CardHeader, CardContent, IconButton, CardMedia, Typography, CardActions, Box } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { Clear } from '@mui/icons-material';
 import ShareIcon from '@mui/icons-material/Share';
@@ -67,7 +67,7 @@ const SponsorshipDisplay = ({
   return (
     <>
       {sponsorship?.id && (
-        <Card>
+        <Card sx={{ maxWidth: '500px' }}>
           <CardHeader
             avatar={<SponsorshipAvatar image={sponsorship.user?.image} name={sponsorship.user?.name} />}
             title={sponsorship.title || 'Sponsored by ' + sponsorship.user?.name}
@@ -91,7 +91,7 @@ const SponsorshipDisplay = ({
             className={classes.media}
             image={sponsorship.pictureUrl}
             title={sponsorship.title}
-          />
+          ></CardMedia>
           <CardContent>
             <Typography variant='body2' color='textSecondary' component='p'>
               {sponsorship.description || DEFAULT_DESCRIPTION}
