@@ -91,6 +91,8 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
       title,
       description,
       primaryImageUuid,
+      primaryImageHeight: imageHeight,
+      primaryImageWidth: imageWidth,
       tree: { latitude, longitude },
       imageUrl,
     });

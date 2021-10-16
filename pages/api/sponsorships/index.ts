@@ -81,6 +81,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     delete sponsorship.imageFile;
     delete sponsorship.tree;
 
+    // if height is 0, we do not want to update it
+    if (sponsorship.primaryImageHeight === 0) {
+      delete sponsorship.primaryImageHeight;
+      delete sponsorship.primaryImageWidth;
+    }
+
     if (imageUrl && !imageUrl.includes('http')) {
       const imagePath = getSponsorImageKey(sponsorship);
 

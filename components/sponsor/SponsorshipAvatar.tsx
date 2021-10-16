@@ -1,7 +1,7 @@
 import { Avatar } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-const SponsorshipAvatar = ({ image, name }: { image: string; name: string }) => {
+const SponsorshipAvatar = ({ image, name, size = 40 }: { image: string; name: string; size?: number }) => {
   const [abbreviation, setAbbreviation] = useState('AN');
 
   const getAbbreviation = (name: string): string => {
@@ -21,9 +21,15 @@ const SponsorshipAvatar = ({ image, name }: { image: string; name: string }) => 
   return (
     <Avatar
       aria-label='recipe'
-      sx={{ backgroundColor: theme => theme.palette.primary.main, color: theme => theme.palette.primary.contrastText }}
+      sx={{
+        backgroundColor: theme => theme.palette.primary.main,
+        color: theme => theme.palette.primary.contrastText,
+        width: size,
+        height: size,
+        fontSize: (size / 40) * 1.25 + 'rem',
+      }}
     >
-      {image ? <img src={image} width={40} height={40}></img> : <span>{abbreviation}</span>}
+      {image ? <img src={image} width={size} height={size}></img> : <span>{abbreviation}</span>}
     </Avatar>
   );
 };

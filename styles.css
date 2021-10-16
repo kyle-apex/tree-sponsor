@@ -11,6 +11,10 @@
   text-align: center;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 .hide {
   display: none;
 }

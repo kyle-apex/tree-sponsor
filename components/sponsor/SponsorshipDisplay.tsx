@@ -81,7 +81,13 @@ const SponsorshipDisplay = ({
             }
           />
           <CardMedia
-            sx={{ paddingTop: hasFullHeightImage ? '90%' : '56.25%' }}
+            sx={{
+              paddingTop: hasFullHeightImage
+                ? sponsorship.primaryImageHeight
+                  ? (sponsorship.primaryImageHeight / sponsorship.primaryImageWidth) * 100 + '%'
+                  : '90%'
+                : '56.25%',
+            }}
             className={classes.media}
             image={sponsorship.pictureUrl}
             title={sponsorship.title}

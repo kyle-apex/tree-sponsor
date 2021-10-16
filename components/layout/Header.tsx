@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/client';
-import { Button, IconButton, Toolbar, Typography, AppBar, Drawer, Divider, List, ListItem, ListItemText } from '@mui/material';
+import { Button, IconButton, Toolbar, Typography, AppBar, Drawer, Divider, List, ListItem, ListItemText, Box } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import axios from 'axios';
+import SessionAvatar from 'components/SessionAvatar';
 
 const drawerWidth = 240;
 
@@ -106,6 +107,14 @@ const Header = () => {
               <Button sx={{ marginRight: 2 }} color='inherit'>
                 Sponsor a tree
               </Button>
+            </Link>
+          )}
+
+          {session && (
+            <Link href='/account'>
+              <Box mr={2} className='clickable'>
+                <SessionAvatar session={session} size={36} />
+              </Box>
             </Link>
           )}
 
