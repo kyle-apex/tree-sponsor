@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 async function getImageDimensions(file: string): Promise<{ w: number; h: number }> {
-  return new Promise(function (resolved, rejected) {
+  return new Promise(function (resolved) {
     const t2 = new Date().getTime();
     const i = new Image();
     i.onload = function () {
