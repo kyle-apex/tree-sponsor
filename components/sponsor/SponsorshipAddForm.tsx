@@ -1,6 +1,6 @@
 import { Stepper, Step, StepButton, Button } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/client';
 import axios from 'axios';
 import SponsorshipDisplayForm from './SponsorshipDisplayForm';
@@ -40,6 +40,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+async function getImageDimensions(file: string): Promise<{ w: number; h: number }> {
+  return new Promise(function (resolved, rejected) {
+    const t2 = new Date().getTime();
+    const i = new Image();
+    i.onload = function () {
+      console.log('newtime', t2 - new Date().getTime());
+      resolved({ w: i.width, h: i.height });
+    };
+    i.src = file;
+  });
+}
+
 const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: PartialSponsorship; onComplete?: () => void }) => {
   const classes = useStyles();
   const [session] = useSession();
@@ -49,18 +61,36 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [id, setId] = useState(0);
+  const [primaryImageUuid, setPrimaryImageUuid] = useState('');
 
   const [imageUrl, setImageUrl] = useState('');
+  const [imageHeight, setImageHeight] = useState(0);
+  const [imageWidth, setImageWidth] = useState(0);
 
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState<{ [k: number]: boolean }>({});
   const [isUpserting, setIsUpserting] = useState(false);
+
+  const handleImageUrl: Dispatch<SetStateAction<string>> = (imageUrl: SetStateAction<string>) => {
+    const url = imageUrl as string;
+
+    setImageUrl(url);
+    setImageDimensions();
+  };
+
+  const setImageDimensions = async () => {
+    const { w, h } = await getImageDimensions(imageUrl);
+    setImageWidth(w);
+    setImageHeight(h);
+    console.log('w', w, h);
+  };
 
   const upsertSponsorship = async () => {
     const updatedSponsorship = await axios.post('/api/sponsorships', {
       id,
       title,
       description,
+      primaryImageUuid,
       tree: { latitude, longitude },
       imageUrl,
     });
@@ -90,6 +120,7 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
       setTitle(sponsorship.title);
       setDescription(sponsorship.description);
       setId(sponsorship.id);
+      setPrimaryImageUuid(sponsorship.primaryImageUuid);
       setImageUrl(sponsorship.pictureUrl);
       if (sponsorship.tree?.latitude) {
         setLatitude(Number(sponsorship.tree.latitude));
@@ -117,7 +148,7 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
             description={description}
             setDescription={setDescription}
             imageUrl={imageUrl}
-            setImageUrl={setImageUrl}
+            setImageUrl={handleImageUrl}
           ></SponsorshipDisplayForm>
           <SplitRow>
             {onComplete ? (

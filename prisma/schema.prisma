@@ -139,6 +139,16 @@ model Tree {
   sponsorships Sponsorship[]
 }
 
+model TreeImage {
+  uuid          String        @id
+  width         Int?
+  height        Int?
+  createdDate   DateTime?
+  reviewStatus  ReviewStatus? @default(New)
+  Sponsorship   Sponsorship?  @relation(fields: [sponsorshipId], references: [id])
+  sponsorshipId Int?
+}
+
 enum ReviewStatus {
   New
   Draft
@@ -148,19 +158,23 @@ enum ReviewStatus {
 }
 
 model Sponsorship {
-  id             Int           @id @default(autoincrement())
-  displayName    String?
-  title          String?
-  description    String?
-  pictureUrl     String?
-  startDate      DateTime?
-  expirationDate DateTime?
-  isPrivate      Boolean?
-  reviewStatus   ReviewStatus? @default(New)
-  user           User?         @relation(fields: [userId], references: [id])
-  userId         Int?
-  tree           Tree?         @relation(fields: [treeId], references: [id])
-  treeId         Int?
-  Subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
-  subscriptionId Int?
+  id                 Int           @id @default(autoincrement())
+  displayName        String?
+  title              String?
+  description        String?
+  pictureUrl         String?
+  startDate          DateTime?
+  expirationDate     DateTime?
+  isPrivate          Boolean?
+  reviewStatus       ReviewStatus? @default(New)
+  user               User?         @relation(fields: [userId], references: [id])
+  userId             Int?
+  tree               Tree?         @relation(fields: [treeId], references: [id])
+  treeId             Int?
+  images             TreeImage[]
+  primaryImageUuid   String?
+  primaryImageHeight Int?
+  primaryImageWidth  Int?
+  Subscription       Subscription? @relation(fields: [subscriptionId], references: [id])
+  subscriptionId     Int?
 }
