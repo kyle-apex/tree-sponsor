@@ -24,6 +24,7 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
   }, [activeDonationAmount, sponsorships]);
 
   const handleDialogClose = (isOpen: SetStateAction<boolean>) => {
+    console.log('isOpenDialogCLose', isOpen);
     setIsAddDialogOpen(isOpen);
     refetch();
   };
@@ -47,7 +48,7 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
         )}
         {isFetched && availableSponsorshipCount > 0
           ? [...Array(availableSponsorshipCount)].map((_a, idx) => (
-              <Grid item xs={12} sm={6} md={3} key={idx}>
+              <Grid item xs={12} sm={6} md={3} key={idx} className='same-height'>
                 <AddTreeButton
                   onAddClick={() => {
                     setIsAddDialogOpen(true);
@@ -56,7 +57,7 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
               </Grid>
             ))
           : isFetched && (
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid item xs={12} sm={6} md={3} className='same-height'>
                 <AddTreeButton isStartSubscription={true}></AddTreeButton>
               </Grid>
             )}

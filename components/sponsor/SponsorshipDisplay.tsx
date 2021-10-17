@@ -5,7 +5,7 @@ import { Clear } from '@mui/icons-material';
 import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import React, { useState } from 'react';
+import React, { SetStateAction, useState } from 'react';
 import { PartialSponsorship } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 import { SponsorshipAvatar, SponsorshipSubTitle } from 'components/sponsor';
@@ -63,6 +63,12 @@ const SponsorshipDisplay = ({
   const [isDeleteConfirmation, setIsDeleteConfirmation] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [activeSponsorship, setActiveSponsorship] = useState<PartialSponsorship>();
+  const [imageCacheKey, setImageCacheKey] = useState('');
+
+  const handleDialogClose = (isOpen: SetStateAction<boolean>) => {
+    setIsEditDialogOpen(isOpen);
+    if (!isOpen) setImageCacheKey('?cacheKey=' + new Date().getTime());
+  };
 
   return (
     <>
@@ -89,7 +95,7 @@ const SponsorshipDisplay = ({
                 : '90%',
             }}
             className={classes.media}
-            image={sponsorship.pictureUrl}
+            image={sponsorship.pictureUrl + imageCacheKey}
             title={sponsorship.title}
           ></CardMedia>
           <CardContent>
@@ -138,7 +144,7 @@ const SponsorshipDisplay = ({
           )}
         </Card>
       )}
-      <SponsorshipAddEditDialog sponsorship={activeSponsorship} isOpen={isEditDialogOpen} setIsOpen={setIsEditDialogOpen} />
+      <SponsorshipAddEditDialog sponsorship={activeSponsorship} isOpen={isEditDialogOpen} setIsOpen={handleDialogClose} />
     </>
   );
 };

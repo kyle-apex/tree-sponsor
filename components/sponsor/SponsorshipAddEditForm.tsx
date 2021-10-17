@@ -52,7 +52,7 @@ async function getImageDimensions(file: string): Promise<{ w: number; h: number 
   });
 }
 
-const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: PartialSponsorship; onComplete?: () => void }) => {
+const SponsorshipAddEditForm = ({ sponsorship, onComplete }: { sponsorship?: PartialSponsorship; onComplete?: () => void }) => {
   const classes = useStyles();
   const [session] = useSession();
 
@@ -87,6 +87,7 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
   };
 
   const upsertSponsorship = async () => {
+    sponsorship.title = title;
     const updatedSponsorship = await axios.post('/api/sponsorships', {
       id,
       title,
@@ -222,4 +223,4 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
   );
 };
 
-export default SponsorshipAddForm;
+export default SponsorshipAddEditForm;

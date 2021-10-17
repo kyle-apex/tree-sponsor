@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, Typography } from '@mui/material';
 import { PartialSponsorship } from 'interfaces';
-import SponsorshipAddForm from './SponsorshipAddForm';
+import SponsorshipAddEditForm from './SponsorshipAddEditForm';
 
 const SponsorshipAddEditDialog = ({
   sponsorship,
@@ -21,12 +21,12 @@ const SponsorshipAddEditDialog = ({
         <Typography mb={3} variant='h2'>
           Tell us about your tree
         </Typography>
-        <SponsorshipAddForm
+        <SponsorshipAddEditForm
           sponsorship={sponsorship}
           onComplete={() => {
             setIsOpen(false);
           }}
-        ></SponsorshipAddForm>
+        ></SponsorshipAddEditForm>
       </DialogContent>
     </Dialog>
   );
