@@ -4,7 +4,6 @@ import { getSession } from 'utils/auth/get-session';
 import throwError from 'utils/api/throw-error';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { getAvailableSponsorships } from 'utils/prisma/get-available-sponsorships';
-import uploadImage from 'utils/aws/upload-image';
 import { prisma } from 'utils/prisma/init';
 import { v4 as uuidv4 } from 'uuid';
 import uploadTreeImages from 'utils/aws/upload-tree-images';

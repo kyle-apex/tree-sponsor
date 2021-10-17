@@ -86,7 +86,7 @@ const SponsorshipDisplay = ({
                 ? sponsorship.primaryImageHeight
                   ? (sponsorship.primaryImageHeight / sponsorship.primaryImageWidth) * 100 + '%'
                   : '90%'
-                : '56.25%',
+                : '90%',
             }}
             className={classes.media}
             image={sponsorship.pictureUrl}

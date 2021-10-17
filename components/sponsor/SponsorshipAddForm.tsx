@@ -73,12 +73,13 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
 
   const handleImageUrl: Dispatch<SetStateAction<string>> = (imageUrl: SetStateAction<string>) => {
     const url = imageUrl as string;
+    console.log('handle image url', url);
 
     setImageUrl(url);
-    setImageDimensions();
+    setImageDimensions(url);
   };
 
-  const setImageDimensions = async () => {
+  const setImageDimensions = async (imageUrl: string) => {
     const { w, h } = await getImageDimensions(imageUrl);
     setImageWidth(w);
     setImageHeight(h);

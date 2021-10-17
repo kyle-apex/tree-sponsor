@@ -25,7 +25,7 @@ const SponsorshipGallery = ({ sponsorships }: { sponsorships: PartialSponsorship
   const slideRenderer = (params: { index: number; key: any }) => {
     const { index, key } = params;
     const sponsorship = sponsorships[mod(index, 3)];
-    return <SponsorshipDisplay key={key} hasFullHeightImage={true} sponsorship={sponsorship}></SponsorshipDisplay>;
+    return <SponsorshipDisplay key={key} sponsorship={sponsorship}></SponsorshipDisplay>;
   };
 
   const handleBack = () => {
@@ -42,7 +42,14 @@ const SponsorshipGallery = ({ sponsorships }: { sponsorships: PartialSponsorship
   return (
     <>
       <MobileStepper
-        sx={{ paddingTop: '3px', paddingBottom: '0px' }}
+        sx={{
+          paddingTop: '3px',
+          paddingBottom: '0px',
+          maxWidth: '500px',
+          boxShadow: '2px -1px 3px -2px rgb(0 0 0 / 12%)',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        }}
         steps={maxSteps}
         position='static'
         activeStep={mod(activeStep, 3)}
@@ -58,7 +65,7 @@ const SponsorshipGallery = ({ sponsorships }: { sponsorships: PartialSponsorship
         }
       />
       <VirtualizeSwipeableViews
-        style={{ marginTop: '-5px' }}
+        style={{ marginTop: '-5px', maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto' }}
         slideRenderer={slideRenderer}
         index={activeStep}
         onChangeIndex={handleStepChange}

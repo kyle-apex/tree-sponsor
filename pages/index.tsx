@@ -157,13 +157,17 @@ const IndexPage = () => {
               !hasGallery &&
               sponsorships.map(sponsorship => (
                 <Grid md={4} key={sponsorship.id} item className='same-height start'>
-                  <SponsorshipDisplay hasFullHeightImage={true} sponsorship={sponsorship}></SponsorshipDisplay>
+                  <SponsorshipDisplay sponsorship={sponsorship}></SponsorshipDisplay>
                 </Grid>
               ))}
             {hasGallery && (
-              <Grid item xs={12}>
+              <Grid item xs={12} justifyContent='center'>
                 {!isLoadingSponsorships && <SponsorshipGallery sponsorships={sponsorships} />}
-                {isLoadingSponsorships && <SponsorshipDisplayLoading />}
+                {isLoadingSponsorships && (
+                  <Box sx={{ maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto' }}>
+                    <SponsorshipDisplayLoading />
+                  </Box>
+                )}
               </Grid>
             )}
           </Grid>

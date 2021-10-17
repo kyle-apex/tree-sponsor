@@ -27,6 +27,7 @@ const SponsorshipAvatar = ({ image, name, size = 40 }: { image: string; name: st
         width: size,
         height: size,
         fontSize: (size / 40) * 1.25 + 'rem',
+        boxShadow: 'inset 0 0px 0px 1px hsl(0deg 0% 0% / 20%), 0px 0px 2px grey',
       }}
     >
       {image ? <img src={image} width={size} height={size}></img> : <span>{abbreviation}</span>}
