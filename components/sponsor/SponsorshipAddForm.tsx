@@ -190,6 +190,7 @@ const SponsorshipAddForm = ({ sponsorship, onComplete }: { sponsorship?: Partial
             }}
             latitude={sponsorship?.tree?.latitude ? Number(sponsorship?.tree?.latitude) : null}
             longitude={sponsorship?.tree?.longitude ? Number(sponsorship?.tree?.longitude) : null}
+            auto={!sponsorship?.tree?.latitude}
           ></LocationSelector>
           <SplitRow>
             <Button

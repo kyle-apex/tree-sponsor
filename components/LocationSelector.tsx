@@ -30,10 +30,12 @@ const LocationSelector = ({
   onViewportChange,
   latitude,
   longitude,
+  auto,
 }: {
   onViewportChange: (viewport: { longitude: number; latitude: number; zoom: number }) => void;
   longitude?: number;
   latitude?: number;
+  auto?: boolean;
 }) => {
   const mapRef = useRef();
 
@@ -66,11 +68,11 @@ const LocationSelector = ({
         mapStyle='mapbox://styles/mapbox/satellite-streets-v11'
       >
         <GeolocateControl
-          auto={true}
+          auto={auto}
           style={geolocateControlStyle}
           positionOptions={{ enableHighAccuracy: true }}
           trackUserLocation={true}
-          fitBoundsOptions={{ maxZoom: 21 }}
+          fitBoundsOptions={{ maxZoom: 18 }}
         />
         <Geocoder
           mapRef={mapRef}
