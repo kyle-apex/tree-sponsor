@@ -15,11 +15,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (imageUrl && !imageUrl.includes('http')) {
     const fileContent = imageUrl.split(',')[1];
 
-    req.body.image = await uploadImage(
-      fileContent,
-      imageUrl.substring(imageUrl.indexOf(':') + 1, imageUrl.indexOf(';')),
-      getProfileImagePath(session.user.email),
-    );
+    req.body.image =
+      (await uploadImage(
+        fileContent,
+        imageUrl.substring(imageUrl.indexOf(':') + 1, imageUrl.indexOf(';')),
+        getProfileImagePath(session.user.email),
+      )) +
+      '?d=' +
+      new Date().getTime();
   }
 
   if (req.method === 'GET') {

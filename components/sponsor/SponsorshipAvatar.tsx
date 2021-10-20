@@ -1,5 +1,6 @@
 import { Avatar } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 const SponsorshipAvatar = ({ image, name, size = 40 }: { image: string; name: string; size?: number }) => {
   const [abbreviation, setAbbreviation] = useState('AN');
@@ -30,7 +31,7 @@ const SponsorshipAvatar = ({ image, name, size = 40 }: { image: string; name: st
         boxShadow: 'inset 0 0px 0px 1px hsl(0deg 0% 0% / 20%), 0px 0px 2px grey',
       }}
     >
-      {image ? <img src={image} width={size} height={size}></img> : <span>{abbreviation}</span>}
+      {image ? <Image src={image} width={size} height={size}></Image> : <span>{abbreviation}</span>}
     </Avatar>
   );
 };
