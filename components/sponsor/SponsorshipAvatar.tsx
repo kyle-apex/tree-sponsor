@@ -31,7 +31,7 @@ const SponsorshipAvatar = ({ image, name, size = 40 }: { image: string; name: st
         boxShadow: 'inset 0 0px 0px 1px hsl(0deg 0% 0% / 20%), 0px 0px 2px grey',
       }}
     >
-      {image ? <Image src={image} width={size} height={size}></Image> : <span>{abbreviation}</span>}
+      {image ? <img src={image} width={size} height={size} /> : <span>{abbreviation}</span>}
     </Avatar>
   );
 };
