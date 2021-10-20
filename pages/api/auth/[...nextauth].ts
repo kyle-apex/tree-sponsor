@@ -64,6 +64,7 @@ export default NextAuth({
     },
     async signIn(user, _account, profile) {
       console.log('profile', profile);
+      console.log('user', user);
       const profilePictureUrl = getProfilePictureUrl(profile);
       let hasUpdate;
       const updateData: { image?: string; name?: string } = {};

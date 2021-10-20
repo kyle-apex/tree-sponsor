@@ -65,7 +65,6 @@ const Subscriptions = ({
     subscriptions.forEach(subscription => {
       if (subscription.status === 'active') activeDonationAmount += subscription.amount;
     });
-    console.log('activeDonationAmount', activeDonationAmount, subscriptions);
     setActiveDonationAmount(activeDonationAmount);
   }, [subscriptions]);
 

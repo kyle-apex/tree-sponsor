@@ -6,9 +6,17 @@ import EditIcon from '@mui/icons-material/Edit';
 const ImageUploadAndPreview = ({
   imageUrl,
   setImageUrl,
+  maxHeight,
+  maxWidth,
+  hideEditButton,
+  size = 'default',
 }: {
   imageUrl: string;
   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
+  maxHeight?: number;
+  maxWidth?: number;
+  hideEditButton?: boolean;
+  size?: 'small' | 'default';
 }) => {
   const fileInputRef = useRef<HTMLInputElement>();
   //const [imageFile, setImageFile] = useState<{ type: string; content: string }>();
@@ -24,8 +32,8 @@ const ImageUploadAndPreview = ({
     reader.onload = function (e) {
       // Add the file name to the data URL
       img.onload = () => {
-        const MAX_WIDTH = 1100;
-        const MAX_HEIGHT = 900;
+        const MAX_WIDTH = maxWidth ?? 1100;
+        const MAX_HEIGHT = maxHeight ?? 900;
         let width = img.width;
         let height = img.height;
 
@@ -74,28 +82,30 @@ const ImageUploadAndPreview = ({
     >
       {!imageUrl && (
         <>
-          <ImageIcon sx={{ color: 'lightgray', fontSize: '50px' }}></ImageIcon>
-          <Box sx={{ color: 'gray', marginLeft: '5px' }}>Click to Add Picture</Box>
+          <ImageIcon sx={{ color: 'lightgray', fontSize: size == 'small' ? '20px' : '50px' }}></ImageIcon>
+          {size !== 'small' && <Box sx={{ color: 'gray', marginLeft: '5px' }}>Click to Add Picture</Box>}
         </>
       )}
       {imageUrl && (
         <>
-          <Box alignSelf='end' sx={{ marginBottom: '-45px', zIndex: '1' }}>
-            <Box
-              sx={{
-                width: '35px',
-                height: '35px',
-                backgroundColor: '#9c9c9c',
-                borderRadius: '50%',
-                border: 'solid 1px white',
-                marginRight: '10px',
-                float: 'right',
-                textAlign: 'center',
-              }}
-            >
-              <EditIcon sx={{ color: 'white', marginTop: '3px' }} />
+          {!hideEditButton && (
+            <Box alignSelf='end' sx={{ marginBottom: '-45px', zIndex: '1' }}>
+              <Box
+                sx={{
+                  width: '35px',
+                  height: '35px',
+                  backgroundColor: '#9c9c9c',
+                  borderRadius: '50%',
+                  border: 'solid 1px white',
+                  marginRight: '10px',
+                  float: 'right',
+                  textAlign: 'center',
+                }}
+              >
+                <EditIcon sx={{ color: 'white', marginTop: '3px' }} />
+              </Box>
             </Box>
-          </Box>
+          )}
 
           <img src={imageUrl} className='full-width'></img>
         </>

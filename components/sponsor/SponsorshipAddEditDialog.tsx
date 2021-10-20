@@ -6,10 +6,12 @@ const SponsorshipAddEditDialog = ({
   sponsorship,
   isOpen,
   setIsOpen,
+  setSponsorship,
 }: {
   sponsorship?: PartialSponsorship;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setSponsorship?: React.Dispatch<React.SetStateAction<PartialSponsorship>>;
 }) => {
   const handleClose = () => {
     setIsOpen(false);
@@ -23,6 +25,7 @@ const SponsorshipAddEditDialog = ({
         </Typography>
         <SponsorshipAddEditForm
           sponsorship={sponsorship}
+          setSponsorship={setSponsorship}
           onComplete={() => {
             setIsOpen(false);
           }}

@@ -76,7 +76,7 @@ const SponsorshipDisplay = ({
         <Card sx={{ maxWidth: '500px' }}>
           <CardHeader
             avatar={<SponsorshipAvatar image={sponsorship.user?.image} name={sponsorship.user?.name} />}
-            title={sponsorship.title || 'Sponsored by ' + sponsorship.user?.name}
+            title={activeSponsorship?.title || sponsorship.title || 'Sponsored by ' + sponsorship.user?.name}
             subheader={<SponsorshipSubTitle startDate={sponsorship.startDate} />}
             action={
               handleClose && (
@@ -100,7 +100,7 @@ const SponsorshipDisplay = ({
           ></CardMedia>
           <CardContent>
             <Typography variant='body2' color='textSecondary' component='p'>
-              {sponsorship.description || DEFAULT_DESCRIPTION}
+              {activeSponsorship?.description || sponsorship.description || DEFAULT_DESCRIPTION}
             </Typography>
           </CardContent>
           {isEditMode && (
@@ -144,7 +144,12 @@ const SponsorshipDisplay = ({
           )}
         </Card>
       )}
-      <SponsorshipAddEditDialog sponsorship={activeSponsorship} isOpen={isEditDialogOpen} setIsOpen={handleDialogClose} />
+      <SponsorshipAddEditDialog
+        sponsorship={activeSponsorship}
+        isOpen={isEditDialogOpen}
+        setIsOpen={handleDialogClose}
+        setSponsorship={setActiveSponsorship}
+      />
     </>
   );
 };

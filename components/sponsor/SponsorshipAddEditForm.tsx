@@ -52,7 +52,15 @@ async function getImageDimensions(file: string): Promise<{ w: number; h: number 
   });
 }
 
-const SponsorshipAddEditForm = ({ sponsorship, onComplete }: { sponsorship?: PartialSponsorship; onComplete?: () => void }) => {
+const SponsorshipAddEditForm = ({
+  sponsorship,
+  onComplete,
+  setSponsorship,
+}: {
+  sponsorship?: PartialSponsorship;
+  onComplete?: () => void;
+  setSponsorship?: React.Dispatch<React.SetStateAction<PartialSponsorship>>;
+}) => {
   const classes = useStyles();
   const [session] = useSession();
 
@@ -73,7 +81,6 @@ const SponsorshipAddEditForm = ({ sponsorship, onComplete }: { sponsorship?: Par
 
   const handleImageUrl: Dispatch<SetStateAction<string>> = (imageUrl: SetStateAction<string>) => {
     const url = imageUrl as string;
-    console.log('handle image url', url);
 
     setImageUrl(url);
     setImageDimensions(url);
@@ -83,11 +90,11 @@ const SponsorshipAddEditForm = ({ sponsorship, onComplete }: { sponsorship?: Par
     const { w, h } = await getImageDimensions(imageUrl);
     setImageWidth(w);
     setImageHeight(h);
-    console.log('w', w, h);
   };
 
   const upsertSponsorship = async () => {
-    sponsorship.title = title;
+    if (setSponsorship) setSponsorship(Object.assign(sponsorship, { title, description }));
+
     const updatedSponsorship = await axios.post('/api/sponsorships', {
       id,
       title,
@@ -99,10 +106,7 @@ const SponsorshipAddEditForm = ({ sponsorship, onComplete }: { sponsorship?: Par
       imageUrl,
     });
 
-    console.log('updatedSponsorship.data', updatedSponsorship.data, updatedSponsorship);
-
     if (updatedSponsorship?.data?.id) setId(updatedSponsorship.data.id);
-    //router.push('/account');
   };
 
   const handleStep = (step: number) => () => {
