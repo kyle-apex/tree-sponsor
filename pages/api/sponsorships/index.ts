@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       if (availableSponsorships?.length < 1) return throwError(res, 'You do not have any more available sponsorships!');
       const subscription = availableSponsorships[0];
-      subscription.lastPaymentDate.setFullYear(subscription.lastPaymentDate.getFullYear() + 1);
+      if (subscription.lastPaymentDate) subscription.lastPaymentDate.setFullYear(subscription.lastPaymentDate.getFullYear() + 1);
       sponsorship.expirationDate = subscription.lastPaymentDate;
       sponsorship.startDate = new Date();
       sponsorship.Subscription = { connect: { id: subscription.id } };

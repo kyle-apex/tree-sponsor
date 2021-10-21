@@ -1,7 +1,7 @@
 import React from 'react';
 
 const SponsorshipSubTitle = ({ startDate }: { startDate: Date }) => {
-  if (!startDate) return;
+  if (!startDate) return <></>;
 
   return (
     <span>

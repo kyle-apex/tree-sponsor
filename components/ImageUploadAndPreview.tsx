@@ -30,6 +30,8 @@ const ImageUploadAndPreview = ({
 
     // Read the image via FileReader API and save image result in state.
     reader.onload = function (e) {
+      if (!e?.target?.result) return;
+
       // Add the file name to the data URL
       img.onload = () => {
         const MAX_WIDTH = maxWidth ?? 1100;
@@ -51,7 +53,7 @@ const ImageUploadAndPreview = ({
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
+        if (ctx) ctx.drawImage(img, 0, 0, width, height);
 
         const dataUrl = canvas.toDataURL('image/jpeg');
         console.log('dataUrl', width, height, dataUrl, file.type);

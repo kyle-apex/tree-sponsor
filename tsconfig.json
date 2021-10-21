@@ -18,8 +18,9 @@
     "strictNullChecks": false,
     "strict": true,
     "target": "esnext",
-    "baseUrl": "."
+    "baseUrl": ".",
+    //"strictPropertyInitialization": true, 
   },
   "exclude": ["node_modules"],
-  "include": ["**/*.ts", "**/*.tsx", "next.config.js", "next.config.js", "server.js", "pages/contact/index.tss"]
+  "include": ["**/*.ts", "**/*.tsx", "next.config.js", "next.config.js", "server.js", "pages/contact/index.tss", "jest.config.ts"]
 }

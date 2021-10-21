@@ -3,7 +3,6 @@ import { SetStateAction, useEffect, useState } from 'react';
 import { useGet, useRemoveFromQuery } from 'utils/hooks';
 import axios from 'axios';
 import { SponsorshipDisplay, SponsorshipAddEditDialog, SponsorshipDisplayLoading, AddTreeButton } from 'components/sponsor';
-import { createTypeReferenceDirectiveResolutionCache } from 'typescript';
 
 const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number }) => {
   const [availableSponsorshipCount, setAvailableSponsorshipCount] = useState(0);
@@ -19,7 +18,7 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
 
   useEffect(() => {
     if (!sponsorships) return;
-    const totalSponsorshipCount = activeDonationAmount / 20;
+    const totalSponsorshipCount = (activeDonationAmount ?? 0) / 20;
     setAvailableSponsorshipCount(Math.max(0, totalSponsorshipCount - sponsorships.length));
   }, [activeDonationAmount, sponsorships]);
 
@@ -37,7 +36,7 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
             <SponsorshipDisplayLoading />
           </Grid>
         )}
-        {isFetched && sponsorships?.length > 0 && (
+        {isFetched && sponsorships && sponsorships?.length > 0 && (
           <>
             {sponsorships.map(sponsorship => (
               <Grid item xs={12} sm={6} md={3} key={sponsorship.id} className='same-height'>
