@@ -64,7 +64,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Header = () => {
-  const [session, loading] = useSession();
+  const [session] = useSession();
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const classes = useStyles();

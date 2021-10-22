@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { lighten } from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
-import withStyles from '@mui/styles/withStyles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,7 +9,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import InputAdornment from '@mui/material/InputAdornment';
 import { Search } from '@mui/icons-material';
-import { Button, FormControl, InputLabel, LinearProgress, MenuItem, Select, TextField } from '@mui/material';
+import { Button, LinearProgress, TextField } from '@mui/material';
 import { useGet } from 'utils/hooks/use-get';
 import { SubscriptionWithDetails } from '@prisma/client';
 import Layout from 'components/layout/Layout';
@@ -20,8 +18,6 @@ import { TeeShirtSelect } from 'components/TeeShirtSelect';
 import { stableSort, getComparator } from 'utils/material-ui/table-helpers';
 import { StyledTableRow } from 'components/StyledTableRow';
 import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
-import { getSession, GetSessionOptions } from 'next-auth/client';
-import { GetServerSideProps } from 'next';
 import serverSideIsAdmin from 'utils/auth/server-side-is-admin';
 import Link from 'next/link';
 
@@ -81,7 +77,7 @@ const headCells = [
   { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
 ];
 
-export default function EnhancedTable() {
+export default function EnhancedTable(): JSX.Element {
   const classes = useStyles();
   const [order, setOrder] = useState('asc' as 'asc' | 'desc');
   const [orderBy, setOrderBy] = useState('createdDate');
@@ -90,7 +86,7 @@ export default function EnhancedTable() {
 
   const [nameFilter, setNameFilter] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const { data: users, refetch, isFetching } = useGet<SubscriptionWithDetails[]>('/api/members', 'members');
+  const { data: users, isFetching } = useGet<SubscriptionWithDetails[]>('/api/members', 'members');
 
   const debounceMilliseconds = 1;
 
@@ -118,7 +114,7 @@ export default function EnhancedTable() {
     return () => clearTimeout(filterTimer);
   }, [nameFilter, users]);
 
-  const handleRequestSort = (_event: any, property: string) => {
+  const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -128,7 +124,7 @@ export default function EnhancedTable() {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: any) => {
+  const handleChangeRowsPerPage = (event: { target: { value: string } }) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };

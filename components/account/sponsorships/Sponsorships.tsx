@@ -3,10 +3,11 @@ import { SetStateAction, useEffect, useState } from 'react';
 import { useGet, useRemoveFromQuery } from 'utils/hooks';
 import axios from 'axios';
 import { SponsorshipDisplay, SponsorshipAddEditDialog, SponsorshipDisplayLoading, AddTreeButton } from 'components/sponsor';
+import { PartialSponsorship } from 'interfaces';
 
-const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number }) => {
+const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number }): JSX.Element => {
   const [availableSponsorshipCount, setAvailableSponsorshipCount] = useState(0);
-  const { data: sponsorships, isFetched, isFetching, refetch } = useGet<any[]>('/api/me/sponsorships', 'my-sponsorships');
+  const { data: sponsorships, isFetched, refetch } = useGet<PartialSponsorship[]>('/api/me/sponsorships', 'my-sponsorships');
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 

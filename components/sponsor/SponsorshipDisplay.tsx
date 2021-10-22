@@ -1,5 +1,5 @@
 import { User } from '.prisma/client';
-import { Card, CardHeader, CardContent, IconButton, CardMedia, Typography, CardActions, Box } from '@mui/material';
+import { Card, CardHeader, CardContent, IconButton, CardMedia, Typography, CardActions } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { Clear } from '@mui/icons-material';
 import ShareIcon from '@mui/icons-material/Share';

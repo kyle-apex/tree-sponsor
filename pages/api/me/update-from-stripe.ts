@@ -1,4 +1,3 @@
-import { updateUser } from 'utils/prisma/update-user';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { upsertSubscriptions } from 'utils/prisma/upsert-subscriptions';
 import { getSession } from 'utils/auth/get-session';

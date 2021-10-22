@@ -30,14 +30,14 @@ export function TableHeader({
   headCells,
 }: {
   classes?: Record<string, string>;
-  onRequestSort?: (event: any, property: string) => void;
+  onRequestSort?: (property: string) => void;
   order?: 'asc' | 'desc';
   orderBy?: string;
   rowCount?: number;
   headCells: HeaderCellOptions[];
-}) {
-  const createSortHandler = (property: string) => (event: any) => {
-    onRequestSort(event, property);
+}): JSX.Element {
+  const createSortHandler = (property: string) => {
+    onRequestSort(property);
   };
   useEffect(() => {
     return;
@@ -58,7 +58,7 @@ export function TableHeader({
                 classes={{ active: classes.white, icon: classes.white }}
                 active={orderBy === headCell.id}
                 direction={orderBy === headCell.id ? order : 'asc'}
-                onClick={createSortHandler(headCell.id)}
+                onClick={() => createSortHandler(headCell.id)}
               >
                 {headCell.label}
                 {orderBy === headCell.id ? (

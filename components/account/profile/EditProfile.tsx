@@ -1,15 +1,11 @@
 import { getSession } from 'next-auth/client';
-import { Session } from 'next-auth';
 import React, { useEffect, useState } from 'react';
-import { TextField, Button, Box, Typography } from '@mui/material';
-import { updateUser } from 'utils/prisma/update-user';
+import { TextField, Box, Typography } from '@mui/material';
 import axios from 'axios';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import LoadingButton from 'components/LoadingButton';
 
-const EditProfile = () => {
-  //const [session, setSession] = useState<Session>();
-
+const EditProfile = (): JSX.Element => {
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
@@ -24,8 +20,7 @@ const EditProfile = () => {
     readSession();
   }, []);
 
-  const handleNameChange = (event: { target: { value: any } }) => {
-    //setSession(Object.assign(session, { name: event.target.value }));
+  const handleNameChange = (event: { target: { value: string } }) => {
     setName(event.target.value);
   };
 

@@ -16,8 +16,8 @@ export const TeeShirtSelect = ({
 }: {
   userId: number;
   hasShirt: boolean;
-  updateHasShirt: (id: number, attributes: Record<string, unknown>) => any;
-}) => {
+  updateHasShirt: (id: number, attributes: Record<string, unknown>) => void;
+}): JSX.Element => {
   const classes = useStyles();
   const [userHasShirt, setUserHasShirt] = useState(hasShirt);
 

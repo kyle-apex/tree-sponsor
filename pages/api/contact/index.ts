@@ -4,17 +4,6 @@ const nodemailerSendgrid = require('nodemailer-sendgrid');
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    //const sgTransport = require('nodemailer-sendgrid-transport');
-
-    const options = {
-      auth: {
-        api_user: 'apikey',
-        api_key: process.env.SENDGRID_API_KEY2,
-      },
-    };
-
-    //const client = nodemailer.createTransport(sgTransport(options));
-
     const transport = nodemailer.createTransport(
       nodemailerSendgrid({
         apiKey: process.env.SENDGRID_API_KEY2,

@@ -8,6 +8,7 @@ import Geocoder from 'react-map-gl-geocoder';
 import { Button, ButtonGroup } from '@mui/material';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import NaturePeopleIcon from '@mui/icons-material/NaturePeople';
+import { PartialSponsorship, Viewport } from 'interfaces';
 
 const geolocateControlStyle = {
   right: 10,
@@ -27,7 +28,7 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
   const [style, setStyle] = useState('mapbox://styles/mapbox/satellite-streets-v11');
   const mapRef = useRef();
 
-  const [viewport, setViewport] = useState({
+  const [viewport, setViewport] = useState<Viewport>({
     width: '100%',
     height: '100%',
     latitude: 30.2594625,
@@ -35,9 +36,9 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
     zoom: 10.7,
   });
 
-  const handleViewportChange = useCallback(newViewport => setViewport(newViewport), []);
+  const handleViewportChange = useCallback((newViewport: Viewport) => setViewport(newViewport), []);
 
-  const { data: sponsorships, isFetched, isFetching } = useGet<any[]>('/api/sponsorships/locations', 'sponsorship-locations');
+  const { data: sponsorships } = useGet<PartialSponsorship[]>('/api/sponsorships/locations', 'sponsorship-locations');
 
   function showMarkerDetails(id: number) {
     setActiveSponsorshipId(id);
@@ -49,7 +50,7 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
       <MapGL
         {...viewport}
         ref={mapRef}
-        onViewportChange={(nextViewport: any) => setViewport(nextViewport)}
+        onViewportChange={(nextViewport: Viewport) => setViewport(nextViewport)}
         mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         className='index-map mapboxgl-map box-shadow'
         mapStyle={isExploreMode ? style : 'mapbox://styles/mapbox/light-v10'}

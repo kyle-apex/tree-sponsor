@@ -4,7 +4,7 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 // MUI Core
 import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider, Theme, StyledEngineProvider } from '@mui/material/styles';
+import { ThemeProvider, Theme } from '@mui/material/styles';
 // Utils
 import theme from '../utils/theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -26,7 +26,7 @@ interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
 
-const MyApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: MyAppProps) => {
+const MyApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: MyAppProps): JSX.Element => {
   React.useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');

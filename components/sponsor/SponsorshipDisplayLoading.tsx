@@ -1,5 +1,4 @@
-import { Card, CardContent, CardActions, CardHeader, Skeleton } from '@mui/material';
-import { useRouter } from 'next/router';
+import { Card, CardContent, CardHeader, Skeleton } from '@mui/material';
 import React from 'react';
 
 const SponsorshipDisplayLoading = () => {

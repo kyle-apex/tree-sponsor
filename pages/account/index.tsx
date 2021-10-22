@@ -1,14 +1,10 @@
 import Layout from 'components/layout/Layout';
-
 import Subscriptions from 'components/account/subscriptions/Subscriptions';
 import Sponsorships from 'components/account/sponsorships/Sponsorships';
 import EditProfile from 'components/account/profile/EditProfile';
-
-import Link from 'next/link';
 import serverSideIsAuthenticated from 'utils/auth/server-side-is-authenticated';
 import React, { useState } from 'react';
 import { Box, Tabs, Tab, Typography } from '@mui/material';
-import { boxSizing } from '@mui/system';
 
 export const getServerSideProps = serverSideIsAuthenticated;
 
@@ -16,7 +12,7 @@ const AccountPage = () => {
   const [activeDonationAmount, setActiveDonationAmount] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
 
-  const handleTabChange = (_event: any, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
     setActiveTab(newValue);
   };
 

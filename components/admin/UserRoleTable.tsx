@@ -5,7 +5,6 @@ import { Role } from '@prisma/client';
 import { TableHeader } from 'components/TableHeader';
 import { StyledTableRow } from 'components/StyledTableRow';
 import axios from 'axios';
-import { QueryObserverResult, RefetchOptions } from 'react-query';
 import { PartialUser } from 'interfaces';
 import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
 

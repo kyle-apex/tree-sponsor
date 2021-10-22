@@ -1,7 +1,6 @@
 import { Stepper, Step, StepButton, Button } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { useSession } from 'next-auth/client';
 import axios from 'axios';
 import SponsorshipDisplayForm from './SponsorshipDisplayForm';
 import LocationSelector from 'components/LocationSelector';
@@ -62,7 +61,6 @@ const SponsorshipAddEditForm = ({
   setSponsorship?: React.Dispatch<React.SetStateAction<PartialSponsorship>>;
 }) => {
   const classes = useStyles();
-  const [session] = useSession();
 
   const [description, setDescription] = useState('');
   const [title, setTitle] = useState('');
@@ -76,7 +74,7 @@ const SponsorshipAddEditForm = ({
   const [imageWidth, setImageWidth] = useState(0);
 
   const [activeStep, setActiveStep] = useState(0);
-  const [completed, setCompleted] = useState<{ [k: number]: boolean }>({});
+  const [completed] = useState<{ [k: number]: boolean }>({});
   const [isUpserting, setIsUpserting] = useState(false);
 
   const handleImageUrl: Dispatch<SetStateAction<string>> = (imageUrl: SetStateAction<string>) => {

@@ -40,12 +40,9 @@ const Subscriptions = ({
   isSectionActive?: boolean;
 }) => {
   const classes = useStyles();
-  const [session, loading] = useSession();
+  const [session] = useSession();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const { data: subscriptions, isFetched, isFetching, refetch } = useGet<SubscriptionWithDetails[]>(
-    '/api/me/subscriptions',
-    'subscriptions',
-  );
+  const { data: subscriptions, isFetched, refetch } = useGet<SubscriptionWithDetails[]>('/api/me/subscriptions', 'subscriptions');
 
   const refreshFromStripe = async () => {
     setIsRefreshing(true);

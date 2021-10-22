@@ -1,8 +1,7 @@
 import { Avatar } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 
-const SponsorshipAvatar = ({ image, name, size = 40 }: { image: string; name: string; size?: number }) => {
+const SponsorshipAvatar = ({ image, name, size = 40 }: { image: string; name: string; size?: number }): JSX.Element => {
   const [abbreviation, setAbbreviation] = useState('AN');
 
   const getAbbreviation = (name: string): string => {

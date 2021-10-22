@@ -13,13 +13,13 @@ const LoadingButton = ({
 }: {
   children?: React.ReactNode;
   size?: 'small' | 'medium' | 'large';
-  className?: any;
+  className?: string;
   variant?: 'text' | 'outlined' | 'contained';
   color?: 'inherit' | 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning';
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   isLoading?: boolean;
   disabled?: boolean;
-}) => {
+}): JSX.Element => {
   return (
     <Button
       size={size}

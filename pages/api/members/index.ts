@@ -1,11 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-
-import { getSession } from 'utils/auth/get-session';
 import { prisma } from 'utils/prisma/init';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getSession({ req });
-
+export default async function handler(_req: NextApiRequest, res: NextApiResponse) {
   const subscriptionWithDetails = await prisma.subscriptionWithDetails.findMany({
     orderBy: { lastPaymentDate: 'desc' },
     distinct: ['email'],
