@@ -40,13 +40,13 @@ export default async function initializeApplication() {
   );
 
   try {
-    await prisma.$executeRaw(`DROP Table SubscriptionWithDetails`);
+    await prisma.$executeRaw`DROP Table SubscriptionWithDetails`;
   } catch (err) {
     console.log('SubscriptionWithDetails table was previously removed');
   }
 
   try {
-    await prisma.$executeRaw(`CREATE VIEW SubscriptionWithDetails AS
+    await prisma.$executeRaw`CREATE VIEW SubscriptionWithDetails AS
   SELECT
       s.id,
       s.status,
@@ -76,7 +76,7 @@ export default async function initializeApplication() {
           or p.name like '%Young Profess%'
           or p.name like '%Membership%'
       )
-      and amount >= 20`);
+      and amount >= 20`;
   } catch (err) {
     console.log('SubscriptionWithDetails already exists');
   }
