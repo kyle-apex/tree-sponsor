@@ -42,7 +42,7 @@ function userHasRole(user: PartialUser, roleId: number) {
 }
 
 async function handleRoleChange(userId: number, attributes: Record<string, unknown>) {
-  return await axios.post('/api/users/' + userId + '/toggleRole', attributes);
+  await axios.post('/api/users/' + userId + '/toggleRole', attributes);
 }
 
 export default function UserRoleTable({

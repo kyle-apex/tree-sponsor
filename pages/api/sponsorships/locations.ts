@@ -4,7 +4,7 @@ import { prisma } from 'utils/prisma/init';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
-    let sponsorships = await prisma.sponsorship.findMany({
+    const sponsorships = await prisma.sponsorship.findMany({
       where: { reviewStatus: { notIn: ['Draft', 'Rejected'] } },
       select: {
         tree: {
@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     /*sponsorships.forEach(sponsorship => {
       sponsorship.tree.latitude = new Decimal(sponsorship.tree.latitude).toNumber();
     });*/
-    sponsorships = parseResponseDateStrings(sponsorships);
-    res.status(200).json(sponsorships);
+    const result = parseResponseDateStrings(sponsorships);
+    res.status(200).json(result);
   }
 }
