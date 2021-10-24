@@ -90,13 +90,13 @@ export default NextAuth({
   },
 });
 
-function html({ url, host, email }: Record<'url' | 'host' | 'email', string>) {
+function html({ url, email }: Record<'url' | 'host' | 'email', string>) {
   // Insert invisible space into domains and email address to prevent both the
   // email address and the domain from being turned into a hyperlink by email
   // clients like Outlook and Apple mail, as this is confusing because it seems
   // like they are supposed to click on their email address to sign in.
   const escapedEmail = `${email.replace(/\./g, '&#8203;.')}`;
-  const escapedHost = `${host.replace(/\./g, '&#8203;.')}`;
+  //const escapedHost = `${host.replace(/\./g, '&#8203;.')}`;
 
   // Some simple styling options
   const backgroundColor = '#f9f9f9';

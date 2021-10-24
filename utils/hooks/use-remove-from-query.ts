@@ -1,11 +1,15 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-export const useRemoveFromQuery = (key: string, removeFunction: (id: number) => Promise<any>, hasRefetch?: boolean) => {
+export const useRemoveFromQuery = <T extends { id?: string | number }>(
+  key: string,
+  removeFunction: (id: number) => void,
+  hasRefetch?: boolean,
+) => {
   const queryKey = [key, undefined];
   const queryClient = useQueryClient();
 
   function removeQueryListItem(id: number) {
-    const previousList: any[] = queryClient.getQueryData(queryKey);
+    const previousList: T[] = queryClient.getQueryData(queryKey);
 
     const item = previousList.find(item => {
       return item.id == id;

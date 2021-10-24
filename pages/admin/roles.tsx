@@ -22,7 +22,7 @@ const RolesPage = () => {
   const { data: roles, refetch: refetchRoles, isFetching: isRolesFetching } = useGet<Role[]>('/api/roles', 'roles');
   const { data: users, isFetching: isUsersFetching } = useGet<Role[]>('/api/users', 'users');
 
-  const { add } = useAddToQuery('roles', addRoleToDatabase);
+  const { add } = useAddToQuery<Role>('roles', addRoleToDatabase);
 
   const classes = useStyles();
 

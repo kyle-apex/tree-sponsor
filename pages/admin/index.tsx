@@ -91,7 +91,7 @@ export default function EnhancedTable(): JSX.Element {
   const debounceMilliseconds = 1;
 
   const updateUser = async (userId: number, attributes: Record<string, unknown>) => {
-    return await axios.post('/api/users/' + userId, { hasShirt: !!attributes.hasShirt });
+    await axios.post('/api/users/' + userId, { hasShirt: !!attributes.hasShirt });
   };
 
   const { updateById: updateHasShirt } = useUpdateQueryById('members', updateUser);

@@ -1,6 +1,4 @@
 import { createTheme } from '@mui/material/styles';
-import { ThemeContext } from '@mui/styled-engine';
-import { spacing } from '@mui/system';
 
 const theme = createTheme({
   palette: {

@@ -1,12 +1,12 @@
 import React, { useState } from 'react'; // eslint-disable-line no-unused-vars
-import { providers, signIn, getSession, csrfToken } from 'next-auth/client';
-import { Container, Button, Box, TextField } from '@mui/material';
+import { providers, signIn, getSession, csrfToken, ClientSafeProvider } from 'next-auth/client';
+import { Button, TextField } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import Layout from 'components/layout/Layout';
-import Image from 'next/image';
 import LogoMessage from 'components/layout/LogoMessage';
 
 import useLocalStorage from 'utils/hooks/use-local-storage';
+import { GetServerSidePropsContext } from 'next';
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -21,10 +21,10 @@ export default function signin({
   message: warningMessage,
   error: errorType,
 }: {
-  providers: any;
-  csrfToken: any;
+  providers: Record<string, ClientSafeProvider>;
+  csrfToken: string;
   message: string;
-  error: any;
+  error: string;
 }) {
   const classes = useStyles();
   const [message, setMessage] = useState(warningMessage);
@@ -74,7 +74,7 @@ export default function signin({
           </div>
         )}
         {!message &&
-          Object.values(providers).map((provider: any) => {
+          Object.values(providers).map((provider: ClientSafeProvider) => {
             return (
               <div key={provider.name} className='provider'>
                 {provider.type === 'oauth' && (
@@ -117,7 +117,7 @@ export default function signin({
     </Layout>
   );
 }
-export async function getServerSideProps(context: any) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req } = context;
   const session = await getSession({ req });
 

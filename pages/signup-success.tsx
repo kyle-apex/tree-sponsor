@@ -1,16 +1,15 @@
-import { Box, Button, Container } from '@mui/material';
+import { Button } from '@mui/material';
 import Layout from 'components/layout/Layout';
 import { signIn, getSession } from 'next-auth/client';
 import React, { useEffect } from 'react';
 import { Stripe, stripe } from 'utils/stripe/init';
 
-import Image from 'next/image';
 import LogoMessage from 'components/layout/LogoMessage';
 import Link from 'next/link';
-import { getURL } from 'utils/get-application-url';
 import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
 
 import { prisma } from 'utils/prisma/init';
+import { GetServerSidePropsContext } from 'next';
 
 const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: string; isSignedIn: boolean }) => {
   useEffect(() => {
@@ -57,10 +56,10 @@ const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: str
 
 export default SignupSuccess;
 
-export async function getServerSideProps(context: any) {
-  const { req, query } = context;
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { query } = context;
 
-  const queryObj = query || req.query;
+  const queryObj = query;
 
   const session = await getSession(context);
 
@@ -75,7 +74,7 @@ export async function getServerSideProps(context: any) {
   console.log('queryObj %j', queryObj);
   let stripeSessionId;
   if (queryObj) {
-    stripeSessionId = queryObj.session_id;
+    stripeSessionId = queryObj.session_id as string;
     delete queryObj.session_id;
   }
 

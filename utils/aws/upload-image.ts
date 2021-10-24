@@ -16,7 +16,7 @@ export default async function uploadImage(fileContent: string | Buffer, fileType
     Bucket: process.env.AWS_BUCKET_NAME ?? '',
   };
 
-  const result = await s3.putObject(params).promise();
+  await s3.putObject(params).promise();
 
   return `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${key}`;
 }

@@ -42,7 +42,7 @@ const SignupPage = ({
   ];
   const [activeMembershipIndex, setActiveMembershipIndex] = useState(1);
 
-  const handleChange = (_event: any, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
     setActiveMembershipIndex(newValue);
   };
 

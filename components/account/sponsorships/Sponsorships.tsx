@@ -11,7 +11,7 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
-  const { remove } = useRemoveFromQuery('my-sponsorships', handleDelete);
+  const { remove } = useRemoveFromQuery<PartialSponsorship>('my-sponsorships', handleDelete);
 
   async function handleDelete(sponsorshipId: number) {
     await axios.delete('/api/sponsorships/' + sponsorshipId);

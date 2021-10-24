@@ -8,7 +8,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     const { roleName, hasRole } = req.body;
 
-    const result = hasRole ? await grantAccess(id, roleName, req) : await removeAccess(id, roleName, req);
+    if (hasRole) await grantAccess(id, roleName, req);
+    else await removeAccess(id, roleName, req);
 
     const user = await prisma.user.findFirst({
       where: {

@@ -1,4 +1,4 @@
-import { Stripe, stripe } from './init';
+import { stripe } from './init';
 
 export const findOrCreateCustomer = async (email: string): Promise<string> => {
   const existingCustomers = await stripe.customers.list({ email: email });
