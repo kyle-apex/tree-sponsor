@@ -19,7 +19,7 @@ const Layout = ({ children, title = 'TreeFolksYP', isFullWidth }: Props) => (
       </title>
       <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
       <meta charSet='utf-8' />
-      <meta name='viewport' content='initial-scale=1.0, width=device-width' />
+      <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, maximum-scale=1' />
       <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css' rel='stylesheet' />
     </Head>
     <Header />
