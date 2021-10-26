@@ -1,11 +1,11 @@
 import { getSession } from 'next-auth/client';
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { TextField, Box, Typography } from '@mui/material';
 import axios from 'axios';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import LoadingButton from 'components/LoadingButton';
 
-const EditProfile = (): JSX.Element => {
+const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
@@ -45,6 +45,7 @@ const EditProfile = (): JSX.Element => {
         padding: '10px 20px 30px',
       }}
     >
+      {children}
       <Box
         sx={{
           marginBottom: 4,
