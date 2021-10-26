@@ -5,6 +5,7 @@ import EditProfile from 'components/account/profile/EditProfile';
 import serverSideIsAuthenticated from 'utils/auth/server-side-is-authenticated';
 import React, { useState } from 'react';
 import { Box, Tabs, Tab, Typography } from '@mui/material';
+import MembershipPerks from 'components/membership/MembershipPerks';
 
 export const getServerSideProps = serverSideIsAuthenticated;
 
@@ -24,18 +25,18 @@ const AccountPage = () => {
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} mb={4}>
         <Tabs className='account-tabs' value={activeTab} onChange={handleTabChange} variant='fullWidth' aria-label='basic tabs example'>
           <Tab label='Sponsorships' />
+          <Tab label='Membership' />
           <Tab label='Billing' />
-          <Tab label='Profile' />
         </Tabs>
       </Box>
       <Box hidden={0 != activeTab}>
         <Sponsorships activeDonationAmount={activeDonationAmount}></Sponsorships>
       </Box>
       <Box hidden={1 != activeTab}>
-        <Subscriptions setActiveDonationAmount={setActiveDonationAmount} isSectionActive={1 === activeTab}></Subscriptions>
+        <MembershipPerks></MembershipPerks>
       </Box>
       <Box hidden={2 != activeTab}>
-        <EditProfile />
+        <Subscriptions setActiveDonationAmount={setActiveDonationAmount} isSectionActive={1 === activeTab}></Subscriptions>
       </Box>
     </Layout>
   );

@@ -145,6 +145,13 @@ const Header = () => {
               <ListItemText primary='Tree Map' />
             </ListItem>
           </Link>
+          {session && (
+            <Link href='/profile'>
+              <ListItem button>
+                <ListItemText primary='Profile' />
+              </ListItem>
+            </Link>
+          )}
           {session && isAdmin && (
             <Link href='/admin'>
               <ListItem button>
