@@ -1,4 +1,8 @@
-import { Card, CardContent, CardHeader, Skeleton, Typography } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Skeleton from '@mui/material/Skeleton';
+import Typography from '@mui/material/Typography';
 import makeStyles from '@mui/styles/makeStyles';
 import { useRouter } from 'next/router';
 import React from 'react';

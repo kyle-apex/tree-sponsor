@@ -1,6 +1,7 @@
 import React, { useState } from 'react'; // eslint-disable-line no-unused-vars
 import { providers, signIn, getSession, csrfToken, ClientSafeProvider } from 'next-auth/client';
-import { Button, TextField } from '@mui/material';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 import makeStyles from '@mui/styles/makeStyles';
 import Layout from 'components/layout/Layout';
 import LogoMessage from 'components/layout/LogoMessage';

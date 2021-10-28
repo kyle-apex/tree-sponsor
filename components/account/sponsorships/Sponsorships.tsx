@@ -1,4 +1,5 @@
-import { Grid, Box } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import { SetStateAction, useEffect, useState } from 'react';
 import { useGet, useRemoveFromQuery } from 'utils/hooks';
 import axios from 'axios';

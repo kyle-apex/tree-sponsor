@@ -4,7 +4,10 @@ import Sponsorships from 'components/account/sponsorships/Sponsorships';
 import EditProfile from 'components/account/profile/EditProfile';
 import serverSideIsAuthenticated from 'utils/auth/server-side-is-authenticated';
 import React, { useState } from 'react';
-import { Box, Tabs, Tab, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
 import MembershipPerks from 'components/membership/MembershipPerks';
 
 export const getServerSideProps = serverSideIsAuthenticated;

@@ -1,4 +1,8 @@
-import { Card, CardHeader, CardContent, CardMedia, TextField } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import TextField from '@mui/material/TextField';
 import React from 'react';
 import { useSession } from 'next-auth/client';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';

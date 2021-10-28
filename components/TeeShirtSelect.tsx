@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { FormControl, MenuItem, Select } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 import makeStyles from '@mui/styles/makeStyles';
 

@@ -5,7 +5,8 @@ import SponsorshipDisplayDialog from './SponsorshipDisplayDialog';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Geocoder from 'react-map-gl-geocoder';
-import { Button, ButtonGroup } from '@mui/material';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import NaturePeopleIcon from '@mui/icons-material/NaturePeople';
 import { PartialSponsorship, Viewport } from 'interfaces';

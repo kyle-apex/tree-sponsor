@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Checkbox, LinearProgress, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import IconButton from '@mui/material/IconButton';
+import LinearProgress from '@mui/material/LinearProgress';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
 import makeStyles from '@mui/styles/makeStyles';
 import { Role } from '@prisma/client';
 import { TableHeader } from 'components/TableHeader';

@@ -1,4 +1,4 @@
-import { Button, makeStyles } from '@mui/material';
+import Button from '@mui/material/Button';
 import Layout from 'components/layout/Layout';
 import { signIn, getSession } from 'next-auth/client';
 import React, { useEffect } from 'react';

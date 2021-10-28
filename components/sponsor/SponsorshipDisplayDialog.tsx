@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogContent } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
 import SponsorshipDisplay from './SponsorshipDisplay';
 import { Sponsorship } from '@prisma/client';
-import { makeStyles } from '@mui/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import SponsorshipDisplayLoading from './SponsorshipDisplayLoading';
 import parsedGet from 'utils/api/parsed-get';
 

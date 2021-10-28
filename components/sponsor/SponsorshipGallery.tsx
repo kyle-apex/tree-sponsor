@@ -1,4 +1,6 @@
-import { Button, MobileStepper, useTheme } from '@mui/material';
+import MobileStepper from '@mui/material/MobileStepper';
+import Button from '@mui/material/Button';
+import useTheme from '@mui/styles/useTheme';
 import React, { useState } from 'react';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';

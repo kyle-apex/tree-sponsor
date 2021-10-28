@@ -1,4 +1,7 @@
-import { Stepper, Step, StepButton, Button } from '@mui/material';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepButton from '@mui/material/StepButton';
+import Button from '@mui/material/Button';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import axios from 'axios';

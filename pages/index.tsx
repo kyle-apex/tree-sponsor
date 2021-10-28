@@ -1,13 +1,19 @@
 import Link from 'next/link';
 import Layout from '../components/layout/Layout';
 import { useEffect, useState } from 'react';
-import { Button, Box, Grid, Typography, Container, useMediaQuery, useTheme } from '@mui/material';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
 import makeStyles from '@mui/styles/makeStyles';
 import { SponsorshipMap, SponsorshipDisplay, SponsorshipGallery, SponsorshipDisplayLoading } from 'components/sponsor';
 import TFYPAboutSection from 'components/index/TFYPAboutSection';
 import parsedGet from 'utils/api/parsed-get';
 
 import { PartialSponsorship } from 'interfaces';
+import useTheme from '@mui/styles/useTheme';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const useStyles = makeStyles(theme => ({
   headlineContainer: {

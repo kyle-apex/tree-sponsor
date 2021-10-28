@@ -1,23 +1,21 @@
-import {
-  Container,
-  Tab,
-  Tabs,
-  TableCell,
-  TableRow,
-  Table,
-  Box,
-  Chip,
-  TableBody,
-  Typography,
-  FormControlLabel,
-  FormGroup,
-  Checkbox,
-} from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import Tabs from '@mui/material/Tabs';
+import TableRow from '@mui/material/TableRow';
 import CheckoutButton from 'components/CheckoutButton';
 import React, { useState } from 'react';
 import Layout from 'components/layout/Layout';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import Chip from '@mui/material/Chip';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 
 const TabLabel = ({ title, pricing, subtitle }: { title: string; pricing: string; subtitle: string }) => (
   <>

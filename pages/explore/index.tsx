@@ -1,6 +1,6 @@
 import Layout from 'components/layout/Layout';
 import SponsorshipMap from 'components/sponsor/SponsorshipMap';
-import { Container } from '@mui/material';
+import Container from '@mui/material/Container';
 import React from 'react';
 
 const Explore = () => {

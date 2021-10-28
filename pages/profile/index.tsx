@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import Button from '@mui/material/Button';
 import EditProfile from 'components/account/profile/EditProfile';
 import Layout from 'components/layout/Layout';
 import Link from 'next/link';

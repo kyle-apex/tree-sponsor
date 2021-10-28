@@ -1,6 +1,8 @@
 import { getSession } from 'next-auth/client';
 import React, { ReactNode, useEffect, useState } from 'react';
-import { TextField, Box, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import LoadingButton from 'components/LoadingButton';
