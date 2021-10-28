@@ -16,7 +16,8 @@ import {
 import CheckoutButton from 'components/CheckoutButton';
 import React, { useState } from 'react';
 import Layout from 'components/layout/Layout';
-import { CheckCircle, HighlightOff } from '@mui/icons-material';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const TabLabel = ({ title, pricing, subtitle }: { title: string; pricing: string; subtitle: string }) => (
   <>
@@ -108,22 +109,30 @@ const SignupPage = ({
               <TableCell>Tee Shirt</TableCell>
               <TableCell>
                 {memberships[activeMembershipIndex].hasShirt ? (
-                  <CheckCircle color='primary'></CheckCircle>
+                  <CheckCircleIcon color='primary'></CheckCircleIcon>
                 ) : (
-                  <HighlightOff color='secondary'></HighlightOff>
+                  <HighlightOffIcon color='secondary'></HighlightOffIcon>
                 )}
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>TreeFolksYP Membership</TableCell>
               <TableCell>
-                {isMembership ? <CheckCircle color='primary'></CheckCircle> : <HighlightOff color='secondary'></HighlightOff>}
+                {isMembership ? (
+                  <CheckCircleIcon color='primary'></CheckCircleIcon>
+                ) : (
+                  <HighlightOffIcon color='secondary'></HighlightOffIcon>
+                )}
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>Slack & Facebook Group Access</TableCell>
               <TableCell>
-                {isMembership ? <CheckCircle color='primary'></CheckCircle> : <HighlightOff color='secondary'></HighlightOff>}
+                {isMembership ? (
+                  <CheckCircleIcon color='primary'></CheckCircleIcon>
+                ) : (
+                  <HighlightOffIcon color='secondary'></HighlightOffIcon>
+                )}
               </TableCell>
             </TableRow>
           </TableBody>
@@ -139,7 +148,6 @@ const SignupPage = ({
                     setIsMembership(e.target.checked);
                   }}
                   color='secondary'
-                  defaultChecked
                 />
               }
               label='In addition to my tree sponsorship, I would like to be a part of TreeFolks Young Professionals and receive email updates for events and volunteer opportunities'

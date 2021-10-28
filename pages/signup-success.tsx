@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { Button, makeStyles } from '@mui/material';
 import Layout from 'components/layout/Layout';
 import { signIn, getSession } from 'next-auth/client';
 import React, { useEffect } from 'react';
@@ -85,6 +85,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       const stripeSession = await stripe.checkout.sessions.retrieve(stripeSessionId);
       console.log('session', stripeSession);
       const customer = (await stripe.customers.retrieve(stripeSession.customer as string)) as Stripe.Customer;
+      console.log('customer', customer);
+
+      if (customer?.metadata && stripeSession?.metadata) {
+        Object.assign(customer.metadata, stripeSession.metadata);
+        stripe.customers.update(customer.id, { metadata: customer.metadata });
+      }
 
       email = customer.email;
 

@@ -2,7 +2,8 @@ import React, { ReactNode } from 'react';
 import Head from 'next/head';
 import Header from './Header';
 import Footer from './Footer';
-import { Box, Container } from '@mui/material';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 
 type Props = {
   children?: ReactNode;

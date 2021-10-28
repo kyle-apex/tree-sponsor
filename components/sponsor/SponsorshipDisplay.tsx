@@ -1,7 +1,7 @@
 import { User } from '.prisma/client';
 import { Card, CardHeader, CardContent, IconButton, CardMedia, Typography, CardActions } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import { Clear } from '@mui/icons-material';
+import ClearIcon from '@mui/icons-material/Clear';
 import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -81,7 +81,7 @@ const SponsorshipDisplay = ({
             action={
               handleClose && (
                 <IconButton onClick={handleClose}>
-                  <Clear></Clear>
+                  <ClearIcon></ClearIcon>
                 </IconButton>
               )
             }

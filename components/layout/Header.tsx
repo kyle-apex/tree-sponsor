@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/client';
-import { Button, IconButton, Toolbar, Typography, AppBar, Drawer, Divider, List, ListItem, ListItemText, Box } from '@mui/material';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import AppBar from '@mui/material/AppBar';
+import Drawer from '@mui/material/Drawer';
+import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Box from '@mui/material/Box';
 import makeStyles from '@mui/styles/makeStyles';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';

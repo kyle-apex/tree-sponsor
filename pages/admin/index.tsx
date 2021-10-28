@@ -8,7 +8,7 @@ import { TableHeader } from 'components/TableHeader';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import InputAdornment from '@mui/material/InputAdornment';
-import { Search } from '@mui/icons-material';
+import SearchIcon from '@mui/icons-material/Search';
 import { Button, LinearProgress, TextField } from '@mui/material';
 import { useGet } from 'utils/hooks/use-get';
 import { SubscriptionWithDetails } from '@prisma/client';
@@ -150,7 +150,7 @@ export default function EnhancedTable(): JSX.Element {
           InputProps={{
             startAdornment: (
               <InputAdornment position='start'>
-                <Search />
+                <SearchIcon />
               </InputAdornment>
             ),
           }}

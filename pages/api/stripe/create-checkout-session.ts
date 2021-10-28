@@ -11,6 +11,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const { price, quantity = 1, metadata = {} } = req.body;
 
+    console.log('metadata', metadata);
+
     try {
       const user = session ? session.user : null;
       let customerId: string;
