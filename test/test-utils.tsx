@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
-import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import theme from 'utils/theme';
-import { ReactElement } from 'react';
+import React, { ReactElement } from 'react';
+import { ThemeProvider } from '@mui/material/styles';
 
 // Add in any providers here if necessary:
 const Providers = ({ children }: { children: ReactElement }) => {

@@ -1,7 +1,6 @@
 import Layout from 'components/layout/Layout';
 import Subscriptions from 'components/account/subscriptions/Subscriptions';
 import Sponsorships from 'components/account/sponsorships/Sponsorships';
-import EditProfile from 'components/account/profile/EditProfile';
 import serverSideIsAuthenticated from 'utils/auth/server-side-is-authenticated';
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
