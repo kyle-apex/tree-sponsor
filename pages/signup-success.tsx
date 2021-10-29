@@ -10,6 +10,7 @@ import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-fo
 
 import { prisma } from 'utils/prisma/init';
 import { GetServerSidePropsContext } from 'next';
+import addSubscriber from 'utils/mailchimp/add-subscriber';
 
 const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: string; isSignedIn: boolean }) => {
   useEffect(() => {
@@ -94,6 +95,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
       email = customer.email;
 
+      let firstName: string;
+      let lastName: string;
+
+      if (customer?.name) {
+        const customerNameSplit = customer.name.split(' ');
+        firstName = customerNameSplit.shift();
+        lastName = customerNameSplit.join(' ');
+      }
+
+      if (stripeSession?.metadata?.['Email Subscribe'] == 'Yes')
+        addSubscriber(email, { FNAME: firstName, LNAME: lastName, AMOUNT: stripeSession.amount_total / 100 + '' });
+
       props.name = customer.name;
       props.email = email;
 
@@ -106,6 +119,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       console.log('customer', customer);
     } catch (err: unknown) {
       props.name = null;
+      console.log('err', err);
     }
   }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 // Modules
-import { AppProps } from 'next/app';
+import { AppProps } from 'next/dist/shared/lib/router/router';
 import Head from 'next/head';
 // MUI Core
 import CssBaseline from '@mui/material/CssBaseline';

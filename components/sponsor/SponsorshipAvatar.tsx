@@ -1,5 +1,5 @@
 import Avatar from '@mui/material/Avatar';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const SponsorshipAvatar = ({ image, name, size = 40 }: { image: string; name: string; size?: number }): JSX.Element => {
   const [abbreviation, setAbbreviation] = useState('AN');

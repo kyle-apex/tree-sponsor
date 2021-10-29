@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { ThemeProvider } from '@mui/material/styles';
+import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import theme from 'utils/theme';
 import { ReactElement } from 'react';
 

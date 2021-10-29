@@ -1,5 +1,5 @@
 import Container from '@mui/material/Container';
-import Box from '@mui/system/Box';
+import Box from '@mui/material/Box';
 import Image from 'next/image';
 
 const LogoMessage = ({ children, hideLogo }: { children: React.ReactNode; hideLogo?: boolean }) => {

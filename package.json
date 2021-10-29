@@ -27,6 +27,7 @@
     "crypto-js": "^4.1.1",
     "express": "^4.17.1",
     "fontsource-roboto": "^3.1.5",
+    "mailchimp-api-v3": "^1.15.0",
     "mysql": "^2.18.1",
     "next": "^12.0.1",
     "next-auth": "npm:auto-link-oauth-next-auth@^0.0.4",
