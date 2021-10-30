@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
-import MapGL, { GeolocateControl, Marker, NavigationControl } from 'react-map-gl';
+import MapGL, { GeolocateControl, NavigationControl } from 'react-map-gl';
 import { useGet } from 'utils/hooks/use-get';
 import SponsorshipDisplayDialog from './SponsorshipDisplayDialog';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -10,6 +10,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import NaturePeopleIcon from '@mui/icons-material/NaturePeople';
 import { PartialSponsorship, Viewport } from 'interfaces';
+import MapMarker from './MapMarker';
 
 const geolocateControlStyle = {
   right: 10,
@@ -26,6 +27,7 @@ const SEARCH_LOCATION = { longitude: -97.7405213210974, latitude: 30.27427678853
 const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
   const [activeSponsorshipId, setActiveSponsorshipId] = useState<number>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSatelliteMode, setIsSatelliteMode] = useState(isExploreMode);
   const [style, setStyle] = useState('mapbox://styles/mapbox/satellite-streets-v11');
   const mapRef = useRef();
 
@@ -46,6 +48,16 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
     setIsDialogOpen(true);
   }
 
+  function updateSatelliteMode(isSatelliteMode: boolean) {
+    if (isSatelliteMode) {
+      setStyle('mapbox://styles/mapbox/satellite-streets-v11');
+      setIsSatelliteMode(true);
+    } else {
+      setStyle('mapbox://styles/mapbox/streets-v11');
+      setIsSatelliteMode(false);
+    }
+  }
+
   return (
     <>
       <MapGL
@@ -59,30 +71,23 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
         {sponsorships?.map(sponsorship => {
           if (sponsorship?.tree?.latitude) {
             return (
-              <Marker
+              <MapMarker
                 key={sponsorship.id}
-                className='marker'
                 latitude={Number(sponsorship.tree.latitude)}
                 longitude={Number(sponsorship.tree.longitude)}
-              >
-                <img
-                  src={isExploreMode ? 'pin-right-bright.svg' : '/pin-ring.svg'}
-                  style={{
-                    width: (50 * viewport.zoom) / 10 + 'px',
-                    marginLeft: (-50 * viewport.zoom) / 20 + 'px',
-                    marginTop: -1 * ((50 * viewport.zoom) / 10) * 1.3,
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => showMarkerDetails(sponsorship.id)}
-                />
-              </Marker>
+                isSatelliteMode={isExploreMode && isSatelliteMode}
+                zoom={viewport.zoom}
+                onClick={() => {
+                  showMarkerDetails(sponsorship.id);
+                }}
+              ></MapMarker>
             );
           }
         })}
         {isExploreMode && (
           <>
             <GeolocateControl
-              auto={true}
+              auto={false}
               style={geolocateControlStyle}
               positionOptions={{ enableHighAccuracy: true }}
               trackUserLocation={true}
@@ -101,7 +106,7 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
                 <Button
                   color='inherit'
                   onClick={() => {
-                    setStyle('mapbox://styles/mapbox/satellite-streets-v11');
+                    updateSatelliteMode(true);
                   }}
                 >
                   <NaturePeopleIcon />
@@ -109,7 +114,7 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
                 <Button
                   color='inherit'
                   onClick={() => {
-                    setStyle('mapbox://styles/mapbox/streets-v11');
+                    updateSatelliteMode(false);
                   }}
                 >
                   <DirectionsCarIcon />
