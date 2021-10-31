@@ -10,8 +10,6 @@ jest.mock('./init-test', () => ({
 }));
 
 beforeEach(() => {
-  console.log('primsaMock', prismaMock);
-  console.log('prismaNon', prisma1);
   mockReset(prismaMock);
 });
 
