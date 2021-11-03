@@ -16,6 +16,7 @@ import { PartialSponsorship } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 import { SponsorshipAvatar, SponsorshipSubTitle } from 'components/sponsor';
 import { DEFAULT_DESCRIPTION } from 'consts';
+import { DEFAULT_TITLE_PREFIX } from 'consts';
 import SponsorshipAddEditDialog from './SponsorshipAddEditDialog';
 
 export type TreeDetail = {
@@ -82,7 +83,7 @@ const SponsorshipDisplay = ({
         <Card sx={{ maxWidth: '500px' }}>
           <CardHeader
             avatar={<SponsorshipAvatar image={sponsorship.user?.image} name={sponsorship.user?.name} />}
-            title={activeSponsorship?.title || sponsorship.title || 'Sponsored by ' + sponsorship.user?.name}
+            title={activeSponsorship?.title || sponsorship.title || DEFAULT_TITLE_PREFIX + sponsorship.user?.name?.split(' ')[0]}
             subheader={<SponsorshipSubTitle startDate={sponsorship.startDate} />}
             action={
               handleClose && (

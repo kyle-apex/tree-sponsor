@@ -7,6 +7,7 @@ import React from 'react';
 import { useSession } from 'next-auth/client';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import { SponsorshipAvatar, SponsorshipSubTitle } from 'components/sponsor';
+import { DESCRIPTION_PLACEHOLDER, DEFAULT_TITLE_PREFIX } from 'consts';
 
 const SponsorshipDisplayForm = ({
   title,
@@ -18,17 +19,18 @@ const SponsorshipDisplayForm = ({
 }: {
   title: string;
   setTitle: (param: string) => void;
-  description: string;
+  description: React.MutableRefObject<string>;
   setDescription: (param: string) => void;
   imageUrl: string;
   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const [session] = useSession();
+  console.log('re- rendered');
 
   const startDate = new Date();
 
   const getName = (): string => {
-    return session?.user?.name ? session.user.name : 'Anonymous';
+    return session?.user?.name ? session.user.name.split(' ')[0] : 'Anonymous';
   };
 
   return (
@@ -39,7 +41,7 @@ const SponsorshipDisplayForm = ({
           title={
             <TextField
               size='small'
-              placeholder={'Sponsored by ' + getName()}
+              placeholder={DEFAULT_TITLE_PREFIX + getName()}
               value={title}
               onChange={e => setTitle(e.target.value)}
               className='full-width'
@@ -67,11 +69,11 @@ const SponsorshipDisplayForm = ({
           <TextField
             multiline={true}
             rows={3}
-            value={description}
+            value={description.current}
             onChange={e => {
               setDescription(e.target.value);
             }}
-            placeholder='"I love this tree because..."     "In memory of..."     "I sponsored this tree because..."'
+            placeholder={DESCRIPTION_PLACEHOLDER}
             className='full-width'
           ></TextField>
         </CardContent>

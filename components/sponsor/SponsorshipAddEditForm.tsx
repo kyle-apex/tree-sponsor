@@ -3,7 +3,7 @@ import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import Button from '@mui/material/Button';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import SponsorshipDisplayForm from './SponsorshipDisplayForm';
 import LocationSelector from 'components/LocationSelector';
@@ -65,7 +65,9 @@ const SponsorshipAddEditForm = ({
 }) => {
   const classes = useStyles();
 
-  const [description, setDescription] = useState('');
+  const description = useRef('');
+
+  //const [description, setDescription] = useState('');
   const [title, setTitle] = useState('');
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
@@ -94,12 +96,12 @@ const SponsorshipAddEditForm = ({
   };
 
   const upsertSponsorship = async () => {
-    if (setSponsorship) setSponsorship(Object.assign(sponsorship, { title, description }));
+    if (setSponsorship) setSponsorship(Object.assign(sponsorship, { title, description: description.current }));
 
     const updatedSponsorship = await axios.post('/api/sponsorships', {
       id,
       title,
-      description,
+      description: description.current,
       primaryImageUuid,
       primaryImageHeight: imageHeight,
       primaryImageWidth: imageWidth,
@@ -127,7 +129,7 @@ const SponsorshipAddEditForm = ({
   useEffect(() => {
     if (sponsorship) {
       setTitle(sponsorship.title);
-      setDescription(sponsorship.description);
+      description.current = sponsorship.description;
       setId(sponsorship.id);
       setPrimaryImageUuid(sponsorship.primaryImageUuid);
       setImageUrl(sponsorship.pictureUrl);
@@ -155,7 +157,7 @@ const SponsorshipAddEditForm = ({
             title={title}
             setTitle={setTitle}
             description={description}
-            setDescription={setDescription}
+            setDescription={(v) => {description.current = v; }}
             imageUrl={imageUrl}
             setImageUrl={handleImageUrl}
           ></SponsorshipDisplayForm>

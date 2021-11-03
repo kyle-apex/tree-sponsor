@@ -115,7 +115,7 @@ const Header = () => {
           {!session && (
             <Link href='/signup'>
               <Button sx={{ marginRight: 2 }} color='inherit'>
-                Sponsor a tree
+                Thank a Tree
               </Button>
             </Link>
           )}
@@ -198,7 +198,7 @@ const Header = () => {
               className={classes.loginButton}
               onClick={() => router.push('/signup')}
             >
-              Sponsor a Tree
+              Thank a Tree
             </Button>
           </ListItem>
         )}
@@ -237,7 +237,7 @@ const Header = () => {
                 className={classes.loginButton}
                 onClick={() => router.push('/signup')}
               >
-                Sponsor More Trees
+                Thank More Trees
               </Button>
             </ListItem>
           )}

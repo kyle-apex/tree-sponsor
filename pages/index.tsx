@@ -58,10 +58,10 @@ const IndexPage = () => {
         >
           <Grid sm={5} md={5} xs={12} justifyContent='center' sx={{ display: 'flex', flexDirection: 'column' }} item>
             <Typography variant='h2' color='secondary'>
-              TreeFolksYP Tree Sponsorship
+              Thank-a-Tree with TreeFolksYP
             </Typography>
             <Typography variant='subtitle1' className={classes.headlineSubTitle}>
-              Make your mark with a tree sponsorship through TreeFolks Young Professionals (TreeFolksYP)
+              Thank your favorite trees with a Token of Appre-tree-ation in support of future tree plantings through TreeFolks Young Professionals (TreeFolksYP)
             </Typography>
             <Grid container direction='row' spacing={2}>
               <Grid item>
@@ -74,7 +74,7 @@ const IndexPage = () => {
               <Grid item>
                 <Link href='/signup'>
                   <Button variant='contained' color='primary'>
-                    Sponsor a Tree
+                    Thank a Tree
                   </Button>
                 </Link>
               </Grid>
@@ -85,6 +85,18 @@ const IndexPage = () => {
               <SponsorshipMap></SponsorshipMap>
             </Box>
           </Grid>
+        </Grid>
+        <Grid
+          container
+          direction={{ xs: 'column', sm: 'row', md: 'row' }}
+          spacing={2}
+        >
+          <Grid item xs={12} sm={4}>
+            <Typography variant='subtitle2'>Pollution</Typography>
+            <Typography variant='caption'>Trees give us the air we breeth</Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}></Grid>
+          <Grid item xs={12} sm={4}></Grid>
         </Grid>
       </Container>
       <div style={{ height: '150px', width: '100%', marginTop: '-40px', overflow: 'hidden' }}>
@@ -107,7 +119,7 @@ const IndexPage = () => {
                 <Box className='step-number'>1</Box>
               </Box>
               <Typography variant='subtitle1' className='step-text'>
-                Start an annual donation to TreeFolks of $20 per tree
+              Snap a picture of your most appreciated tree(s)
               </Typography>
             </Grid>
             <Grid item sm={4}>
@@ -115,7 +127,7 @@ const IndexPage = () => {
                 <Box className='step-number'>2</Box>
               </Box>
               <Typography variant='subtitle1' className='step-text'>
-                Snag a picture of your special tree(s)
+                Support your tree(s) and future tree plantings with an annual TreeFolks donation of $20/tree
               </Typography>
             </Grid>
             <Grid item sm={4} className='center'>
@@ -123,7 +135,7 @@ const IndexPage = () => {
                 <Box className='step-number'>3</Box>
               </Box>
               <Typography variant='subtitle1' className='step-text'>
-                Add trees to our sponsored tree map!
+                Thank-a-Tree by adding a Token of Appre-tree-ation to the map
               </Typography>
               <Link href='/signup'>
                 <Button variant='outlined' color='inherit'>
@@ -148,8 +160,8 @@ const IndexPage = () => {
             Support the Urban Forest
           </Typography>
           <Typography variant='subtitle1' className={classes.headlineSubTitle}>
-            Your sponsorship is a 100% tax deductible donation to TreeFolks to plant, care for, and give away trees in the Austin and
-            Central Texas Community. Checkout a few sponsored trees:
+            Your donation is a 100% tax deductible donation to TreeFolks to plant, care for, and give away trees in the Austin and
+            Central Texas Community. Checkout a few Tokens of Appre-tree-ation:
           </Typography>
           <Grid mb={12} container spacing={5} direction='row' justifyContent='space-around' alignItems='stretch'>
             {isLoadingSponsorships &&
