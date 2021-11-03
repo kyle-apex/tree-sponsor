@@ -21,3 +21,5 @@ export type PartialSponsorship = Partial<Sponsorship & { tree?: Partial<Tree> } 
 export type Viewport = Omit<ViewportProps, 'width' | 'height'> & { height: string | number; width: string | number };
 
 export type Session = Partial<NextSession> & { user?: User };
+
+export type TitleSection = { title: string; description: string };

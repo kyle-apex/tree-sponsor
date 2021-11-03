@@ -65,10 +65,12 @@ const SponsorshipAddEditForm = ({
 }) => {
   const classes = useStyles();
 
-  const description = useRef('');
+  const activeSponsorship = useRef<PartialSponsorship>({
+    title: sponsorship.title,
+    description: sponsorship.description,
+    isPrivate: sponsorship.isPrivate,
+  });
 
-  //const [description, setDescription] = useState('');
-  const [title, setTitle] = useState('');
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [id, setId] = useState(0);
@@ -96,12 +98,13 @@ const SponsorshipAddEditForm = ({
   };
 
   const upsertSponsorship = async () => {
-    if (setSponsorship) setSponsorship(Object.assign(sponsorship, { title, description: description.current }));
+    if (setSponsorship) setSponsorship(Object.assign(sponsorship, activeSponsorship.current));
 
     const updatedSponsorship = await axios.post('/api/sponsorships', {
       id,
-      title,
-      description: description.current,
+      title: activeSponsorship.current.title,
+      description: activeSponsorship.current.description,
+      isPrivate: activeSponsorship.current.isPrivate,
       primaryImageUuid,
       primaryImageHeight: imageHeight,
       primaryImageWidth: imageWidth,
@@ -128,8 +131,10 @@ const SponsorshipAddEditForm = ({
 
   useEffect(() => {
     if (sponsorship) {
-      setTitle(sponsorship.title);
-      description.current = sponsorship.description;
+      activeSponsorship.current.title = sponsorship.title;
+      activeSponsorship.current.description = sponsorship.description;
+      activeSponsorship.current.isPrivate = sponsorship.isPrivate;
+
       setId(sponsorship.id);
       setPrimaryImageUuid(sponsorship.primaryImageUuid);
       setImageUrl(sponsorship.pictureUrl);
@@ -153,14 +158,7 @@ const SponsorshipAddEditForm = ({
       </Stepper>
       {activeStep == 0 && (
         <>
-          <SponsorshipDisplayForm
-            title={title}
-            setTitle={setTitle}
-            description={description}
-            setDescription={(v) => {description.current = v; }}
-            imageUrl={imageUrl}
-            setImageUrl={handleImageUrl}
-          ></SponsorshipDisplayForm>
+          <SponsorshipDisplayForm sponsorship={activeSponsorship} imageUrl={imageUrl} setImageUrl={handleImageUrl}></SponsorshipDisplayForm>
           <SplitRow>
             {onComplete ? (
               <Button

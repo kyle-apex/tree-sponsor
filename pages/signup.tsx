@@ -148,7 +148,9 @@ const SignupPage = ({
                   color='secondary'
                 />
               }
-              label={`In addition to my token${activeMembershipIndex == 0 ? '' : 's'} of appre-tree-ation, I would like to be a part of TreeFolks Young Professionals and receive email updates for events and volunteer opportunities`}
+              label={`In addition to my token${
+                activeMembershipIndex == 0 ? '' : 's'
+              } of appre-tree-ation, I would like to be a part of TreeFolks Young Professionals and receive email updates for events and volunteer opportunities`}
             />
           </FormGroup>
           <CheckoutButton

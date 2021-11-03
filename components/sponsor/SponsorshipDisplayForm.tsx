@@ -8,24 +8,20 @@ import { useSession } from 'next-auth/client';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import { SponsorshipAvatar, SponsorshipSubTitle } from 'components/sponsor';
 import { DESCRIPTION_PLACEHOLDER, DEFAULT_TITLE_PREFIX } from 'consts';
+import Checkbox from '@mui/material/Checkbox';
+import { PartialSponsorship } from 'interfaces';
 
 const SponsorshipDisplayForm = ({
-  title,
-  setTitle,
-  description,
-  setDescription,
+  sponsorship,
   imageUrl,
   setImageUrl,
 }: {
-  title: string;
-  setTitle: (param: string) => void;
-  description: React.MutableRefObject<string>;
-  setDescription: (param: string) => void;
+  sponsorship: React.MutableRefObject<PartialSponsorship>;
   imageUrl: string;
   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const [session] = useSession();
-  console.log('re- rendered');
+  console.log('re-rendered');
 
   const startDate = new Date();
 
@@ -42,8 +38,10 @@ const SponsorshipDisplayForm = ({
             <TextField
               size='small'
               placeholder={DEFAULT_TITLE_PREFIX + getName()}
-              value={title}
-              onChange={e => setTitle(e.target.value)}
+              value={sponsorship.current.title}
+              onChange={e => {
+                sponsorship.current.title = e.target.value;
+              }}
               className='full-width'
             ></TextField>
           }
@@ -60,7 +58,7 @@ const SponsorshipDisplayForm = ({
             minHeight: '200px',
           }}
           component='div'
-          title={title}
+          title='Click to Update Image'
         >
           <ImageUploadAndPreview imageUrl={imageUrl} setImageUrl={setImageUrl} />
         </CardMedia>
@@ -69,13 +67,20 @@ const SponsorshipDisplayForm = ({
           <TextField
             multiline={true}
             rows={3}
-            value={description.current}
+            value={sponsorship.current.description}
             onChange={e => {
-              setDescription(e.target.value);
+              sponsorship.current.description = e.target.value;
             }}
             placeholder={DESCRIPTION_PLACEHOLDER}
             className='full-width'
           ></TextField>
+          <Checkbox
+            checked={sponsorship.current.isPrivate}
+            onChange={e => {
+              sponsorship.current.isPrivate = e.target.checked;
+            }}
+          ></Checkbox>{' '}
+          Is Private?
         </CardContent>
       </Card>
     </>
