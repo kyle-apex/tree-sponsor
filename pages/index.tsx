@@ -137,7 +137,7 @@ const IndexPage = ({ treeBenefits }: { treeBenefits: TitleSection[] }) => {
         </Typography>
         <Grid container direction={{ xs: 'column', sm: 'row', md: 'row' }} spacing={2} mb={5}>
           {treeBenefits.map((benefit, idx) => (
-            <Grid key={idx} item xs={12} sm={4}>
+            <Grid key={idx} item xs={12} sm={4} mb={4}>
               <Grid container gap='15px' wrap='nowrap' direction={{ xs: 'row', sm: 'row', md: 'row' }}>
                 <Grid item className='icon-container' alignSelf={{ xs: 'start', sm: 'center' }}>
                   {getIcon(benefit.title)}
