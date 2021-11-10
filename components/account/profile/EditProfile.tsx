@@ -1,21 +1,29 @@
-import { getSession } from 'next-auth/client';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState, useRef } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import LoadingButton from 'components/LoadingButton';
+import { getSession } from 'utils/auth/get-session';
+import { Session } from 'interfaces';
 
 const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const [name, setName] = useState('');
+  const [profilePathState, setProfilePathState] = useState({ profilePath: '', isLoading: false, isDuplicate: false, initialValue: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
+  const session = useRef<Session>();
 
   const readSession = async () => {
-    const session = await getSession();
-    if (session?.user.name) setName(session.user.name);
-    if (session?.user.image) setImageUrl(session.user.image);
+    session.current = await getSession();
+    const user = session.current.user;
+    if (user.name) setName(user.name);
+    if (user.profilePath)
+      setProfilePathState(state => {
+        return { ...state, profilePath: user.profilePath, initialValue: user.profilePath };
+      });
+    if (user.image) setImageUrl(user.image);
   };
 
   useEffect(() => {
@@ -26,9 +34,19 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
     setName(event.target.value);
   };
 
+  const handleProfilePathChange = async (event: { target: { value: string } }) => {
+    const profilePath = event.target.value;
+    setProfilePathState(state => {
+      return { ...state, profilePath };
+    });
+    if (profilePath != profilePathState.initialValue) {
+      const isDuplicate = await axios.get(`/api/users/${session.current.user.id}/is-duplicate-profile-path?profilePath=${profilePath}`);
+    }
+  };
+
   const updateUser = async () => {
     setIsLoading(true);
-    await axios.patch('/api/me', { name, image: imageUrl });
+    await axios.patch('/api/me', { name, image: imageUrl, profilePath: profilePathState.profilePath });
     setIsLoading(false);
   };
 
@@ -81,7 +99,16 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       </Box>
 
       <TextField value={name} onChange={handleNameChange} label='Name' size='small' sx={{ marginBottom: 2 }}></TextField>
-      <LoadingButton variant='contained' onClick={updateUser} isLoading={isLoading}>
+      <TextField
+        value={profilePathState.profilePath}
+        onChange={handleProfilePathChange}
+        label='Profile Path'
+        size='small'
+        sx={{ marginBottom: 2 }}
+        error={profilePathState.isDuplicate}
+      ></TextField>
+
+      <LoadingButton variant='contained' disabled={profilePathState.isDuplicate} onClick={updateUser} isLoading={isLoading}>
         Save
       </LoadingButton>
       <Typography sx={{ color: theme => theme.palette.grey[600] }} variant='body2' mt={2} mb={-1}>

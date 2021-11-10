@@ -11,6 +11,7 @@ import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-fo
 import { prisma } from 'utils/prisma/init';
 import { GetServerSidePropsContext } from 'next';
 import addSubscriber from 'utils/mailchimp/add-subscriber';
+import { generateProfilePath } from 'utils/user/generate-profile-path';
 
 const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: string; isSignedIn: boolean }) => {
   useEffect(() => {
@@ -110,11 +111,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       props.name = customer.name;
       props.email = email;
 
-      await prisma.user.upsert({
+      const prismaUser = await prisma.user.upsert({
         where: { email: customer.email },
         create: { name: customer.name, email, stripeCustomerId: customer.id },
         update: { name: customer.name },
       });
+
+      if (!prismaUser.profilePath) {
+        prisma.user.update({ where: { id: prismaUser.id }, data: { profilePath: generateProfilePath(prismaUser) } });
+      }
 
       console.log('customer', customer);
     } catch (err: unknown) {
