@@ -132,6 +132,14 @@ const IndexPage = ({ treeBenefits }: { treeBenefits: TitleSection[] }) => {
             </Box>
           </Grid>
         </Grid>
+        <div
+          style={{
+            width: '100px',
+            marginBottom: '25px',
+            height: '3px',
+            backgroundColor: '#486e62',
+          }}
+        ></div>
         <Typography variant='h2' color='secondary' mb={6}>
           Why Thank-a-Tree?
         </Typography>
