@@ -9,7 +9,7 @@ export const FormTextField = ({ name, control, label, rules }: FormInputProps) =
       name={name}
       control={control}
       rules={rules}
-      render={({ field: { onChange, value }, fieldState: { error }, formState }) => (
+      render={({ field: { onChange, value }, fieldState: { error } }) => (
         <TextField
           helperText={error ? error.message : null}
           error={!!error}

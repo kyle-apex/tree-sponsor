@@ -53,12 +53,16 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const handleProfilePathChange = async (event: { target: { value: string } }) => {
     const profilePath = event.target.value;
     const hasPatternError = !/^[a-z-]+$/.test(profilePath);
-    console.log('hasPatternERror', hasPatternError);
     setProfilePathState(state => {
       return { ...state, profilePath, hasPatternError };
     });
     if (profilePath != profilePathState.initialValue && !hasPatternError) {
-      const isDuplicate = await axios.get(`/api/users/${session.current.user.id}/is-duplicate-profile-path?profilePath=${profilePath}`);
+      const isDuplicate = (await axios.get(
+        `/api/users/${session.current.user.id}/is-duplicate-profile-path?profilePath=${profilePath}`,
+      )) as boolean;
+      setProfilePathState(state => {
+        return { ...state, isDuplicate };
+      });
     }
   };
 
