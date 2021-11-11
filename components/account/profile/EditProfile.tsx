@@ -7,10 +7,19 @@ import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import LoadingButton from 'components/LoadingButton';
 import { getSession } from 'utils/auth/get-session';
 import { Session } from 'interfaces';
+import { generateProfilePath } from 'utils/user/generate-profile-path';
+import { useForm } from 'react-hook-form';
+import ErrorText from 'components/form/ErrorText';
 
 const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const [name, setName] = useState('');
-  const [profilePathState, setProfilePathState] = useState({ profilePath: '', isLoading: false, isDuplicate: false, initialValue: '' });
+  const [profilePathState, setProfilePathState] = useState({
+    profilePath: '',
+    isLoading: false,
+    isDuplicate: false,
+    initialValue: '',
+    hasPatternError: false,
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const session = useRef<Session>();
@@ -23,6 +32,13 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       setProfilePathState(state => {
         return { ...state, profilePath: user.profilePath, initialValue: user.profilePath };
       });
+    else {
+      const profilePath = generateProfilePath(user);
+      setProfilePathState(state => {
+        return { ...state, profilePath };
+      });
+      axios.patch('/api/me', { profilePath });
+    }
     if (user.image) setImageUrl(user.image);
   };
 
@@ -36,10 +52,12 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
 
   const handleProfilePathChange = async (event: { target: { value: string } }) => {
     const profilePath = event.target.value;
+    const hasPatternError = !/^[a-z-]+$/.test(profilePath);
+    console.log('hasPatternERror', hasPatternError);
     setProfilePathState(state => {
-      return { ...state, profilePath };
+      return { ...state, profilePath, hasPatternError };
     });
-    if (profilePath != profilePathState.initialValue) {
+    if (profilePath != profilePathState.initialValue && !hasPatternError) {
       const isDuplicate = await axios.get(`/api/users/${session.current.user.id}/is-duplicate-profile-path?profilePath=${profilePath}`);
     }
   };
@@ -49,6 +67,8 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
     await axios.patch('/api/me', { name, image: imageUrl, profilePath: profilePathState.profilePath });
     setIsLoading(false);
   };
+
+  const { handleSubmit, control, reset } = useForm({});
 
   return (
     <Box
@@ -104,9 +124,12 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
         onChange={handleProfilePathChange}
         label='Profile Path'
         size='small'
+        inputProps={{ pattern: '[a-z-]' }}
         sx={{ marginBottom: 2 }}
-        error={profilePathState.isDuplicate}
+        error={profilePathState.isDuplicate || profilePathState.hasPatternError}
+        spellCheck='false'
       ></TextField>
+      {profilePathState.hasPatternError && <ErrorText>Profile Path must only contain lower case letters and &quot;-&quot;</ErrorText>}
 
       <LoadingButton variant='contained' disabled={profilePathState.isDuplicate} onClick={updateUser} isLoading={isLoading}>
         Save
