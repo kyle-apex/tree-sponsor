@@ -51,10 +51,10 @@ const SignupPage = ({
     <Layout>
       <Container maxWidth='sm'>
         <Typography color='secondary' variant='h1' sx={{ fontSize: '2rem' }}>
-          Sponsor a Tree / Start a Membership
+          Thank-a-Tree / Start a Membership
         </Typography>
         <p>
-          Whether you want to sponsor trees, join TreeFolks Young Professionals (TreeFolksYP), or both, you are in the right place. Please
+          Whether you want to thank a tree, join TreeFolks Young Professionals (TreeFolksYP), or both, you are in the right place. Please
           select a TreeFolks donation level below:
         </p>
         <Tabs
@@ -83,7 +83,7 @@ const SignupPage = ({
         <Table>
           <TableBody>
             <TableRow>
-              <TableCell>Tree Sponsorships</TableCell>
+              <TableCell>Tokens of Appre-tree-ation</TableCell>
               <TableCell>
                 <Chip
                   label={memberships[activeMembershipIndex].trees}
@@ -148,7 +148,9 @@ const SignupPage = ({
                   color='secondary'
                 />
               }
-              label='In addition to my tree sponsorship, I would like to be a part of TreeFolks Young Professionals and receive email updates for events and volunteer opportunities'
+              label={`In addition to my token${
+                activeMembershipIndex == 0 ? '' : 's'
+              } of appre-tree-ation, I would like to be a part of TreeFolks Young Professionals and receive email updates for events and volunteer opportunities`}
             />
           </FormGroup>
           <CheckoutButton

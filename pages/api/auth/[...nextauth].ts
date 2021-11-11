@@ -3,6 +3,8 @@ import Providers from 'next-auth/providers';
 import { createTransport } from 'nodemailer';
 import Adapters from 'next-auth/adapters';
 import { prisma } from 'utils/prisma/init';
+import { generateProfilePath } from 'utils/user/generate-profile-path';
+import { User } from '.prisma/client';
 
 function getProfilePictureUrl(profile: Profile): string {
   if (typeof profile?.picture === 'string') return profile.picture;
@@ -67,7 +69,7 @@ export default NextAuth({
       console.log('user', user);
       const profilePictureUrl = getProfilePictureUrl(profile);
       let hasUpdate;
-      const updateData: { image?: string; name?: string } = {};
+      const updateData: Partial<User> = {};
       if (user?.id && !user.image && profilePictureUrl) {
         user.image = profilePictureUrl;
         updateData.image = user.image;
@@ -78,6 +80,11 @@ export default NextAuth({
         user.name = profile.name;
         updateData.name = user.name;
         hasUpdate = true;
+      }
+
+      if (!user?.profilePath) {
+        user.profilePath = generateProfilePath(user as User);
+        updateData.profilePath = user.profilePath as string;
       }
 
       if (hasUpdate) await prisma.user.update({ where: { id: user.id as number }, data: updateData });

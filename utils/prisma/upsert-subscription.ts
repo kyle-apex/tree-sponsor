@@ -1,5 +1,7 @@
+import { User } from '.prisma/client';
 import { PartialSubscription } from 'interfaces';
 import { prisma } from 'utils/prisma/init';
+import { generateProfilePath } from 'utils/user/generate-profile-path';
 
 export const upsertSubscription = async (subscription: PartialSubscription): Promise<void> => {
   await prisma.subscription.upsert({
@@ -27,6 +29,7 @@ export const upsertSubscription = async (subscription: PartialSubscription): Pro
             email: subscription.user.email,
             name: subscription.user.name,
             stripeCustomerId: subscription.stripeCustomerId,
+            profilePath: generateProfilePath(subscription.user as User),
           },
         },
       },
@@ -52,6 +55,7 @@ export const upsertSubscription = async (subscription: PartialSubscription): Pro
             email: subscription.user.email,
             name: subscription.user.name,
             stripeCustomerId: subscription.stripeCustomerId,
+            profilePath: generateProfilePath(subscription.user as User),
           },
         },
       },

@@ -1,14 +1,18 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import throwError from 'utils/api/throw-error';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { getSession } from 'utils/auth/get-session';
 import getProfileImagePath from 'utils/aws/get-profile-image-path';
 import uploadImage from 'utils/aws/upload-image';
 import { prisma } from 'utils/prisma/init';
+import isDuplicateProfilePath from 'utils/user/is-duplicate-profile-path';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });
 
   if (!session?.user?.id) return throwUnauthenticated(res);
+
+  const userId = session.user.id;
 
   const imageUrl = req.body.image;
 
@@ -27,11 +31,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     const obj = await prisma.user.findFirst({
-      where: { id: session.user.id },
+      where: { id: userId },
     });
     res.status(200).json(obj);
   } else if (req.method === 'PATCH') {
-    const obj = await prisma.user.update({ where: { id: session.user.id }, data: req.body });
+    const profilePath = req.body.profilePath;
+    if (profilePath) {
+      const isDuplicate = await isDuplicateProfilePath(userId, profilePath);
+      if (isDuplicate) return throwError(res, `The profile path "${profilePath}" is already in use.`);
+    }
+    const obj = await prisma.user.update({ where: { id: userId }, data: req.body });
     res.status(200).json(obj);
   }
 }

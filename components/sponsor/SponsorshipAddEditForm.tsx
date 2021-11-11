@@ -3,7 +3,7 @@ import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import Button from '@mui/material/Button';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import SponsorshipDisplayForm from './SponsorshipDisplayForm';
 import LocationSelector from 'components/LocationSelector';
@@ -65,8 +65,12 @@ const SponsorshipAddEditForm = ({
 }) => {
   const classes = useStyles();
 
-  const [description, setDescription] = useState('');
-  const [title, setTitle] = useState('');
+  const activeSponsorship = useRef<PartialSponsorship>({
+    title: sponsorship.title,
+    description: sponsorship.description,
+    isPrivate: sponsorship.isPrivate,
+  });
+
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [id, setId] = useState(0);
@@ -94,12 +98,13 @@ const SponsorshipAddEditForm = ({
   };
 
   const upsertSponsorship = async () => {
-    if (setSponsorship) setSponsorship(Object.assign(sponsorship, { title, description }));
+    if (setSponsorship) setSponsorship(Object.assign(sponsorship, activeSponsorship.current));
 
     const updatedSponsorship = await axios.post('/api/sponsorships', {
       id,
-      title,
-      description,
+      title: activeSponsorship.current.title,
+      description: activeSponsorship.current.description,
+      isPrivate: activeSponsorship.current.isPrivate,
       primaryImageUuid,
       primaryImageHeight: imageHeight,
       primaryImageWidth: imageWidth,
@@ -126,8 +131,10 @@ const SponsorshipAddEditForm = ({
 
   useEffect(() => {
     if (sponsorship) {
-      setTitle(sponsorship.title);
-      setDescription(sponsorship.description);
+      activeSponsorship.current.title = sponsorship.title;
+      activeSponsorship.current.description = sponsorship.description;
+      activeSponsorship.current.isPrivate = sponsorship.isPrivate;
+
       setId(sponsorship.id);
       setPrimaryImageUuid(sponsorship.primaryImageUuid);
       setImageUrl(sponsorship.pictureUrl);
@@ -151,14 +158,7 @@ const SponsorshipAddEditForm = ({
       </Stepper>
       {activeStep == 0 && (
         <>
-          <SponsorshipDisplayForm
-            title={title}
-            setTitle={setTitle}
-            description={description}
-            setDescription={setDescription}
-            imageUrl={imageUrl}
-            setImageUrl={handleImageUrl}
-          ></SponsorshipDisplayForm>
+          <SponsorshipDisplayForm sponsorship={activeSponsorship} imageUrl={imageUrl} setImageUrl={handleImageUrl}></SponsorshipDisplayForm>
           <SplitRow>
             {onComplete ? (
               <Button

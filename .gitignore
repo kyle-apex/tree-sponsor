@@ -1,14 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-!/pages/api/members/index.ts
-!/pages/api/users/index.ts
-!/pages/api/roles/index.ts
-!/pages/api/availableSponsorships/index.ts
-!/pages/api/sponsorships/index.ts
-!/pages/api/contact/index.ts
-!/pages/api/me/index.ts
-!/consts/index.ts
-!/components/sponsor/index.ts
-!/utils/hooks/index.ts
+!/*/*/*/index.ts
+!/*/*/index.ts
 # dependencies
 /node_modules
 /.pnp
