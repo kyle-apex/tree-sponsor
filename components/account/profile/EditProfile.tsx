@@ -131,7 +131,12 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       ></TextField>
       {profilePathState.hasPatternError && <ErrorText>Profile Path must only contain lower case letters and &quot;-&quot;</ErrorText>}
 
-      <LoadingButton variant='contained' disabled={profilePathState.isDuplicate} onClick={updateUser} isLoading={isLoading}>
+      <LoadingButton
+        variant='contained'
+        disabled={profilePathState.isDuplicate || profilePathState.hasPatternError}
+        onClick={updateUser}
+        isLoading={isLoading}
+      >
         Save
       </LoadingButton>
       <Typography sx={{ color: theme => theme.palette.grey[600] }} variant='body2' mt={2} mb={-1}>
