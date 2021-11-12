@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react';
 
 const ErrorText = ({ children }: { children: ReactNode }) => {
   return (
-    <Typography color='error' variant='caption' mt={-2} mb={2}>
+    <Typography color='error' variant='caption' mt={-3} mb={2}>
       {children}
     </Typography>
   );

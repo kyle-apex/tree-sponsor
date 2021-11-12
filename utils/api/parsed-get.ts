@@ -4,7 +4,7 @@ import parseResponseDateStrings from './parse-response-date-strings';
 const parsedGet = async <T>(path: string): Promise<T> => {
   if (!path) return;
 
-  if (!path.includes('api/')) {
+  if (!path.includes('api/') && !path.includes('http')) {
     if (path.startsWith('/')) path = '/api' + path;
     else path = '/api/' + path;
   }

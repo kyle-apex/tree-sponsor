@@ -1,7 +1,7 @@
 import SponsorshipMap from 'components/sponsor/SponsorshipMap';
 import React from 'react';
 
-const UserPage = () => {
+const UserIndexPage = () => {
   return <SponsorshipMap></SponsorshipMap>;
 };
-export default UserPage;
+export default UserIndexPage;

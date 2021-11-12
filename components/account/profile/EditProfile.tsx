@@ -8,9 +8,11 @@ import LoadingButton from 'components/LoadingButton';
 import { getSession } from 'utils/auth/get-session';
 import { Session } from 'interfaces';
 import { generateProfilePath } from 'utils/user/generate-profile-path';
-import { useForm } from 'react-hook-form';
 import ErrorText from 'components/form/ErrorText';
 import parsedGet from 'utils/api/parsed-get';
+import LaunchIcon from '@mui/icons-material/Launch';
+import SplitRow from 'components/layout/SplitRow';
+import Button from '@mui/material/Button';
 
 const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const [name, setName] = useState('');
@@ -88,7 +90,14 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
         padding: '10px 20px 30px',
       }}
     >
-      {children}
+      <SplitRow>
+        {children}
+        <a href={'/u/' + profilePathState.profilePath} target='_blank' style={{ textDecoration: 'none' }} rel='noreferrer'>
+          <Button variant='text' size='small' sx={{ marginBottom: 2, display: 'flex', alignSelf: 'start' }}>
+            <span>Launch Profile</span> <LaunchIcon sx={{ marginLeft: 1, fontSize: '1rem' }} />
+          </Button>
+        </a>
+      </SplitRow>
       <Box
         sx={{
           marginBottom: 4,
@@ -121,14 +130,14 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
         <Typography variant='subtitle2'>Click the image to update your profile picture.</Typography>
       </Box>
 
-      <TextField value={name} onChange={handleNameChange} label='Name' size='small' sx={{ marginBottom: 2 }}></TextField>
+      <TextField value={name} onChange={handleNameChange} label='Name' size='small' sx={{ marginBottom: 3 }}></TextField>
       <TextField
         value={profilePathState.profilePath}
         onChange={handleProfilePathChange}
         label='Profile Path'
         size='small'
         inputProps={{ pattern: '[a-z-]' }}
-        sx={{ marginBottom: 2 }}
+        sx={{ marginBottom: 3 }}
         error={profilePathState.isDuplicate || profilePathState.hasPatternError}
         spellCheck='false'
       ></TextField>
