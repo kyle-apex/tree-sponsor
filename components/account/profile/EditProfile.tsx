@@ -10,6 +10,7 @@ import { Session } from 'interfaces';
 import { generateProfilePath } from 'utils/user/generate-profile-path';
 import { useForm } from 'react-hook-form';
 import ErrorText from 'components/form/ErrorText';
+import parsedGet from 'utils/api/parsed-get';
 
 const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const [name, setName] = useState('');
@@ -57,7 +58,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       return { ...state, profilePath, hasPatternError };
     });
     if (profilePath != profilePathState.initialValue && !hasPatternError) {
-      const isDuplicate = (await axios.get(
+      const isDuplicate = (await parsedGet(
         `/api/users/${session.current.user.id}/is-duplicate-profile-path?profilePath=${profilePath}`,
       )) as boolean;
       setProfilePathState(state => {
@@ -71,8 +72,6 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
     await axios.patch('/api/me', { name, image: imageUrl, profilePath: profilePathState.profilePath });
     setIsLoading(false);
   };
-
-  const { handleSubmit, control, reset } = useForm({});
 
   return (
     <Box
@@ -134,6 +133,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
         spellCheck='false'
       ></TextField>
       {profilePathState.hasPatternError && <ErrorText>Profile Path must only contain lower case letters and &quot;-&quot;</ErrorText>}
+      {profilePathState.isDuplicate && <ErrorText>Profile Path is already in use</ErrorText>}
 
       <LoadingButton
         variant='contained'
