@@ -7,29 +7,19 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import makeStyles from '@mui/styles/makeStyles';
-import { SponsorshipMap, SponsorshipDisplay, SponsorshipGallery, SponsorshipDisplayLoading } from 'components/sponsor';
+import { SponsorshipMap } from 'components/sponsor';
 import TFYPAboutSection from 'components/index/TFYPAboutSection';
 import parsedGet from 'utils/api/parsed-get';
 import { TitleSection } from 'interfaces';
 
 import { PartialSponsorship } from 'interfaces';
-import useTheme from '@mui/styles/useTheme';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import {
-  PollutionIcon,
-  FloodingIcon,
-  AnimalsIcon,
-  ShadeIcon,
-  AtmosphereIcon,
-  ActivitiesIcon,
-  CurveTop,
-  CurveBottom,
-} from 'components/index/icons';
+import { PollutionIcon, FloodingIcon, CurveTop, CurveBottom } from 'components/index/icons';
 
 import ShadeImage from 'components/index/icons/ShadeImage';
 import AtmosphereImage from 'components/index/icons/AtmosphereImage';
 import ActivitiesImage from 'components/index/icons/ActivitiesImage';
 import AnimalsImage from 'components/index/icons/AnimalsImage';
+import SponsorshipGroup from 'components/sponsor/SponsorshipGroup';
 
 const useStyles = makeStyles(theme => ({
   headlineContainer: {
@@ -92,9 +82,6 @@ const IndexPage = ({ treeBenefits }: { treeBenefits: TitleSection[] }) => {
   }, []);
 
   const classes = useStyles();
-
-  const theme = useTheme();
-  const hasGallery = !useMediaQuery(theme.breakpoints.up('md'));
 
   return (
     <Layout isFullWidth={true}>
@@ -216,32 +203,8 @@ const IndexPage = ({ treeBenefits }: { treeBenefits: TitleSection[] }) => {
             Your donation is a 100% tax deductible donation to TreeFolks to plant, care for, and give away trees in the Austin and Central
             Texas Community. Checkout a few Tokens of Appre-tree-ation:
           </Typography>
-          <Grid mb={12} container spacing={5} direction='row' justifyContent='space-around' alignItems='stretch'>
-            {isLoadingSponsorships &&
-              !hasGallery &&
-              [...Array(3)].map((_item, index) => (
-                <Grid md={4} key={index} item>
-                  <SponsorshipDisplayLoading />
-                </Grid>
-              ))}
-            {!isLoadingSponsorships &&
-              !hasGallery &&
-              sponsorships.map(sponsorship => (
-                <Grid md={4} key={sponsorship.id} item className='same-height start'>
-                  <SponsorshipDisplay sponsorship={sponsorship}></SponsorshipDisplay>
-                </Grid>
-              ))}
-            {hasGallery && (
-              <Grid item xs={12} justifyContent='center'>
-                {!isLoadingSponsorships && <SponsorshipGallery sponsorships={sponsorships} />}
-                {isLoadingSponsorships && (
-                  <Box sx={{ maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto' }}>
-                    <SponsorshipDisplayLoading />
-                  </Box>
-                )}
-              </Grid>
-            )}
-          </Grid>
+
+          <SponsorshipGroup sponsorships={sponsorships} isLoading={isLoadingSponsorships} />
         </Grid>
         <Box mt={8} p={5} className='index detail-section'>
           <Typography variant='h2'>What is TreeFolks Young Professionals?</Typography>
