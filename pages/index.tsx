@@ -26,6 +26,11 @@ import {
   CurveBottom,
 } from 'components/index/icons';
 
+import ShadeImage from 'components/index/icons/ShadeImage';
+import AtmosphereImage from 'components/index/icons/AtmosphereImage';
+import ActivitiesImage from 'components/index/icons/ActivitiesImage';
+import AnimalsImage from 'components/index/icons/AnimalsImage';
+
 const useStyles = makeStyles(theme => ({
   headlineContainer: {
     height: 'calc(100vh - 275px)',
@@ -53,13 +58,13 @@ const getIcon = (title: string) => {
     case 'Flood Prevention':
       return <FloodingIcon />;
     case 'Homes':
-      return <AnimalsIcon />;
+      return <AnimalsImage />;
     case 'Shade':
-      return <ShadeIcon />;
+      return <ShadeImage />;
     case 'Atmosphere':
-      return <AtmosphereIcon />;
+      return <AtmosphereImage />;
     case 'Activities':
-      return <ActivitiesIcon />;
+      return <ActivitiesImage />;
   }
 };
 
