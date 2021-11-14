@@ -9,17 +9,24 @@ import Layout from 'components/layout/Layout';
 import SessionAvatar from 'components/SessionAvatar';
 import SponsorshipGroup from 'components/sponsor/SponsorshipGroup';
 
-import { PartialSponsorship, PartialUser } from 'interfaces';
+import { PartialUser } from 'interfaces';
 import { GetServerSidePropsContext } from 'next';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
-import { SponsorshipMap } from 'components/sponsor';
+import { SponsorshipMap, SponsorshipSubTitle } from 'components/sponsor';
 
-const UserProfilePage = ({ sponsorships, user }: { sponsorships?: PartialSponsorship[]; user: PartialUser }) => {
-  const router = useRouter();
-  const { profilePath } = router.query;
+const UserProfilePage = ({ user }: { user: PartialUser }) => {
   parseResponseDateStrings(user.sponsorships);
+  parseResponseDateStrings(user.subscriptions);
+
+  let initialDate: Date;
+  const joinDate: Date = user.subscriptions.reduce((minDate: Date, sub) => {
+    if (!minDate) minDate = sub.createdDate;
+    if (minDate > sub.createdDate) minDate = sub.createdDate;
+    return minDate;
+  }, initialDate);
+
+  console.log('joinDate', joinDate);
 
   const [activeTab, setActiveTab] = useState(0);
 
@@ -57,7 +64,11 @@ const UserProfilePage = ({ sponsorships, user }: { sponsorships?: PartialSponsor
             {user.displayName || user.name}
           </Typography>
           {rolesText && false && <Typography variant='subtitle1'>{rolesText}</Typography>}
-          <Typography variant='subtitle2'>Joined March 5, 2011</Typography>
+          {joinDate && (
+            <Typography variant='subtitle2'>
+              Joined <SponsorshipSubTitle startDate={joinDate}></SponsorshipSubTitle>
+            </Typography>
+          )}
         </Box>
         <Box
           flexDirection='column'

@@ -16,7 +16,9 @@ export interface NextSession extends Record<string, unknown>, DefaultSession {}
 export type PartialSubscription = Partial<Subscription & { product?: Partial<Product> } & { user?: Partial<User> }>;
 export type StripeSubscription = Stripe.Subscription & { plan?: { product?: string; amount: number } };
 export type PartialSponsorship = Partial<Sponsorship & { tree?: Partial<Tree> } & { user?: Partial<User> }>;
-export type PartialUser = Partial<User & { roles?: Partial<Role>[]; sponsorships?: PartialSponsorship[] }>;
+export type PartialUser = Partial<
+  User & { roles?: Partial<Role>[]; sponsorships?: PartialSponsorship[]; subscriptions?: Partial<Subscription>[] }
+>;
 
 export type Viewport = Omit<ViewportProps, 'width' | 'height'> & { height: string | number; width: string | number };
 
