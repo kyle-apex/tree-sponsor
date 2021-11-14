@@ -14,6 +14,8 @@ import { GetServerSidePropsContext } from 'next';
 import React, { useState } from 'react';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 import { SponsorshipMap, SponsorshipSubTitle } from 'components/sponsor';
+import Head from 'next/head';
+import { DEFAULT_DESCRIPTION } from 'consts';
 
 const UserProfilePage = ({ user }: { user: PartialUser }) => {
   parseResponseDateStrings(user.sponsorships);
@@ -37,8 +39,20 @@ const UserProfilePage = ({ user }: { user: PartialUser }) => {
 
   const rolesText = user?.roles?.length > 0 ? user.roles.map(role => role.name).join(' | ') : null;
 
+  const description =
+    user.sponsorships?.length > 0 && user.sponsorships[0].description ? user.sponsorships[0].description : DEFAULT_DESCRIPTION;
+  const titlePrefix =
+    user.sponsorships?.length > 0 && user.sponsorships[0].title ? user.sponsorships[0].title : user.displayName || user.name;
+  const title = `${titlePrefix} | Thank-a-Tree with TreeFolksYP`;
+  const imageUrl = user.sponsorships?.length > 0 ? user.sponsorships[0].pictureUrl : '';
+
   return (
     <Layout>
+      <Head>
+        <meta property='og:image' content={imageUrl} key='ogimage' />
+        <meta property='og:title' content={title} key='ogtitle' />
+        <meta property='og:description' content={description} key='ogdesc' />
+      </Head>
       <Container
         maxWidth='md'
         sx={{ minHeight: 'calc(100vh - 185px)', marginBottom: 0, display: 'flex', flexDirection: 'column', paddingTop: 5 }}
