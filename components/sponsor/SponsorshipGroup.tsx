@@ -1,4 +1,4 @@
-import Grid from '@mui/material/Grid';
+import Grid, { GridSize } from '@mui/material/Grid';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/system/Box';
 import useTheme from '@mui/system/useTheme';
@@ -8,7 +8,15 @@ import SponsorshipDisplay from './SponsorshipDisplay';
 import SponsorshipGallery from './SponsorshipGallery';
 import { PartialSponsorship } from 'interfaces';
 
-const SponsorshipGroup = ({ isLoading, sponsorships }: { isLoading: boolean; sponsorships: PartialSponsorship[] }) => {
+const SponsorshipGroup = ({
+  isLoading,
+  sponsorships,
+  columnWidth = 4,
+}: {
+  isLoading: boolean;
+  sponsorships: PartialSponsorship[];
+  columnWidth?: GridSize;
+}) => {
   const theme = useTheme();
   const hasGallery = !useMediaQuery(theme.breakpoints.up('md'));
   return (
@@ -16,14 +24,14 @@ const SponsorshipGroup = ({ isLoading, sponsorships }: { isLoading: boolean; spo
       {isLoading &&
         !hasGallery &&
         [...Array(3)].map((_item, index) => (
-          <Grid md={4} key={index} item>
+          <Grid md={columnWidth} key={index} item>
             <SponsorshipDisplayLoading />
           </Grid>
         ))}
       {!isLoading &&
         !hasGallery &&
         sponsorships.map(sponsorship => (
-          <Grid md={4} key={sponsorship.id} item className='same-height start'>
+          <Grid md={columnWidth} key={sponsorship.id} item className='same-height start'>
             <SponsorshipDisplay sponsorship={sponsorship}></SponsorshipDisplay>
           </Grid>
         ))}

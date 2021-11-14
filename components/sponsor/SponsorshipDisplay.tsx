@@ -80,7 +80,7 @@ const SponsorshipDisplay = ({
   return (
     <>
       {sponsorship?.id && (
-        <Card sx={{ maxWidth: '500px' }}>
+        <Card sx={{ maxWidth: '500px', marginRight: '1px', marginBottom: '2px' }}>
           <CardHeader
             avatar={<SponsorshipAvatar image={sponsorship.user?.image} name={sponsorship.user?.name} />}
             title={activeSponsorship?.title || sponsorship.title || DEFAULT_TITLE_PREFIX + sponsorship.user?.name?.split(' ')[0]}

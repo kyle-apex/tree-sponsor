@@ -106,7 +106,7 @@ const UserProfilePage = ({ user }: { user: PartialUser }) => {
               </Tabs>
             </Box>
             <Box sx={{ padding: '0 20px', textAlign: 'left' }}>
-              {activeTab == 0 && <SponsorshipGroup isLoading={false} sponsorships={user.sponsorships}></SponsorshipGroup>}
+              {activeTab == 0 && <SponsorshipGroup columnWidth={6} isLoading={false} sponsorships={user.sponsorships}></SponsorshipGroup>}
               {activeTab == 1 && (
                 <Box
                   sx={{
