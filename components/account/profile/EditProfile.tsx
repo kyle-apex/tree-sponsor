@@ -114,6 +114,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
             borderRadius: '50%',
             height: '50px',
             width: '50px',
+            flex: '0 0 50px',
             overflow: 'hidden',
             boxShadow: 'inset 0 0px 0px 1px hsl(0deg 0% 0% / 20%), 0px 0px 2px grey',
           }}
@@ -127,6 +128,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
             hideEditButton={true}
           ></ImageUploadAndPreview>
         </Box>
+
         <Typography variant='subtitle2'>Click the image to update your profile picture.</Typography>
       </Box>
 
