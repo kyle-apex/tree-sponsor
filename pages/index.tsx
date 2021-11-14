@@ -158,6 +158,9 @@ const IndexPage = ({ treeBenefits }: { treeBenefits: TitleSection[] }) => {
       </div>
       <div className='wide-container index'>
         <Container maxWidth='lg'>
+          <Typography variant='h2' color='white' mb={4} mt={4} sx={{ textAlign: 'center' }}>
+            How can I Thank-a-Tree?
+          </Typography>
           <Grid container direction={{ xs: 'column', sm: 'row' }}>
             <Grid item sm={4}>
               <Box>

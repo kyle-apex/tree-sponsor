@@ -1,8 +1,23 @@
 import Avatar from '@mui/material/Avatar';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import Box from '@mui/system/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 
-const SponsorshipAvatar = ({ image, name, size = 40 }: { image: string; name: string; size?: number }): JSX.Element => {
+const SponsorshipAvatar = ({
+  image,
+  name,
+  size = 40,
+  link,
+}: {
+  image: string;
+  name: string;
+  size?: number;
+  link?: string;
+}): JSX.Element => {
   const [abbreviation, setAbbreviation] = useState('AN');
+  const router = useRouter();
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const getAbbreviation = (name: string): string => {
     if (name) {
@@ -11,6 +26,14 @@ const SponsorshipAvatar = ({ image, name, size = 40 }: { image: string; name: st
       else return nameSplit[0].charAt(0).toUpperCase() + nameSplit[nameSplit.length - 1].charAt(0).toUpperCase();
     } else {
       return 'AN';
+    }
+  };
+
+  const handleClick = () => {
+    console.log('link', link);
+    if (link) {
+      router.push(link);
+      setIsNavigating(true);
     }
   };
 
@@ -28,9 +51,15 @@ const SponsorshipAvatar = ({ image, name, size = 40 }: { image: string; name: st
         height: size,
         fontSize: (size / 40) * 1.25 + 'rem',
         boxShadow: 'inset 0 0px 0px 1px hsl(0deg 0% 0% / 20%), 0px 0px 2px grey',
+        cursor: link ? 'pointer' : '',
       }}
+      onClick={handleClick}
     >
-      {image ? <img src={image} width={size} height={size} /> : <span>{abbreviation}</span>}
+      {!isNavigating ? (
+        <Box>{image ? <img src={image} width={size} height={size} /> : <span>{abbreviation}</span>}</Box>
+      ) : (
+        <CircularProgress size={size} color='inherit' />
+      )}
     </Avatar>
   );
 };

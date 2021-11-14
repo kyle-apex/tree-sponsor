@@ -18,6 +18,7 @@ import { SponsorshipAvatar, SponsorshipSubTitle } from 'components/sponsor';
 import { DEFAULT_DESCRIPTION } from 'consts';
 import { DEFAULT_TITLE_PREFIX } from 'consts';
 import SponsorshipAddEditDialog from './SponsorshipAddEditDialog';
+import Link from 'next/link';
 
 export type TreeDetail = {
   title?: string;
@@ -82,7 +83,13 @@ const SponsorshipDisplay = ({
       {sponsorship?.id && (
         <Card sx={{ maxWidth: '500px', marginRight: '1px', marginBottom: '2px' }}>
           <CardHeader
-            avatar={<SponsorshipAvatar image={sponsorship.user?.image} name={sponsorship.user?.name} />}
+            avatar={
+              <SponsorshipAvatar
+                image={sponsorship.user?.image}
+                name={sponsorship.user?.name}
+                link={sponsorship.user?.profilePath ? '/u/' + sponsorship.user.profilePath : ''}
+              />
+            }
             title={activeSponsorship?.title || sponsorship.title || DEFAULT_TITLE_PREFIX + sponsorship.user?.name?.split(' ')[0]}
             subheader={<SponsorshipSubTitle startDate={sponsorship.startDate} />}
             action={

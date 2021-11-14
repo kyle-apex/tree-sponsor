@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(0),
     color: theme.palette.primary.main,
   },
   title: {
@@ -109,7 +109,8 @@ const Header = () => {
           </Link>
 
           <Typography variant='h6' className={classes.title}>
-            <span className={!session ? 'hidden-mobile' : ''}>TreeFolksYP</span>
+            <span className={!session ? 'hidden-mobile' : ''}>Thank-a-Tree</span>
+            <span className='hidden-mobile'> with TreeFolksYP</span>
           </Typography>
 
           {!session && (
