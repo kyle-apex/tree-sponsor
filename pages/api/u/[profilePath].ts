@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const user = await prisma.user.findFirst({
       where: { profilePath },
-      include: { sponsorships: { include: { tree: {}, user: { select: { name: true, image: true } } } } },
+      include: { sponsorships: { include: { tree: {} } }, roles: {} },
     });
 
     console.log('user', user);

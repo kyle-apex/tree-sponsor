@@ -17,7 +17,7 @@ const MapMarker = ({
   return (
     <Marker className='marker' latitude={latitude} longitude={longitude}>
       <img
-        src={isSatelliteMode ? 'pin-right-bright.svg' : '/pin-ring.svg'}
+        src={isSatelliteMode ? '/pin-right-bright.svg' : '/pin-ring.svg'}
         style={{
           width: (50 * zoom) / 10 + 'px',
           marginLeft: (-50 * zoom) / 20 + 'px',

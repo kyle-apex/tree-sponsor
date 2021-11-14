@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useRef } from 'react';
-import MapGL, { GeolocateControl, NavigationControl } from 'react-map-gl';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import MapGL, { GeolocateControl, NavigationControl, WebMercatorViewport } from 'react-map-gl';
 import { useGet } from 'utils/hooks/use-get';
 import SponsorshipDisplayDialog from './SponsorshipDisplayDialog';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -24,11 +24,17 @@ const navControlStyle = {
 
 const SEARCH_LOCATION = { longitude: -97.7405213210974, latitude: 30.27427678853506 };
 
-const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
+const SponsorshipMap = ({
+  isExploreMode,
+  defaultSponsorships,
+}: {
+  isExploreMode?: boolean;
+  defaultSponsorships?: PartialSponsorship[];
+}) => {
   const [activeSponsorshipId, setActiveSponsorshipId] = useState<number>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isSatelliteMode, setIsSatelliteMode] = useState(isExploreMode);
-  const [style, setStyle] = useState('mapbox://styles/mapbox/satellite-streets-v11');
+  const [isSatelliteMode, setIsSatelliteMode] = useState(false);
+  const [style, setStyle] = useState('mapbox://styles/mapbox/streets-v11');
   const mapRef = useRef();
 
   const [viewport, setViewport] = useState<Viewport>({
@@ -41,7 +47,49 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
 
   const handleViewportChange = useCallback((newViewport: Viewport) => setViewport(newViewport), []);
 
-  const { data: sponsorships } = useGet<PartialSponsorship[]>('/api/sponsorships/locations', 'sponsorship-locations');
+  let sponsorships: PartialSponsorship[];
+
+  if (defaultSponsorships) {
+    sponsorships = defaultSponsorships;
+  } else {
+    const { data: readSponsorships } = useGet<PartialSponsorship[]>('/api/sponsorships/locations', 'sponsorship-locations');
+    sponsorships = readSponsorships;
+  }
+
+  useEffect(() => {
+    if (defaultSponsorships) {
+      let minLng, minLat, maxLng, maxLat;
+      for (const sponsorship of sponsorships) {
+        //const sponsorship = sponsorships[0];
+        if (sponsorship?.tree?.latitude) {
+          if (!minLat) minLat = sponsorship.tree.latitude;
+          if (!maxLat) maxLat = sponsorship.tree.latitude;
+          minLat = minLat < sponsorship.tree.latitude ? minLat : sponsorship.tree.latitude;
+          maxLat = maxLat > sponsorship.tree.latitude ? maxLat : sponsorship.tree.latitude;
+        }
+        if (sponsorship?.tree?.longitude) {
+          if (!minLng) minLng = sponsorship.tree.longitude;
+          if (!maxLng) maxLng = sponsorship.tree.longitude;
+          minLng = minLng < sponsorship.tree.latitude ? minLng : sponsorship.tree.longitude;
+          maxLng = maxLat > sponsorship.tree.latitude ? maxLng : sponsorship.tree.longitude;
+        }
+      }
+      if (minLng) {
+        const vp = new WebMercatorViewport({ height: 400, width: 400 });
+        const { longitude, latitude, zoom } = vp.fitBounds(
+          [
+            [Number(minLng), Number(minLat)],
+            [Number(maxLng), Number(maxLat)],
+          ],
+          {
+            padding: 80,
+          },
+        );
+        const newZoom = zoom > 17 ? 17 : zoom;
+        setViewport({ ...viewport, longitude, latitude, zoom: newZoom });
+      }
+    }
+  }, []);
 
   function showMarkerDetails(id: number) {
     setActiveSponsorshipId(id);
