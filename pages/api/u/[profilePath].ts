@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
-    console.log('user', user);
+    //console.log('user', user);
 
     if (!user) throwError(res, 'Profile not found');
 

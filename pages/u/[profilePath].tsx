@@ -17,7 +17,7 @@ import { SponsorshipMap, SponsorshipSubTitle } from 'components/sponsor';
 import Head from 'next/head';
 import { DEFAULT_DESCRIPTION } from 'consts';
 
-const UserProfilePage = ({ user }: { user: PartialUser }) => {
+const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: number }) => {
   parseResponseDateStrings(user.sponsorships);
   parseResponseDateStrings(user.subscriptions);
 
@@ -28,23 +28,30 @@ const UserProfilePage = ({ user }: { user: PartialUser }) => {
     return minDate;
   }, initialDate);
 
-  console.log('joinDate', joinDate);
-
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
-    console.log('new Tab', newValue);
     setActiveTab(newValue);
   };
 
   const rolesText = user?.roles?.length > 0 ? user.roles.map(role => role.name).join(' | ') : null;
 
-  const description =
-    user.sponsorships?.length > 0 && user.sponsorships[0].description ? user.sponsorships[0].description : DEFAULT_DESCRIPTION;
-  const titlePrefix =
-    user.sponsorships?.length > 0 && user.sponsorships[0].title ? user.sponsorships[0].title : user.displayName || user.name;
+  let featuredSponsorship = user.sponsorships.find(obj => obj.id == featuredId);
+
+  if (!featuredSponsorship) featuredSponsorship = user.sponsorships?.length > 0 && user.sponsorships[0];
+
+  const description = featuredSponsorship?.description ? featuredSponsorship.description : DEFAULT_DESCRIPTION;
+  const titlePrefix = featuredSponsorship?.title ? user.sponsorships[0].title : user.displayName || user.name;
   const title = `${titlePrefix} | Thank-a-Tree with TreeFolksYP`;
-  const imageUrl = user.sponsorships?.length > 0 ? user.sponsorships[0].pictureUrl : '';
+  const imageUrl = featuredSponsorship ? featuredSponsorship.pictureUrl : '';
+
+  //const featuredSponsorship = user.sponsorships.find(obj => obj.id == featuredId);
+
+  user.sponsorships.sort((a, b) => {
+    if (a.id == featuredId) return -1;
+    if (b.id == featuredId) return 1;
+    return a.startDate > b.startDate ? -1 : 1;
+  });
 
   return (
     <Layout>
@@ -144,14 +151,15 @@ const UserProfilePage = ({ user }: { user: PartialUser }) => {
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { profilePath } = context.query;
+  const { profilePath, t: featuredId } = context.query;
+
   try {
     const results = await axios.get(process.env.URL + '/api/u/' + profilePath);
-    return { props: { user: results.data } };
+    return { props: { user: results.data, featuredId: featuredId ?? 0 } };
   } catch (err) {
     console.log('err', err);
   }
-  return { props: { user: null } };
+  return { props: { user: null, featuredId: featuredId ?? 0 } };
 }
 
 export default UserProfilePage;
