@@ -1,13 +1,19 @@
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/system/Box';
 import LoadingButton from 'components/LoadingButton';
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import useTheme from '@mui/system/useTheme';
 
 const AddComment = ({ onAdd, isAdding }: { onAdd: (text: string) => void; isAdding?: boolean }) => {
   const [isActive, setIsActive] = useState(false);
   const [text, setText] = useState('');
-  const buttonRef = useRef<HTMLButtonElement>();
+  const scrollRef = useRef<HTMLInputElement>();
+
+  const theme = useTheme();
+
+  const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
 
   const addComment = () => {
     onAdd(text);
@@ -20,7 +26,7 @@ const AddComment = ({ onAdd, isAdding }: { onAdd: (text: string) => void; isAddi
   const onFocus = () => {
     setIsActive(true);
     setTimeout(() => {
-      if (buttonRef.current) buttonRef.current.scrollIntoView();
+      if (isMobile && scrollRef.current && scrollRef.current.scrollIntoView) scrollRef.current.scrollIntoView({ behavior: 'smooth' });
     }, 1);
   };
 
@@ -34,6 +40,7 @@ const AddComment = ({ onAdd, isAdding }: { onAdd: (text: string) => void; isAddi
   return (
     <Box flexDirection='column'>
       <TextField
+        ref={scrollRef}
         onFocus={() => onFocus()}
         placeholder='Add a comment...'
         value={isActive ? text : ''}
@@ -48,7 +55,7 @@ const AddComment = ({ onAdd, isAdding }: { onAdd: (text: string) => void; isAddi
           <LoadingButton size='small' onClick={addComment} color='secondary' variant='contained' isLoading={isAdding}>
             Submit
           </LoadingButton>
-          <Button ref={buttonRef} size='small' onClick={cancelComment} color='inherit' sx={{ marginLeft: 1 }}>
+          <Button size='small' onClick={cancelComment} color='inherit' sx={{ marginLeft: 1 }}>
             Cancel
           </Button>
         </Box>

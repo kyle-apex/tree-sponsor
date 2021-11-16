@@ -21,6 +21,10 @@ const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: 
   parseResponseDateStrings(user.sponsorships);
   parseResponseDateStrings(user.subscriptions);
 
+  user.sponsorships.forEach(sponsorship => {
+    sponsorship.user = { profilePath: user.profilePath };
+  });
+
   let initialDate: Date;
   const joinDate: Date = user.subscriptions.reduce((minDate: Date, sub) => {
     if (!minDate) minDate = sub.createdDate;

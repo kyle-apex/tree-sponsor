@@ -19,6 +19,7 @@ import { DEFAULT_DESCRIPTION } from 'consts';
 import { DEFAULT_TITLE_PREFIX } from 'consts';
 import SponsorshipAddEditDialog from './SponsorshipAddEditDialog';
 import Link from 'next/link';
+import CommentSection from 'components/comments/CommentSection';
 
 export type TreeDetail = {
   title?: string;
@@ -117,6 +118,14 @@ const SponsorshipDisplay = ({
               {activeSponsorship?.description || sponsorship.description || DEFAULT_DESCRIPTION}
             </Typography>
           </CardContent>
+          {!isEditMode && (
+            <CardActions disableSpacing sx={{ padding: 0, height: '100%' }}>
+              <CommentSection
+                sponsorshipId={sponsorship?.id}
+                signInCallbackUrl={`/u/${sponsorship?.user?.profilePath}?t=${sponsorship?.id}`}
+              />
+            </CardActions>
+          )}
           {isEditMode && (
             <CardActions disableSpacing>
               {false && (

@@ -19,10 +19,8 @@ const useStyles = makeStyles(theme => ({
 
 const SponsorshipDisplayDialog = ({ open, setOpen, id }: { open: boolean; setOpen: (isOpen: boolean) => void; id: number }) => {
   const classes = useStyles();
-  const [session] = useSession();
   const [sponsorship, setSponsorship] = useState<PartialSponsorship>();
   const [isLoading, setIsLoading] = useState(false);
-  const [isAddingComment, setIsAddingComment] = useState(false);
 
   const readSponsorship = async () => {
     setIsLoading(true);
@@ -39,33 +37,6 @@ const SponsorshipDisplayDialog = ({ open, setOpen, id }: { open: boolean; setOpe
     setOpen(false);
   };
 
-  const { data: comments, refetch: refetchComments, isFetching: isCommentsFetching } = useGet<PartialComment[]>(
-    `/api/sponsorships/${id}/comments`,
-    `sponsorships/${id}/comments`,
-  );
-
-  const { add } = useAddToQuery<PartialComment>(`sponsorships/${id}/comments`, addCommentToDatabase);
-
-  const addComment = async (text: string) => {
-    setIsAddingComment(true);
-    await add({ text, sponsorshipId: sponsorship.id, user: session.user, createdDate: new Date() });
-    //refetchComments();
-    setIsAddingComment(false);
-  };
-
-  async function addCommentToDatabase(comment: PartialComment) {
-    const newComment = { ...comment };
-    delete newComment.user;
-    const result = await axios.post(`/api/sponsorships/${id}/comments`, newComment);
-    return result.data;
-  }
-
-  const { remove } = useRemoveFromQuery(`sponsorships/${id}/comments`, handleDeleteComment);
-
-  async function handleDeleteComment(id: number) {
-    await axios.delete('/api/comments/' + id);
-  }
-
   return (
     <Dialog open={open} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px', margin: 2 } }} onClose={handleClose}>
       <DialogContent sx={{ padding: 0 }} className={classes.content}>
@@ -74,14 +45,6 @@ const SponsorshipDisplayDialog = ({ open, setOpen, id }: { open: boolean; setOpe
         ) : (
           <>
             <SponsorshipDisplay sponsorship={sponsorship} handleClose={handleClose} hasFullHeightImage={true} />
-            <CommentSection
-              isLoading={isCommentsFetching}
-              comments={comments}
-              onAdd={addComment}
-              isAdding={isAddingComment}
-              onDelete={remove}
-              signInCallbackUrl={`/u/${sponsorship?.user?.profilePath}?t=${sponsorship?.id}`}
-            />
           </>
         )}
       </DialogContent>
