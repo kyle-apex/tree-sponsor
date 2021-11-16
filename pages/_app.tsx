@@ -44,6 +44,8 @@ const MyApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: 
           <Head>
             <title>Thank-a-Tree | TreeFolksYP</title>
             <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, maximum-scale=1' />
+            <meta property='og:type' content='website' />
+            <meta property='fb:app_id' content={process.env.NEXT_PUBLIC_FACEBOOK_ID} />
             <link
               href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css'
               rel='stylesheet'
