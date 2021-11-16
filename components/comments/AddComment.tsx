@@ -39,7 +39,7 @@ const AddComment = ({ onAdd, isAdding }: { onAdd: (text: string) => void; isAddi
         value={isActive ? text : ''}
         onChange={e => setText(e.target.value)}
         size='small'
-        sx={{ marginBottom: isActive ? 1 : 2, width: '100%' }}
+        sx={{ marginBottom: isActive ? 1 : 1, width: '100%' }}
         minRows={isActive ? 2 : 1}
         multiline
       ></TextField>

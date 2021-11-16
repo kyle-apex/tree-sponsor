@@ -8,7 +8,7 @@ import parsedGet from 'utils/api/parsed-get';
 import CommentSection from 'components/comments/CommentSection';
 import { PartialComment, PartialSponsorship } from 'interfaces';
 import { useAddToQuery } from 'utils/hooks/use-add-to-query';
-import { useGet } from 'utils/hooks';
+import { useGet, useRemoveFromQuery } from 'utils/hooks';
 import axios from 'axios';
 import { getSession, useSession } from 'next-auth/client';
 
@@ -59,6 +59,12 @@ const SponsorshipDisplayDialog = ({ open, setOpen, id }: { open: boolean; setOpe
     return result.data;
   }
 
+  const { remove } = useRemoveFromQuery(`sponsorships/${id}/comments`, handleDeleteComment);
+
+  async function handleDeleteComment(id: number) {
+    await axios.delete('/api/comments/' + id);
+  }
+
   return (
     <Dialog open={open} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px' } }} onClose={handleClose}>
       <DialogContent sx={{ padding: 0 }} className={classes.content}>
@@ -67,7 +73,13 @@ const SponsorshipDisplayDialog = ({ open, setOpen, id }: { open: boolean; setOpe
         ) : (
           <>
             <SponsorshipDisplay sponsorship={sponsorship} handleClose={handleClose} hasFullHeightImage={true} />
-            <CommentSection isLoading={isCommentsFetching} comments={comments} onAdd={addComment} isAdding={isAddingComment} />
+            <CommentSection
+              isLoading={isCommentsFetching}
+              comments={comments}
+              onAdd={addComment}
+              isAdding={isAddingComment}
+              onDelete={remove}
+            />
           </>
         )}
       </DialogContent>

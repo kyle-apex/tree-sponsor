@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     const comments = await prisma.comment.findMany({
       where: { sponsorshipId: id },
-      include: { user: { select: { name: true, displayName: true, image: true, profilePath: true } } },
+      include: { user: { select: { name: true, displayName: true, image: true, profilePath: true, id: true } } },
       orderBy: { createdDate: 'asc' },
     });
     res.status(200).json(comments);

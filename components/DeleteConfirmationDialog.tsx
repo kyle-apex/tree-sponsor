@@ -12,6 +12,8 @@ const DeleteConfirmationDialog = ({
   onConfirm,
   cancelText = 'Cancel',
   confirmText = 'Confirm',
+  title,
+  itemType,
 }: {
   onCancel?: () => void;
   onConfirm?: () => void;
@@ -19,6 +21,8 @@ const DeleteConfirmationDialog = ({
   confirmText?: string;
   open: boolean;
   setOpen: (isOpen: boolean) => void;
+  title?: string;
+  itemType?: string;
 }) => {
   const cancel = () => {
     if (onCancel) onCancel();
@@ -30,9 +34,9 @@ const DeleteConfirmationDialog = ({
   };
   return (
     <Dialog open={open}>
-      <DialogTitle>Remove Sponsorship?</DialogTitle>
+      <DialogTitle>{title || 'Remove Thank-a-Tree?'}</DialogTitle>
       <DialogContent>
-        <p>Are you sure you wish to remove this sponsorship?</p>
+        <p>Are you sure you wish to remove this {itemType || 'thank-a-tree'}?</p>
       </DialogContent>
       <DialogActions>
         <Button onClick={cancel}>{cancelText}</Button>
