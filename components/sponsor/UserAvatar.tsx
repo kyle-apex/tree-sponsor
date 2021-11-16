@@ -47,7 +47,7 @@ const UserAvatar = ({ image, name, size = 40, link }: { image: string; name: str
       onClick={handleClick}
     >
       {!isNavigating ? (
-        <Box>{image ? <img src={image} width={size} height={size} /> : <span>{abbreviation}</span>}</Box>
+        <Box sx={{ width: size, height: size }}>{image ? <img src={image} width={size} height={size} /> : <span>{abbreviation}</span>}</Box>
       ) : (
         <CircularProgress size={size} color='inherit' />
       )}
