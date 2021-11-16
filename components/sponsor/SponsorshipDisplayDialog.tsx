@@ -46,9 +46,10 @@ const SponsorshipDisplayDialog = ({ open, setOpen, id }: { open: boolean; setOpe
 
   const { add } = useAddToQuery<PartialComment>(`sponsorships/${id}/comments`, addCommentToDatabase);
 
-  const addComment = (text: string) => {
+  const addComment = async (text: string) => {
     setIsAddingComment(true);
-    add({ text, sponsorshipId: sponsorship.id, user: session.user });
+    await add({ text, sponsorshipId: sponsorship.id, user: session.user, createdDate: new Date() });
+    //refetchComments();
     setIsAddingComment(false);
   };
 

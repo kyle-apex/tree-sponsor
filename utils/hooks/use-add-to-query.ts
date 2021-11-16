@@ -21,7 +21,9 @@ export const useAddToQuery = <T extends { id?: number | string }>(
   const { mutate, isLoading } = useMutation(
     async (newObject: Partial<T>) => {
       console.log('before add function', newObject);
-      return await addFunction(newObject);
+      const result = await addFunction(newObject);
+      newObject.id = result.id;
+      return result;
     },
     {
       onMutate: addQueryListItem,
