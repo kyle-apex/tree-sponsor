@@ -80,6 +80,7 @@ const SponsorshipDisplayDialog = ({ open, setOpen, id }: { open: boolean; setOpe
               onAdd={addComment}
               isAdding={isAddingComment}
               onDelete={remove}
+              signInCallbackUrl={`/u/${sponsorship?.user?.profilePath}?t=${sponsorship?.id}`}
             />
           </>
         )}

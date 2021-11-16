@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: { id: id },
       include: {
         tree: {},
-        user: { select: { name: true, image: true } },
+        user: { select: { name: true, image: true, profilePath: true } },
         comments: { include: { user: { select: { name: true, displayName: true, image: true, profilePath: true } } } },
       },
       orderBy: { startDate: 'desc' },

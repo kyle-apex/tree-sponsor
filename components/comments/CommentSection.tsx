@@ -15,12 +15,14 @@ const CommentSection = ({
   isLoading,
   isAdding,
   onDelete,
+  signInCallbackUrl,
 }: {
   comments: any[];
   onAdd?: (text: string) => void;
   isLoading?: boolean;
   isAdding?: boolean;
   onDelete?: (id: number) => void;
+  signInCallbackUrl?: string;
 }) => {
   const [session] = useSession();
   return (
@@ -35,7 +37,7 @@ const CommentSection = ({
           {onAdd && session && <AddComment isAdding={isAdding} onAdd={onAdd}></AddComment>}
           {comments?.map((comment, idx) => (
             <>
-              {idx > -1 && <hr />}
+              {!(!session && idx === 0) && <hr />}
               <CommentDisplay
                 key={comment.id || comment.text}
                 comment={comment}
@@ -48,7 +50,7 @@ const CommentSection = ({
             <>
               <hr />
               <Box mb={2} mt={3}>
-                <Link href='/signin'>
+                <Link href={signInCallbackUrl ? '/signin?callbackUrl=' + signInCallbackUrl : '/signin'}>
                   <a style={{ textDecoration: 'none' }}>
                     <Box flexDirection='row' sx={{ display: 'flex' }} gap={0.5}>
                       <Typography color='primary'>Login to leave a comment</Typography>

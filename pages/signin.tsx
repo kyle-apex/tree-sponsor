@@ -148,7 +148,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     console.log('something about context %j', context);
     console.log('session from logout', session);
     return {
-      redirect: { destination: '/account' || context.query.callbackUrl || '/' },
+      redirect: { destination: context.query.callbackUrl || '/account' },
     };
   }
 
