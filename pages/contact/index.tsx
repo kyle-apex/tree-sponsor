@@ -47,7 +47,7 @@ const Contact = () => {
   };
 
   return (
-    <Layout>
+    <Layout title='Contact'>
       <LogoMessage hideLogo={true}>
         <Typography color='secondary' variant='h1'>
           Contact Us

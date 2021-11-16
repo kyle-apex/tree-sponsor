@@ -5,7 +5,7 @@ import React from 'react';
 
 const Explore = () => {
   return (
-    <Layout>
+    <Layout title='Explore'>
       <Container
         maxWidth='lg'
         sx={{ height: '90vh', maxHeight: 'calc(100vh - 150px)', width: '100%', display: 'flex', flexDirection: 'column' }}

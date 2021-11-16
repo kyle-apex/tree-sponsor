@@ -48,7 +48,7 @@ const SignupPage = ({
   const [isMembership, setIsMembership] = useState(true);
 
   return (
-    <Layout>
+    <Layout title='Sign Up'>
       <Container maxWidth='sm'>
         <Typography color='secondary' variant='h1' sx={{ fontSize: '2rem' }}>
           Thank-a-Tree / Start a Membership

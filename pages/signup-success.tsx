@@ -19,7 +19,7 @@ const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: str
     console.log('name', name);
   }, []);
   return (
-    <Layout>
+    <Layout title='Sign In'>
       <LogoMessage>
         {!email && !isSignedIn && (
           <div className='center'>

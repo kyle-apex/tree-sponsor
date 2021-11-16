@@ -4,17 +4,7 @@ import { useRouter } from 'next/router';
 import Box from '@mui/system/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 
-const SponsorshipAvatar = ({
-  image,
-  name,
-  size = 40,
-  link,
-}: {
-  image: string;
-  name: string;
-  size?: number;
-  link?: string;
-}): JSX.Element => {
+const UserAvatar = ({ image, name, size = 40, link }: { image: string; name: string; size?: number; link?: string }): JSX.Element => {
   const [abbreviation, setAbbreviation] = useState('AN');
   const router = useRouter();
   const [isNavigating, setIsNavigating] = useState(false);
@@ -64,4 +54,4 @@ const SponsorshipAvatar = ({
   );
 };
 
-export default SponsorshipAvatar;
+export default UserAvatar;

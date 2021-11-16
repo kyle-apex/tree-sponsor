@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-export const useAddToQuery = <T extends { id: number | string }>(
+export const useAddToQuery = <T extends { id?: number | string }>(
   key: string,
   addFunction: (newObject: Partial<T>) => Promise<T>,
   hasRefetch?: boolean,

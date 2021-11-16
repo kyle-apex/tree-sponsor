@@ -49,7 +49,7 @@ export default function signin({
   const [email, setEmail] = useLocalStorage('signInEmail', '');
 
   return (
-    <Layout>
+    <Layout title='Sign In'>
       <LogoMessage>
         {error && (
           <div className='center'>

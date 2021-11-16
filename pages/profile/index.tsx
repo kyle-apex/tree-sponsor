@@ -7,7 +7,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 const Profile = () => {
   return (
-    <Layout>
+    <Layout title='Profile'>
       <EditProfile>
         <Link href='/account'>
           <Button variant='text' size='small' sx={{ marginBottom: 2, display: 'flex', alignSelf: 'start' }}>

@@ -5,4 +5,4 @@ export { default as SponsorshipDisplayLoading } from './SponsorshipDisplayLoadin
 export { default as SponsorshipAddEditDialog } from './SponsorshipAddEditDialog';
 export { default as AddTreeButton } from './AddTreeButton';
 export { default as SponsorshipSubTitle } from './SponsorshipSubTitle';
-export { default as SponsorshipAvatar } from './SponsorshipAvatar';
+export { default as UserAvatar } from './UserAvatar';

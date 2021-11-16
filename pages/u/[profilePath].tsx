@@ -45,8 +45,6 @@ const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: 
   const title = `${titlePrefix} | Thank-a-Tree with TreeFolksYP`;
   const imageUrl = featuredSponsorship ? featuredSponsorship.pictureUrl : '';
 
-  //const featuredSponsorship = user.sponsorships.find(obj => obj.id == featuredId);
-
   user.sponsorships.sort((a, b) => {
     if (a.id == featuredId) return -1;
     if (b.id == featuredId) return 1;
@@ -59,6 +57,7 @@ const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: 
         <meta property='og:image' content={imageUrl} key='ogimage' />
         <meta property='og:title' content={title} key='ogtitle' />
         <meta property='og:description' content={description} key='ogdesc' />
+        <title>{title}</title>
       </Head>
       <Container
         maxWidth='md'

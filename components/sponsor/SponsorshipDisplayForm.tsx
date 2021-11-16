@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import React from 'react';
 import { useSession } from 'next-auth/client';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
-import { SponsorshipAvatar, SponsorshipSubTitle } from 'components/sponsor';
+import { UserAvatar, SponsorshipSubTitle } from 'components/sponsor';
 import { DESCRIPTION_PLACEHOLDER, DEFAULT_TITLE_PREFIX } from 'consts';
 import Checkbox from '@mui/material/Checkbox';
 import { PartialSponsorship } from 'interfaces';
@@ -33,7 +33,7 @@ const SponsorshipDisplayForm = ({
     <>
       <Card>
         <CardHeader
-          avatar={<SponsorshipAvatar image={session?.user?.image} name={session?.user?.name} />}
+          avatar={<UserAvatar image={session?.user?.image} name={session?.user?.name} />}
           title={
             <TextField
               size='small'

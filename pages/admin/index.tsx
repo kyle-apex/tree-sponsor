@@ -132,7 +132,7 @@ export default function EnhancedTable(): JSX.Element {
   };
 
   return (
-    <Layout>
+    <Layout title='Admin'>
       <div className={classes.root}>
         <Link href='/admin/roles'>
           <Button variant='outlined' className={classes.backLink}>

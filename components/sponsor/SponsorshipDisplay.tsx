@@ -14,7 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import React, { SetStateAction, useState } from 'react';
 import { PartialSponsorship } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
-import { SponsorshipAvatar, SponsorshipSubTitle } from 'components/sponsor';
+import { UserAvatar, SponsorshipSubTitle } from 'components/sponsor';
 import { DEFAULT_DESCRIPTION } from 'consts';
 import { DEFAULT_TITLE_PREFIX } from 'consts';
 import SponsorshipAddEditDialog from './SponsorshipAddEditDialog';
@@ -84,7 +84,7 @@ const SponsorshipDisplay = ({
         <Card sx={{ maxWidth: '500px', marginRight: '1px', marginBottom: '2px' }}>
           <CardHeader
             avatar={
-              <SponsorshipAvatar
+              <UserAvatar
                 image={sponsorship.user?.image}
                 name={sponsorship.user?.name}
                 link={sponsorship.user?.profilePath ? '/u/' + sponsorship.user.profilePath : ''}
