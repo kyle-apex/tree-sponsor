@@ -1,0 +1,30 @@
+import { NextApiRequest, NextApiResponse } from 'next';
+import throwError from 'utils/api/throw-error';
+import throwUnauthenticated from 'utils/api/throw-unauthenticated';
+import { getSession } from 'utils/auth/get-session';
+import { prisma } from 'utils/prisma/init';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const id = Number(req.query.id);
+
+  if (!id) return throwError(res, 'No sponsorship specified');
+
+  if (req.method === 'GET') {
+    const comments = await prisma.comment.findMany({
+      where: { sponsorshipId: id },
+      include: { user: { select: { name: true, displayName: true, image: true, profilePath: true } } },
+      orderBy: { createdDate: 'asc' },
+    });
+    res.status(200).json(comments);
+  } else if (req.method === 'POST') {
+    const session = await getSession({ req });
+
+    if (!session?.user?.id) return throwUnauthenticated(res);
+
+    const userId = session.user.id;
+
+    const newComment = await prisma.comment.create({ data: { userId, createdDate: new Date(), ...req.body } });
+    const comment = await prisma.comment.findFirst({ where: { id: newComment.id }, include: { user: {} } });
+    res.status(200).json(comment);
+  }
+}

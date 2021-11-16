@@ -10,6 +10,7 @@ import { PartialComment, PartialSponsorship } from 'interfaces';
 import { useAddToQuery } from 'utils/hooks/use-add-to-query';
 import { useGet } from 'utils/hooks';
 import axios from 'axios';
+import { getSession, useSession } from 'next-auth/client';
 
 const useStyles = makeStyles(theme => ({
   title: { paddingBottom: 0, paddingTop: theme.spacing(1), paddingRight: theme.spacing(1), textAlign: 'right' },
@@ -18,9 +19,10 @@ const useStyles = makeStyles(theme => ({
 
 const SponsorshipDisplayDialog = ({ open, setOpen, id }: { open: boolean; setOpen: (isOpen: boolean) => void; id: number }) => {
   const classes = useStyles();
+  const [session] = useSession();
   const [sponsorship, setSponsorship] = useState<PartialSponsorship>();
   const [isLoading, setIsLoading] = useState(false);
-  const [isAddingComment, setIsAddingComment] = useState(true);
+  const [isAddingComment, setIsAddingComment] = useState(false);
 
   const readSponsorship = async () => {
     setIsLoading(true);
@@ -37,21 +39,23 @@ const SponsorshipDisplayDialog = ({ open, setOpen, id }: { open: boolean; setOpe
     setOpen(false);
   };
 
-  const { data: roles, refetch: refetchRoles, isFetching: isRolesFetching } = useGet<PartialComment[]>(
-    `/api/sponsorship/${sponsorship.id}/comments`,
-    `sponsorship/${sponsorship.id}/comments`,
+  const { data: comments, refetch: refetchComments, isFetching: isCommentsFetching } = useGet<PartialComment[]>(
+    `/api/sponsorships/${id}/comments`,
+    `sponsorships/${id}/comments`,
   );
 
-  const { add } = useAddToQuery<PartialComment>('rsponsorship/${sponsorship.id}/comments', addCommentToDatabase);
+  const { add } = useAddToQuery<PartialComment>(`sponsorships/${id}/comments`, addCommentToDatabase);
 
   const addComment = (text: string) => {
     setIsAddingComment(true);
-    add({ text, sponsorshipId: sponsorship.id });
+    add({ text, sponsorshipId: sponsorship.id, user: session.user });
     setIsAddingComment(false);
   };
 
   async function addCommentToDatabase(comment: PartialComment) {
-    const result = await axios.post('/api/comments', comment);
+    const newComment = { ...comment };
+    delete newComment.user;
+    const result = await axios.post(`/api/sponsorships/${id}/comments`, newComment);
     return result.data;
   }
 
@@ -63,7 +67,7 @@ const SponsorshipDisplayDialog = ({ open, setOpen, id }: { open: boolean; setOpe
         ) : (
           <>
             <SponsorshipDisplay sponsorship={sponsorship} handleClose={handleClose} hasFullHeightImage={true} />
-            <CommentSection comments={sponsorship?.comments} onAdd={addComment} />
+            <CommentSection isLoading={isCommentsFetching} comments={comments} onAdd={addComment} isAdding={isAddingComment} />
           </>
         )}
       </DialogContent>

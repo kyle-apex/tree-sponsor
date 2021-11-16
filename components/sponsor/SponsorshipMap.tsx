@@ -172,7 +172,9 @@ const SponsorshipMap = ({
           </>
         )}
       </MapGL>
-      <SponsorshipDisplayDialog open={isDialogOpen} setOpen={setIsDialogOpen} id={activeSponsorshipId}></SponsorshipDisplayDialog>
+      {activeSponsorshipId && (
+        <SponsorshipDisplayDialog open={isDialogOpen} setOpen={setIsDialogOpen} id={activeSponsorshipId}></SponsorshipDisplayDialog>
+      )}
     </>
   );
 };

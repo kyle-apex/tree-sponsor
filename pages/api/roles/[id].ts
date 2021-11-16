@@ -1,8 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import throwError from 'utils/api/throw-error';
+import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
 import { prisma } from 'utils/prisma/init';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (!(await isCurrentUserAuthorized('hasAuthManagement', req))) return;
+
   const id = Number(req.query.id);
   if (req.method === 'POST') {
     const result = await prisma.user.update({
