@@ -9,15 +9,32 @@ type Props = {
   children?: ReactNode;
   title?: string;
   isFullWidth?: boolean;
+  description?: string;
+  ogImage?: string;
 };
 
-const Layout = ({ children, title = 'TreeFolksYP', isFullWidth }: Props) => (
+const Layout = ({
+  children,
+  title = 'Thank-a-Tree | TreeFolksYP',
+  isFullWidth,
+  description = 'Thank your favorite trees with a Token of Appre-tree-ation in support of future tree plantings through TreeFolks Young Professionals (TreeFolksYP)',
+  ogImage = '/og-image.png',
+}: Props) => (
   <>
     <Head>
       <title>
         {title}
-        {title != 'TreeFolksYP' ? ` - TreeFolksYP` : ``}
+        {title != 'Thank-a-Tree | TreeFolksYP' ? ` - Thank-a-Tree | TreeFolksYP` : ``}
       </title>
+      {ogImage && <meta property='og:image' content={ogImage} key='ogimage' />}
+      {title && (
+        <meta
+          property='og:title'
+          content={title != 'Thank-a-Tree | TreeFolksYP' ? title + ' - Thank-a-Tree | TreeFolksYP' : title}
+          key='ogtitle'
+        />
+      )}
+      {description && <meta property='og:description' content={description} key='ogdesc' />}
       <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
       <meta charSet='utf-8' />
       <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, maximum-scale=1' />
