@@ -60,12 +60,6 @@ SET
 
 -- AddForeignKey
 ALTER TABLE
-    `SubscriptionWithDetails`
-ADD
-    CONSTRAINT `SubscriptionWithDetails_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE
     `Comment`
 ADD
     CONSTRAINT `Comment_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE
@@ -163,10 +157,6 @@ ALTER TABLE
 -- RenameIndex
 ALTER TABLE
     `Subscription` RENAME INDEX `Subscription.stripeId_unique` TO `Subscription_stripeId_key`;
-
--- RenameIndex
-ALTER TABLE
-    `SubscriptionWithDetails` RENAME INDEX `SubscriptionWithDetails.id_unique` TO `SubscriptionWithDetails_id_key`;
 
 -- RenameIndex
 ALTER TABLE
