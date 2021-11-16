@@ -81,7 +81,7 @@ const SponsorshipDisplay = ({
   return (
     <>
       {sponsorship?.id && (
-        <Card sx={{ maxWidth: '500px', marginRight: '1px', marginBottom: '2px' }}>
+        <Card sx={{ maxWidth: '500px', marginRight: handleClose ? 0 : '1px', marginBottom: '2px' }}>
           <CardHeader
             avatar={
               <UserAvatar

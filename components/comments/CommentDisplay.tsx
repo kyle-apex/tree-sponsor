@@ -42,7 +42,7 @@ const CommentDisplay = ({
           <Typography variant='subtitle2' color='gray'>
             {formatCommentDate(comment.createdDate)}
           </Typography>
-          {comment.user.id == currentUserId && onDelete && (
+          {comment.user.id == currentUserId && comment.id && onDelete && (
             <Box sx={{ textAlign: 'right', flex: '1 1 auto', color: 'gray' }}>
               <IconButton size='small'>
                 <TrashIcon onClick={() => setIsDeleteConfirmationOpen(true)} color='inherit' sx={{ fontSize: '1.2rem' }}></TrashIcon>

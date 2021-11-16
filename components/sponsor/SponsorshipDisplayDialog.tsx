@@ -67,7 +67,7 @@ const SponsorshipDisplayDialog = ({ open, setOpen, id }: { open: boolean; setOpe
   }
 
   return (
-    <Dialog open={open} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px' } }} onClose={handleClose}>
+    <Dialog open={open} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px', margin: 2 } }} onClose={handleClose}>
       <DialogContent sx={{ padding: 0 }} className={classes.content}>
         {isLoading ? (
           <SponsorshipDisplayLoading />
