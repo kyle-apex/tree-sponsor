@@ -24,7 +24,7 @@ const CommentSection = ({
 }) => {
   const [session] = useSession();
   return (
-    <Box sx={{ padding: 2 }}>
+    <Box sx={{ padding: 2 }} className='section-background'>
       {isLoading ? (
         <>
           <Skeleton variant='text' sx={{ width: '100%' }} />
