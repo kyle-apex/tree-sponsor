@@ -18,7 +18,7 @@ const Layout = ({
   title = 'Thank-a-Tree | TreeFolksYP',
   isFullWidth,
   description = 'Thank your favorite trees with a Token of Appre-tree-ation in support of future tree plantings through TreeFolks Young Professionals (TreeFolksYP)',
-  ogImage = '/og-image.png',
+  ogImage = process.env.NEXT_PUBLIC_OG_IMAGE || 'https://tfyp-images.s3.amazonaws.com/og-image.png',
 }: Props) => (
   <>
     <Head>
