@@ -126,7 +126,6 @@ const IndexPage = ({ treeBenefits }: { treeBenefits: TitleSection[] }) => {
                 width: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                backgroundColor: 'orange',
               }}
             >
               <SponsorshipMap></SponsorshipMap>
