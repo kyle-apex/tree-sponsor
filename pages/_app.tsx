@@ -33,6 +33,15 @@ const MyApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: 
     if (jssStyles && jssStyles.parentElement) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window['actSettings'] = {
+      token: '5341810786e351e022366871cd411e0f8b28ab310a30d6065672d54d7edf85bc',
+      widget: {
+        type: 'modal',
+        selector: '#feedback',
+      },
+    };
   }, []);
 
   const queryClient = new QueryClient();

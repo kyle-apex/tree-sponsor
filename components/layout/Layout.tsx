@@ -4,6 +4,7 @@ import Header from './Header';
 import Footer from './Footer';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import Acute from 'components/acute/Acute';
 
 type Props = {
   children?: ReactNode;
@@ -40,6 +41,7 @@ const Layout = ({
       <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, maximum-scale=1' />
       <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css' rel='stylesheet' />
     </Head>
+    <Acute />
     <Header />
     <main>
       {isFullWidth ? (
