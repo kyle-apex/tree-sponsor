@@ -105,7 +105,6 @@ const SponsorshipMap = ({
       setIsSatelliteMode(false);
     }
   }
-
   return (
     <>
       <MapGL
@@ -179,4 +178,4 @@ const SponsorshipMap = ({
   );
 };
 
-export default SponsorshipMap;
+export default React.memo(SponsorshipMap);

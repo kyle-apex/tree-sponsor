@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
 const treeBenefits: TitleSection[] = [
   { title: 'Pollution', description: 'Trees give us the air we breathe and remove toxins from the air' },
   { title: 'Flood Prevention', description: 'Roots help prevent soil erosion and soak up water to reduce flooding' },
-  { title: 'Homes', description: 'Friends of all shapes and sizes call trees home and rely on their food' },
+  { title: 'Homes', description: 'Friends of all shapes and sizes call trees home and rely on them for food and shelter' },
   { title: 'Shade', description: 'Trees reduce electric bills and keep us cool' },
   { title: 'Atmosphere', description: 'Think of your favorite picnic, restaurant, bar, and/or park enhanced by trees' },
   { title: 'Activities', description: 'Do not forget to be grateful for climbing, swinging, decorating, and much more!' },
@@ -119,7 +119,16 @@ const IndexPage = ({ treeBenefits }: { treeBenefits: TitleSection[] }) => {
             </Grid>
           </Grid>
           <Grid item md={7} sm={7} xs={12} direction='column' container alignContent='center' justifyContent='center'>
-            <Box sx={{ height: '475px', maxHeight: 'calc(75vh)', width: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Box
+              sx={{
+                height: '475px',
+                maxHeight: 'calc(75vh)',
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                backgroundColor: 'orange',
+              }}
+            >
               <SponsorshipMap></SponsorshipMap>
             </Box>
           </Grid>
