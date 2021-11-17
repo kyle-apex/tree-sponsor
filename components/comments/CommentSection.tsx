@@ -65,7 +65,7 @@ const CommentSection = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipId: n
             </Box>
           )}
           {session && <AddComment isAdding={isAdding} onAdd={addComment}></AddComment>}
-          {comments?.map((comment, idx) => (
+          {comments?.map(comment => (
             <>
               <hr />
               <CommentDisplay
