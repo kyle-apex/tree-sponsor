@@ -77,12 +77,18 @@ function bindEvent(t, e, i) {
   t.addEventListener ? t.addEventListener(e, i, !1) : t.attachEvent && t.attachEvent('on' + e, i);
 }
 function initAcute() {
-  document.body.append(widgetContainer),
-    document.getElementById(WidgetContainerId).appendChild(myWidgetInstance),
-    modal &&
-      (document.querySelector(selector)
-        ? (document.querySelector(selector).onclick = openModal)
-        : console.warn('Selector element not found'));
+  try {
+    if (!document.getElementById(WidgetContainerId)) {
+      document.body.append(widgetContainer),
+        document.getElementById(WidgetContainerId).appendChild(myWidgetInstance),
+        modal &&
+          (document.querySelector(selector)
+            ? (document.querySelector(selector).onclick = openModal)
+            : console.warn('Selector element not found'));
+    }
+  } catch (err) {
+    console.log('acute feedback loading err', err);
+  }
 }
 widgetContainer.setAttribute('id', WidgetContainerId),
   bindEvent(window, 'message', function (t) {
@@ -91,7 +97,7 @@ widgetContainer.setAttribute('id', WidgetContainerId),
         i = document.getElementById('_act_widget');
       if ('resize_frame' === (e = t.data).action) {
         var n = 710 < window.innerHeight ? '720px' : '98%',
-          d = 414 < window.innerWidth ? '410px' : 'calc(95% - 40px)',
+          d = 414 < window.innerWidth ? '410px' : 'calc(98% - 20px)',
           o = 710 < window.innerHeight ? 'calc(50% - 720px/2)' : '1%';
         if (e.data)
           if (!1 === e.data.open) {
