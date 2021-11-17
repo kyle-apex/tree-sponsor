@@ -66,9 +66,9 @@ const SponsorshipAddEditForm = ({
   const classes = useStyles();
 
   const activeSponsorship = useRef<PartialSponsorship>({
-    title: sponsorship.title,
-    description: sponsorship.description,
-    isPrivate: sponsorship.isPrivate,
+    title: sponsorship?.title,
+    description: sponsorship?.description,
+    isPrivate: sponsorship?.isPrivate,
   });
 
   const [latitude, setLatitude] = useState(0);

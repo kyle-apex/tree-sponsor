@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const user = await prisma.user.findFirst({
       where: { profilePath },
       include: {
-        sponsorships: { include: { tree: {}, user: { select: { name: true, profilePath: false } } } },
+        sponsorships: { include: { tree: {}, user: { select: { name: true, profilePath: true, displayName: true } } } },
         roles: {},
         subscriptions: { select: { createdDate: true } },
       },

@@ -5,12 +5,7 @@ import SponsorshipDisplay from './SponsorshipDisplay';
 import makeStyles from '@mui/styles/makeStyles';
 import SponsorshipDisplayLoading from './SponsorshipDisplayLoading';
 import parsedGet from 'utils/api/parsed-get';
-import CommentSection from 'components/comments/CommentSection';
-import { PartialComment, PartialSponsorship } from 'interfaces';
-import { useAddToQuery } from 'utils/hooks/use-add-to-query';
-import { useGet, useRemoveFromQuery } from 'utils/hooks';
-import axios from 'axios';
-import { getSession, useSession } from 'next-auth/client';
+import { PartialSponsorship } from 'interfaces';
 
 const useStyles = makeStyles(theme => ({
   title: { paddingBottom: 0, paddingTop: theme.spacing(1), paddingRight: theme.spacing(1), textAlign: 'right' },
