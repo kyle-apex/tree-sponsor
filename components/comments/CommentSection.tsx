@@ -66,15 +66,10 @@ const CommentSection = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipId: n
           )}
           {session && <AddComment isAdding={isAdding} onAdd={addComment}></AddComment>}
           {comments?.map(comment => (
-            <>
+            <Box key={comment.id || comment.text}>
               <hr />
-              <CommentDisplay
-                key={comment.id || comment.text}
-                comment={comment}
-                currentUserId={(session as Session)?.user?.id}
-                onDelete={remove}
-              ></CommentDisplay>
-            </>
+              <CommentDisplay comment={comment} currentUserId={(session as Session)?.user?.id} onDelete={remove}></CommentDisplay>
+            </Box>
           ))}
         </>
       )}

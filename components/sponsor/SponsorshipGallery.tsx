@@ -16,7 +16,7 @@ const SponsorshipGallery = ({ sponsorships }: { sponsorships: PartialSponsorship
   const theme = useTheme();
 
   const [activeStep, setActiveStep] = useState(0);
-  const maxSteps = sponsorships.length;
+  const maxSteps = sponsorships.length || 3;
 
   const handleNext = () => {
     setActiveStep(prevActiveStep => {
@@ -39,6 +39,7 @@ const SponsorshipGallery = ({ sponsorships }: { sponsorships: PartialSponsorship
   };
 
   const handleStepChange = (step: number) => {
+    if (!step) step = 0;
     setActiveStep(step);
   };
 

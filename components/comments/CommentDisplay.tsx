@@ -44,8 +44,8 @@ const CommentDisplay = ({
           </Typography>
           {comment.user.id == currentUserId && comment.id && onDelete && (
             <Box sx={{ textAlign: 'right', flex: '1 1 auto', color: 'gray' }}>
-              <IconButton size='small'>
-                <TrashIcon onClick={() => setIsDeleteConfirmationOpen(true)} color='inherit' sx={{ fontSize: '1.2rem' }}></TrashIcon>
+              <IconButton size='small' onClick={() => setIsDeleteConfirmationOpen(true)}>
+                <TrashIcon color='inherit' sx={{ fontSize: '1.2rem' }}></TrashIcon>
               </IconButton>
               <DeleteConfirmationDialog
                 open={isDeleteConfirmationOpen}
