@@ -1,13 +1,16 @@
-import React, { useState, useCallback, useRef } from 'react';
-import MapGL, { GeolocateControl, Marker, NavigationControl } from 'react-map-gl';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import MapGL, { GeolocateControl, NavigationControl, WebMercatorViewport } from 'react-map-gl';
 import { useGet } from 'utils/hooks/use-get';
 import SponsorshipDisplayDialog from './SponsorshipDisplayDialog';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Geocoder from 'react-map-gl-geocoder';
-import { Button, ButtonGroup } from '@mui/material';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import NaturePeopleIcon from '@mui/icons-material/NaturePeople';
+import { PartialSponsorship, Viewport } from 'interfaces';
+import MapMarker from './MapMarker';
 
 const geolocateControlStyle = {
   right: 10,
@@ -21,13 +24,20 @@ const navControlStyle = {
 
 const SEARCH_LOCATION = { longitude: -97.7405213210974, latitude: 30.27427678853506 };
 
-const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
+const SponsorshipMap = ({
+  isExploreMode,
+  defaultSponsorships,
+}: {
+  isExploreMode?: boolean;
+  defaultSponsorships?: PartialSponsorship[];
+}) => {
   const [activeSponsorshipId, setActiveSponsorshipId] = useState<number>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [style, setStyle] = useState('mapbox://styles/mapbox/satellite-streets-v11');
+  const [isSatelliteMode, setIsSatelliteMode] = useState(false);
+  const [style, setStyle] = useState('mapbox://styles/mapbox/streets-v11');
   const mapRef = useRef();
 
-  const [viewport, setViewport] = useState({
+  const [viewport, setViewport] = useState<Viewport>({
     width: '100%',
     height: '100%',
     latitude: 30.2594625,
@@ -35,21 +45,72 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
     zoom: 10.7,
   });
 
-  const handleViewportChange = useCallback(newViewport => setViewport(newViewport), []);
+  const handleViewportChange = useCallback((newViewport: Viewport) => setViewport(newViewport), []);
 
-  const { data: sponsorships, isFetched, isFetching } = useGet<any[]>('/api/sponsorships/locations', 'sponsorship-locations');
+  let sponsorships: PartialSponsorship[];
+
+  if (defaultSponsorships) {
+    sponsorships = defaultSponsorships;
+  } else {
+    const { data: readSponsorships } = useGet<PartialSponsorship[]>('/api/sponsorships/locations', 'sponsorship-locations');
+    sponsorships = readSponsorships;
+  }
+
+  useEffect(() => {
+    if (defaultSponsorships) {
+      let minLng, minLat, maxLng, maxLat;
+      for (const sponsorship of sponsorships) {
+        //const sponsorship = sponsorships[0];
+        if (sponsorship?.tree?.latitude) {
+          if (!minLat) minLat = sponsorship.tree.latitude;
+          if (!maxLat) maxLat = sponsorship.tree.latitude;
+          minLat = minLat < sponsorship.tree.latitude ? minLat : sponsorship.tree.latitude;
+          maxLat = maxLat > sponsorship.tree.latitude ? maxLat : sponsorship.tree.latitude;
+        }
+        if (sponsorship?.tree?.longitude) {
+          if (!minLng) minLng = sponsorship.tree.longitude;
+          if (!maxLng) maxLng = sponsorship.tree.longitude;
+          minLng = minLng < sponsorship.tree.latitude ? minLng : sponsorship.tree.longitude;
+          maxLng = maxLat > sponsorship.tree.latitude ? maxLng : sponsorship.tree.longitude;
+        }
+      }
+      if (minLng) {
+        const vp = new WebMercatorViewport({ height: 400, width: 400 });
+        const { longitude, latitude, zoom } = vp.fitBounds(
+          [
+            [Number(minLng), Number(minLat)],
+            [Number(maxLng), Number(maxLat)],
+          ],
+          {
+            padding: 80,
+          },
+        );
+        const newZoom = zoom > 17 ? 17 : zoom;
+        setViewport({ ...viewport, longitude, latitude, zoom: newZoom });
+      }
+    }
+  }, []);
 
   function showMarkerDetails(id: number) {
     setActiveSponsorshipId(id);
     setIsDialogOpen(true);
   }
 
+  function updateSatelliteMode(isSatelliteMode: boolean) {
+    if (isSatelliteMode) {
+      setStyle('mapbox://styles/mapbox/satellite-streets-v11');
+      setIsSatelliteMode(true);
+    } else {
+      setStyle('mapbox://styles/mapbox/streets-v11');
+      setIsSatelliteMode(false);
+    }
+  }
   return (
     <>
       <MapGL
         {...viewport}
         ref={mapRef}
-        onViewportChange={(nextViewport: any) => setViewport(nextViewport)}
+        onViewportChange={(nextViewport: Viewport) => setViewport(nextViewport)}
         mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         className='index-map mapboxgl-map box-shadow'
         mapStyle={isExploreMode ? style : 'mapbox://styles/mapbox/light-v10'}
@@ -57,30 +118,23 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
         {sponsorships?.map(sponsorship => {
           if (sponsorship?.tree?.latitude) {
             return (
-              <Marker
+              <MapMarker
                 key={sponsorship.id}
-                className='marker'
                 latitude={Number(sponsorship.tree.latitude)}
                 longitude={Number(sponsorship.tree.longitude)}
-              >
-                <img
-                  src={isExploreMode ? 'pin-right-bright.svg' : '/pin-ring.svg'}
-                  style={{
-                    width: (50 * viewport.zoom) / 10 + 'px',
-                    marginLeft: (-50 * viewport.zoom) / 20 + 'px',
-                    marginTop: -1 * ((50 * viewport.zoom) / 10) * 1.3,
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => showMarkerDetails(sponsorship.id)}
-                />
-              </Marker>
+                isSatelliteMode={isExploreMode && isSatelliteMode}
+                zoom={viewport.zoom}
+                onClick={() => {
+                  showMarkerDetails(sponsorship.id);
+                }}
+              ></MapMarker>
             );
           }
         })}
         {isExploreMode && (
           <>
             <GeolocateControl
-              auto={true}
+              auto={false}
               style={geolocateControlStyle}
               positionOptions={{ enableHighAccuracy: true }}
               trackUserLocation={true}
@@ -99,7 +153,7 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
                 <Button
                   color='inherit'
                   onClick={() => {
-                    setStyle('mapbox://styles/mapbox/satellite-streets-v11');
+                    updateSatelliteMode(true);
                   }}
                 >
                   <NaturePeopleIcon />
@@ -107,7 +161,7 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
                 <Button
                   color='inherit'
                   onClick={() => {
-                    setStyle('mapbox://styles/mapbox/streets-v11');
+                    updateSatelliteMode(false);
                   }}
                 >
                   <DirectionsCarIcon />
@@ -117,9 +171,11 @@ const SponsorshipMap = ({ isExploreMode }: { isExploreMode?: boolean }) => {
           </>
         )}
       </MapGL>
-      <SponsorshipDisplayDialog open={isDialogOpen} setOpen={setIsDialogOpen} id={activeSponsorshipId}></SponsorshipDisplayDialog>
+      {activeSponsorshipId && (
+        <SponsorshipDisplayDialog open={isDialogOpen} setOpen={setIsDialogOpen} id={activeSponsorshipId}></SponsorshipDisplayDialog>
+      )}
     </>
   );
 };
 
-export default SponsorshipMap;
+export default React.memo(SponsorshipMap);

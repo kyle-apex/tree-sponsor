@@ -1,6 +1,6 @@
+import { prismaMock } from '../../../utils/prisma/singleton';
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { updateUser } from '../../../utils/prisma/update-user';
-import { prismaMock } from '../../../utils/prisma/singleton';
 
 test('should create new user ', async () => {
   const user = {
@@ -19,7 +19,7 @@ test('should create new user ', async () => {
   //@ts-ignore
   prismaMock.user.create.mockResolvedValue(user);
   //@ts-ignore
-  prismaMock.user.update.mockResolvedValue(user);
+  prismaMock.user.update.mockResolvedValue(Object.assign(user, { name: 'Rich2' }));
 
   await prismaMock.user.create({ data: user });
 

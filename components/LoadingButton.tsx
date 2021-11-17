@@ -1,4 +1,5 @@
-import { Button, CircularProgress } from '@mui/material';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import React from 'react';
 
 const LoadingButton = ({
@@ -13,13 +14,13 @@ const LoadingButton = ({
 }: {
   children?: React.ReactNode;
   size?: 'small' | 'medium' | 'large';
-  className?: any;
+  className?: string;
   variant?: 'text' | 'outlined' | 'contained';
   color?: 'inherit' | 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning';
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   isLoading?: boolean;
   disabled?: boolean;
-}) => {
+}): JSX.Element => {
   return (
     <Button
       size={size}

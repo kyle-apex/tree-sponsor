@@ -1,10 +1,13 @@
-import { TextField, Button, LinearProgress, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import Layout from 'components/layout/Layout';
 import LogoMessage from 'components/layout/LogoMessage';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import LinearProgress from '@mui/material/LinearProgress';
+import TextField from '@mui/material/TextField';
 
 const useStyles = makeStyles(theme => ({
   formField: {
@@ -44,7 +47,7 @@ const Contact = () => {
   };
 
   return (
-    <Layout>
+    <Layout title='Contact'>
       <LogoMessage hideLogo={true}>
         <Typography color='secondary' variant='h1'>
           Contact Us

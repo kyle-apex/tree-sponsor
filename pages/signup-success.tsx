@@ -1,16 +1,17 @@
-import { Box, Button, Container } from '@mui/material';
+import Button from '@mui/material/Button';
 import Layout from 'components/layout/Layout';
 import { signIn, getSession } from 'next-auth/client';
 import React, { useEffect } from 'react';
 import { Stripe, stripe } from 'utils/stripe/init';
 
-import Image from 'next/image';
 import LogoMessage from 'components/layout/LogoMessage';
 import Link from 'next/link';
-import { getURL } from 'utils/get-application-url';
 import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
 
 import { prisma } from 'utils/prisma/init';
+import { GetServerSidePropsContext } from 'next';
+import addSubscriber from 'utils/mailchimp/add-subscriber';
+import { generateProfilePath } from 'utils/user/generate-profile-path';
 
 const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: string; isSignedIn: boolean }) => {
   useEffect(() => {
@@ -18,7 +19,7 @@ const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: str
     console.log('name', name);
   }, []);
   return (
-    <Layout>
+    <Layout title='Sign In'>
       <LogoMessage>
         {!email && !isSignedIn && (
           <div className='center'>
@@ -57,10 +58,10 @@ const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: str
 
 export default SignupSuccess;
 
-export async function getServerSideProps(context: any) {
-  const { req, query } = context;
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { query } = context;
 
-  const queryObj = query || req.query;
+  const queryObj = query;
 
   const session = await getSession(context);
 
@@ -75,7 +76,7 @@ export async function getServerSideProps(context: any) {
   console.log('queryObj %j', queryObj);
   let stripeSessionId;
   if (queryObj) {
-    stripeSessionId = queryObj.session_id;
+    stripeSessionId = queryObj.session_id as string;
     delete queryObj.session_id;
   }
 
@@ -86,21 +87,44 @@ export async function getServerSideProps(context: any) {
       const stripeSession = await stripe.checkout.sessions.retrieve(stripeSessionId);
       console.log('session', stripeSession);
       const customer = (await stripe.customers.retrieve(stripeSession.customer as string)) as Stripe.Customer;
+      console.log('customer', customer);
+
+      if (customer?.metadata && stripeSession?.metadata) {
+        Object.assign(customer.metadata, stripeSession.metadata);
+        stripe.customers.update(customer.id, { metadata: customer.metadata });
+      }
 
       email = customer.email;
+
+      let firstName: string;
+      let lastName: string;
+
+      if (customer?.name) {
+        const customerNameSplit = customer.name.split(' ');
+        firstName = customerNameSplit.shift();
+        lastName = customerNameSplit.join(' ');
+      }
+
+      if (stripeSession?.metadata?.['Email Subscribe'] == 'Yes')
+        addSubscriber(email, { FNAME: firstName, LNAME: lastName, AMOUNT: stripeSession.amount_total / 100 + '' });
 
       props.name = customer.name;
       props.email = email;
 
-      await prisma.user.upsert({
+      const prismaUser = await prisma.user.upsert({
         where: { email: customer.email },
         create: { name: customer.name, email, stripeCustomerId: customer.id },
         update: { name: customer.name },
       });
 
+      if (!prismaUser.profilePath) {
+        prisma.user.update({ where: { id: prismaUser.id }, data: { profilePath: generateProfilePath(prismaUser) } });
+      }
+
       console.log('customer', customer);
     } catch (err: unknown) {
       props.name = null;
+      console.log('err', err);
     }
   }
 

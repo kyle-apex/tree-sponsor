@@ -91,6 +91,12 @@ input.MuiOutlinedInput-input,
   box-shadow: 0 5px 5px 0 rgb(66 66 66 / 8%), 0 3px 3px 3px rgb(66 66 66 / 16%);
 }
 
+.icon-container svg {
+  width: 50px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
 .wide-container {
   background-color: #486e62;
   color: white;

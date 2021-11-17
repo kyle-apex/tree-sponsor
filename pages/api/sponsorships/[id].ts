@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Sponsorship } from '@prisma/client';
 import { getSession } from 'utils/auth/get-session';
 import throwError from 'utils/api/throw-error';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
@@ -23,7 +22,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     const sponsorships = await prisma.sponsorship.findFirst({
       where: { id: id },
-      include: { tree: {}, user: { select: { name: true, image: true } } },
+      include: {
+        tree: {},
+        user: { select: { name: true, image: true, profilePath: true } },
+        comments: { include: { user: { select: { name: true, displayName: true, image: true, profilePath: true } } } },
+      },
       orderBy: { startDate: 'desc' },
     });
     res.status(200).json(sponsorships);

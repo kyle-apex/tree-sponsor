@@ -1,4 +1,6 @@
-import { Dialog, DialogContent, Typography } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import Typography from '@mui/material/Typography';
 import { PartialSponsorship } from 'interfaces';
 import SponsorshipAddEditForm from './SponsorshipAddEditForm';
 

@@ -1,43 +1,47 @@
-import { Card, CardHeader, CardContent, CardMedia, TextField } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import TextField from '@mui/material/TextField';
 import React from 'react';
 import { useSession } from 'next-auth/client';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
-import { SponsorshipAvatar, SponsorshipSubTitle } from 'components/sponsor';
+import { UserAvatar, SponsorshipSubTitle } from 'components/sponsor';
+import { DESCRIPTION_PLACEHOLDER, DEFAULT_TITLE_PREFIX } from 'consts';
+import Checkbox from '@mui/material/Checkbox';
+import { PartialSponsorship } from 'interfaces';
 
 const SponsorshipDisplayForm = ({
-  title,
-  setTitle,
-  description,
-  setDescription,
+  sponsorship,
   imageUrl,
   setImageUrl,
 }: {
-  title: string;
-  setTitle: (param: string) => void;
-  description: string;
-  setDescription: (param: string) => void;
+  sponsorship: React.MutableRefObject<PartialSponsorship>;
   imageUrl: string;
   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const [session] = useSession();
+  console.log('re-rendered');
 
   const startDate = new Date();
 
   const getName = (): string => {
-    return session?.user?.name ? session.user.name : 'Anonymous';
+    return session?.user?.name ? session.user.name.split(' ')[0] : 'Anonymous';
   };
 
   return (
     <>
       <Card>
         <CardHeader
-          avatar={<SponsorshipAvatar image={session?.user?.image} name={session?.user?.name} />}
+          avatar={<UserAvatar image={session?.user?.image} name={session?.user?.name} />}
           title={
             <TextField
               size='small'
-              placeholder={'Sponsored by ' + getName()}
-              value={title}
-              onChange={e => setTitle(e.target.value)}
+              placeholder={DEFAULT_TITLE_PREFIX + getName()}
+              value={sponsorship.current.title}
+              onChange={e => {
+                sponsorship.current.title = e.target.value;
+              }}
               className='full-width'
             ></TextField>
           }
@@ -54,7 +58,7 @@ const SponsorshipDisplayForm = ({
             minHeight: '200px',
           }}
           component='div'
-          title={title}
+          title='Click to Update Image'
         >
           <ImageUploadAndPreview imageUrl={imageUrl} setImageUrl={setImageUrl} />
         </CardMedia>
@@ -63,13 +67,20 @@ const SponsorshipDisplayForm = ({
           <TextField
             multiline={true}
             rows={3}
-            value={description}
+            value={sponsorship.current.description}
             onChange={e => {
-              setDescription(e.target.value);
+              sponsorship.current.description = e.target.value;
             }}
-            placeholder='"I love this tree because..."     "In memory of..."     "I sponsored this tree because..."'
+            placeholder={DESCRIPTION_PLACEHOLDER}
             className='full-width'
           ></TextField>
+          <Checkbox
+            checked={sponsorship.current.isPrivate}
+            onChange={e => {
+              sponsorship.current.isPrivate = e.target.checked;
+            }}
+          ></Checkbox>{' '}
+          Is Private?
         </CardContent>
       </Card>
     </>

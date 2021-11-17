@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
 import { getSession } from 'utils/auth/get-session';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { getAvailableSponsorships } from 'utils/prisma/get-available-sponsorships';

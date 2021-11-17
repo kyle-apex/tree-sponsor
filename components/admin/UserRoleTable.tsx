@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Checkbox, LinearProgress, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import LinearProgress from '@mui/material/LinearProgress';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
 import makeStyles from '@mui/styles/makeStyles';
 import { Role } from '@prisma/client';
 import { TableHeader } from 'components/TableHeader';
 import { StyledTableRow } from 'components/StyledTableRow';
 import axios from 'axios';
-import { QueryObserverResult, RefetchOptions } from 'react-query';
 import { PartialUser } from 'interfaces';
 import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
 
@@ -43,7 +48,7 @@ function userHasRole(user: PartialUser, roleId: number) {
 }
 
 async function handleRoleChange(userId: number, attributes: Record<string, unknown>) {
-  return await axios.post('/api/users/' + userId + '/toggleRole', attributes);
+  await axios.post('/api/users/' + userId + '/toggleRole', attributes);
 }
 
 export default function UserRoleTable({

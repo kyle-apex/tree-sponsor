@@ -2,11 +2,6 @@ import { Subscription } from '@prisma/client';
 import { prisma } from 'utils/prisma/init';
 
 export async function getAvailableSponsorships(userId: number, count?: number): Promise<Subscription[]> {
-  const currentSponsorships = await prisma.sponsorship.findMany({
-    where: { userId: userId, expirationDate: { gt: new Date() } },
-  });
-  //', currentSponsorships);
-
   const oneYearAgo = new Date();
   oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 

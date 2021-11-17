@@ -35,5 +35,5 @@ export const useGet = <T>(path: string, key?: string, params?: Record<string, un
     return promise;
   };
 
-  return useQuery([key, params], fetcher);
+  return useQuery([key, params], fetcher, { refetchOnWindowFocus: false });
 };

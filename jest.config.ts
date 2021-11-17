@@ -9,6 +9,7 @@ const config: Config.InitialOptions = {
   //testEnvironment: 'node',
   setupFilesAfterEnv: ['<rootDir>/utils/prisma/singleton.ts', '<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
+    '^utils/prisma/init': '<rootDir>/utils/prisma/singleton',
     '^utils/(.*)': '<rootDir>/utils/$1',
     '^pages/(.*)': '<rootDir>/pages/$1',
     '^components/(.*)': '<rootDir>/components/$1',

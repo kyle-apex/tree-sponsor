@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-export const useUpdateQueryById = (
+export const useUpdateQueryById = <T extends { id?: string | number }>(
   key: string,
-  updateFunction: (id: number, attributes: Record<string, unknown>) => Promise<any>,
+  updateFunction: (id: number, attributes: Record<string, unknown>) => Promise<void>,
   hasRefetch?: boolean,
 ) => {
   const queryKey = [key, undefined];
   const queryClient = useQueryClient();
 
   function updateQueryListItem(updatedItem: any) {
-    const previousList: any[] = queryClient.getQueryData(queryKey);
+    const previousList: T[] = queryClient.getQueryData<T[]>(queryKey);
     const updatedList = [...previousList];
     const index = updatedList.findIndex(eachValue => eachValue.id === updatedItem.id);
 
@@ -26,7 +26,7 @@ export const useUpdateQueryById = (
 
   const { mutate, isLoading } = useMutation(
     async (inputs: { id: number; attributes: Record<string, unknown> }) => {
-      return await updateFunction(inputs.id, inputs.attributes);
+      await updateFunction(inputs.id, inputs.attributes);
     },
     {
       onMutate: updateQueryListItem,

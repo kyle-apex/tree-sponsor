@@ -1,22 +1,21 @@
-import {
-  Container,
-  Tab,
-  Tabs,
-  TableCell,
-  TableRow,
-  Table,
-  Box,
-  Chip,
-  TableBody,
-  Typography,
-  FormControlLabel,
-  FormGroup,
-  Checkbox,
-} from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import Tabs from '@mui/material/Tabs';
+import TableRow from '@mui/material/TableRow';
 import CheckoutButton from 'components/CheckoutButton';
 import React, { useState } from 'react';
 import Layout from 'components/layout/Layout';
-import { CheckCircle, HighlightOff } from '@mui/icons-material';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import Chip from '@mui/material/Chip';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 
 const TabLabel = ({ title, pricing, subtitle }: { title: string; pricing: string; subtitle: string }) => (
   <>
@@ -42,20 +41,20 @@ const SignupPage = ({
   ];
   const [activeMembershipIndex, setActiveMembershipIndex] = useState(1);
 
-  const handleChange = (_event: any, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
     setActiveMembershipIndex(newValue);
   };
 
   const [isMembership, setIsMembership] = useState(true);
 
   return (
-    <Layout>
+    <Layout title='Sign Up'>
       <Container maxWidth='sm'>
         <Typography color='secondary' variant='h1' sx={{ fontSize: '2rem' }}>
-          Sponsor a Tree / Start a Membership
+          Thank-a-Tree / Start a Membership
         </Typography>
         <p>
-          Whether you want to sponsor trees, join TreeFolks Young Professionals (TreeFolksYP), or both, you are in the right place. Please
+          Whether you want to thank a tree, join TreeFolks Young Professionals (TreeFolksYP), or both, you are in the right place. Please
           select a TreeFolks donation level below:
         </p>
         <Tabs
@@ -84,7 +83,7 @@ const SignupPage = ({
         <Table>
           <TableBody>
             <TableRow>
-              <TableCell>Tree Sponsorships</TableCell>
+              <TableCell>Tokens of Appre-tree-ation</TableCell>
               <TableCell>
                 <Chip
                   label={memberships[activeMembershipIndex].trees}
@@ -108,22 +107,30 @@ const SignupPage = ({
               <TableCell>Tee Shirt</TableCell>
               <TableCell>
                 {memberships[activeMembershipIndex].hasShirt ? (
-                  <CheckCircle color='primary'></CheckCircle>
+                  <CheckCircleIcon color='primary'></CheckCircleIcon>
                 ) : (
-                  <HighlightOff color='secondary'></HighlightOff>
+                  <HighlightOffIcon color='secondary'></HighlightOffIcon>
                 )}
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>TreeFolksYP Membership</TableCell>
               <TableCell>
-                {isMembership ? <CheckCircle color='primary'></CheckCircle> : <HighlightOff color='secondary'></HighlightOff>}
+                {isMembership ? (
+                  <CheckCircleIcon color='primary'></CheckCircleIcon>
+                ) : (
+                  <HighlightOffIcon color='secondary'></HighlightOffIcon>
+                )}
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>Slack & Facebook Group Access</TableCell>
               <TableCell>
-                {isMembership ? <CheckCircle color='primary'></CheckCircle> : <HighlightOff color='secondary'></HighlightOff>}
+                {isMembership ? (
+                  <CheckCircleIcon color='primary'></CheckCircleIcon>
+                ) : (
+                  <HighlightOffIcon color='secondary'></HighlightOffIcon>
+                )}
               </TableCell>
             </TableRow>
           </TableBody>
@@ -139,10 +146,11 @@ const SignupPage = ({
                     setIsMembership(e.target.checked);
                   }}
                   color='secondary'
-                  defaultChecked
                 />
               }
-              label='In addition to my tree sponsorship, I would like to be a part of TreeFolks Young Professionals and receive email updates for events and volunteer opportunities'
+              label={`In addition to my token${
+                activeMembershipIndex == 0 ? '' : 's'
+              } of appre-tree-ation, I would like to be a part of TreeFolks Young Professionals and receive email updates for events and volunteer opportunities`}
             />
           </FormGroup>
           <CheckoutButton

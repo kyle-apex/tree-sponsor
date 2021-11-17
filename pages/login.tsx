@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import Button from '@mui/material/Button';
 import makeStyles from '@mui/styles/makeStyles';
 import { signIn, useSession, signOut } from 'next-auth/client';
 import { useRouter } from 'next/router';

@@ -3,6 +3,8 @@ import Providers from 'next-auth/providers';
 import { createTransport } from 'nodemailer';
 import Adapters from 'next-auth/adapters';
 import { prisma } from 'utils/prisma/init';
+import { generateProfilePath } from 'utils/user/generate-profile-path';
+import { User } from '.prisma/client';
 
 function getProfilePictureUrl(profile: Profile): string {
   if (typeof profile?.picture === 'string') return profile.picture;
@@ -67,7 +69,7 @@ export default NextAuth({
       console.log('user', user);
       const profilePictureUrl = getProfilePictureUrl(profile);
       let hasUpdate;
-      const updateData: { image?: string; name?: string } = {};
+      const updateData: Partial<User> = {};
       if (user?.id && !user.image && profilePictureUrl) {
         user.image = profilePictureUrl;
         updateData.image = user.image;
@@ -80,6 +82,11 @@ export default NextAuth({
         hasUpdate = true;
       }
 
+      if (!user?.profilePath) {
+        user.profilePath = generateProfilePath(user as User);
+        updateData.profilePath = user.profilePath as string;
+      }
+
       if (hasUpdate) await prisma.user.update({ where: { id: user.id as number }, data: updateData });
       return true;
     },
@@ -90,13 +97,13 @@ export default NextAuth({
   },
 });
 
-function html({ url, host, email }: Record<'url' | 'host' | 'email', string>) {
+function html({ url, email }: Record<'url' | 'host' | 'email', string>) {
   // Insert invisible space into domains and email address to prevent both the
   // email address and the domain from being turned into a hyperlink by email
   // clients like Outlook and Apple mail, as this is confusing because it seems
   // like they are supposed to click on their email address to sign in.
   const escapedEmail = `${email.replace(/\./g, '&#8203;.')}`;
-  const escapedHost = `${host.replace(/\./g, '&#8203;.')}`;
+  //const escapedHost = `${host.replace(/\./g, '&#8203;.')}`;
 
   // Some simple styling options
   const backgroundColor = '#f9f9f9';

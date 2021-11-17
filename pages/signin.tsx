@@ -1,12 +1,17 @@
 import React, { useState } from 'react'; // eslint-disable-line no-unused-vars
-import { providers, signIn, getSession, csrfToken } from 'next-auth/client';
-import { Container, Button, Box, TextField } from '@mui/material';
+import { providers, signIn, getSession, csrfToken, ClientSafeProvider } from 'next-auth/client';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 import makeStyles from '@mui/styles/makeStyles';
 import Layout from 'components/layout/Layout';
-import Image from 'next/image';
 import LogoMessage from 'components/layout/LogoMessage';
 
 import useLocalStorage from 'utils/hooks/use-local-storage';
+import { GetServerSidePropsContext } from 'next';
+import Link from 'next/link';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import ChevronRight from '@mui/icons-material/ChevronRight';
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -21,10 +26,10 @@ export default function signin({
   message: warningMessage,
   error: errorType,
 }: {
-  providers: any;
-  csrfToken: any;
+  providers: Record<string, ClientSafeProvider>;
+  csrfToken: string;
   message: string;
-  error: any;
+  error: string;
 }) {
   const classes = useStyles();
   const [message, setMessage] = useState(warningMessage);
@@ -48,7 +53,7 @@ export default function signin({
   const [email, setEmail] = useLocalStorage('signInEmail', '');
 
   return (
-    <Layout>
+    <Layout title='Sign In'>
       <LogoMessage>
         {error && (
           <div className='center'>
@@ -73,51 +78,69 @@ export default function signin({
             </Button>
           </div>
         )}
-        {!message &&
-          Object.values(providers).map((provider: any) => {
-            return (
-              <div key={provider.name} className='provider'>
-                {provider.type === 'oauth' && (
-                  <Button variant='outlined' className={classes.button} fullWidth color='primary' onClick={() => signIn(provider.id)}>
-                    Sign in with {provider.name}
-                  </Button>
-                )}
-                {provider.type === 'email' && (
-                  <>
-                    <p className='center'>OR</p>
-                    <form action={provider.signinUrl} method='POST'>
-                      <input type='hidden' name='csrfToken' value={csrfToken} />
+        {!message && (
+          <>
+            {Object.values(providers).map((provider: ClientSafeProvider) => {
+              return (
+                <div key={provider.name} className='provider'>
+                  {provider.type === 'oauth' && (
+                    <Button variant='outlined' className={classes.button} fullWidth color='primary' onClick={() => signIn(provider.id)}>
+                      Sign in with {provider.name}
+                    </Button>
+                  )}
+                  {provider.type === 'email' && (
+                    <>
+                      <p className='center'>OR</p>
+                      <form action={provider.signinUrl} method='POST'>
+                        <input type='hidden' name='csrfToken' value={csrfToken} />
 
-                      <TextField
-                        color='primary'
-                        fullWidth
-                        id={`input-email-for-${provider.id}-provider`}
-                        autoFocus
-                        type='text'
-                        name='email'
-                        value={email}
-                        size='small'
-                        onChange={e => {
-                          setEmail(e.target.value);
-                        }}
-                        placeholder='email@example.com'
-                        variant='outlined'
-                        margin='dense'
-                      />
-                      <Button color='primary' fullWidth variant='outlined' type='submit'>
-                        Sign in with {provider.name}
-                      </Button>
-                    </form>
-                  </>
-                )}
-              </div>
-            );
-          })}
+                        <TextField
+                          color='primary'
+                          fullWidth
+                          id={`input-email-for-${provider.id}-provider`}
+                          autoFocus
+                          type='text'
+                          name='email'
+                          value={email}
+                          size='small'
+                          onChange={e => {
+                            setEmail(e.target.value);
+                          }}
+                          placeholder='email@example.com'
+                          variant='outlined'
+                          margin='dense'
+                        />
+                        <Button color='primary' fullWidth variant='outlined' type='submit'>
+                          Sign in with {provider.name}
+                        </Button>
+                      </form>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+            <hr style={{ width: '100%', marginTop: '40px' }} />
+
+            <Box flexDirection='row' sx={{ display: 'flex', marginBottom: -3, marginTop: -0.5 }} gap={1.5}>
+              <Link href='/signup'>
+                <a style={{ textDecoration: 'none' }}>
+                  <Typography color='primary'>Start a new account</Typography>
+                </a>
+              </Link>
+              |
+              <Link href='/contact'>
+                <a style={{ textDecoration: 'none' }}>
+                  <Typography color='primary'>Help</Typography>
+                </a>
+              </Link>
+            </Box>
+          </>
+        )}
       </LogoMessage>
     </Layout>
   );
 }
-export async function getServerSideProps(context: any) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req } = context;
   const session = await getSession({ req });
 
@@ -125,7 +148,7 @@ export async function getServerSideProps(context: any) {
     console.log('something about context %j', context);
     console.log('session from logout', session);
     return {
-      redirect: { destination: '/account' || context.query.callbackUrl || '/' },
+      redirect: { destination: context.query.callbackUrl || '/account' },
     };
   }
 

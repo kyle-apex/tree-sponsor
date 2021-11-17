@@ -1,4 +1,6 @@
-import { Button, MobileStepper, useTheme } from '@mui/material';
+import MobileStepper from '@mui/material/MobileStepper';
+import Button from '@mui/material/Button';
+import useTheme from '@mui/styles/useTheme';
 import React, { useState } from 'react';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
@@ -7,13 +9,14 @@ import { virtualize } from 'react-swipeable-views-utils';
 import { mod } from 'react-swipeable-views-core';
 import { PartialSponsorship } from 'interfaces';
 import SponsorshipDisplay from './SponsorshipDisplay';
+import Box from '@mui/system/Box';
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
 const SponsorshipGallery = ({ sponsorships }: { sponsorships: PartialSponsorship[] }) => {
   const theme = useTheme();
 
   const [activeStep, setActiveStep] = useState(0);
-  const maxSteps = 3;
+  const maxSteps = sponsorships.length || 3;
 
   const handleNext = () => {
     setActiveStep(prevActiveStep => {
@@ -22,9 +25,9 @@ const SponsorshipGallery = ({ sponsorships }: { sponsorships: PartialSponsorship
     });
   };
 
-  const slideRenderer = (params: { index: number; key: any }) => {
+  const slideRenderer = (params: { index: number; key: React.Key }) => {
     const { index, key } = params;
-    const sponsorship = sponsorships[mod(index, 3)];
+    const sponsorship = sponsorships[mod(index, maxSteps)];
     return <SponsorshipDisplay key={key} sponsorship={sponsorship}></SponsorshipDisplay>;
   };
 
@@ -36,36 +39,49 @@ const SponsorshipGallery = ({ sponsorships }: { sponsorships: PartialSponsorship
   };
 
   const handleStepChange = (step: number) => {
+    if (!step) step = 0;
     setActiveStep(step);
   };
 
   return (
     <>
-      <MobileStepper
+      <Box
         sx={{
-          paddingTop: '3px',
-          paddingBottom: '0px',
           maxWidth: '500px',
-          boxShadow: '2px -1px 3px -2px rgb(0 0 0 / 12%)',
           marginLeft: 'auto',
           marginRight: 'auto',
         }}
-        steps={maxSteps}
-        position='static'
-        activeStep={mod(activeStep, 3)}
-        nextButton={
-          <Button size='small' onClick={handleNext}>
-            {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-          </Button>
-        }
-        backButton={
-          <Button size='small' onClick={handleBack}>
-            {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-          </Button>
-        }
-      />
+      >
+        <MobileStepper
+          sx={{
+            paddingTop: '3px',
+            paddingBottom: '0px',
+            boxShadow: '2px -1px 3px -2px rgb(0 0 0 / 12%)',
+            marginRight: '1px',
+          }}
+          steps={maxSteps}
+          position='static'
+          activeStep={mod(activeStep, maxSteps)}
+          nextButton={
+            <Button size='small' onClick={handleNext}>
+              {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+            </Button>
+          }
+          backButton={
+            <Button size='small' onClick={handleBack}>
+              {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+            </Button>
+          }
+        />
+      </Box>
       <VirtualizeSwipeableViews
-        style={{ marginTop: '-5px', maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto' }}
+        style={{
+          marginTop: '-5px',
+          maxWidth: '500px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          paddingBottom: '3px',
+        }}
         slideRenderer={slideRenderer}
         index={activeStep}
         onChangeIndex={handleStepChange}

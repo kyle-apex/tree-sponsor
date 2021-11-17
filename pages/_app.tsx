@@ -1,10 +1,10 @@
 import React from 'react';
 // Modules
-import { AppProps } from 'next/app';
+import { AppProps } from 'next/dist/shared/lib/router/router';
 import Head from 'next/head';
 // MUI Core
 import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider, Theme, StyledEngineProvider } from '@mui/material/styles';
+import { ThemeProvider, Theme } from '@mui/material/styles';
 // Utils
 import theme from '../utils/theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -26,13 +26,22 @@ interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
 
-const MyApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: MyAppProps) => {
+const MyApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: MyAppProps): JSX.Element => {
   React.useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles && jssStyles.parentElement) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window['actSettings'] = {
+      token: '5341810786e351e022366871cd411e0f8b28ab310a30d6065672d54d7edf85bc',
+      widget: {
+        type: 'modal',
+        selector: '#feedback',
+      },
+    };
   }, []);
 
   const queryClient = new QueryClient();
@@ -42,8 +51,10 @@ const MyApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: 
       <QueryClientProvider client={queryClient}>
         <CacheProvider value={emotionCache}>
           <Head>
-            <title>My App</title>
-            <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
+            <title>Thank-a-Tree | TreeFolksYP</title>
+            <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, maximum-scale=1' />
+            <meta property='og:type' content='website' />
+            <meta property='fb:app_id' content={process.env.NEXT_PUBLIC_FACEBOOK_ID} />
             <link
               href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css'
               rel='stylesheet'

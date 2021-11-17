@@ -1,8 +1,7 @@
 import { getSession as getNextSession, GetSessionOptions } from 'next-auth/client';
-import { Session as PrismaSession, User } from '.prisma/client';
-export type Session = Partial<PrismaSession> & { user?: User };
+import { Session, NextSession } from 'interfaces';
 export async function getSession(options?: GetSessionOptions): Promise<Session | null> {
-  return getNextSession(options).then((nextSession: any) => {
-    return nextSession;
+  return getNextSession(options).then((nextSession: NextSession) => {
+    return nextSession as Session;
   });
 }

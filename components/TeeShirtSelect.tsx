@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { FormControl, MenuItem, Select } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -16,8 +18,8 @@ export const TeeShirtSelect = ({
 }: {
   userId: number;
   hasShirt: boolean;
-  updateHasShirt: (id: number, attributes: Record<string, unknown>) => any;
-}) => {
+  updateHasShirt: (id: number, attributes: Record<string, unknown>) => void;
+}): JSX.Element => {
   const classes = useStyles();
   const [userHasShirt, setUserHasShirt] = useState(hasShirt);
 

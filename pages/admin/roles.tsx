@@ -4,7 +4,8 @@ import React from 'react';
 import RoleTable from 'components/admin/RoleTable';
 import AddByName from 'components/AddByName';
 import UserRoleTable from 'components/admin/UserRoleTable';
-import { Button, Divider } from '@mui/material';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
 import makeStyles from '@mui/styles/makeStyles';
 import { useGet } from 'utils/hooks/use-get';
 import { Role } from '@prisma/client';
@@ -20,9 +21,9 @@ const useStyles = makeStyles(theme => ({
 
 const RolesPage = () => {
   const { data: roles, refetch: refetchRoles, isFetching: isRolesFetching } = useGet<Role[]>('/api/roles', 'roles');
-  const { data: users, refetch: refetchUsers, isFetching: isUsersFetching } = useGet<Role[]>('/api/users', 'users');
+  const { data: users, isFetching: isUsersFetching } = useGet<Role[]>('/api/users', 'users');
 
-  const { add } = useAddToQuery('roles', addRoleToDatabase);
+  const { add } = useAddToQuery<Role>('roles', addRoleToDatabase);
 
   const classes = useStyles();
 

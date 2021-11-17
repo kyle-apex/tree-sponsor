@@ -1,16 +1,25 @@
 import { User } from '.prisma/client';
-import { Card, CardHeader, CardContent, IconButton, CardMedia, Typography, CardActions, Box } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import IconButton from '@mui/material/IconButton';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import CardActions from '@mui/material/CardActions';
 import makeStyles from '@mui/styles/makeStyles';
-import { Clear } from '@mui/icons-material';
+import ClearIcon from '@mui/icons-material/Clear';
 import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import React, { SetStateAction, useState } from 'react';
 import { PartialSponsorship } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
-import { SponsorshipAvatar, SponsorshipSubTitle } from 'components/sponsor';
+import { UserAvatar, SponsorshipSubTitle } from 'components/sponsor';
 import { DEFAULT_DESCRIPTION } from 'consts';
+import { DEFAULT_TITLE_PREFIX } from 'consts';
 import SponsorshipAddEditDialog from './SponsorshipAddEditDialog';
+import Link from 'next/link';
+import CommentSection from 'components/comments/CommentSection';
 
 export type TreeDetail = {
   title?: string;
@@ -73,15 +82,21 @@ const SponsorshipDisplay = ({
   return (
     <>
       {sponsorship?.id && (
-        <Card sx={{ maxWidth: '500px' }}>
+        <Card sx={{ maxWidth: '500px', marginRight: handleClose ? 0 : '1px', marginBottom: '2px' }}>
           <CardHeader
-            avatar={<SponsorshipAvatar image={sponsorship.user?.image} name={sponsorship.user?.name} />}
-            title={activeSponsorship?.title || sponsorship.title || 'Sponsored by ' + sponsorship.user?.name}
+            avatar={
+              <UserAvatar
+                image={sponsorship.user?.image}
+                name={sponsorship.user?.name}
+                link={sponsorship.user?.profilePath ? '/u/' + sponsorship.user.profilePath : ''}
+              />
+            }
+            title={activeSponsorship?.title || sponsorship.title || DEFAULT_TITLE_PREFIX + sponsorship.user?.name?.split(' ')[0]}
             subheader={<SponsorshipSubTitle startDate={sponsorship.startDate} />}
             action={
               handleClose && (
                 <IconButton onClick={handleClose}>
-                  <Clear></Clear>
+                  <ClearIcon></ClearIcon>
                 </IconButton>
               )
             }
@@ -103,6 +118,14 @@ const SponsorshipDisplay = ({
               {activeSponsorship?.description || sponsorship.description || DEFAULT_DESCRIPTION}
             </Typography>
           </CardContent>
+          {!isEditMode && (
+            <CardActions disableSpacing sx={{ padding: 0, height: '100%' }}>
+              <CommentSection
+                sponsorshipId={sponsorship?.id}
+                signInCallbackUrl={`/u/${sponsorship?.user?.profilePath}?t=${sponsorship?.id}`}
+              />
+            </CardActions>
+          )}
           {isEditMode && (
             <CardActions disableSpacing>
               {false && (

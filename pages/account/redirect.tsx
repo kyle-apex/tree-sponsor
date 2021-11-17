@@ -1,9 +1,6 @@
 import Layout from 'components/layout/Layout';
 import { useSession } from 'next-auth/client';
-
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import { Typography } from '@mui/material';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 const AccountRedirectPage = () => {
@@ -15,7 +12,7 @@ const AccountRedirectPage = () => {
   };
 
   useEffect(() => {
-    if (session) router.push('/account');
+    checkRedirect();
   }, [session]);
 
   return <Layout title='Account'></Layout>;

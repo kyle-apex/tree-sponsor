@@ -1,8 +1,10 @@
-import { Button, TextField, Box } from '@mui/material';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+
 import makeStyles from '@mui/styles/makeStyles';
 import { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
-import { flexbox } from '@mui/system';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -23,7 +25,7 @@ export default function AddByName({
   label: string;
   buttonText: string;
   action: (newName: string) => Promise<void>;
-}) {
+}): JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
   const [newName, setNewName] = useState('');
   const classes = useStyles();

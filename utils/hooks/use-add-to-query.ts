@@ -1,11 +1,16 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-export const useAddToQuery = (key: string, addFunction: (newObject: any) => Promise<any>, hasRefetch?: boolean) => {
+export const useAddToQuery = <T extends { id?: number | string }>(
+  key: string,
+  addFunction: (newObject: Partial<T>) => Promise<T>,
+  hasRefetch?: boolean,
+) => {
   const queryKey = [key, undefined];
   const queryClient = useQueryClient();
 
-  function addQueryListItem(newItem: any) {
-    const previousList: any[] = queryClient.getQueryData(queryKey);
+  function addQueryListItem(newItem: Partial<T>) {
+    //console.log('adding item', newItem);
+    const previousList: T[] = queryClient.getQueryData(queryKey);
     const updatedList = [...previousList, newItem];
 
     queryClient.setQueryData(queryKey, updatedList);
@@ -14,8 +19,11 @@ export const useAddToQuery = (key: string, addFunction: (newObject: any) => Prom
   }
 
   const { mutate, isLoading } = useMutation(
-    async (newObject: any) => {
-      return await addFunction(newObject);
+    async (newObject: Partial<T>) => {
+      //console.log('before add function', newObject);
+      const result = await addFunction(newObject);
+      newObject.id = result.id;
+      return result;
     },
     {
       onMutate: addQueryListItem,

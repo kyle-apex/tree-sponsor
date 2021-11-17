@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/client';
-import { Button, IconButton, Toolbar, Typography, AppBar, Drawer, Divider, List, ListItem, ListItemText, Box } from '@mui/material';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import AppBar from '@mui/material/AppBar';
+import Drawer from '@mui/material/Drawer';
+import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Box from '@mui/material/Box';
 import makeStyles from '@mui/styles/makeStyles';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -17,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(0),
     color: theme.palette.primary.main,
   },
   title: {
@@ -64,7 +74,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Header = () => {
-  const [session, loading] = useSession();
+  const [session] = useSession();
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const classes = useStyles();
@@ -99,13 +109,14 @@ const Header = () => {
           </Link>
 
           <Typography variant='h6' className={classes.title}>
-            <span className={!session ? 'hidden-mobile' : ''}>TreeFolksYP</span>
+            <span className={!session ? 'hidden-mobile' : ''}>Thank-a-Tree</span>
+            <span className='hidden-mobile'> with TreeFolksYP</span>
           </Typography>
 
           {!session && (
             <Link href='/signup'>
               <Button sx={{ marginRight: 2 }} color='inherit'>
-                Sponsor a tree
+                Thank a Tree
               </Button>
             </Link>
           )}
@@ -145,6 +156,13 @@ const Header = () => {
               <ListItemText primary='Tree Map' />
             </ListItem>
           </Link>
+          {session && (
+            <Link href='/profile'>
+              <ListItem button>
+                <ListItemText primary='Profile' />
+              </ListItem>
+            </Link>
+          )}
           {session && isAdmin && (
             <Link href='/admin'>
               <ListItem button>
@@ -181,7 +199,7 @@ const Header = () => {
               className={classes.loginButton}
               onClick={() => router.push('/signup')}
             >
-              Sponsor a Tree
+              Thank a Tree
             </Button>
           </ListItem>
         )}
@@ -220,7 +238,7 @@ const Header = () => {
                 className={classes.loginButton}
                 onClick={() => router.push('/signup')}
               >
-                Sponsor More Trees
+                Thank More Trees
               </Button>
             </ListItem>
           )}

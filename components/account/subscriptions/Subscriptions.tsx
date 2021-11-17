@@ -1,4 +1,3 @@
-import { Card, CardActionArea, CardContent, CardActions, Button, Grid, CardHeader, IconButton, Typography, Link } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { useEffect, useState } from 'react';
 import { useGet } from 'utils/hooks/use-get';
@@ -6,6 +5,16 @@ import { useSession } from 'next-auth/client';
 import axios from 'axios';
 import { SubscriptionWithDetails } from '@prisma/client';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Button from '@mui/material/Button';
+import CardActionArea from '@mui/material/CardActionArea';
+import Link from '@mui/material/Link';
 
 const useStyles = makeStyles(theme => ({
   cardHeader: {
@@ -40,12 +49,9 @@ const Subscriptions = ({
   isSectionActive?: boolean;
 }) => {
   const classes = useStyles();
-  const [session, loading] = useSession();
+  const [session] = useSession();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const { data: subscriptions, isFetched, isFetching, refetch } = useGet<SubscriptionWithDetails[]>(
-    '/api/me/subscriptions',
-    'subscriptions',
-  );
+  const { data: subscriptions, isFetched, refetch } = useGet<SubscriptionWithDetails[]>('/api/me/subscriptions', 'subscriptions');
 
   const refreshFromStripe = async () => {
     setIsRefreshing(true);

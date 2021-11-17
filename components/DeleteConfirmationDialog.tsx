@@ -1,5 +1,9 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 
 const DeleteConfirmationDialog = ({
   open,
@@ -8,6 +12,8 @@ const DeleteConfirmationDialog = ({
   onConfirm,
   cancelText = 'Cancel',
   confirmText = 'Confirm',
+  title,
+  itemType,
 }: {
   onCancel?: () => void;
   onConfirm?: () => void;
@@ -15,6 +21,8 @@ const DeleteConfirmationDialog = ({
   confirmText?: string;
   open: boolean;
   setOpen: (isOpen: boolean) => void;
+  title?: string;
+  itemType?: string;
 }) => {
   const cancel = () => {
     if (onCancel) onCancel();
@@ -26,9 +34,9 @@ const DeleteConfirmationDialog = ({
   };
   return (
     <Dialog open={open}>
-      <DialogTitle>Remove Sponsorship?</DialogTitle>
+      <DialogTitle>{title || 'Remove Thank-a-Tree?'}</DialogTitle>
       <DialogContent>
-        <p>Are you sure you wish to remove this sponsorship?</p>
+        <p>Are you sure you wish to remove this {itemType || 'thank-a-tree'}?</p>
       </DialogContent>
       <DialogActions>
         <Button onClick={cancel}>{cancelText}</Button>

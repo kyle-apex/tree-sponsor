@@ -1,9 +1,7 @@
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 import { ReactNode } from 'react';
-import { flexbox } from '@mui/system';
 
-const SplitRow = ({ children }: { children: any }) => {
-  const counter = 0;
+const SplitRow = ({ children }: { children: ReactNode[] }) => {
   return (
     <Box flexDirection='row' display='flex'>
       <Box flex='auto' display='flex' justifyContent='start'>
