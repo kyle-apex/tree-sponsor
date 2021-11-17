@@ -9,19 +9,23 @@ import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import { UserAvatar, SponsorshipSubTitle } from 'components/sponsor';
 import { DESCRIPTION_PLACEHOLDER, DEFAULT_TITLE_PREFIX } from 'consts';
 import Checkbox from '@mui/material/Checkbox';
-import { PartialSponsorship } from 'interfaces';
 
 const SponsorshipDisplayForm = ({
-  sponsorship,
+  title,
+  setTitle,
+  description,
+  setDescription,
   imageUrl,
   setImageUrl,
 }: {
-  sponsorship: React.MutableRefObject<PartialSponsorship>;
+  title: string;
+  setTitle: (param: string) => void;
+  description: string;
+  setDescription: (param: string) => void;
   imageUrl: string;
   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const [session] = useSession();
-  console.log('re-rendered');
 
   const startDate = new Date();
 
@@ -38,10 +42,8 @@ const SponsorshipDisplayForm = ({
             <TextField
               size='small'
               placeholder={DEFAULT_TITLE_PREFIX + getName()}
-              value={sponsorship.current.title}
-              onChange={e => {
-                sponsorship.current.title = e.target.value;
-              }}
+              value={title}
+              onChange={e => setTitle(e.target.value)}
               className='full-width'
             ></TextField>
           }
@@ -67,22 +69,16 @@ const SponsorshipDisplayForm = ({
           <TextField
             multiline={true}
             rows={3}
-            value={sponsorship.current.description}
+            value={description}
             onChange={e => {
-              sponsorship.current.description = e.target.value;
+              setDescription(e.target.value);
             }}
             placeholder={DESCRIPTION_PLACEHOLDER}
             className='full-width'
           ></TextField>
           {false && (
             <>
-              <Checkbox
-                checked={sponsorship.current.isPrivate}
-                onChange={e => {
-                  sponsorship.current.isPrivate = e.target.checked;
-                }}
-              ></Checkbox>{' '}
-              Is Private?
+              <Checkbox></Checkbox> Is Private?
             </>
           )}
         </CardContent>
