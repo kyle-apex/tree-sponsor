@@ -65,11 +65,8 @@ const SponsorshipAddEditForm = ({
 }) => {
   const classes = useStyles();
 
-  const activeSponsorship = useRef<PartialSponsorship>({
-    title: sponsorship?.title,
-    description: sponsorship?.description,
-    isPrivate: sponsorship?.isPrivate,
-  });
+  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState('');
 
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
@@ -98,13 +95,12 @@ const SponsorshipAddEditForm = ({
   };
 
   const upsertSponsorship = async () => {
-    if (setSponsorship) setSponsorship(Object.assign(sponsorship, activeSponsorship.current));
+    if (setSponsorship) setSponsorship(Object.assign(sponsorship, { title, description }));
 
     const updatedSponsorship = await axios.post('/api/sponsorships', {
       id,
-      title: activeSponsorship.current.title,
-      description: activeSponsorship.current.description,
-      isPrivate: activeSponsorship.current.isPrivate,
+      title,
+      description,
       primaryImageUuid,
       primaryImageHeight: imageHeight,
       primaryImageWidth: imageWidth,
@@ -131,9 +127,8 @@ const SponsorshipAddEditForm = ({
 
   useEffect(() => {
     if (sponsorship) {
-      activeSponsorship.current.title = sponsorship.title;
-      activeSponsorship.current.description = sponsorship.description;
-      activeSponsorship.current.isPrivate = sponsorship.isPrivate;
+      setTitle(sponsorship.title);
+      setDescription(sponsorship.description);
 
       setId(sponsorship.id);
       setPrimaryImageUuid(sponsorship.primaryImageUuid);
@@ -158,7 +153,14 @@ const SponsorshipAddEditForm = ({
       </Stepper>
       {activeStep == 0 && (
         <>
-          <SponsorshipDisplayForm sponsorship={activeSponsorship} imageUrl={imageUrl} setImageUrl={handleImageUrl}></SponsorshipDisplayForm>
+          <SponsorshipDisplayForm
+            title={title}
+            setTitle={setTitle}
+            description={description}
+            setDescription={setDescription}
+            imageUrl={imageUrl}
+            setImageUrl={handleImageUrl}
+          ></SponsorshipDisplayForm>
           <SplitRow>
             {onComplete ? (
               <Button
