@@ -49,7 +49,7 @@ const AddTreeButton = ({ isStartSubscription, onAddClick }: { isStartSubscriptio
         ) : (
           <>
             <AddPhotoAlternateIcon classes={{ root: classes.addIcon }} color='secondary'></AddPhotoAlternateIcon>
-            <Typography sx={{ color: theme => theme.palette.secondary.main }}>Set up your Sponsored Tree!</Typography>
+            <Typography sx={{ color: theme => theme.palette.secondary.main }}>Click to Thank-a-Tree!</Typography>
           </>
         )}
       </CardContent>

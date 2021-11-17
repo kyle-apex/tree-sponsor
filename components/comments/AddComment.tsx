@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/system/Box';
 import LoadingButton from 'components/LoadingButton';
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import useTheme from '@mui/system/useTheme';
 
 const AddComment = ({ onAdd, isAdding }: { onAdd: (text: string) => void; isAdding?: boolean }) => {

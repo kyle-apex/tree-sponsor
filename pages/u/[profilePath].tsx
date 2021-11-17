@@ -22,7 +22,7 @@ const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: 
   parseResponseDateStrings(user.subscriptions);
 
   user.sponsorships.forEach(sponsorship => {
-    sponsorship.user = { profilePath: user.profilePath };
+    sponsorship.user = { profilePath: user.profilePath, name: user.name, displayName: user.displayName };
   });
 
   let initialDate: Date;

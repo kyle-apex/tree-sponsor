@@ -18,7 +18,6 @@ import { UserAvatar, SponsorshipSubTitle } from 'components/sponsor';
 import { DEFAULT_DESCRIPTION } from 'consts';
 import { DEFAULT_TITLE_PREFIX } from 'consts';
 import SponsorshipAddEditDialog from './SponsorshipAddEditDialog';
-import Link from 'next/link';
 import CommentSection from 'components/comments/CommentSection';
 
 export type TreeDetail = {
@@ -87,11 +86,15 @@ const SponsorshipDisplay = ({
             avatar={
               <UserAvatar
                 image={sponsorship.user?.image}
-                name={sponsorship.user?.name}
+                name={sponsorship.user?.displayName || sponsorship.user?.name}
                 link={sponsorship.user?.profilePath ? '/u/' + sponsorship.user.profilePath : ''}
               />
             }
-            title={activeSponsorship?.title || sponsorship.title || DEFAULT_TITLE_PREFIX + sponsorship.user?.name?.split(' ')[0]}
+            title={
+              activeSponsorship?.title ||
+              sponsorship?.title ||
+              DEFAULT_TITLE_PREFIX + (sponsorship.user?.displayName || sponsorship.user?.name)?.split(' ')[0]
+            }
             subheader={<SponsorshipSubTitle startDate={sponsorship.startDate} />}
             action={
               handleClose && (

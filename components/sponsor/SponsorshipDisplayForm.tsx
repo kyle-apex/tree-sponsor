@@ -74,13 +74,17 @@ const SponsorshipDisplayForm = ({
             placeholder={DESCRIPTION_PLACEHOLDER}
             className='full-width'
           ></TextField>
-          <Checkbox
-            checked={sponsorship.current.isPrivate}
-            onChange={e => {
-              sponsorship.current.isPrivate = e.target.checked;
-            }}
-          ></Checkbox>{' '}
-          Is Private?
+          {false && (
+            <>
+              <Checkbox
+                checked={sponsorship.current.isPrivate}
+                onChange={e => {
+                  sponsorship.current.isPrivate = e.target.checked;
+                }}
+              ></Checkbox>{' '}
+              Is Private?
+            </>
+          )}
         </CardContent>
       </Card>
     </>

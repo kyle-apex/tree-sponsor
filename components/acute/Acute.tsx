@@ -1,6 +1,6 @@
 import { Session } from 'interfaces';
 import { useSession } from 'next-auth/client';
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 const Acute = () => {
   const [session] = useSession();
   useEffect(() => {
@@ -39,7 +39,6 @@ const Acute = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     if (typeof window !== 'undefined' && !window['isAcuteInitialized']) {
-      console.log('initting');
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       window['isAcuteInitialized'] = true;
