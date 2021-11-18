@@ -145,10 +145,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession({ req });
 
   if (session) {
-    console.log('something about context %j', context);
-    console.log('session from logout', session);
     return {
-      redirect: { destination: context.query.callbackUrl || '/account' },
+      redirect: {
+        destination: context.query.callbackUrl && context.query.callbackUrl.includes('/u/') ? context.query.callbackUrl : '/account',
+      },
     };
   }
 
@@ -156,7 +156,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     props: {
       providers: await providers(),
       csrfToken: await csrfToken(context),
-      callbackUrl: context.query.callbackUrl || '',
+      callbackUrl: context.query.callbackUrl || '/account',
       error: context.query.error || '',
       message: context.query.message || '',
     },
