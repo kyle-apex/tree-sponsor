@@ -9,6 +9,7 @@ import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import { UserAvatar, SponsorshipSubTitle } from 'components/sponsor';
 import { DESCRIPTION_PLACEHOLDER, DEFAULT_TITLE_PREFIX } from 'consts';
 import Checkbox from '@mui/material/Checkbox';
+import Box from '@mui/material/Box';
 
 const SponsorshipDisplayForm = ({
   title,
@@ -17,11 +18,15 @@ const SponsorshipDisplayForm = ({
   setDescription,
   imageUrl,
   setImageUrl,
+  isPrivate,
+  setIsPrivate,
 }: {
   title: string;
   setTitle: (param: string) => void;
   description: string;
   setDescription: (param: string) => void;
+  isPrivate: boolean;
+  setIsPrivate: (param: boolean) => void;
   imageUrl: string;
   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 }) => {
@@ -76,11 +81,11 @@ const SponsorshipDisplayForm = ({
             placeholder={DESCRIPTION_PLACEHOLDER}
             className='full-width'
           ></TextField>
-          {false && (
-            <>
-              <Checkbox></Checkbox> Is Private?
-            </>
-          )}
+
+          <Box sx={{ marginTop: 2, marginBottom: -2 }}>
+            <Checkbox checked={isPrivate} onChange={e => setIsPrivate(e.target.checked)}></Checkbox> Hide from &quot;Explore&quot; and my
+            public profile
+          </Box>
         </CardContent>
       </Card>
     </>

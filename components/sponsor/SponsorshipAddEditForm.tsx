@@ -67,6 +67,7 @@ const SponsorshipAddEditForm = ({
 
   const [description, setDescription] = useState('');
   const [title, setTitle] = useState('');
+  const [isPrivate, setIsPrivate] = useState(false);
 
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
@@ -95,12 +96,13 @@ const SponsorshipAddEditForm = ({
   };
 
   const upsertSponsorship = async () => {
-    if (setSponsorship) setSponsorship(Object.assign(sponsorship, { title, description }));
+    if (setSponsorship) setSponsorship(Object.assign(sponsorship, { title, description, isPrivate }));
 
     const updatedSponsorship = await axios.post('/api/sponsorships', {
       id,
       title,
       description,
+      isPrivate,
       primaryImageUuid,
       primaryImageHeight: imageHeight,
       primaryImageWidth: imageWidth,
@@ -129,7 +131,7 @@ const SponsorshipAddEditForm = ({
     if (sponsorship) {
       setTitle(sponsorship.title);
       setDescription(sponsorship.description);
-
+      setIsPrivate(sponsorship.isPrivate);
       setId(sponsorship.id);
       setPrimaryImageUuid(sponsorship.primaryImageUuid);
       setImageUrl(sponsorship.pictureUrl);
@@ -158,6 +160,8 @@ const SponsorshipAddEditForm = ({
             setTitle={setTitle}
             description={description}
             setDescription={setDescription}
+            isPrivate={isPrivate}
+            setIsPrivate={setIsPrivate}
             imageUrl={imageUrl}
             setImageUrl={handleImageUrl}
           ></SponsorshipDisplayForm>
