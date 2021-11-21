@@ -1,9 +1,9 @@
 import Box from '@mui/material/Box';
 import { ReactNode } from 'react';
 
-const SplitRow = ({ children }: { children: ReactNode[] }) => {
+const SplitRow = ({ children, alignItems = 'inherit' }: { children: ReactNode[]; alignItems?: string }) => {
   return (
-    <Box flexDirection='row' display='flex'>
+    <Box flexDirection='row' display='flex' alignItems={alignItems}>
       <Box flex='auto' display='flex' justifyContent='start'>
         {children[0]}
       </Box>
