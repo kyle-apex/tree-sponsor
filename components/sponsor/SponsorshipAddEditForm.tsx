@@ -189,7 +189,6 @@ const SponsorshipAddEditForm = ({
               onClick={() => {
                 saveStep(activeStep, true);
               }}
-              sx={{ marginRight: 1 }}
             >
               Save
             </LoadingButton>
