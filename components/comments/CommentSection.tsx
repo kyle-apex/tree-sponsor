@@ -13,14 +13,19 @@ import { useAddToQuery } from 'utils/hooks/use-add-to-query';
 import { useGet, useRemoveFromQuery } from 'utils/hooks';
 import axios from 'axios';
 
-const CommentSection = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipId: number; signInCallbackUrl?: string }) => {
+const CommentSection = ({
+  sponsorshipId,
+  signInCallbackUrl,
+  isFetching,
+  comments,
+}: {
+  sponsorshipId: number;
+  signInCallbackUrl?: string;
+  isFetching?: boolean;
+  comments: PartialComment[];
+}) => {
   const [session] = useSession();
   const [isAdding, setIsAdding] = useState(false);
-
-  const { data: comments, isFetching: isCommentsFetching } = useGet<PartialComment[]>(
-    `/api/sponsorships/${sponsorshipId}/comments`,
-    `sponsorships/${sponsorshipId}/comments`,
-  );
 
   const { add } = useAddToQuery<PartialComment>(`sponsorships/${sponsorshipId}/comments`, addCommentToDatabase);
 
@@ -45,7 +50,7 @@ const CommentSection = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipId: n
   }
   return (
     <Box sx={{ padding: 2, height: '100%' }} className='section-background full-width'>
-      {isCommentsFetching ? (
+      {isFetching ? (
         <>
           <Skeleton variant='text' sx={{ width: '100%' }} />
           <Skeleton variant='text' sx={{ width: '75%' }} />

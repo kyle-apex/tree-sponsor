@@ -8,6 +8,9 @@ const theme = createTheme({
     secondary: {
       main: '#6e4854',
     },
+    info: {
+      main: 'rgb(113, 153, 140)',
+    },
   },
   typography: {
     h1: {

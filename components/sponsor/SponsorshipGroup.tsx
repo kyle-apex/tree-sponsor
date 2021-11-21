@@ -31,7 +31,7 @@ const SponsorshipGroup = ({
       {!isLoading &&
         !hasGallery &&
         sponsorships.map(sponsorship => (
-          <Grid md={columnWidth} key={sponsorship.id} item className='same-height start'>
+          <Grid md={columnWidth} key={sponsorship.id} item className='start'>
             <SponsorshipDisplay sponsorship={sponsorship}></SponsorshipDisplay>
           </Grid>
         ))}

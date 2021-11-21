@@ -4,24 +4,39 @@ import { useGet, useRemoveFromQuery } from 'utils/hooks';
 import axios from 'axios';
 import { useSession } from 'next-auth/client';
 import { PartialReaction } from 'interfaces';
-import { IconButton } from '@mui/material';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import { Session } from 'interfaces';
+import Typography from '@mui/material/Typography';
 
-const ReactSection = ({ sponsorshipId }: { sponsorshipId: number }) => {
+const ReactButton = ({
+  sponsorshipId,
+  reactions,
+  onUnauthenticated,
+}: {
+  sponsorshipId: number;
+  reactions: PartialReaction[];
+  onUnauthenticated: () => void;
+}) => {
   const [session] = useSession();
   const [isAdding, setIsAdding] = useState(false);
-
-  const { data: reactions, isFetching } = useGet<PartialReaction[]>(
-    `/api/sponsorships/${sponsorshipId}/reactions`,
-    `sponsorships/${sponsorshipId}/reactions`,
-  );
 
   const { add } = useAddToQuery<PartialReaction>(`sponsorships/${sponsorshipId}/reactions`, addToDatabase);
 
   const addReaction = async () => {
+    if (!(session as Session)?.user?.id) {
+      return onUnauthenticated();
+    }
     setIsAdding(true);
-    await add({ type: 'like', sponsorshipId: sponsorshipId, userId: session.user.id, user: session.user, createdDate: new Date() });
+    await add({
+      type: 'like',
+      sponsorshipId: sponsorshipId,
+      userId: (session as Session).user.id,
+      user: session.user,
+      createdDate: new Date(),
+    });
 
     setIsAdding(false);
   };
@@ -40,21 +55,23 @@ const ReactSection = ({ sponsorshipId }: { sponsorshipId: number }) => {
   }
   console.log('reactions', reactions);
   const currentUserReaction = reactions?.find(reaction => (session as Session)?.user?.id === reaction.userId);
+  console.log('cur', currentUserReaction);
 
   return (
     <>
-      {reactions?.length || 0}
       {currentUserReaction && (
-        <IconButton onClick={() => remove(currentUserReaction.id)}>
-          <ThumbUpIcon color='primary'></ThumbUpIcon>
-        </IconButton>
+        <Button onClick={() => remove(currentUserReaction.id)} color='info'>
+          <ThumbUpIcon></ThumbUpIcon>
+          <Typography sx={{ marginLeft: 1, textTransform: 'none' }}>Like</Typography>
+        </Button>
       )}
       {!currentUserReaction && (
-        <IconButton onClick={addReaction}>
+        <Button onClick={addReaction} sx={{ color: 'rgba(0, 0, 0, 0.54)' }}>
           <ThumbUpIcon></ThumbUpIcon>
-        </IconButton>
+          <Typography sx={{ marginLeft: 1, textTransform: 'none' }}>Like</Typography>
+        </Button>
       )}
     </>
   );
 };
-export default ReactSection;
+export default ReactButton;
