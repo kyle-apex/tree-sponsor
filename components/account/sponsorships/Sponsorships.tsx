@@ -67,8 +67,8 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
               >
                 {availableSponsorshipCount > 1 ? (
                   <>
-                    You have configured <strong>{sponsorships?.length || 0}</strong> of your <strong>{availableSponsorshipCount}</strong>{' '}
-                    tokens of appre-tree-ation.
+                    You have configured <strong>{sponsorships?.length || 0}</strong> of your{' '}
+                    <strong>{availableSponsorshipCount + sponsorships.length}</strong> tokens of appre-tree-ation.
                   </>
                 ) : (
                   <>
