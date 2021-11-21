@@ -9,6 +9,7 @@ const SplitRow = ({ children, alignItems = 'inherit' }: { children: ReactNode[];
       </Box>
       <Box flex='auto' display='flex' justifyContent='flex-end'>
         {children[1]}
+        {children.length > 2 && children[2]}
       </Box>
     </Box>
   );

@@ -180,6 +180,19 @@ const SponsorshipAddEditForm = ({
             ) : (
               <></>
             )}
+            <LoadingButton
+              disabled={isUpserting || !imageUrl}
+              className={classes.stepButton}
+              variant='contained'
+              color='secondary'
+              isLoading={isUpserting}
+              onClick={() => {
+                saveStep(activeStep, true);
+              }}
+              sx={{ marginRight: 1 }}
+            >
+              Save
+            </LoadingButton>
             <Button
               disabled={isUpserting || !imageUrl}
               className={classes.stepButton}
@@ -189,7 +202,7 @@ const SponsorshipAddEditForm = ({
                 saveStep(activeStep + 1);
               }}
             >
-              Save and Continue
+              Save & Continue
             </Button>
           </SplitRow>
         </>
