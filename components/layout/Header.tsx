@@ -19,6 +19,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import SessionAvatar from 'components/SessionAvatar';
+import NotificationIcon from 'components/notification/NotificationIcon';
 
 const drawerWidth = 240;
 
@@ -122,11 +123,18 @@ const Header = () => {
           )}
 
           {session && (
-            <Link href='/account'>
-              <Box mr={2} className='clickable'>
-                <SessionAvatar session={session} size={36} />
-              </Box>
-            </Link>
+            <>
+              <Link href='/account'>
+                <Box mr={1} className='clickable'>
+                  <SessionAvatar session={session} size={36} />
+                </Box>
+              </Link>
+              <Link href='/account'>
+                <Box mr={1} className='clickable'>
+                  <NotificationIcon></NotificationIcon>
+                </Box>
+              </Link>
+            </>
           )}
 
           <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu' onClick={handleDrawerOpen} size='large'>

@@ -69,7 +69,8 @@ model User {
   comments                 Comment[]
   reactions                Reaction[]
 
-  CommentReaction CommentReaction[]
+  commentReactions CommentReaction[]
+  notifications    Notification[]
   @@map(name: "users")
 }
 
@@ -159,6 +160,18 @@ model Reaction {
   user          User?        @relation(fields: [userId], references: [id])
   sponsorshipId Int?
   sponsorship   Sponsorship? @relation(fields: [sponsorshipId], references: [id])
+}
+
+model Notification {
+  id          Int       @id @default(autoincrement())
+  type        String?
+  link        String?
+  parameter   String?
+  count       Int?
+  createdDate DateTime?
+  isRead      Boolean?
+  userId      Int?
+  user        User?     @relation(fields: [userId], references: [id])
 }
 
 model Product {
