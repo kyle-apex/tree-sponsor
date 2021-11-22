@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Link from 'next/link';
 import ChevronRight from '@mui/icons-material/ChevronRight';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 
 const SponsorshipActions = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipId: number; signInCallbackUrl?: string }) => {
   const [showComments, setShowComments] = useState(false);
@@ -27,23 +28,43 @@ const SponsorshipActions = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipI
 
   return (
     <Box flexDirection='column' className='full-width'>
-      <Box flexDirection='row' sx={{ padding: 2 }}>
+      <Box flexDirection='column' sx={{ padding: 2 }}>
         <hr />
-        <ReactionButton
-          sponsorshipId={sponsorshipId}
-          reactions={reactions}
-          onUnauthenticated={() => setUnauthenticated(!unauthenticated)}
-        ></ReactionButton>
+        <Box flexDirection='row' sx={{ display: 'flex' }}>
+          <ReactionButton
+            sponsorshipId={sponsorshipId}
+            reactions={reactions}
+            onUnauthenticated={() => setUnauthenticated(!unauthenticated)}
+          ></ReactionButton>
 
-        <Button
-          sx={{ color: 'rgba(0, 0, 0, 0.54)' }}
-          onClick={() => {
-            setShowComments(!showComments);
-          }}
-        >
-          {comments?.length > 0 ? <ChatIcon /> : <ChatBubbleOutlineIcon />}
-          <Typography sx={{ marginLeft: 1 }}>{comments?.length || 0}</Typography>
-        </Button>
+          <Button
+            sx={{ color: 'rgba(0, 0, 0, 0.54)' }}
+            onClick={() => {
+              setShowComments(!showComments);
+            }}
+          >
+            {comments?.length > 0 ? <ChatIcon /> : <ChatBubbleOutlineIcon />}
+            <Typography sx={{ marginLeft: 1 }}>{comments?.length || 0}</Typography>
+          </Button>
+          <Box sx={{ flex: '1 1 100%' }}></Box>
+          {reactions?.length > 0 && (
+            <Box flexDirection='row' gap={0.5} sx={{ display: 'flex', fontSize: '.8rem', alignItems: 'center' }}>
+              <Box
+                sx={{
+                  backgroundColor: theme => theme.palette.info.main,
+                  borderRadius: '50%',
+                  textAlign: 'center',
+                  height: '24px',
+                  width: '24px',
+                  paddingTop: '4px',
+                }}
+              >
+                <ThumbUpIcon sx={{ fontSize: '12px', color: 'white' }} />
+              </Box>
+              <Typography>{reactions.length}</Typography>
+            </Box>
+          )}
+        </Box>
         {!showComments && unauthenticated && (
           <Box mb={1} mt={2}>
             <Link href={signInCallbackUrl ? '/signin?callbackUrl=' + signInCallbackUrl : '/signin'}>
