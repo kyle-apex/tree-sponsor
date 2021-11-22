@@ -8,10 +8,14 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import MembershipPerks from 'components/membership/MembershipPerks';
+import LaunchIcon from '@mui/icons-material/Launch';
+import SplitRow from 'components/layout/SplitRow';
+import Button from '@mui/material/Button';
+import { PartialUser } from 'interfaces';
 
 export const getServerSideProps = serverSideIsAuthenticated;
 
-const AccountPage = () => {
+const AccountPage = ({ user }: { user: PartialUser }) => {
   const [activeDonationAmount, setActiveDonationAmount] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
 
@@ -21,9 +25,17 @@ const AccountPage = () => {
 
   return (
     <Layout title='Account'>
-      <Typography color='secondary' variant='h1'>
-        Account
-      </Typography>
+      <SplitRow alignItems='center'>
+        <Typography color='secondary' variant='h1'>
+          Account
+        </Typography>
+        <a href={'/u/' + user?.profilePath} target='_blank' style={{ textDecoration: 'none' }} rel='noreferrer'>
+          <Button variant='text' size='small' sx={{ marginBottom: 2, display: 'flex', alignSelf: 'start' }}>
+            <span>Launch Profile</span> <LaunchIcon sx={{ marginLeft: 1, fontSize: '1rem' }} />
+          </Button>
+        </a>
+      </SplitRow>
+
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} mb={4}>
         <Tabs className='account-tabs' value={activeTab} onChange={handleTabChange} variant='fullWidth' aria-label='basic tabs example'>
           <Tab label='Thank-A-Tree' />

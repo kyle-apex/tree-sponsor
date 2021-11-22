@@ -1,10 +1,11 @@
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { SetStateAction, useEffect, useState } from 'react';
+import React, { SetStateAction, useEffect, useState } from 'react';
 import { useGet, useRemoveFromQuery } from 'utils/hooks';
 import axios from 'axios';
 import { SponsorshipDisplay, SponsorshipAddEditDialog, SponsorshipDisplayLoading, AddTreeButton } from 'components/sponsor';
 import { PartialSponsorship } from 'interfaces';
+import Typography from '@mui/material/Typography';
 
 const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number }): JSX.Element => {
   const [availableSponsorshipCount, setAvailableSponsorshipCount] = useState(0);
@@ -33,11 +34,59 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
   return (
     <Box sx={{ marginBottom: '60px' }}>
       <Grid container spacing={4}>
+        {isFetched && (
+          <Grid item xs={12}>
+            {!availableSponsorshipCount && (
+              <Typography
+                sx={{
+                  backgroundColor: 'white',
+                  padding: 1,
+                  paddingRight: 2,
+                  paddingLeft: 2,
+                  border: 'solid 1px',
+                  borderColor: theme => theme.palette.primary.main,
+                  borderRadius: '5px',
+                  marginTop: -2,
+                  marginBottom: -2,
+                }}
+              >
+                You do not have any available Tokens of Appre-tree-ation.
+              </Typography>
+            )}
+            {availableSponsorshipCount && (
+              <Typography
+                sx={{
+                  backgroundColor: 'white',
+                  padding: 1,
+                  border: 'solid 1px',
+                  borderColor: theme => theme.palette.primary.main,
+                  borderRadius: '5px',
+                  marginTop: -2,
+                  marginBottom: -2,
+                }}
+              >
+                {availableSponsorshipCount > 1 ? (
+                  <>
+                    You have configured <strong>{sponsorships?.length || 0}</strong> of your{' '}
+                    <strong>{availableSponsorshipCount + sponsorships.length}</strong> tokens of appre-tree-ation.
+                  </>
+                ) : (
+                  <>
+                    {sponsorships?.length > 0
+                      ? 'You do not have any available tokens of appre-tree-ation.'
+                      : 'You have one token of appre-tree-ation left to configure.'}
+                  </>
+                )}
+              </Typography>
+            )}
+          </Grid>
+        )}
         {!isFetched && (
           <Grid item xs={12} sm={6} md={3}>
             <SponsorshipDisplayLoading />
           </Grid>
         )}
+
         {isFetched && sponsorships && sponsorships?.length > 0 && (
           <>
             {sponsorships.map(sponsorship => (

@@ -15,7 +15,10 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import Chip from '@mui/material/Chip';
 import Container from '@mui/material/Container';
+import Link from 'next/link';
+import ChevronRight from '@mui/icons-material/ChevronRight';
 import Typography from '@mui/material/Typography';
+import { useSession } from 'next-auth/client';
 
 const TabLabel = ({ title, pricing, subtitle }: { title: string; pricing: string; subtitle: string }) => (
   <>
@@ -34,6 +37,7 @@ const SignupPage = ({
   stripePriceIdMedium: string;
   stripePriceIdHigh: string;
 }) => {
+  const [session] = useSession();
   const memberships = [
     { trees: 1, price: 20, hasShirt: false, stripePriceId: stripePriceIdLow },
     { trees: 3, price: 60, hasShirt: true, stripePriceId: stripePriceIdMedium },
@@ -50,6 +54,18 @@ const SignupPage = ({
   return (
     <Layout title='Sign Up'>
       <Container maxWidth='sm'>
+        <Box mb={2}>
+          <Link href={session ? '/account' : '/signin'}>
+            <a style={{ textDecoration: 'none' }}>
+              <Box flexDirection='row' sx={{ display: 'flex' }} gap={0.4}>
+                <Typography color='primary'>
+                  {session ? 'Configure existing Tokens of Appre-tree-ation in your account' : 'Already signed up? Login to thank trees'}
+                </Typography>
+                <ChevronRight color='primary' />
+              </Box>
+            </a>
+          </Link>
+        </Box>
         <Typography color='secondary' variant='h1' sx={{ fontSize: '2rem' }}>
           Thank-a-Tree / Start a Membership
         </Typography>

@@ -16,6 +16,7 @@ import Button from '@mui/material/Button';
 
 const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const [name, setName] = useState('');
+  const [isChanged, setIsChanged] = useState(false);
   const [profilePathState, setProfilePathState] = useState({
     profilePath: '',
     isLoading: false,
@@ -50,10 +51,12 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   }, []);
 
   const handleNameChange = (event: { target: { value: string } }) => {
+    setIsChanged(true);
     setName(event.target.value);
   };
 
   const handleProfilePathChange = async (event: { target: { value: string } }) => {
+    setIsChanged(true);
     const profilePath = event.target.value;
     const hasPatternError = !/^[a-z-]+$/.test(profilePath);
     setProfilePathState(state => {
@@ -73,6 +76,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
     setIsLoading(true);
     await axios.patch('/api/me', { name, image: imageUrl, profilePath: profilePathState.profilePath });
     setIsLoading(false);
+    setIsChanged(false);
   };
 
   return (
@@ -121,7 +125,10 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
         >
           <ImageUploadAndPreview
             imageUrl={imageUrl}
-            setImageUrl={setImageUrl}
+            setImageUrl={newImageUrl => {
+              setIsChanged(true);
+              setImageUrl(newImageUrl);
+            }}
             maxHeight={250}
             maxWidth={250}
             size='small'
@@ -148,7 +155,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
 
       <LoadingButton
         variant='contained'
-        disabled={profilePathState.isDuplicate || profilePathState.hasPatternError}
+        disabled={profilePathState.isDuplicate || profilePathState.hasPatternError || !isChanged}
         onClick={updateUser}
         isLoading={isLoading}
       >

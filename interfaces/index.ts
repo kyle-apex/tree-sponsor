@@ -14,6 +14,8 @@ export interface DefaultSession extends Record<string, unknown> {
 export interface NextSession extends Record<string, unknown>, DefaultSession {}
 
 export type PartialComment = Partial<Comment & { user?: Partial<User> } & { reactions?: Partial<Reaction>[] }>;
+export type PartialReaction = Partial<Reaction & { user?: Partial<User> }>;
+
 export type PartialSubscription = Partial<Subscription & { product?: Partial<Product> } & { user?: Partial<User> }>;
 export type StripeSubscription = Stripe.Subscription & { plan?: { product?: string; amount: number } };
 export type PartialSponsorship = Partial<

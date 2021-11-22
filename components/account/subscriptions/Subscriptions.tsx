@@ -15,6 +15,7 @@ import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import CardActionArea from '@mui/material/CardActionArea';
 import Link from '@mui/material/Link';
+import LaunchPortalButton from './LaunchPortalButton';
 
 const useStyles = makeStyles(theme => ({
   cardHeader: {
@@ -58,11 +59,6 @@ const Subscriptions = ({
     await axios.post('/api/me/update-from-stripe', { email: session?.user?.email });
     await refetch();
     setIsRefreshing(false);
-  };
-
-  const launchClientPortal = async (customerId?: string) => {
-    const { data } = await axios.get('/api/stripe/portal-session?customerId=' + customerId);
-    window.location.href = data.url;
   };
 
   useEffect(() => {
@@ -110,15 +106,7 @@ const Subscriptions = ({
                   <div></div>
                 </CardContent>
                 <CardActions>
-                  <Button
-                    size='medium'
-                    variant='outlined'
-                    color='secondary'
-                    fullWidth
-                    onClick={() => launchClientPortal(subscription.stripeCustomerId)}
-                  >
-                    Manage
-                  </Button>
+                  <LaunchPortalButton stripeCustomerId={subscription.stripeCustomerId}></LaunchPortalButton>
                 </CardActions>
               </Card>
             </Grid>

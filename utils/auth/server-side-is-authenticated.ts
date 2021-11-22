@@ -14,6 +14,6 @@ export default async function serverSideIsAuthenticated(ctx: GetSessionOptions) 
   }
 
   return {
-    props: {},
+    props: { user: session.user },
   };
 }

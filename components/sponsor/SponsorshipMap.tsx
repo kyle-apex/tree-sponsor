@@ -34,7 +34,7 @@ const SponsorshipMap = ({
   const [activeSponsorshipId, setActiveSponsorshipId] = useState<number>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSatelliteMode, setIsSatelliteMode] = useState(false);
-  const [style, setStyle] = useState('mapbox://styles/mapbox/streets-v11');
+  const [style, setStyle] = useState('mapbox://styles/mapbox/streets-v11?optimize=true');
   const mapRef = useRef();
 
   const [viewport, setViewport] = useState<Viewport>({
@@ -98,10 +98,10 @@ const SponsorshipMap = ({
 
   function updateSatelliteMode(isSatelliteMode: boolean) {
     if (isSatelliteMode) {
-      setStyle('mapbox://styles/mapbox/satellite-streets-v11');
+      setStyle('mapbox://styles/mapbox/satellite-streets-v11?optimize=true');
       setIsSatelliteMode(true);
     } else {
-      setStyle('mapbox://styles/mapbox/streets-v11');
+      setStyle('mapbox://styles/mapbox/streets-v11?optimize=true');
       setIsSatelliteMode(false);
     }
   }
@@ -113,7 +113,7 @@ const SponsorshipMap = ({
         onViewportChange={(nextViewport: Viewport) => setViewport(nextViewport)}
         mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         className='index-map mapboxgl-map box-shadow'
-        mapStyle={isExploreMode ? style : 'mapbox://styles/mapbox/light-v10'}
+        mapStyle={isExploreMode ? style : 'mapbox://styles/mapbox/light-v10?optimize=true'}
       >
         {sponsorships?.map(sponsorship => {
           if (sponsorship?.tree?.latitude) {

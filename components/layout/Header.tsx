@@ -151,6 +151,13 @@ const Header = () => {
         </div>
         <Divider />
         <List>
+          {session && (
+            <Link href='/account'>
+              <ListItem button>
+                <ListItemText primary='Account' />
+              </ListItem>
+            </Link>
+          )}
           <Link href='/explore'>
             <ListItem button>
               <ListItemText primary='Tree Map' />

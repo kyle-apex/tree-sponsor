@@ -19,6 +19,8 @@ import { DEFAULT_DESCRIPTION } from 'consts';
 import { DEFAULT_TITLE_PREFIX } from 'consts';
 import SponsorshipAddEditDialog from './SponsorshipAddEditDialog';
 import CommentSection from 'components/comments/CommentSection';
+import ReactionSection from 'components/reactions/ReactionButton';
+import SponsorshipActions from './SponsorshipActions';
 
 export type TreeDetail = {
   title?: string;
@@ -116,14 +118,14 @@ const SponsorshipDisplay = ({
             image={sponsorship.pictureUrl + imageCacheKey}
             title={sponsorship.title}
           ></CardMedia>
-          <CardContent>
+          <CardContent sx={{ flex: '1 1 100%' }}>
             <Typography variant='body2' color='textSecondary' component='p'>
               {activeSponsorship?.description || sponsorship.description || DEFAULT_DESCRIPTION}
             </Typography>
           </CardContent>
           {!isEditMode && (
-            <CardActions disableSpacing sx={{ padding: 0, height: '100%' }}>
-              <CommentSection
+            <CardActions disableSpacing sx={{ padding: 0, height: '100%', flexDirection: 'column' }}>
+              <SponsorshipActions
                 sponsorshipId={sponsorship?.id}
                 signInCallbackUrl={`/u/${sponsorship?.user?.profilePath}?t=${sponsorship?.id}`}
               />

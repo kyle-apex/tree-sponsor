@@ -126,6 +126,10 @@ const IndexPage = ({ treeBenefits }: { treeBenefits: TitleSection[] }) => {
                 width: '100%',
                 display: 'flex',
                 flexDirection: 'column',
+                /*backgroundImage: 'url(/pin-ring.svg)',
+                backgroundRepeat: 'no-repeat',
+                backgroundAttachment: 'fixed',
+                backgroundPosition: 'center center',*/
               }}
             >
               <SponsorshipMap></SponsorshipMap>

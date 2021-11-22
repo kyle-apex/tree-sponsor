@@ -129,8 +129,14 @@ const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: 
                 />
               </Tabs>
             </Box>
-            <Box sx={{ padding: '0 20px', textAlign: 'left' }}>
-              {activeTab == 0 && <SponsorshipGroup columnWidth={6} isLoading={false} sponsorships={user.sponsorships}></SponsorshipGroup>}
+            <Box sx={{ padding: '0 20px', textAlign: 'left', minHeight: '150px' }}>
+              {activeTab == 0 && user.sponsorships?.length > 0 && (
+                <SponsorshipGroup columnWidth={6} isLoading={false} sponsorships={user.sponsorships}></SponsorshipGroup>
+              )}
+              {activeTab == 0 && !(user.sponsorships?.length > 0) && (
+                <Typography>{user.displayName || user.name} has not added any public Tokens of Appre-tree-ation.</Typography>
+              )}
+
               {activeTab == 1 && (
                 <Box
                   sx={{
