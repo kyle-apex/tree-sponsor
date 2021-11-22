@@ -132,7 +132,7 @@ const IndexPage = ({ treeBenefits }: { treeBenefits: TitleSection[] }) => {
                 backgroundPosition: 'center center',*/
               }}
             >
-              <SponsorshipMap></SponsorshipMap>
+              <SponsorshipMap isIndexPage={true}></SponsorshipMap>
             </Box>
           </Grid>
         </Grid>

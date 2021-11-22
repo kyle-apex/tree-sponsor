@@ -11,6 +11,8 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import NaturePeopleIcon from '@mui/icons-material/NaturePeople';
 import { PartialSponsorship, Viewport } from 'interfaces';
 import MapMarker from './MapMarker';
+import useTheme from '@mui/styles/useTheme';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const geolocateControlStyle = {
   right: 10,
@@ -27,15 +29,19 @@ const SEARCH_LOCATION = { longitude: -97.7405213210974, latitude: 30.27427678853
 const SponsorshipMap = ({
   isExploreMode,
   defaultSponsorships,
+  isIndexPage,
 }: {
   isExploreMode?: boolean;
   defaultSponsorships?: PartialSponsorship[];
+  isIndexPage?: boolean;
 }) => {
   const [activeSponsorshipId, setActiveSponsorshipId] = useState<number>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSatelliteMode, setIsSatelliteMode] = useState(false);
   const [style, setStyle] = useState('mapbox://styles/mapbox/streets-v11?optimize=true');
   const mapRef = useRef();
+  const theme = useTheme();
+  const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
 
   const [viewport, setViewport] = useState<Viewport>({
     width: '100%',
@@ -114,6 +120,7 @@ const SponsorshipMap = ({
         mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         className='index-map mapboxgl-map box-shadow'
         mapStyle={isExploreMode ? style : 'mapbox://styles/mapbox/light-v10?optimize=true'}
+        dragPan={!(isIndexPage && isMobile)}
       >
         {sponsorships?.map(sponsorship => {
           if (sponsorship?.tree?.latitude) {
