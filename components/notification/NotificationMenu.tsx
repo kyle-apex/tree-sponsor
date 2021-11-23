@@ -41,14 +41,22 @@ const NotificationMenu = ({
         }}
         sx={{ '.MuiMenu-paper': { width: '80vw', maxWidth: '500px' }, '.MuiMenu-list': { paddingTop: 0, paddingBottom: 0 } }}
       >
-        {notifications?.map(notification => (
-          <MenuItem
-            key={notification.id}
-            sx={{ backgroundColor: !notification.isRead ? '#d8e4e0' : '' }}
-            onClick={() => handleClick(notification.link)}
-          >
-            <NotificationDisplay notification={notification} />
-          </MenuItem>
+        {notifications?.map((notification, idx) => (
+          <>
+            {idx > 0 && <hr style={{ margin: 0 }} />}
+            <MenuItem
+              key={notification.id}
+              sx={{
+                backgroundColor: !notification.isRead ? '#d8e4e0' : '',
+                paddingBottom: 1.5,
+                paddingTop: 1.5,
+                ':hover': { backgroundColor: !notification.isRead ? '#c7d6d1' : '' },
+              }}
+              onClick={() => handleClick(notification.link)}
+            >
+              <NotificationDisplay notification={notification} />
+            </MenuItem>
+          </>
         ))}
       </Menu>
     </>

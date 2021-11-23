@@ -26,12 +26,12 @@ const NotificationDisplay = ({ notification }: { notification: PartialNotificati
         <Typography>
           {notification.type === 'comment' && (
             <>
-              {userName} commented on {notification.parameter}
+              <b>{userName}</b> commented on <b>{notification.parameter}</b>
             </>
           )}
           {notification.type === 'reaction' && (
             <>
-              {userName} liked {notification.parameter}
+              <b>{userName}</b> liked <b>{notification.parameter}</b>
             </>
           )}
         </Typography>
