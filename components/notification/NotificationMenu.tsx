@@ -41,7 +41,7 @@ const NotificationMenu = ({
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
-        sx={{ '.MuiMenu-paper': { width: '80vw', maxWidth: '500px' }, '.MuiMenu-list': { paddingTop: 0, paddingBottom: 0 } }}
+        sx={{ '.MuiMenu-paper': { width: '85vw', maxWidth: '500px' }, '.MuiMenu-list': { paddingTop: 0, paddingBottom: 0 } }}
       >
         {notifications?.map((notification, idx) => (
           <>

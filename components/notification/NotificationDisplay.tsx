@@ -27,7 +27,7 @@ const NotificationDisplay = ({ notification, onAction }: { notification: Partial
       >
         <UserAvatar image={user?.image} name={userName} size={30} />
       </Box>
-      <Box onClick={() => onAction(notification.link)}>
+      <Box onClick={() => onAction(notification.link)} sx={{ whiteSpace: 'normal' }}>
         <Typography>
           {notification.type === 'comment' && (
             <>
