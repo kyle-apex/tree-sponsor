@@ -33,7 +33,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     await prisma.notification.create({
       data: {
-        userId,
+        userId: sponsorship.userId,
+        sourceUserId: userId,
         type: 'comment',
         link: `/u/${sponsorship.user.profilePath}?t=${id}`,
         parameter: sponsorship.title || DEFAULT_TITLE_PREFIX + getFirstName(sponsorship.user),

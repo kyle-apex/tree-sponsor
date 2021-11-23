@@ -69,8 +69,9 @@ model User {
   comments                 Comment[]
   reactions                Reaction[]
 
-  commentReactions CommentReaction[]
-  notifications    Notification[]
+  commentReactions      CommentReaction[]
+  notifications         Notification[]    @relation("user")
+  notificationsAsSource Notification[]    @relation("sourceUser")
   @@map(name: "users")
 }
 
@@ -163,15 +164,17 @@ model Reaction {
 }
 
 model Notification {
-  id          Int       @id @default(autoincrement())
-  type        String?
-  link        String?
-  parameter   String?
-  count       Int?
-  createdDate DateTime?
-  isRead      Boolean?
-  userId      Int?
-  user        User?     @relation(fields: [userId], references: [id])
+  id           Int       @id @default(autoincrement())
+  type         String?
+  link         String?
+  parameter    String?
+  count        Int?
+  createdDate  DateTime?
+  isRead       Boolean?
+  userId       Int?
+  user         User?     @relation("user", fields: [userId], references: [id])
+  sourceUserId Int?
+  sourceUser   User?     @relation("sourceUser", fields: [sourceUserId], references: [id])
 }
 
 model Product {

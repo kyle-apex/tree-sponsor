@@ -14,15 +14,20 @@ const formatDate = (date: Date): string => {
   return dateStr;
 };
 
-const NotificationDisplay = ({ notification }: { notification: PartialNotification }) => {
-  const user = notification.user;
-  const userName = user.displayName ?? user.name;
+const NotificationDisplay = ({ notification, onAction }: { notification: PartialNotification; onAction: (link: string) => void }) => {
+  const user = notification.sourceUser;
+  const userName = user ? user.displayName ?? user.name : 'Anonymous';
   return (
     <Box sx={{ flexDirection: 'row', display: 'flex' }} gap={1}>
-      <Box pt={0.5}>
-        <UserAvatar image={notification.user.image} name={notification.user.name} size={30} />
+      <Box
+        pt={0.5}
+        onClick={() => {
+          onAction(user?.profilePath ? '/u/' + user.profilePath : '');
+        }}
+      >
+        <UserAvatar image={user?.image} name={userName} size={30} />
       </Box>
-      <Box>
+      <Box onClick={() => onAction(notification.link)}>
         <Typography>
           {notification.type === 'comment' && (
             <>

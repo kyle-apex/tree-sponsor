@@ -20,8 +20,8 @@ const NotificationMenu = ({
   const router = useRouter();
 
   const handleClick = (link: string) => {
-    router.push(link);
-    setAnchorEl(null);
+    if (link) router.push(link);
+    handleClose();
   };
 
   const handleClose = () => {
@@ -52,9 +52,8 @@ const NotificationMenu = ({
                 paddingTop: 1.5,
                 ':hover': { backgroundColor: !notification.isRead ? '#c7d6d1' : '' },
               }}
-              onClick={() => handleClick(notification.link)}
             >
-              <NotificationDisplay notification={notification} />
+              <NotificationDisplay notification={notification} onAction={link => handleClick(link)} />
             </MenuItem>
           </>
         ))}

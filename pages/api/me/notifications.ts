@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     const items = await prisma.notification.findMany({
       where: { userId: userId },
-      include: { user: { select: { id: true, profilePath: true, name: true, displayName: true, image: true } } },
+      include: { sourceUser: { select: { id: true, profilePath: true, name: true, displayName: true, image: true } } },
       take: 20,
       orderBy: { createdDate: 'desc' },
     });
