@@ -25,6 +25,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const newReaction = await prisma.reaction.create({ data: { userId, createdDate: new Date(), ...req.body } });
     const reaction = await prisma.reaction.findFirst({ where: { id: newReaction.id }, include: { user: {} } });
+
+    const sponsorship = await prisma.sponsorship.findFirst({ where: { id: id } });
+
+    await prisma.notification.create({
+      data: {
+        userId,
+        type: 'reaction',
+        link: `/u/${session.user.profilePath}?t=${id}`,
+        parameter: sponsorship.title,
+        createdDate: new Date(),
+      },
+    });
+
     res.status(200).json(reaction);
   }
 }

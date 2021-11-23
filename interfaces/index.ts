@@ -1,4 +1,4 @@
-import { Product, Role, Sponsorship, Subscription, Tree, User, Comment, Reaction } from '@prisma/client';
+import { Product, Role, Sponsorship, Subscription, Tree, User, Comment, Reaction, Notification } from '@prisma/client';
 import { ViewportProps } from 'react-map-gl';
 import { Stripe } from 'stripe';
 

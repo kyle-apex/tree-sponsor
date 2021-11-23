@@ -129,11 +129,9 @@ const Header = () => {
                   <SessionAvatar session={session} size={36} />
                 </Box>
               </Link>
-              <Link href='/account'>
-                <Box mr={1} className='clickable'>
-                  <NotificationIcon></NotificationIcon>
-                </Box>
-              </Link>
+              <Box mr={1} className='clickable'>
+                <NotificationIcon></NotificationIcon>
+              </Box>
             </>
           )}
 
