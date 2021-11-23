@@ -21,6 +21,7 @@ import SponsorshipAddEditDialog from './SponsorshipAddEditDialog';
 import CommentSection from 'components/comments/CommentSection';
 import ReactionSection from 'components/reactions/ReactionButton';
 import SponsorshipActions from './SponsorshipActions';
+import { getFirstName } from 'utils/user/get-first-name';
 
 export type TreeDetail = {
   title?: string;
@@ -92,11 +93,7 @@ const SponsorshipDisplay = ({
                 link={sponsorship.user?.profilePath ? '/u/' + sponsorship.user.profilePath : ''}
               />
             }
-            title={
-              activeSponsorship?.title ||
-              sponsorship?.title ||
-              DEFAULT_TITLE_PREFIX + (sponsorship.user?.displayName || sponsorship.user?.name)?.split(' ')[0]
-            }
+            title={activeSponsorship?.title || sponsorship?.title || DEFAULT_TITLE_PREFIX + getFirstName(sponsorship.user)}
             subheader={<SponsorshipSubTitle startDate={sponsorship.startDate} />}
             action={
               handleClose && (

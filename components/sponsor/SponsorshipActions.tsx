@@ -28,7 +28,7 @@ const SponsorshipActions = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipI
 
   return (
     <Box flexDirection='column' className='full-width'>
-      <Box flexDirection='column' sx={{ padding: 2 }}>
+      <Box flexDirection='column' sx={{ padding: 2, paddingBottom: 1 }}>
         <hr />
         <Box flexDirection='row' sx={{ display: 'flex' }}>
           <ReactionButton
@@ -38,7 +38,7 @@ const SponsorshipActions = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipI
           ></ReactionButton>
 
           <Button
-            sx={{ color: 'rgba(0, 0, 0, 0.54)' }}
+            sx={{ color: 'rgba(0, 0, 0, 0.54)', marginLeft: 0.5 }}
             onClick={() => {
               setShowComments(!showComments);
             }}

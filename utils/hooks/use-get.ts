@@ -3,7 +3,12 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import axios from 'axios';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 
-export const useGet = <T>(path: string, key?: string, params?: Record<string, unknown>): QueryObserverResult<T> => {
+export const useGet = <T>(
+  path: string,
+  key?: string,
+  params?: Record<string, unknown>,
+  options?: { refetchOnWindowFocus: boolean },
+): QueryObserverResult<T> => {
   if (!path) {
     throw new Error('Path is required');
   }
@@ -35,5 +40,5 @@ export const useGet = <T>(path: string, key?: string, params?: Record<string, un
     return promise;
   };
 
-  return useQuery([key, params], fetcher, { refetchOnWindowFocus: false });
+  return useQuery([key, params], fetcher, options || { refetchOnWindowFocus: false });
 };
