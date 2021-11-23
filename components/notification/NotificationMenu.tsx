@@ -59,7 +59,11 @@ const NotificationMenu = ({
             </MenuItem>
           </>
         ))}
-        {notifications?.length == 0 && <Box sx={{ padding: 1 }}>No noficiations found</Box>}
+        {notifications?.length == 0 && (
+          <Box onClick={handleClose} sx={{ padding: 1 }}>
+            No noficiations found
+          </Box>
+        )}
       </Menu>
     </>
   );
