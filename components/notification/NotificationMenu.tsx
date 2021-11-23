@@ -4,6 +4,8 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import NotificationDisplay from './NotificationDisplay';
 import { useRouter } from 'next/router';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 const NotificationMenu = ({
   notifications,
@@ -57,6 +59,7 @@ const NotificationMenu = ({
             </MenuItem>
           </>
         ))}
+        {notifications?.length == 0 && <Box sx={{ padding: 1 }}>No noficiations found</Box>}
       </Menu>
     </>
   );
