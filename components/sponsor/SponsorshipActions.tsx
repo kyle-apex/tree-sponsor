@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import Link from 'next/link';
 import ChevronRight from '@mui/icons-material/ChevronRight';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ReactionCount from 'components/reactions/ReactionCount';
 
 const SponsorshipActions = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipId: number; signInCallbackUrl?: string }) => {
   const [showComments, setShowComments] = useState(false);
@@ -47,23 +48,7 @@ const SponsorshipActions = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipI
             <Typography sx={{ marginLeft: 1 }}>{comments?.length || 0}</Typography>
           </Button>
           <Box sx={{ flex: '1 1 100%' }}></Box>
-          {reactions?.length > 0 && (
-            <Box flexDirection='row' gap={0.5} sx={{ display: 'flex', fontSize: '.8rem', alignItems: 'center' }}>
-              <Box
-                sx={{
-                  backgroundColor: theme => theme.palette.info.main,
-                  borderRadius: '50%',
-                  textAlign: 'center',
-                  height: '24px',
-                  width: '24px',
-                  paddingTop: '4px',
-                }}
-              >
-                <ThumbUpIcon sx={{ fontSize: '12px', color: 'white' }} />
-              </Box>
-              <Typography>{reactions.length}</Typography>
-            </Box>
-          )}
+          {reactions?.length > 0 && <ReactionCount count={reactions.length} />}
         </Box>
         {!showComments && unauthenticated && (
           <Box mb={1} mt={2}>
