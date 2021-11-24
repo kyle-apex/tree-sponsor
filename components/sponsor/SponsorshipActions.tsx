@@ -48,7 +48,7 @@ const SponsorshipActions = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipI
             <Typography sx={{ marginLeft: 1 }}>{comments?.length || 0}</Typography>
           </Button>
           <Box sx={{ flex: '1 1 100%' }}></Box>
-          {reactions?.length > 0 && <ReactionCount count={reactions.length} />}
+          {reactions?.length > 0 && <ReactionCount reactions={reactions} hasDialog={true} />}
         </Box>
         {!showComments && unauthenticated && (
           <Box mb={1} mt={2}>

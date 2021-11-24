@@ -18,8 +18,6 @@ import { UserAvatar, SponsorshipSubTitle } from 'components/sponsor';
 import { DEFAULT_DESCRIPTION } from 'consts';
 import { DEFAULT_TITLE_PREFIX } from 'consts';
 import SponsorshipAddEditDialog from './SponsorshipAddEditDialog';
-import CommentSection from 'components/comments/CommentSection';
-import ReactionSection from 'components/reactions/ReactionButton';
 import SponsorshipActions from './SponsorshipActions';
 import { getFirstName } from 'utils/user/get-first-name';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
