@@ -133,7 +133,7 @@ model Comment {
   createdDate     DateTime?
   text            String?
   userId          Int?
-  isDeleted       Boolean?
+  isDeleted       Boolean?          @default(false)
   user            User?             @relation(fields: [userId], references: [id])
   sponsorshipId   Int?
   sponsorship     Sponsorship?      @relation(fields: [sponsorshipId], references: [id])
@@ -170,7 +170,7 @@ model Notification {
   parameter    String?
   count        Int?
   createdDate  DateTime?
-  isRead       Boolean?
+  isRead       Boolean?  @default(false)
   userId       Int?
   user         User?     @relation("user", fields: [userId], references: [id])
   sourceUserId Int?
@@ -220,8 +220,8 @@ model Sponsorship {
   pictureUrl         String?
   startDate          DateTime?
   expirationDate     DateTime?
-  isPrivate          Boolean?
-  isPrivateLocation  Boolean?
+  isPrivate          Boolean?      @default(false)
+  isPrivateLocation  Boolean?      @default(false)
   reviewStatus       ReviewStatus? @default(New)
   user               User?         @relation(fields: [userId], references: [id])
   userId             Int?

@@ -22,6 +22,10 @@ import CommentSection from 'components/comments/CommentSection';
 import ReactionSection from 'components/reactions/ReactionButton';
 import SponsorshipActions from './SponsorshipActions';
 import { getFirstName } from 'utils/user/get-first-name';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import LocationOffIcon from '@mui/icons-material/LocationOff';
+import Tooltip from '@mui/material/Tooltip';
+import Box from '@mui/material/Box';
 
 export type TreeDetail = {
   title?: string;
@@ -163,6 +167,17 @@ const SponsorshipDisplay = ({
                       onDelete(sponsorship.id);
                     }}
                   ></DeleteConfirmationDialog>
+                  <Box sx={{ display: 'flex', flex: '1 1 100%' }}></Box>
+                  {sponsorship.isPrivate && (
+                    <Tooltip title='Hidden from public view'>
+                      <VisibilityOffIcon sx={{ color: 'var(--icon-button-color)', marginRight: 1 }} />
+                    </Tooltip>
+                  )}
+                  {sponsorship.isPrivateLocation && !sponsorship.isPrivate && (
+                    <Tooltip title='Location hidden from public view'>
+                      <LocationOffIcon sx={{ color: 'var(--icon-button-color)', marginRight: 1 }} />
+                    </Tooltip>
+                  )}
                 </>
               )}
             </CardActions>

@@ -48,6 +48,7 @@ input.MuiOutlinedInput-input,
 
 :root {
   --color-background: brown;
+  --icon-button-color: rgba(0, 0, 0, 0.54);
   --table-odd: #fafafa;
   --table-even: #f1f1f1;
 }
