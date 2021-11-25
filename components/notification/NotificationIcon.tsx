@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import IconButton from '@mui/material/IconButton';
@@ -12,7 +12,7 @@ import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
 
 const NotificationIcon = () => {
   const [session] = useSession();
-  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<Element>(null);
 
   const handleClick: React.MouseEventHandler<HTMLButtonElement> = event => {
     setMenuAnchorEl(event.currentTarget);

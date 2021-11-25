@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { PartialNotification } from 'interfaces';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -13,7 +13,7 @@ const NotificationMenu = ({
   onClose,
 }: {
   notifications: PartialNotification[];
-  anchorEl: Element;
+  anchorEl: null | Element | ((element: Element) => Element);
   setAnchorEl: (el: Element) => void;
   onClose: () => void;
 }) => {
@@ -43,10 +43,9 @@ const NotificationMenu = ({
         sx={{ '.MuiMenu-paper': { width: '85vw', maxWidth: '500px' }, '.MuiMenu-list': { paddingTop: 0, paddingBottom: 0 } }}
       >
         {notifications?.map((notification, idx) => (
-          <>
+          <Box key={notification.id}>
             {idx > 0 && <hr style={{ margin: 0 }} />}
             <MenuItem
-              key={notification.id}
               sx={{
                 backgroundColor: !notification.isRead ? '#d8e4e0' : '',
                 paddingBottom: 1.5,
@@ -56,7 +55,7 @@ const NotificationMenu = ({
             >
               <NotificationDisplay notification={notification} onAction={link => handleClick(link)} />
             </MenuItem>
-          </>
+          </Box>
         ))}
         {notifications?.length == 0 && (
           <Box onClick={handleClose} sx={{ padding: 1 }}>

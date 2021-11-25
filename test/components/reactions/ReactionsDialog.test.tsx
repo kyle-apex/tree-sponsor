@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { mockSession, render } from 'test/test-utils';
+import { render } from 'test/test-utils';
 import ReactionsDialog from 'components/reactions/ReactionsDialog';
 import { PartialReaction } from 'interfaces';
 
@@ -12,7 +12,7 @@ const reactions: PartialReaction[] = [
 ];
 
 const open = true;
-const setOpen = (isOpen: boolean) => {
+const setOpen = (_isOpen: boolean) => {
   return;
 };
 
