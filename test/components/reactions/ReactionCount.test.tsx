@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { render, screen } from 'test/test-utils';
+import { render } from 'test/test-utils';
 import ReactionCount from 'components/reactions/ReactionCount';
 import { PartialReaction } from 'interfaces';
 
@@ -11,18 +11,14 @@ const empty: PartialReaction[] = undefined;
 
 fdescribe('ReactionCount', () => {
   it('renders the reaction count', () => {
-    render(<ReactionCount reactions={reactions}></ReactionCount>);
+    const { getByText } = render(<ReactionCount reactions={reactions}></ReactionCount>);
 
-    const count = screen.getByText('2');
-
-    expect(count).toBeInTheDocument();
+    expect(getByText('2')).toBeInTheDocument();
   });
 
   it('renders 0 for undefined array', () => {
-    render(<ReactionCount reactions={empty}></ReactionCount>);
+    const { getByText } = render(<ReactionCount reactions={empty}></ReactionCount>);
 
-    const count = screen.getByText('0');
-
-    expect(count).toBeInTheDocument();
+    expect(getByText('0')).toBeInTheDocument();
   });
 });

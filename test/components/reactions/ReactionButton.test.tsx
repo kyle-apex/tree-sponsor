@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { mockSession, render, screen } from 'test/test-utils';
+import { mockSession, render } from 'test/test-utils';
 import ReactionButton from 'components/reactions/ReactionButton';
 import { PartialReaction } from 'interfaces';
 
@@ -15,11 +15,11 @@ const onUnauthenticated = () => {
 
 describe('ReactionButton', () => {
   it('renders "like" text', () => {
-    render(<ReactionButton sponsorshipId={1} reactions={reactions} onUnauthenticated={onUnauthenticated}></ReactionButton>);
+    const { getByText } = render(
+      <ReactionButton sponsorshipId={1} reactions={reactions} onUnauthenticated={onUnauthenticated}></ReactionButton>,
+    );
 
-    const likeText = screen.getByText('Like');
-
-    expect(likeText).toBeInTheDocument();
+    expect(getByText('Like')).toBeInTheDocument();
   });
 
   it('displays "info" color when logged in', () => {

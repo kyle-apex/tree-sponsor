@@ -34,13 +34,9 @@ const ReactionsDialog = ({
       </DialogTitle>
       <DialogContent>
         {reactions?.map(reaction => (
-          <>
+          <Box key={reaction.id}>
             <hr></hr>
-            <Box
-              key={reaction.id}
-              sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', paddingRight: 1, paddingLeft: 1 }}
-              gap={2}
-            >
+            <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', paddingRight: 1, paddingLeft: 1 }} gap={2}>
               <UserAvatar
                 name={reaction.user?.displayName || reaction.user?.name}
                 image={reaction.user?.image}
@@ -49,7 +45,7 @@ const ReactionsDialog = ({
               />{' '}
               {reaction.user?.displayName || reaction.user?.name}
             </Box>
-          </>
+          </Box>
         ))}
       </DialogContent>
     </Dialog>
