@@ -5,7 +5,6 @@ import axios from 'axios';
 import { useSession } from 'next-auth/client';
 import { PartialReaction } from 'interfaces';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import { Session } from 'interfaces';
@@ -53,9 +52,8 @@ const ReactButton = ({
   async function handleDelete(id: number) {
     await axios.delete('/api/reactions/' + id);
   }
-  console.log('reactions', reactions);
+
   const currentUserReaction = reactions?.find(reaction => (session as Session)?.user?.id === reaction.userId);
-  console.log('cur', currentUserReaction);
 
   return (
     <>
