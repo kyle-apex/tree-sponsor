@@ -2,8 +2,6 @@ import React from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
 import ReactionCount from './ReactionCount';
 import { PartialReaction } from 'interfaces';
 import { UserAvatar } from 'components/sponsor';

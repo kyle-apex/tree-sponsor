@@ -18,7 +18,7 @@ const NotificationIcon = () => {
     setMenuAnchorEl(event.currentTarget);
   };
 
-  const { data: notifications, isFetched, refetch } = useGet<PartialNotification[]>('/api/me/notifications', 'my-notifications');
+  const { data: notifications, refetch } = useGet<PartialNotification[]>('/api/me/notifications', 'my-notifications');
 
   const { updateById } = useUpdateQueryById('my-notifications', handleUpdate, true);
 

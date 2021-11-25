@@ -2,7 +2,6 @@ import CommentSection from 'components/comments/CommentSection';
 import React, { useState } from 'react';
 import { useGet } from 'utils/hooks/use-get';
 import { PartialComment, PartialReaction } from 'interfaces';
-import IconButton from '@mui/material/IconButton';
 import Box from '@mui/system/Box';
 import ReactionButton from 'components/reactions/ReactionButton';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
@@ -11,7 +10,6 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Link from 'next/link';
 import ChevronRight from '@mui/icons-material/ChevronRight';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ReactionCount from 'components/reactions/ReactionCount';
 
 const SponsorshipActions = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipId: number; signInCallbackUrl?: string }) => {
@@ -22,7 +20,7 @@ const SponsorshipActions = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipI
     `sponsorships/${sponsorshipId}/comments`,
   );
 
-  const { data: reactions, isFetching } = useGet<PartialReaction[]>(
+  const { data: reactions } = useGet<PartialReaction[]>(
     `/api/sponsorships/${sponsorshipId}/reactions`,
     `sponsorships/${sponsorshipId}/reactions`,
   );

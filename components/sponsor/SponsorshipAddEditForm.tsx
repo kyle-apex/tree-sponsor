@@ -3,7 +3,7 @@ import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import Button from '@mui/material/Button';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import axios from 'axios';
 import SponsorshipDisplayForm from './SponsorshipDisplayForm';
 import LocationSelector from 'components/LocationSelector';

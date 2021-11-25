@@ -4,7 +4,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import NotificationDisplay from './NotificationDisplay';
 import { useRouter } from 'next/router';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 const NotificationMenu = ({
@@ -15,7 +14,7 @@ const NotificationMenu = ({
 }: {
   notifications: PartialNotification[];
   anchorEl: Element;
-  setAnchorEl: (el: any) => void;
+  setAnchorEl: (el: Element) => void;
   onClose: () => void;
 }) => {
   const open = Boolean(anchorEl);

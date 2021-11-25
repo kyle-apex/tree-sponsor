@@ -10,7 +10,7 @@ import ChevronRight from '@mui/icons-material/ChevronRight';
 import { Session } from 'interfaces';
 import { PartialComment } from 'interfaces';
 import { useAddToQuery } from 'utils/hooks/use-add-to-query';
-import { useGet, useRemoveFromQuery } from 'utils/hooks';
+import { useRemoveFromQuery } from 'utils/hooks';
 import axios from 'axios';
 
 const CommentSection = ({
