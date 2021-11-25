@@ -39,6 +39,7 @@ const NotificationDisplay = ({ notification, onAction }: { notification: Partial
               <b>{userName}</b> liked <b>{notification.parameter}</b>
             </>
           )}
+          {notification.type === 'announcement' && <>{notification.parameter}</>}
         </Typography>
         <Box>
           <Typography variant='subtitle2' color='gray'>

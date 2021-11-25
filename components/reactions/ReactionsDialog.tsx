@@ -26,7 +26,7 @@ const ReactionsDialog = ({
   };
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle sx={{ paddingBottom: 1 }}>
+      <DialogTitle sx={{ paddingBottom: 0 }}>
         <SplitRow>
           <ReactionCount reactions={reactions} />
           <IconButton onClick={handleClose}>
