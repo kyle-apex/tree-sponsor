@@ -9,7 +9,7 @@ import { PartialReaction } from 'interfaces';
 const reactions: PartialReaction[] = [{}, {}];
 const empty: PartialReaction[] = undefined;
 
-describe('ReactionCount', () => {
+fdescribe('ReactionCount', () => {
   it('renders the reaction count', () => {
     render(<ReactionCount reactions={reactions}></ReactionCount>);
 
@@ -17,6 +17,7 @@ describe('ReactionCount', () => {
 
     expect(count).toBeInTheDocument();
   });
+
   it('renders 0 for undefined array', () => {
     render(<ReactionCount reactions={empty}></ReactionCount>);
 

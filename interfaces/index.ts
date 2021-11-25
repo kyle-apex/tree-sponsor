@@ -30,6 +30,6 @@ export type PartialUser = Partial<
 
 export type Viewport = Omit<ViewportProps, 'width' | 'height'> & { height: string | number; width: string | number };
 
-export type Session = Partial<NextSession> & { user?: User };
+export type Session = Partial<NextSession> & { user?: PartialUser };
 
 export type TitleSection = { title: string; description: string };
