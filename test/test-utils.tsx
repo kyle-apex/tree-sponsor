@@ -4,9 +4,10 @@ import React, { ReactElement } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Session } from 'interfaces';
+import client from 'next-auth/client';
+import { SetupServerApi } from 'msw/lib/types/node';
 const queryClient = new QueryClient();
 jest.mock('next-auth/client');
-import client from 'next-auth/client';
 
 (client.useSession as jest.Mock).mockReturnValue([{}, false]);
 
@@ -29,4 +30,12 @@ export { customRender as render };
 
 export const mockSession = (session: Session) => {
   (client.useSession as jest.Mock).mockReturnValueOnce([session, false]);
+};
+
+export const useServer = (server: SetupServerApi) => {
+  beforeAll(() => server.listen());
+  afterEach(() => {
+    server.resetHandlers();
+  });
+  afterAll(() => server.close());
 };
