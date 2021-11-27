@@ -1,11 +1,9 @@
+import { useServer, render } from 'test/test-utils';
 import NotificationIcon from 'components/notification/NotificationIcon';
 import { PartialNotification } from 'interfaces';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { useServer, render } from 'test/test-utils';
 import userEvent from '@testing-library/user-event';
-
-jest.mock('next-auth/client');
 
 const notifications: PartialNotification[] = [
   { id: 1, type: 'announcement', parameter: 'This is the announcement!', isRead: true },

@@ -139,7 +139,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
         <Typography variant='subtitle2'>Click the image to update your profile picture.</Typography>
       </Box>
 
-      <TextField value={name} onChange={handleNameChange} label='Name' size='small' sx={{ marginBottom: 3 }}></TextField>
+      <TextField value={name} onChange={handleNameChange} label='Name' size='small' sx={{ marginBottom: 3 }} id='name-field'></TextField>
       <TextField
         value={profilePathState.profilePath}
         onChange={handleProfilePathChange}
@@ -149,6 +149,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
         sx={{ marginBottom: 3 }}
         error={profilePathState.isDuplicate || profilePathState.hasPatternError}
         spellCheck='false'
+        id='profile-path-field'
       ></TextField>
       {profilePathState.hasPatternError && <ErrorText>Profile Path must only contain lower case letters and &quot;-&quot;</ErrorText>}
       {profilePathState.isDuplicate && <ErrorText>Profile Path is already in use</ErrorText>}
