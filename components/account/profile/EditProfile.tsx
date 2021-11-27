@@ -13,6 +13,8 @@ import parsedGet from 'utils/api/parsed-get';
 import LaunchIcon from '@mui/icons-material/Launch';
 import SplitRow from 'components/layout/SplitRow';
 import Button from '@mui/material/Button';
+import dynamic from 'next/dynamic';
+const TextEditor = dynamic(() => import('components/TextEditor'), { ssr: false });
 
 const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const [name, setName] = useState('');
@@ -153,7 +155,9 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       ></TextField>
       {profilePathState.hasPatternError && <ErrorText>Profile Path must only contain lower case letters and &quot;-&quot;</ErrorText>}
       {profilePathState.isDuplicate && <ErrorText>Profile Path is already in use</ErrorText>}
-
+      <Box sx={{ marginBottom: 3 }}>
+        <TextEditor label='Bio' />
+      </Box>
       <LoadingButton
         variant='contained'
         disabled={profilePathState.isDuplicate || profilePathState.hasPatternError || !isChanged}

@@ -51,6 +51,8 @@ input.MuiOutlinedInput-input,
   --icon-button-color: rgba(0, 0, 0, 0.54);
   --table-odd: #fafafa;
   --table-even: #f1f1f1;
+  --outline-color: rgba(0, 0, 0, 0.23);
+  --label-color: rgba(0, 0, 0, 0.6);
 }
 .__next-auth-theme-dark {
   --color-background: blue;
@@ -242,4 +244,39 @@ input.MuiOutlinedInput-input,
     font-size: 15px;
     line-height: 20px;
   }
+}
+
+.notchedOutline {
+  text-align: left;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  top: -5px;
+  left: 0;
+  margin: 0;
+  padding: 0 8px;
+  pointer-events: none;
+  border-radius: inherit;
+  border-style: solid;
+  border-width: 1px;
+  overflow: hidden;
+  min-width: 0%;
+  border-color: rgba(0, 0, 0, 0.23);
+}
+
+.notchedOutline > legend {
+  display: block;
+  width: auto;
+  padding: 0;
+  height: 11px;
+  font-size: 0.75em;
+  visibility: hidden;
+  max-width: 100%;
+  -webkit-transition: max-width 100ms cubic-bezier(0, 0, 0.2, 1) 50ms;
+  transition: max-width 100ms cubic-bezier(0, 0, 0.2, 1) 50ms;
+}
+.notchedOutline > legend > span {
+  padding-left: 5px;
+  padding-right: 5px;
+  display: inline-block;
 }

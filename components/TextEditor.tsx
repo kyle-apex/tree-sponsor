@@ -1,5 +1,7 @@
 import React, { useLayoutEffect, useState } from 'react';
 import MUIRichTextEditor from 'mui-rte';
+import Box from '@mui/material/Box';
+import NotchedOutlineLabel from './layout/NotchedOutlineLabel';
 /* IMPORTANT!!!
 
 To use this component in a SSR page, you have to import it like so:
@@ -12,21 +14,14 @@ const TextEditor = dynamic(() => import('components/TextEditor'), {
 
 */
 
-const toolbarConfig = {
-  // Optionally specify the groups to display (displayed in the order listed).
-  display: ['INLINE_STYLE_BUTTONS', 'BLOCK_TYPE_BUTTONS', 'LINK_BUTTONS', 'HISTORY_BUTTONS'],
-  INLINE_STYLE_BUTTONS: [
-    { label: 'Bold', style: 'BOLD', className: 'custom-css-class' },
-    { label: 'Italic', style: 'ITALIC' },
-    { label: 'Underline', style: 'UNDERLINE' },
-  ],
-};
-
-const TextEditor = () => {
+const TextEditor = ({ placeholder, label }: { placeholder?: string; label?: string }) => {
   return (
-    <>
-      <MUIRichTextEditor label='Start typing...' controls={['bold', 'italic', 'underline', 'link', 'bulletList', 'undo', 'redo']} />
-    </>
+    <NotchedOutlineLabel label={label}>
+      <MUIRichTextEditor
+        label={placeholder || 'Start typing...'}
+        controls={['bold', 'italic', 'underline', 'link', 'bulletList', 'undo', 'redo']}
+      />
+    </NotchedOutlineLabel>
   );
 };
 export default TextEditor;

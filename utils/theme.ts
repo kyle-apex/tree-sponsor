@@ -1,6 +1,48 @@
 import { createTheme } from '@mui/material/styles';
+import { TMUIRichTextEditorStyles } from 'mui-rte';
+
+const muiRteTheme: TMUIRichTextEditorStyles = {
+  overrides: {
+    MUIRichTextEditor: {
+      placeHolder: {
+        position: 'static',
+        paddingLeft: 14,
+        paddingTop: 8.5,
+        color: 'var(--label-color)',
+      },
+      editor: {
+        padding: '8.5px 14px',
+      } /*
+      container: {
+        display: 'flex',
+        flexDirection: 'column-reverse',
+      },
+      editor: {
+        backgroundColor: '#ebebeb',
+        padding: '20px',
+        height: '200px',
+        maxHeight: '200px',
+        overflow: 'auto',
+      },
+      toolbar: {
+        borderTop: '1px solid gray',
+        backgroundColor: '#ebebeb',
+      },
+      placeHolder: {
+        backgroundColor: '#ebebeb',
+        paddingLeft: 20,
+        width: 'inherit',
+      },
+      anchorLink: {
+        color: '#333333',
+        textDecoration: 'underline',
+      },*/,
+    },
+  },
+};
 
 const theme = createTheme({
+  ...muiRteTheme,
   palette: {
     primary: {
       main: '#486e62',
