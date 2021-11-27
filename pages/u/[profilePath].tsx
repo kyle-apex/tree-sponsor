@@ -96,7 +96,7 @@ const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: 
           )}
           {user.profile?.bio && (
             <Box sx={{ textAlign: 'left', alignSelf: 'center', a: { color: theme => theme.palette.primary.main } }}>
-              <div dangerouslySetInnerHTML={{ __html: user.profile.bio }}></div>
+              {parse(user.profile.bio)}
             </Box>
           )}
         </Box>

@@ -46,4 +46,4 @@ const TextEditor = ({
     </NotchedOutlineLabel>
   );
 };
-export default TextEditor;
+export default React.memo(TextEditor);

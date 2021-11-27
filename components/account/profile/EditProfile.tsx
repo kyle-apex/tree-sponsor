@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState, useRef } from 'react';
+import React, { ReactNode, useEffect, useState, useRef, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -68,10 +68,10 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
     setName(event.target.value);
   };
 
-  const handleBioChange = (newValue: string) => {
+  const handleBioChange = useCallback((newValue: string) => {
     if (newValue != bioRef.current) setIsChanged(true);
     bioRef.current = newValue;
-  };
+  }, []);
 
   const handleProfilePathChange = async (event: { target: { value: string } }) => {
     setIsChanged(true);
@@ -81,9 +81,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       return { ...state, profilePath, hasPatternError };
     });
     if (profilePath != profilePathState.initialValue && !hasPatternError) {
-      const isDuplicate = (await parsedGet(
-        `/api/users/${userRef.current.id}/is-duplicate-profile-path?profilePath=${profilePath}`,
-      )) as boolean;
+      const isDuplicate = (await parsedGet(`/api/users/${user.id}/is-duplicate-profile-path?profilePath=${profilePath}`)) as boolean;
       setProfilePathState(state => {
         return { ...state, isDuplicate };
       });
@@ -203,7 +201,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
             <TextEditor
               label='Bio'
               placeholder='Enter a short bio to display on your profile...'
-              value={bioRef.current}
+              value={user.profile?.bio}
               onChange={handleBioChange}
             />
           </Box>
