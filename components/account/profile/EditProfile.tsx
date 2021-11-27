@@ -243,7 +243,6 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
           <Skeleton variant='rectangular' sx={{ width: '100%', marginBottom: 2 }} height={100} />
         </Box>
       )}
-      <Skeleton variant='text' sx={{ width: '15%' }} />
       <LoadingButton
         variant='contained'
         disabled={profilePathState.isDuplicate || profilePathState.hasPatternError || !isChanged}
