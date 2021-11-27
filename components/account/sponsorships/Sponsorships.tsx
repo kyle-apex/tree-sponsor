@@ -21,7 +21,7 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
 
   useEffect(() => {
     if (!sponsorships) return;
-    const totalSponsorshipCount = (activeDonationAmount ?? 0) / 20;
+    const totalSponsorshipCount = Math.floor((activeDonationAmount ?? 0) / 20);
     setAvailableSponsorshipCount(Math.max(0, totalSponsorshipCount - sponsorships.length));
   }, [activeDonationAmount, sponsorships]);
 
@@ -73,8 +73,8 @@ const Sponsorships = ({ activeDonationAmount }: { activeDonationAmount?: number 
                 ) : (
                   <>
                     {sponsorships?.length > 0
-                      ? 'You do not have any available tokens of appre-tree-ation.'
-                      : 'You have one token of appre-tree-ation left to configure.'}
+                      ? 'You do not have any available Tokens of Appre-tree-ation.'
+                      : 'You have one Token of Appre-tree-ation left to configure.'}
                   </>
                 )}
               </Typography>
