@@ -1,4 +1,4 @@
-import { Product, Role, Sponsorship, Subscription, Tree, User, Comment, Reaction, Notification } from '@prisma/client';
+import { Product, Role, Sponsorship, Subscription, Tree, User, Comment, Reaction, Notification, Profile } from '@prisma/client';
 import { ViewportProps } from 'react-map-gl';
 import { Stripe } from 'stripe';
 
@@ -25,7 +25,12 @@ export type PartialSponsorship = Partial<
   }
 >;
 export type PartialUser = Partial<
-  User & { roles?: Partial<Role>[]; sponsorships?: PartialSponsorship[]; subscriptions?: Partial<Subscription>[] }
+  User & {
+    roles?: Partial<Role>[];
+    sponsorships?: PartialSponsorship[];
+    subscriptions?: Partial<Subscription>[];
+    profile?: Partial<Profile>;
+  }
 >;
 
 export type Viewport = Omit<ViewportProps, 'width' | 'height'> & { height: string | number; width: string | number };

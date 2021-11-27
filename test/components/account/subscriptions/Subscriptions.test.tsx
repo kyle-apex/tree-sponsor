@@ -4,7 +4,7 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import { SubscriptionWithDetails } from '@prisma/client';
 
-const subscriptions: Partial<SubscriptionWithDetails>[] = [{ productName: 'TFYP Membership' }];
+const subscriptions: Partial<SubscriptionWithDetails>[] = [{ productName: 'TFYP Membership', id: 1 }];
 
 const server = setupServer(
   rest.get('/api/me/subscriptions', (_req, res, ctx) => {

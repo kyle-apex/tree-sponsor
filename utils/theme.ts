@@ -7,11 +7,12 @@ const muiRteTheme: TMUIRichTextEditorStyles = {
       placeHolder: {
         position: 'static',
         paddingLeft: 14,
-        paddingTop: 8.5,
+        paddingTop: 0,
         color: 'var(--label-color)',
       },
       editor: {
         padding: '8.5px 14px',
+        paddingTop: 0,
       } /*
       container: {
         display: 'flex',

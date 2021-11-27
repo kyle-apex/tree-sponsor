@@ -12,6 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         sponsorships: { include: { tree: {}, user: { select: { name: true, profilePath: true, displayName: true } } } },
         roles: {},
         subscriptions: { select: { createdDate: true } },
+        profile: { select: { bio: true } },
       },
     });
 

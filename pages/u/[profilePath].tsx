@@ -16,6 +16,7 @@ import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 import { SponsorshipMap, SponsorshipSubTitle } from 'components/sponsor';
 import Head from 'next/head';
 import { DEFAULT_DESCRIPTION } from 'consts';
+import parse from 'html-react-parser';
 
 const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: number }) => {
   parseResponseDateStrings(user.sponsorships);
@@ -92,6 +93,11 @@ const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: 
             <Typography variant='subtitle2'>
               Joined <SponsorshipSubTitle startDate={joinDate}></SponsorshipSubTitle>
             </Typography>
+          )}
+          {user.profile?.bio && (
+            <Box sx={{ textAlign: 'left', alignSelf: 'center', a: { color: theme => theme.palette.primary.main } }}>
+              <div dangerouslySetInnerHTML={{ __html: user.profile.bio }}></div>
+            </Box>
           )}
         </Box>
         <Box
