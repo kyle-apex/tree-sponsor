@@ -23,43 +23,43 @@ const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: 
   if (user) {
     parseResponseDateStrings(user.sponsorships);
     parseResponseDateStrings(user.subscriptions);
-
-    user.sponsorships.forEach(sponsorship => {
-      sponsorship.user = { profilePath: user.profilePath, name: user.name, displayName: user.displayName };
-    });
-
-    let initialDate: Date;
-    const joinDate: Date = user.subscriptions.reduce((minDate: Date, sub) => {
-      if (!minDate) minDate = sub.createdDate;
-      if (minDate > sub.createdDate) minDate = sub.createdDate;
-      return minDate;
-    }, initialDate);
-
-    const [activeTab, setActiveTab] = useState(0);
-
-    const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
-      setActiveTab(newValue);
-    };
-
-    const rolesText = user?.roles?.length > 0 ? user.roles.map(role => role.name).join(' | ') : null;
-
-    let featuredSponsorship = user.sponsorships.find(obj => obj.id == featuredId);
-
-    if (!featuredSponsorship) featuredSponsorship = user.sponsorships?.length > 0 && user.sponsorships[0];
-
-    const description = featuredSponsorship?.description ? featuredSponsorship.description : DEFAULT_DESCRIPTION;
-    const titlePrefix = featuredSponsorship?.title ? user.sponsorships[0].title : user.displayName || user.name;
-    const title = `${titlePrefix} | Thank-a-Tree with TreeFolksYP`;
-    const imageUrl = featuredSponsorship ? featuredSponsorship.pictureUrl : '';
-
-    user.sponsorships.sort((a, b) => {
-      if (a.id == featuredId) return -1;
-      if (b.id == featuredId) return 1;
-      return a.startDate > b.startDate ? -1 : 1;
-    });
-    //console.log('domPurity', DOMPurify);
-    const xssSafeBio = user.profile?.bio && xss(user.profile.bio);
   }
+  user?.sponsorships.forEach(sponsorship => {
+    sponsorship.user = { profilePath: user.profilePath, name: user.name, displayName: user.displayName };
+  });
+
+  let initialDate: Date;
+  const joinDate: Date = user?.subscriptions.reduce((minDate: Date, sub) => {
+    if (!minDate) minDate = sub.createdDate;
+    if (minDate > sub.createdDate) minDate = sub.createdDate;
+    return minDate;
+  }, initialDate);
+
+  const [activeTab, setActiveTab] = useState(0);
+
+  const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
+    setActiveTab(newValue);
+  };
+
+  const rolesText = user?.roles?.length > 0 ? user.roles.map(role => role.name).join(' | ') : null;
+
+  let featuredSponsorship = user?.sponsorships.find(obj => obj.id == featuredId);
+
+  if (!featuredSponsorship) featuredSponsorship = user?.sponsorships?.length > 0 && user?.sponsorships[0];
+
+  const description = featuredSponsorship?.description ? featuredSponsorship.description : DEFAULT_DESCRIPTION;
+  const titlePrefix = featuredSponsorship?.title ? user?.sponsorships[0].title : user?.displayName || user?.name;
+  const title = `${titlePrefix} | Thank-a-Tree with TreeFolksYP`;
+  const imageUrl = featuredSponsorship ? featuredSponsorship.pictureUrl : '';
+
+  user?.sponsorships.sort((a, b) => {
+    if (a.id == featuredId) return -1;
+    if (b.id == featuredId) return 1;
+    return a.startDate > b.startDate ? -1 : 1;
+  });
+  //console.log('domPurity', DOMPurify);
+  const xssSafeBio = user?.profile?.bio && xss(user.profile.bio);
+
   return (
     <Layout>
       {!user ? (
