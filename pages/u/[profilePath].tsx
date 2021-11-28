@@ -8,6 +8,7 @@ import axios from 'axios';
 import Layout from 'components/layout/Layout';
 import SessionAvatar from 'components/SessionAvatar';
 import SponsorshipGroup from 'components/sponsor/SponsorshipGroup';
+import ShareButton from 'components/share/ShareButton';
 
 import { PartialUser } from 'interfaces';
 import { GetServerSidePropsContext } from 'next';
@@ -88,10 +89,14 @@ const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: 
                 backgroundColor: 'white',
                 width: '100%',
                 textAlign: 'center',
+                position: 'relative',
               }}
             >
               <Box style={{ position: 'relative', margin: '-50px auto 10px auto', width: '100px', height: '100px' }}>
                 <SessionAvatar session={{ user: user }} size={100}></SessionAvatar>
+              </Box>
+              <Box sx={{ position: 'absolute', right: '10px' }}>
+                <ShareButton user={user}></ShareButton>
               </Box>
               <Typography variant='h2' mb={1}>
                 {user.displayName || user.name}

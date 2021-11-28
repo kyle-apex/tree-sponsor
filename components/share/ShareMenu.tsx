@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { PartialSponsorship } from 'interfaces';
+import { PartialSponsorship, PartialUser } from 'interfaces';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { useRouter } from 'next/router';
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import { getDisplayTitle } from 'utils/sponsorship/get-display-title';
 import Snackbar from '@mui/material/Snackbar';
@@ -10,17 +9,21 @@ import Alert from '@mui/material/Alert';
 
 const ShareMenu = ({
   sponsorship,
+  user,
   anchorEl,
   setAnchorEl,
 }: {
-  sponsorship: PartialSponsorship;
+  sponsorship?: PartialSponsorship;
+  user?: PartialUser;
   anchorEl: null | Element | ((element: Element) => Element);
   setAnchorEl: (el: Element) => void;
 }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const open = Boolean(anchorEl);
-  const path = '/u/' + sponsorship.user?.profilePath + '/?t=' + sponsorship.id;
+  const pathSuffix = sponsorship?.id ? '/?t=' + sponsorship.id : '';
+  const profilePath = sponsorship?.user?.profilePath || user?.profilePath;
+  const path = '/u/' + profilePath + pathSuffix;
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -38,8 +41,9 @@ const ShareMenu = ({
   };
 
   const shareToTwitter = () => {
+    const title = sponsorship ? getDisplayTitle(sponsorship) : user?.displayName || user?.name;
     const link = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      getDisplayTitle(sponsorship) + ' | Thank-a-Tree with TreeFolksYP',
+      title + ' | Thank-a-Tree with TreeFolksYP',
     )}&url=${encodeURIComponent(window.location.origin + path)}`;
     shareLink(link);
   };
