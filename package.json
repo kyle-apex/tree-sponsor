@@ -28,6 +28,8 @@
     "express": "^4.17.1",
     "fontsource-roboto": "^3.1.5",
     "html-react-parser": "^1.4.1",
+    "linkify-string": "^3.0.4",
+    "linkifyjs": "^3.0.4",
     "mailchimp-api-v3": "^1.15.0",
     "mui-rte": "^2.0.1",
     "mysql": "^2.18.1",
