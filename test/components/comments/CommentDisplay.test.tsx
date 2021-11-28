@@ -1,9 +1,13 @@
-import { render, mockSession } from 'test/test-utils';
+import { render, mockSession, findByText } from 'test/test-utils';
 import CommentDisplay from 'components/comments/CommentDisplay';
 import { PartialComment } from 'interfaces';
+import userEvent from '@testing-library/user-event';
+
 const testDate = new Date('2021-01-01 12:00');
 testDate.setFullYear(new Date().getFullYear());
-const comment: PartialComment = { text: 'Hello World', user: { id: 1 }, createdDate: testDate };
+const comment: PartialComment = { text: 'Hello World', user: { id: 1 }, createdDate: testDate, id: 1 };
+
+const onDelete = jest.fn();
 
 describe('CommentDisplay', () => {
   it('should display comment text', () => {
@@ -19,14 +23,27 @@ describe('CommentDisplay', () => {
   });
 
   it('should not display a delete icon if it is not my comment', () => {
-    const { getByRole } = render(<CommentDisplay comment={comment}></CommentDisplay>);
-    expect(getByRole('button')).not.toBeInTheDocument();
+    const { queryByRole } = render(<CommentDisplay comment={comment} currentUserId={2} onDelete={onDelete}></CommentDisplay>);
+    expect(queryByRole('button')).not.toBeInTheDocument();
   });
 
   it('should display a delete icon for my comment', () => {
-    mockSession({ user: { id: 1 } });
-    const { getByRole } = render(<CommentDisplay comment={comment}></CommentDisplay>);
+    const { getByRole } = render(<CommentDisplay comment={comment} currentUserId={1} onDelete={onDelete}></CommentDisplay>);
     expect(getByRole('button')).toBeInTheDocument();
+  });
+
+  it('should display delete confirmation dialog', async () => {
+    const { getByRole, findByText } = render(<CommentDisplay comment={comment} currentUserId={1} onDelete={onDelete}></CommentDisplay>);
+    userEvent.click(getByRole('button'));
+
+    expect(await findByText('Are you sure you wish to remove this comment?')).toBeInTheDocument();
+  });
+
+  it('should call onDelete', async () => {
+    const { getByRole, findByText } = render(<CommentDisplay comment={comment} currentUserId={1} onDelete={onDelete}></CommentDisplay>);
+    userEvent.click(getByRole('button'));
+    userEvent.click(await findByText('Confirm'));
+    expect(onDelete).toHaveBeenCalled();
   });
 
   it('should format the comment date', () => {
