@@ -64,6 +64,31 @@ const MembershipPerks = () => {
             <Typography color='primary'>Join the Google Group to receive event calendar invites (no e-mails)</Typography>
           </a>
         </li>
+        <li>
+          <a href='https://smile.amazon.com/ch/74-2569827' target='_blank' rel='noreferrer' style={{ textDecoration: 'none' }}>
+            <Typography color='primary'>Raise money for TreeFolks on Amazon purchases through Amazon Smile</Typography>
+          </a>
+        </li>
+      </ul>
+      <Typography variant='h2' color='secondary'>
+        Passive Fundraising
+      </Typography>
+      <ul>
+        <li>
+          <a href='https://smile.amazon.com/ch/74-2569827' target='_blank' rel='noreferrer' style={{ textDecoration: 'none' }}>
+            <Typography color='primary'>Raise money for TreeFolks on Amazon purchases through Amazon Smile</Typography>
+          </a>
+        </li>
+        <li>
+          <a
+            href='https://www.bing.com/?publ=BINGIP&crea=MY01IK&form=MY01IK&ocid=MY01IK&programname=GwBShare&cid=840-742569827'
+            target='_blank'
+            rel='noreferrer'
+            style={{ textDecoration: 'none' }}
+          >
+            <Typography color='primary'>Support TreeFolks by setting your default search engine to Bing</Typography>
+          </a>
+        </li>
       </ul>
       <Typography variant='h2' color='secondary'>
         Upcoming Events
