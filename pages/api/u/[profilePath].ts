@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     //console.log('user', user);
 
-    if (!user) throwError(res, 'Profile not found');
+    //if (!user) throwError(res, 'Profile not found');
 
     /* const sponsorships = await prisma.sponsorship.findMany({
       where: { userId: user.id },
