@@ -26,7 +26,7 @@ const TextEditor = ({
   placeholder?: string;
   label?: string;
   value?: string;
-  onChange: (val: string) => void;
+  onChange?: (val: string) => void;
 }) => {
   const contentHTML = convertFromHTML(value || '');
   const state = ContentState.createFromBlockArray(contentHTML.contentBlocks, contentHTML.entityMap);

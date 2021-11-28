@@ -24,6 +24,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import LocationOffIcon from '@mui/icons-material/LocationOff';
 import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
+import { getDisplayTitle } from 'utils/sponsorship/get-display-title';
 
 export type TreeDetail = {
   title?: string;
@@ -95,7 +96,7 @@ const SponsorshipDisplay = ({
                 link={sponsorship.user?.profilePath ? '/u/' + sponsorship.user.profilePath : ''}
               />
             }
-            title={activeSponsorship?.title || sponsorship?.title || DEFAULT_TITLE_PREFIX + getFirstName(sponsorship.user)}
+            title={activeSponsorship?.title || getDisplayTitle(sponsorship)}
             subheader={<SponsorshipSubTitle startDate={sponsorship.startDate} />}
             action={
               handleClose && (
@@ -125,7 +126,7 @@ const SponsorshipDisplay = ({
           {!isEditMode && (
             <CardActions disableSpacing sx={{ padding: 0, height: '100%', flexDirection: 'column' }}>
               <SponsorshipActions
-                sponsorshipId={sponsorship?.id}
+                sponsorship={sponsorship}
                 signInCallbackUrl={`/u/${sponsorship?.user?.profilePath}?t=${sponsorship?.id}`}
               />
             </CardActions>

@@ -1,7 +1,7 @@
 import CommentSection from 'components/comments/CommentSection';
 import React, { useState } from 'react';
 import { useGet } from 'utils/hooks/use-get';
-import { PartialComment, PartialReaction } from 'interfaces';
+import { PartialComment, PartialReaction, PartialSponsorship } from 'interfaces';
 import Box from '@mui/system/Box';
 import ReactionButton from 'components/reactions/ReactionButton';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
@@ -11,8 +11,10 @@ import Button from '@mui/material/Button';
 import Link from 'next/link';
 import ChevronRight from '@mui/icons-material/ChevronRight';
 import ReactionCount from 'components/reactions/ReactionCount';
+import ShareButton from 'components/share/ShareButton';
 
-const SponsorshipActions = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipId: number; signInCallbackUrl?: string }) => {
+const SponsorshipActions = ({ sponsorship, signInCallbackUrl }: { sponsorship: PartialSponsorship; signInCallbackUrl?: string }) => {
+  const sponsorshipId = sponsorship.id;
   const [showComments, setShowComments] = useState(false);
   const [unauthenticated, setUnauthenticated] = useState(false);
   const { data: comments, isFetching: isCommentsFetching } = useGet<PartialComment[]>(
@@ -45,6 +47,7 @@ const SponsorshipActions = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipI
             {comments?.length > 0 ? <ChatIcon /> : <ChatBubbleOutlineIcon />}
             <Typography sx={{ marginLeft: 1 }}>{comments?.length || 0}</Typography>
           </Button>
+          <ShareButton sponsorship={sponsorship} />
           <Box sx={{ flex: '1 1 100%' }}></Box>
           {reactions?.length > 0 && <ReactionCount reactions={reactions} hasDialog={true} />}
         </Box>
