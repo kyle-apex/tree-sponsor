@@ -40,9 +40,9 @@ const ShareMenu = ({
   };
 
   const shareToTwitter = () => {
-    const link = `https://twitter.com/intent/tweet?text=${encodeURIComponent(getDisplayTitle(sponsorship))}&url=${encodeURIComponent(
-      window.location.origin + path,
-    )}`;
+    const link = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      getDisplayTitle(sponsorship) + ' | Thank-a-Tree with TreeFolksYP',
+    )}&url=${encodeURIComponent(window.location.origin + path)}`;
     shareLink(link);
   };
 
@@ -51,12 +51,15 @@ const ShareMenu = ({
     shareLink(link);
   };
 
-  const shareLink = (link: string) => {
-    window.open(link, 'twitter-share-dialog', 'width=626,height=436');
-    handleClose();
+  const shareToSnapchat = () => {
+    const link = `https://www.snapchat.com/scan?attachmentUrl=${encodeURIComponent(window.location.origin + path)}`;
+    shareLink(link);
   };
 
-  //twitter.com/intent/tweet?text=ShareThis%20Onboarding%3A%20Customize%20Share%20Buttons%20%26%20Other%20Tools%20-%20ShareThis&url=https%3A%2F%2Fwww.sharethis.com%2F
+  const shareLink = (link: string) => {
+    window.open(link, 'tfyp-share-dialog', 'width=626,height=536');
+    handleClose();
+  };
 
   return (
     <>
@@ -68,7 +71,9 @@ const ShareMenu = ({
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
-        sx={{ '.MuiMenu-list': { paddingTop: 0, paddingBottom: 0 } }}
+        sx={{
+          '.MuiMenu-list': { paddingTop: 0, paddingBottom: 0, backgroundColor: theme => theme.palette.secondary.main, color: 'white' },
+        }}
       >
         <MenuItem onClick={copyLink} sx={{ justifyContent: 'space-between' }}>
           Copy Link <CopyIcon sx={{ fontSize: '20px' }}></CopyIcon>
