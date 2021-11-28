@@ -4,7 +4,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useRouter } from 'next/router';
 import CopyIcon from '@mui/icons-material/ContentCopy';
-import Box from '@mui/material/Box';
 import { getDisplayTitle } from 'utils/sponsorship/get-display-title';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
@@ -21,7 +20,6 @@ const ShareMenu = ({
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const open = Boolean(anchorEl);
-  const router = useRouter();
   const path = '/u/' + sponsorship.user?.profilePath + '/?t=' + sponsorship.id;
 
   const handleClose = () => {
@@ -29,7 +27,7 @@ const ShareMenu = ({
   };
 
   const copyLink = () => {
-    navigator.clipboard.writeText(window.location.origin + path);
+    navigator?.clipboard?.writeText(window.location.origin + path);
     setSnackbarOpen(true);
     handleClose();
   };

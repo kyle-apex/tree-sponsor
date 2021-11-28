@@ -180,7 +180,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   try {
     const results = await axios.get(process.env.URL + '/api/u/' + profilePath);
-    console.log('results.data', results.data);
     return { props: { user: results.data, featuredId: featuredId ?? 0 } };
   } catch (err) {
     console.log('err', err);
