@@ -81,6 +81,7 @@ const ShareMenu = ({
         <MenuItem onClick={shareToFacebook}>Share to Facebook</MenuItem>
         <MenuItem onClick={shareToLinkedIn}>Share to LinkedIn</MenuItem>
         <MenuItem onClick={shareToTwitter}>Share to Twitter</MenuItem>
+        <MenuItem onClick={shareToSnapchat}>Share to Snapchat</MenuItem>
       </Menu>
       <Snackbar
         open={snackbarOpen}
