@@ -29,4 +29,18 @@ describe('AddComment', () => {
 
     expect(onAdd).toHaveBeenCalledWith('Example');
   });
+
+  it('should hide buttons after clicking cancel', async () => {
+    const { getByRole, findByText } = render(<AddComment onAdd={onAdd}></AddComment>);
+
+    userEvent.click(getByRole('textbox'));
+
+    const button = await findByText('Cancel');
+
+    expect(button).toBeInTheDocument();
+
+    userEvent.click(button);
+
+    expect(button).not.toBeInTheDocument();
+  });
 });
