@@ -52,7 +52,7 @@ const AddComment = ({ onAdd, isAdding }: { onAdd: (text: string) => void; isAddi
       ></TextField>
       {isActive && (
         <Box sx={{ marginBottom: 2 }}>
-          <LoadingButton size='small' onClick={addComment} color='secondary' variant='contained' isLoading={isAdding}>
+          <LoadingButton size='small' onClick={addComment} disabled={!text} color='secondary' variant='contained' isLoading={isAdding}>
             Submit
           </LoadingButton>
           <Button size='small' onClick={cancelComment} color='inherit' sx={{ marginLeft: 1 }}>
