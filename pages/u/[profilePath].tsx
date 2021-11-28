@@ -17,6 +17,7 @@ import { SponsorshipMap, SponsorshipSubTitle } from 'components/sponsor';
 import Head from 'next/head';
 import { DEFAULT_DESCRIPTION } from 'consts';
 import parse from 'html-react-parser';
+import xss from 'xss';
 
 const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: number }) => {
   parseResponseDateStrings(user.sponsorships);
@@ -55,6 +56,8 @@ const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: 
     if (b.id == featuredId) return 1;
     return a.startDate > b.startDate ? -1 : 1;
   });
+  //console.log('domPurity', DOMPurify);
+  const xssSafeBio = user.profile?.bio && xss(user.profile.bio);
 
   return (
     <Layout>
@@ -94,9 +97,9 @@ const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: 
               Joined <SponsorshipSubTitle startDate={joinDate}></SponsorshipSubTitle>
             </Typography>
           )}
-          {user.profile?.bio && (
-            <Box sx={{ textAlign: 'left', alignSelf: 'center', a: { color: theme => theme.palette.primary.main } }}>
-              {parse(user.profile.bio)}
+          {xssSafeBio && (
+            <Box sx={{ textAlign: 'left', marginBottom: -2, alignSelf: 'center', a: { color: theme => theme.palette.primary.main } }}>
+              {parse(xssSafeBio)}
             </Box>
           )}
         </Box>
