@@ -192,6 +192,52 @@ model Tree {
   latitude     Decimal?      @db.Decimal(8, 5)
   longitude    Decimal?      @db.Decimal(9, 6)
   sponsorships Sponsorship[]
+  location     Location      @relation(fields: [locationId], references: [id])
+  locationId   Int
+}
+
+model Location {
+  id                   Int           @id @default(autoincrement())
+  name                 String?
+  latitude             Decimal?      @db.Decimal(8, 5)
+  longitude            Decimal?      @db.Decimal(9, 6)
+  mapboxId             String?
+  mapboxCategories     String?
+  mapboxPlaceType      String?
+  mapboxPlaceId        String?
+  mapboxNeighborhoodId String?
+  foursquareId         String?
+  minLat               Decimal?      @db.Decimal(8, 5)
+  maxLat               Decimal?      @db.Decimal(8, 5)
+  minLong              Decimal?      @db.Decimal(9, 6)
+  maxLong              Decimal?      @db.Decimal(9, 6)
+  neighborhood         Neighborhood? @relation(fields: [mapboxNeighborhoodId], references: [mapboxId])
+  place                Place?        @relation(fields: [mapboxPlaceId], references: [mapboxId])
+  trees                Tree[]
+}
+
+model Neighborhood {
+  mapboxId  String     @id
+  name      String?
+  latitude  Decimal?   @db.Decimal(8, 5)
+  longitude Decimal?   @db.Decimal(9, 6)
+  minLat    Decimal?   @db.Decimal(8, 5)
+  maxLat    Decimal?   @db.Decimal(8, 5)
+  minLong   Decimal?   @db.Decimal(9, 6)
+  maxLong   Decimal?   @db.Decimal(9, 6)
+  locations Location[]
+}
+
+model Place {
+  mapboxId  String     @id
+  name      String?
+  latitude  Decimal?   @db.Decimal(8, 5)
+  longitude Decimal?   @db.Decimal(9, 6)
+  minLat    Decimal?   @db.Decimal(8, 5)
+  maxLat    Decimal?   @db.Decimal(8, 5)
+  minLong   Decimal?   @db.Decimal(9, 6)
+  maxLong   Decimal?   @db.Decimal(9, 6)
+  locations Location[]
 }
 
 model TreeImage {
@@ -200,7 +246,7 @@ model TreeImage {
   height        Int?
   createdDate   DateTime?
   reviewStatus  ReviewStatus? @default(New)
-  Sponsorship   Sponsorship?  @relation(fields: [sponsorshipId], references: [id])
+  sponsorship   Sponsorship?  @relation(fields: [sponsorshipId], references: [id])
   sponsorshipId Int?
 }
 

@@ -7,7 +7,7 @@ const config: Config.InitialOptions = {
   clearMocks: true,
   preset: 'ts-jest',
   //testEnvironment: 'node',
-  setupFilesAfterEnv: ['<rootDir>/utils/prisma/singleton.ts', '<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/utils/prisma/singleton.ts', '<rootDir>/jest.setup.ts', 'dotenv/config'],
   moduleNameMapper: {
     '^utils/prisma/init': '<rootDir>/utils/prisma/singleton',
     '^utils/(.*)': '<rootDir>/utils/$1',
