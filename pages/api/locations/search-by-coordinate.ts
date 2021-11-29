@@ -1,7 +1,7 @@
 //
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
-import { LocationTag } from '@prisma/client';
+import { Location } from '@prisma/client';
 
 function getNeighborhood(feature: any) {
   const neighborhood = feature.context.find((ctx: any) => {
@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       `https://api.mapbox.com/geocoding/v5/mapbox.places/${long},${lat}.json?limit=5&types=poi&access_token=${process.env.MAPBOX_ACCESS_TOKEN}`,
     );
     const features = results?.data?.features;
-    let locations: Partial<LocationTag>[] = [];
+    let locations: Partial<Location>[] = [];
 
     if (features) {
       locations = features.map((feature: any) => {
