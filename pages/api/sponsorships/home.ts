@@ -5,7 +5,11 @@ import { Prisma } from '@prisma/client';
 //SponsorshipWhereInput
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
-    const whereClause: Prisma.SponsorshipWhereInput = { reviewStatus: { notIn: ['Draft', 'Rejected'] } };
+    const whereClause: Prisma.SponsorshipWhereInput = {
+      reviewStatus: { notIn: ['Draft', 'Rejected'] },
+      isPrivate: false,
+      isPrivateLocation: false,
+    };
 
     if (process.env.FEATURED_SPONSORSHIP_IDS) {
       const ids = process.env.FEATURED_SPONSORSHIP_IDS.trim()

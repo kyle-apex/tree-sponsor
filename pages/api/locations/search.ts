@@ -18,15 +18,15 @@ function getContextByPlaceType(feature: any, placeType: string) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const long = req.query.long || '-97.768764'; //'-97.769054';-97.768764, 30.264246
-  const lat = req.query.lat || '30.264246'; // || '30.2453';
+  const searchText = req.query.search_text; // || '-97.768764'; //'-97.769054';-97.768764, 30.264246
+  //const lat = req.query.lat || '30.264246'; // || '30.2453';
   console.log('req.pbody', req.body);
   console.log('req.url', req.url);
   console.log('req/query', req.query);
-  console.log('long', long, 'lat', lat);
+  //console.log('long', long, 'lat', lat);
   if (req.method === 'GET') {
     const results = await axios.get(
-      `https://api.mapbox.com/geocoding/v5/mapbox.places/${long},${lat}.json?limit=5&types=poi&access_token=${process.env.MAPBOX_ACCESS_TOKEN}`,
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchText}.json?limit=5&types=poi&access_token=${process.env.MAPBOX_ACCESS_TOKEN}`,
     );
     const features = results?.data?.features;
     let locations: Partial<Location>[] = [];
