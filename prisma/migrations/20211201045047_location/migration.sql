@@ -34,7 +34,7 @@ MODIFY
 ALTER TABLE
     `Tree`
 ADD
-    COLUMN `locationId` INTEGER NOT NULL;
+    COLUMN `locationId` INTEGER NULL;
 
 -- CreateTable
 CREATE TABLE `Location` (
@@ -93,7 +93,9 @@ SET
 ALTER TABLE
     `Tree`
 ADD
-    CONSTRAINT `Tree_locationId_fkey` FOREIGN KEY (`locationId`) REFERENCES `Location`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+    CONSTRAINT `Tree_locationId_fkey` FOREIGN KEY (`locationId`) REFERENCES `Location`(`id`) ON DELETE
+SET
+    NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE
