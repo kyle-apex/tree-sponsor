@@ -192,8 +192,8 @@ model Tree {
   latitude     Decimal?      @db.Decimal(8, 5)
   longitude    Decimal?      @db.Decimal(9, 6)
   sponsorships Sponsorship[]
-  location     Location      @relation(fields: [locationId], references: [id])
-  locationId   Int
+  location     Location?     @relation(fields: [locationId], references: [id])
+  locationId   Int?
 }
 
 model Location {
