@@ -24,6 +24,7 @@ const SearchBox = ({
       onChange={event => {
         onChange(event.target.value);
       }}
+      autoComplete='off'
       InputProps={{
         startAdornment: (
           <InputAdornment position='start'>

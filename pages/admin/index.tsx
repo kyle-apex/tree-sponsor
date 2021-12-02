@@ -22,6 +22,7 @@ import { StyledTableRow } from 'components/StyledTableRow';
 import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
 import serverSideIsAdmin from 'utils/auth/server-side-is-admin';
 import Link from 'next/link';
+import SearchBox from 'components/form/SearchBox';
 
 export const getServerSideProps = serverSideIsAdmin;
 
@@ -106,7 +107,7 @@ export default function EnhancedTable(): JSX.Element {
 
         return (
           state.userName.toLowerCase().includes(nameFilter.toLowerCase()) ||
-          (state.email && state.email.toLowerCase().includes(nameFilter.toLowerCase()))
+          (state.email && state.email.replace('.com', '').toLowerCase().includes(nameFilter.toLowerCase()))
         );
       });
 
@@ -140,23 +141,8 @@ export default function EnhancedTable(): JSX.Element {
           </Button>
         </Link>
         <h1>Admin</h1>
+        <SearchBox label='Find a Member' onChange={setNameFilter} defaultValue={nameFilter}></SearchBox>
 
-        <TextField
-          className={classes.full + ' ' + classes.search}
-          id='input-with-icon-textfield'
-          label='Find a Member'
-          value={nameFilter}
-          onChange={event => {
-            setNameFilter(event.target.value);
-          }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position='start'>
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
         <TablePagination
           rowsPerPageOptions={[10, 50, 100]}
           component='div'
