@@ -39,6 +39,5 @@ export const useGet = <T>(
 
     return promise;
   };
-
   return useQuery([key, params], fetcher, options || { refetchOnWindowFocus: false });
 };

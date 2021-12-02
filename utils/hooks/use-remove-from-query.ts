@@ -10,7 +10,6 @@ export const useRemoveFromQuery = <T extends { id?: string | number }>(
 
   function removeQueryListItem(id: number) {
     const previousList: T[] = queryClient.getQueryData(queryKey);
-
     const item = previousList.find(item => {
       return item.id == id;
     });

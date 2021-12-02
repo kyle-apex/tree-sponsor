@@ -34,7 +34,7 @@ const ReactionsDialog = ({
       </DialogTitle>
       <DialogContent>
         {reactions?.map(reaction => (
-          <Box key={reaction.id}>
+          <Box key={reaction.id || reaction.createdDate.getTime()}>
             <hr></hr>
             <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', paddingRight: 1, paddingLeft: 1 }} gap={2}>
               <UserAvatar
