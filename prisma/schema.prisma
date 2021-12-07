@@ -72,6 +72,8 @@ model User {
   commentReactions      CommentReaction[]
   notifications         Notification[]    @relation("user")
   notificationsAsSource Notification[]    @relation("sourceUser")
+  treeChangeLogs        TreeChangeLog[]
+  lastChangedByTrees    Tree[]
   @@map(name: "users")
 }
 
@@ -130,7 +132,7 @@ model SubscriptionWithDetails {
 
 model Comment {
   id              Int               @id @default(autoincrement())
-  createdDate     DateTime?
+  createdDate     DateTime?         @default(now())
   text            String?
   userId          Int?
   isDeleted       Boolean?          @default(false)
@@ -145,7 +147,7 @@ model Comment {
 
 model CommentReaction {
   id          Int       @id @default(autoincrement())
-  createdDate DateTime?
+  createdDate DateTime? @default(now())
   type        String?
   userId      Int?
   user        User?     @relation(fields: [userId], references: [id])
@@ -155,7 +157,7 @@ model CommentReaction {
 
 model Reaction {
   id            Int          @id @default(autoincrement())
-  createdDate   DateTime?
+  createdDate   DateTime?    @default(now())
   type          String?
   userId        Int?
   user          User?        @relation(fields: [userId], references: [id])
@@ -169,7 +171,7 @@ model Notification {
   link         String?
   parameter    String?
   count        Int?
-  createdDate  DateTime?
+  createdDate  DateTime? @default(now())
   isRead       Boolean?  @default(false)
   userId       Int?
   user         User?     @relation("user", fields: [userId], references: [id])
@@ -186,20 +188,43 @@ model Product {
 }
 
 model Tree {
-  id                       Int           @id @default(autoincrement())
+  id                       Int             @id @default(autoincrement())
   name                     String?
+  createdDate              DateTime?       @default(now())
   pictureUrl               String?
-  latitude                 Decimal?      @db.Decimal(8, 5)
-  longitude                Decimal?      @db.Decimal(9, 6)
-  diameter                 Decimal?      @db.Decimal(5, 2)
-  height                   Decimal?      @db.Decimal(6, 2)
+  latitude                 Decimal?        @db.Decimal(8, 5)
+  longitude                Decimal?        @db.Decimal(9, 6)
+  diameter                 Decimal?        @db.Decimal(5, 2)
+  height                   Decimal?        @db.Decimal(6, 2)
   sponsorships             Sponsorship[]
-  location                 Location?     @relation(fields: [locationId], references: [id])
+  location                 Location?       @relation(fields: [locationId], references: [id])
   locationId               Int?
-  species                  Species?      @relation(fields: [speciesId], references: [id])
+  species                  Species?        @relation(fields: [speciesId], references: [id])
   speciesId                Int?
   identificationConfidence Int?
   images                   TreeImage[]
+  changeLogs               TreeChangeLog[]
+  lastChangedByUserId      Int?
+  lastChangedByUser        User?           @relation(fields: [lastChangedByUserId], references: [id])
+}
+
+enum ChangeLogType {
+  Create
+  Update
+}
+
+model TreeChangeLog {
+  id              Int            @id @default(autoincrement())
+  type            ChangeLogType? @default(Create)
+  createdDate     DateTime?      @default(now())
+  attribute       String?
+  oldValue        String?
+  newValue        String?
+  userId          Int?
+  user            User?          @relation(fields: [userId], references: [id])
+  treeId          Int?
+  tree            Tree?          @relation(fields: [treeId], references: [id])
+  transactionUuid String?
 }
 
 model Species {
@@ -275,7 +300,7 @@ model TreeImage {
   uuid          String        @id
   width         Int?
   height        Int?
-  createdDate   DateTime?
+  createdDate   DateTime?     @default(now())
   reviewStatus  ReviewStatus? @default(New)
   sponsorship   Sponsorship?  @relation(fields: [sponsorshipId], references: [id])
   sponsorshipId Int?
