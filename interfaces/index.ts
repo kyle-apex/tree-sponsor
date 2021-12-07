@@ -1,4 +1,17 @@
-import { Product, Role, Sponsorship, Subscription, Tree, User, Comment, Reaction, Notification, Profile } from '@prisma/client';
+import {
+  Product,
+  Role,
+  Sponsorship,
+  Subscription,
+  Tree,
+  User,
+  Comment,
+  Reaction,
+  Notification,
+  Profile,
+  Location,
+  Species,
+} from '@prisma/client';
 import { ViewportProps } from 'react-map-gl';
 import { Stripe } from 'stripe';
 
@@ -13,10 +26,12 @@ export interface DefaultSession extends Record<string, unknown> {
 
 export interface NextSession extends Record<string, unknown>, DefaultSession {}
 
+export type PartialSpecies = Partial<Species>;
+export type PartialTree = Partial<Tree>;
 export type PartialComment = Partial<Comment & { user?: Partial<User> } & { reactions?: Partial<Reaction>[] }>;
 export type PartialReaction = Partial<Reaction & { user?: Partial<User> }>;
 export type PartialNotification = Partial<Notification & { user?: Partial<User>; sourceUser?: Partial<User> }>;
-
+export type PartialLocation = Partial<Location>;
 export type PartialSubscription = Partial<Subscription & { product?: Partial<Product> } & { user?: Partial<User> }>;
 export type StripeSubscription = Stripe.Subscription & { plan?: { product?: string; amount: number } };
 export type PartialSponsorship = Partial<

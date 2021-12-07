@@ -12,7 +12,7 @@ const ImageUploadAndPreview = ({
   size = 'default',
 }: {
   imageUrl: string;
-  setImageUrl: React.Dispatch<React.SetStateAction<string>>;
+  setImageUrl: (val: string) => void; //React.Dispatch<React.SetStateAction<string>>;
   maxHeight?: number;
   maxWidth?: number;
   hideEditButton?: boolean;

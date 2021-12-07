@@ -10,6 +10,7 @@ import LocationSelector from 'components/LocationSelector';
 import SplitRow from 'components/layout/SplitRow';
 import { PartialSponsorship } from 'interfaces';
 import LoadingButton from 'components/LoadingButton';
+import LocationSearch from 'components/location/LocationSearch';
 
 const useStyles = makeStyles(theme => ({
   thumbnail: {
@@ -213,14 +214,17 @@ const SponsorshipAddEditForm = ({
       )}
       {activeStep == 1 && (
         <>
-          <LocationSelector
-            onViewportChange={({ latitude, longitude }) => {
-              setLatitude(latitude), setLongitude(longitude);
-            }}
-            latitude={sponsorship?.tree?.latitude ? Number(sponsorship?.tree?.latitude) : null}
-            longitude={sponsorship?.tree?.longitude ? Number(sponsorship?.tree?.longitude) : null}
-            auto={!sponsorship?.tree?.latitude}
-          ></LocationSelector>
+          <LocationSearch></LocationSearch>
+          {false && (
+            <LocationSelector
+              onViewportChange={({ latitude, longitude }) => {
+                setLatitude(latitude), setLongitude(longitude);
+              }}
+              latitude={sponsorship?.tree?.latitude ? Number(sponsorship?.tree?.latitude) : null}
+              longitude={sponsorship?.tree?.longitude ? Number(sponsorship?.tree?.longitude) : null}
+              auto={!sponsorship?.tree?.latitude}
+            ></LocationSelector>
+          )}
           <SplitRow>
             <Button
               disabled={isUpserting}

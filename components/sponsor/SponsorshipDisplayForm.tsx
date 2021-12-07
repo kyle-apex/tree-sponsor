@@ -10,6 +10,7 @@ import { UserAvatar, SponsorshipSubTitle } from 'components/sponsor';
 import { DESCRIPTION_PLACEHOLDER, DEFAULT_TITLE_PREFIX } from 'consts';
 import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
+import SpeciesSelector from 'components/tree/SpeciesSelector';
 
 const SponsorshipDisplayForm = ({
   title,

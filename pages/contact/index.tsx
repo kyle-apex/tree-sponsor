@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
+import SpeciesSelector from 'components/tree/SpeciesSelector';
 
 const useStyles = makeStyles(theme => ({
   formField: {
@@ -52,6 +53,12 @@ const Contact = () => {
         <Typography color='secondary' variant='h1'>
           Contact Us
         </Typography>
+        <SpeciesSelector
+          defaultValue={2399}
+          onChange={id => {
+            console.log('changed', id);
+          }}
+        ></SpeciesSelector>
         <TextField
           label='Email'
           value={email}

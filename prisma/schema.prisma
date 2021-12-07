@@ -186,19 +186,50 @@ model Product {
 }
 
 model Tree {
-  id           Int           @id @default(autoincrement())
-  name         String?
-  pictureUrl   String?
-  latitude     Decimal?      @db.Decimal(8, 5)
-  longitude    Decimal?      @db.Decimal(9, 6)
-  sponsorships Sponsorship[]
-  location     Location?     @relation(fields: [locationId], references: [id])
-  locationId   Int?
+  id                       Int           @id @default(autoincrement())
+  name                     String?
+  pictureUrl               String?
+  latitude                 Decimal?      @db.Decimal(8, 5)
+  longitude                Decimal?      @db.Decimal(9, 6)
+  diameter                 Decimal?      @db.Decimal(5, 2)
+  height                   Decimal?      @db.Decimal(6, 2)
+  sponsorships             Sponsorship[]
+  location                 Location?     @relation(fields: [locationId], references: [id])
+  locationId               Int?
+  species                  Species?      @relation(fields: [speciesId], references: [id])
+  speciesId                Int?
+  identificationConfidence Int?
+  images                   TreeImage[]
+}
+
+model Species {
+  id              Int      @id @default(autoincrement())
+  name            String?
+  commonName      String?
+  alternateNaming String?  @db.VarChar(512)
+  genus           String?
+  species         String?
+  speciesCode     String?
+  growthForm      String?
+  percentLeafType String?
+  leafType        String?
+  growthRate      String?
+  longevity       String?
+  height          Int?
+  familyName      String?
+  orderName       String?
+  className       String?
+  isNative        Boolean? @default(false)
+  isInTexas       Boolean? @default(false)
+  searchPriority  Int?     @default(0)
+  trees           Tree[]
 }
 
 model Location {
   id                   Int           @id @default(autoincrement())
   name                 String?
+  address              String?
+  placeName            String?
   latitude             Decimal?      @db.Decimal(8, 5)
   longitude            Decimal?      @db.Decimal(9, 6)
   mapboxId             String?
@@ -248,6 +279,8 @@ model TreeImage {
   reviewStatus  ReviewStatus? @default(New)
   sponsorship   Sponsorship?  @relation(fields: [sponsorshipId], references: [id])
   sponsorshipId Int?
+  tree          Tree?         @relation(fields: [treeId], references: [id])
+  treeId        Int?
 }
 
 enum ReviewStatus {

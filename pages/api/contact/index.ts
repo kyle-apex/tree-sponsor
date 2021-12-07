@@ -10,8 +10,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }),
     );
 
-    console.log('email to send', process.env.SUPPORT_EMAIL);
-
     const email = {
       from: process.env.SUPPORT_EMAIL,
       replyTo: req.body.email,

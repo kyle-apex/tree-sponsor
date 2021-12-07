@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 
 const SplitRow = ({ children, alignItems = 'inherit' }: { children: ReactNode[]; alignItems?: string }) => {
   return (
-    <Box flexDirection='row' display='flex' alignItems={alignItems}>
+    <Box flexDirection='row' display='flex' alignItems={alignItems} className='full-width'>
       <Box flex='auto' display='flex' justifyContent='start'>
         {children[0]}
       </Box>
