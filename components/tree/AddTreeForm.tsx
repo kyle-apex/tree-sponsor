@@ -4,17 +4,16 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import CardActions from '@mui/material/CardActions';
-
-import TextField from '@mui/material/TextField';
 import { PartialTree } from 'interfaces';
-import SpeciesSelector from './SpeciesSelector';
 import SplitRow from 'components/layout/SplitRow';
 import LoadingButton from 'components/LoadingButton';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
+
+import axios from 'axios';
+import AddTreeFormFields from './AddTreeFormFields';
 
 const steps = [{ label: 'Details' }, { label: 'Location' }];
 
@@ -28,8 +27,9 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
     setTree({ ...tree, [propertyName]: value });
   }, []);
 
-  const upsertTree = () => {
-    onComplete();
+  const upsertTree = async () => {
+    const updatedTree = await axios.post('/api/trees', { ...tree });
+    if (updatedTree?.data?.id) handleChange('id', updatedTree.data.id);
   };
 
   const handleStep = (step: number) => () => {
@@ -76,30 +76,7 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
           />
         </CardMedia>
         <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Typography sx={{ marginBottom: 2 }} variant='h6' color='secondary'>
-            Optional Details
-          </Typography>
-          <SpeciesSelector onChange={speciesId => handleChange('speciesId', speciesId)}></SpeciesSelector>
-          <TextField
-            sx={{ marginBottom: 3, marginTop: 2 }}
-            label='Name/Nickname (ex: The Treaty Oak)'
-            onChange={e => handleChange('name', e.target.value)}
-          ></TextField>
-          <Typography sx={{ marginBottom: 2 }} color='secondary' variant='h6'>
-            Advanced Details
-          </Typography>
-          <TextField
-            sx={{ marginBottom: 2 }}
-            label='Height Estimation (feet)'
-            onChange={e => handleChange('height', e.target.value)}
-            type='number'
-          ></TextField>
-          <TextField
-            sx={{ marginBottom: 2 }}
-            label='Diameter (inches)'
-            onChange={e => handleChange('diameter', e.target.value)}
-            type='number'
-          ></TextField>
+          <AddTreeFormFields tree={tree} handleChange={handleChange}></AddTreeFormFields>
         </CardContent>
         <CardActions>
           <SplitRow>

@@ -300,6 +300,7 @@ model TreeImage {
   uuid          String        @id
   width         Int?
   height        Int?
+  url           String?
   createdDate   DateTime?     @default(now())
   reviewStatus  ReviewStatus? @default(New)
   sponsorship   Sponsorship?  @relation(fields: [sponsorshipId], references: [id])
