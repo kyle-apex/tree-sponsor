@@ -1,9 +1,4 @@
-import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import React, { useState, useCallback } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import CardActions from '@mui/material/CardActions';
 import { PartialTree } from 'interfaces';
 import SplitRow from 'components/layout/SplitRow';
 import LoadingButton from 'components/LoadingButton';
@@ -14,6 +9,8 @@ import StepButton from '@mui/material/StepButton';
 
 import axios from 'axios';
 import AddTreeFormFields from './AddTreeFormFields';
+import Box from '@mui/material/Box';
+import LocationSelector from 'components/LocationSelector';
 
 const steps = [{ label: 'Details' }, { label: 'Location' }];
 
@@ -55,54 +52,78 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
           </Step>
         ))}
       </Stepper>
-      <Card>
-        <CardMedia
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#f1f1f1',
-            cursor: 'pointer',
-            minHeight: '200px',
-          }}
-          component='div'
-          title='Click to Update Image'
-        >
-          <ImageUploadAndPreview
-            imageUrl={tree.pictureUrl}
-            setImageUrl={(imageUrl: string) => {
-              handleChange('imageUrl', imageUrl);
-            }}
-          />
-        </CardMedia>
-        <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-          <AddTreeFormFields tree={tree} handleChange={handleChange}></AddTreeFormFields>
-        </CardContent>
-        <CardActions>
-          <SplitRow>
+      <Box sx={{ display: activeStep === 0 ? 'block' : 'none' }}>
+        <AddTreeFormFields tree={tree} handleChange={handleChange}></AddTreeFormFields>
+        <SplitRow>
+          {onComplete ? (
             <Button
               disabled={isUpserting}
               color='inherit'
               onClick={() => {
-                saveStep(activeStep - 1);
+                onComplete();
               }}
             >
-              Back
+              Cancel
             </Button>
-            <LoadingButton
-              disabled={isUpserting}
-              isLoading={isUpserting}
-              variant='contained'
-              color='primary'
-              onClick={() => {
-                saveStep(activeStep, true);
-              }}
-            >
-              Save and Finish
-            </LoadingButton>
-          </SplitRow>
-        </CardActions>
-      </Card>
+          ) : (
+            <></>
+          )}
+          <LoadingButton
+            disabled={isUpserting || !tree.pictureUrl}
+            variant='contained'
+            color='secondary'
+            isLoading={isUpserting}
+            onClick={() => {
+              saveStep(activeStep, true);
+            }}
+          >
+            Save
+          </LoadingButton>
+          <Button
+            disabled={isUpserting || !tree.pictureUrl}
+            variant='contained'
+            color='primary'
+            onClick={() => {
+              saveStep(activeStep + 1);
+            }}
+          >
+            Save & Continue
+          </Button>
+        </SplitRow>
+      </Box>
+      <Box sx={{ display: activeStep === 1 ? 'block' : 'none' }}>
+        <LocationSelector
+          onViewportChange={({ latitude, longitude }) => {
+            handleChange('latitude', latitude);
+            handleChange('longitude', longitude);
+          }}
+          latitude={tree?.latitude ? Number(tree?.latitude) : null}
+          longitude={tree?.longitude ? Number(tree?.longitude) : null}
+          auto={!tree?.latitude}
+        ></LocationSelector>
+        <SplitRow>
+          <Button
+            disabled={isUpserting}
+            color='inherit'
+            onClick={() => {
+              saveStep(activeStep - 1);
+            }}
+          >
+            Back
+          </Button>
+          <LoadingButton
+            disabled={isUpserting}
+            isLoading={isUpserting}
+            variant='contained'
+            color='primary'
+            onClick={() => {
+              saveStep(activeStep, true);
+            }}
+          >
+            Save and Finish
+          </LoadingButton>
+        </SplitRow>
+      </Box>
     </>
   );
 };
