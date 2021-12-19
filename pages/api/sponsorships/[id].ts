@@ -7,6 +7,8 @@ import { prisma } from 'utils/prisma/init';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   let session, userId;
 
+  console.log('req', req.method);
+
   if (req.method !== 'GET') {
     session = await getSession({ req });
 
@@ -38,5 +40,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await prisma.sponsorship.delete({ where: { id: id } });
 
     res.json({ count: 1 });
+  } else if (req.method === 'PATCH') {
+    const result = await prisma.sponsorship.update({ where: { id }, data: req.body });
+    res.status(200).json(result);
   }
 }

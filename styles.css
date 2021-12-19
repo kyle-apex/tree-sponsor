@@ -29,7 +29,8 @@ a {
 .MuiTab-root,
 input.MuiOutlinedInput-input,
 .MuiInputBase-multiline,
-.MuiAutocomplete-inputRoot {
+.MuiAutocomplete-inputRoot,
+.MuiSelect-select {
   background-color: white;
 }
 

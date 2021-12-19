@@ -11,6 +11,7 @@ import {
   Profile,
   Location,
   Species,
+  ReviewStatus as ReviewStatusPrisma,
 } from '@prisma/client';
 import { ViewportProps } from 'react-map-gl';
 import { Stripe } from 'stripe';
@@ -25,7 +26,7 @@ export interface DefaultSession extends Record<string, unknown> {
 }
 
 export interface NextSession extends Record<string, unknown>, DefaultSession {}
-
+export type ReviewStatus = ReviewStatusPrisma | '';
 export type PartialSpecies = Partial<Species>;
 export type PartialTree = Partial<Tree>;
 export type PartialComment = Partial<Comment & { user?: Partial<User> } & { reactions?: Partial<Reaction>[] }>;

@@ -23,6 +23,7 @@ import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
 import serverSideIsAdmin from 'utils/auth/server-side-is-admin';
 import Link from 'next/link';
 import SearchBox from 'components/form/SearchBox';
+import Box from '@mui/material/Box';
 
 export const getServerSideProps = serverSideIsAdmin;
 
@@ -42,9 +43,6 @@ const useStyles = makeStyles(theme => ({
   },
   tableContainer: {
     padding: theme.spacing(1),
-  },
-  backLink: {
-    marginTop: theme.spacing(3),
   },
   visuallyHidden: {
     border: 0,
@@ -94,7 +92,7 @@ export default function EnhancedTable(): JSX.Element {
   const debounceMilliseconds = 1;
 
   const updateUser = async (userId: number, attributes: Record<string, unknown>) => {
-    await axios.post('/api/users/' + userId, { hasShirt: !!attributes.hasShirt });
+    await axios.patch('/api/users/' + userId, { hasShirt: !!attributes.hasShirt });
   };
 
   const { updateById: updateHasShirt } = useUpdateQueryById('members', updateUser);
@@ -135,11 +133,18 @@ export default function EnhancedTable(): JSX.Element {
   return (
     <Layout title='Admin'>
       <div className={classes.root}>
-        <Link href='/admin/roles'>
-          <Button variant='outlined' className={classes.backLink}>
-            Manage Roles
-          </Button>
-        </Link>
+        <Box sx={{ flexDirection: 'row', display: 'flex' }} gap={2}>
+          <Link href='/admin/roles'>
+            <Button variant='outlined'>Manage Roles</Button>
+          </Link>
+          <Link href='/admin/review/sponsorships'>
+            <Button variant='outlined'>Review Thank-a-Trees</Button>
+          </Link>
+          <Link href='/admin/review/trees'>
+            <Button variant='outlined'>Review Tree Ids</Button>
+          </Link>
+        </Box>
+
         <h1>Admin</h1>
         <SearchBox label='Find a Member' onChange={setNameFilter} defaultValue={nameFilter}></SearchBox>
 

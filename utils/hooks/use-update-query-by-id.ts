@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from 'react-query';
 
 export const useUpdateQueryById = <T extends { id?: string | number }>(
-  key: string,
+  key: string | string[],
   updateFunction: (id: number, attributes: Record<string, unknown>) => Promise<void>,
   hasRefetch?: boolean,
 ) => {
-  const queryKey = [key, undefined];
+  const queryKey = typeof key === 'string' ? [key, undefined] : key;
   const queryClient = useQueryClient();
 
   function updateQueryListItem(updatedItem: any) {

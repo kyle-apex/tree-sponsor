@@ -1,10 +1,15 @@
-import React from 'react';
+import React, {
+  useEffect,
+} from 'react'; /*
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
-const steps = [{ label: 'Details' }, { label: 'Location' }];
+const steps = [{ label: 'Details' }, { label: 'Location' }];*/
 
-const DetailsLocationStepper = ({ handleStep }: { handleStep: (step: number) => void }) => {
+const DetailsLocationStepper = ({ handleStep }: { handleStep?: (step: number) => void }) => {
+  useEffect(() => {
+    handleStep(0);
+  });
   return <></>;
   /*const [completed] = useState<{ [k: number]: boolean }>({});
 

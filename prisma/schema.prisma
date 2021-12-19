@@ -196,6 +196,7 @@ model Tree {
   longitude                Decimal?        @db.Decimal(9, 6)
   diameter                 Decimal?        @db.Decimal(5, 2)
   height                   Decimal?        @db.Decimal(6, 2)
+  reviewStatus             ReviewStatus?   @default(New)
   sponsorships             Sponsorship[]
   location                 Location?       @relation(fields: [locationId], references: [id])
   locationId               Int?
