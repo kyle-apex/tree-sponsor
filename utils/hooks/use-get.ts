@@ -5,7 +5,7 @@ import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 
 export const useGet = <T>(
   path: string,
-  key?: string,
+  key?: string | string[],
   params?: Record<string, unknown>,
   options?: { refetchOnWindowFocus: boolean },
 ): QueryObserverResult<T> => {
@@ -39,5 +39,6 @@ export const useGet = <T>(
 
     return promise;
   };
-  return useQuery([key, params], fetcher, options || { refetchOnWindowFocus: false });
+  const queryKey = typeof key === 'string' ? [key, params] : key;
+  return useQuery(queryKey, fetcher, options || { refetchOnWindowFocus: false });
 };

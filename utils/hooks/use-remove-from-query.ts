@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from 'react-query';
 
 export const useRemoveFromQuery = <T extends { id?: string | number }>(
-  key: string,
+  key: string | string[],
   removeFunction: (id: number) => void,
   hasRefetch?: boolean,
 ) => {
-  const queryKey = [key, undefined];
+  const queryKey = typeof key === 'string' ? [key, undefined] : key;
   const queryClient = useQueryClient();
 
   function removeQueryListItem(id: number) {
