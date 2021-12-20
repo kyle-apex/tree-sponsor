@@ -20,6 +20,8 @@ export default async function initializeApplication() {
         name: 'Owner',
         hasAuthManagement: true,
         isAdmin: true,
+        isReviewer: true,
+        isTreeReviewer: true,
       },
     });
 

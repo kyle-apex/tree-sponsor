@@ -82,6 +82,8 @@ model Role {
   name              String?
   isAdmin           Boolean @default(false)
   hasAuthManagement Boolean @default(false)
+  isReviewer        Boolean @default(false)
+  isTreeReviewer    Boolean @default(false)
   users             User[]  @relation("UserToRole")
 }
 

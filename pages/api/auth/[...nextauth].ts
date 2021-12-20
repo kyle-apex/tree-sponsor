@@ -5,6 +5,8 @@ import Adapters from 'next-auth/adapters';
 import { prisma } from 'utils/prisma/init';
 import { generateProfilePath } from 'utils/user/generate-profile-path';
 import { User } from '.prisma/client';
+import { Session, PartialUser } from 'interfaces';
+import { AccessTypes } from 'utils/auth/AccessType';
 
 function getProfilePictureUrl(profile: Profile): string {
   if (typeof profile?.picture === 'string') return profile.picture;
@@ -60,8 +62,30 @@ export default NextAuth({
   adapter: Adapters.Prisma.Adapter({ prisma }),
   linkOAuthWithExistingUser: true,
   callbacks: {
-    async session(session, user) {
+    async session(session: Session, user): Promise<Session> {
       session.user = user;
+      if (!session.user.roles && session.user.id) {
+        const userWithRoles = (await prisma.user.findFirst({
+          where: { id: session.user.id },
+          include: { roles: {} },
+        })) as PartialUser;
+        console.log('userWithRoles', userWithRoles);
+
+        console.log('userWithRoles2', userWithRoles.roles);
+
+        if (userWithRoles.roles) session.user.roles = userWithRoles.roles;
+
+        /*  const role: Partial<Role> = {};
+
+        userWithRoles.roles.reduce((merge, role) => {
+          for (const accessType in AccessTypes) {
+            if (typeof accessType === 'string') {
+              merge[accessType] = merge[accessType] || role[accessType];
+            }
+          }
+          //merge.hasAuthManagement = merge.hasAuthManagement || role.hasAuthManagement;
+        }, role);*/
+      }
       return session;
     },
     async signIn(user, _account, profile) {

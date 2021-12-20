@@ -20,12 +20,16 @@ import { TeeShirtSelect } from 'components/TeeShirtSelect';
 import { stableSort, getComparator } from 'utils/material-ui/table-helpers';
 import { StyledTableRow } from 'components/StyledTableRow';
 import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
-import serverSideIsAdmin from 'utils/auth/server-side-is-admin';
 import Link from 'next/link';
 import SearchBox from 'components/form/SearchBox';
 import Box from '@mui/material/Box';
+import restrictPageAccess from 'utils/auth/restrict-page-access';
+import { GetSessionOptions } from 'next-auth/client';
+import RestrictSection from 'components/RestrictSection';
 
-export const getServerSideProps = serverSideIsAdmin;
+export const getServerSideProps = (ctx: GetSessionOptions) => {
+  return restrictPageAccess(ctx, 'isAdmin');
+};
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -134,15 +138,21 @@ export default function EnhancedTable(): JSX.Element {
     <Layout title='Admin'>
       <div className={classes.root}>
         <Box sx={{ flexDirection: 'row', display: 'flex' }} gap={2}>
-          <Link href='/admin/roles'>
-            <Button variant='outlined'>Manage Roles</Button>
-          </Link>
-          <Link href='/admin/review/sponsorships'>
-            <Button variant='outlined'>Review Thank-a-Trees</Button>
-          </Link>
-          <Link href='/admin/review/trees'>
-            <Button variant='outlined'>Review Tree Ids</Button>
-          </Link>
+          <RestrictSection accessType='hasAuthManagement'>
+            <Link href='/admin/roles'>
+              <Button variant='outlined'>Manage Roles</Button>
+            </Link>
+          </RestrictSection>
+          <RestrictSection accessType='isReviewer'>
+            <Link href='/admin/review/sponsorships'>
+              <Button variant='outlined'>Review Thank-a-Trees</Button>
+            </Link>
+          </RestrictSection>
+          <RestrictSection accessType='isTreeReviewer'>
+            <Link href='/admin/review/trees'>
+              <Button variant='outlined'>Review Tree Ids</Button>
+            </Link>
+          </RestrictSection>
         </Box>
 
         <h1>Admin</h1>

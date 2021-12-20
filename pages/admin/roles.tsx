@@ -11,6 +11,12 @@ import { useGet } from 'utils/hooks/use-get';
 import { Role } from '@prisma/client';
 import axios from 'axios';
 import { useAddToQuery } from 'utils/hooks/use-add-to-query';
+import restrictPageAccess from 'utils/auth/restrict-page-access';
+import { GetSessionOptions } from 'next-auth/client';
+
+export const getServerSideProps = (ctx: GetSessionOptions) => {
+  return restrictPageAccess(ctx, 'hasAuthManagement');
+};
 
 const RolesPage = () => {
   const { data: roles, refetch: refetchRoles, isFetching: isRolesFetching } = useGet<Role[]>('/api/roles', 'roles');
