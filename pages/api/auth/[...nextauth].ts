@@ -69,28 +69,14 @@ export default NextAuth({
           where: { id: session.user.id },
           include: { roles: {} },
         })) as PartialUser;
-        console.log('userWithRoles', userWithRoles);
-
-        console.log('userWithRoles2', userWithRoles.roles);
 
         if (userWithRoles.roles) session.user.roles = userWithRoles.roles;
-
-        /*  const role: Partial<Role> = {};
-
-        userWithRoles.roles.reduce((merge, role) => {
-          for (const accessType in AccessTypes) {
-            if (typeof accessType === 'string') {
-              merge[accessType] = merge[accessType] || role[accessType];
-            }
-          }
-          //merge.hasAuthManagement = merge.hasAuthManagement || role.hasAuthManagement;
-        }, role);*/
       }
       return session;
     },
     async signIn(user, _account, profile) {
-      console.log('profile', profile);
-      console.log('user', user);
+      //console.log('profile', profile);
+      //console.log('user', user);
       const profilePictureUrl = getProfilePictureUrl(profile);
       let hasUpdate;
       const updateData: Partial<User> = {};

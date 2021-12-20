@@ -47,7 +47,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
     if (!isFetched || !user) return;
     if (user.name) setName(user.name);
 
-    bioRef.current = user.profile?.bio;
+    bioRef.current = user?.profile?.bio;
 
     if (user.profilePath)
       setProfilePathState(state => {
@@ -201,7 +201,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
             <TextEditor
               label='Bio'
               placeholder='Enter a short bio to display on your profile...'
-              value={user.profile?.bio}
+              value={user?.profile?.bio}
               onChange={handleBioChange}
             />
           </Box>
