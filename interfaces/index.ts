@@ -12,6 +12,7 @@ import {
   Location,
   Species,
   ReviewStatus as ReviewStatusPrisma,
+  TreeImage,
 } from '@prisma/client';
 import { ViewportProps } from 'react-map-gl';
 import { Stripe } from 'stripe';
@@ -28,7 +29,8 @@ export interface DefaultSession extends Record<string, unknown> {
 export interface NextSession extends Record<string, unknown>, DefaultSession {}
 export type ReviewStatus = ReviewStatusPrisma | '';
 export type PartialSpecies = Partial<Species>;
-export type PartialTree = Partial<Tree>;
+export type PartialTreeImage = Partial<TreeImage>;
+export type PartialTree = Partial<Tree> & { images?: PartialTreeImage[] };
 export type PartialComment = Partial<Comment & { user?: Partial<User> } & { reactions?: Partial<Reaction>[] }>;
 export type PartialReaction = Partial<Reaction & { user?: Partial<User> }>;
 export type PartialNotification = Partial<Notification & { user?: Partial<User>; sourceUser?: Partial<User> }>;

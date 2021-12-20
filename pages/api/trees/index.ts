@@ -6,6 +6,7 @@ import { prisma } from 'utils/prisma/init';
 import { v4 as uuidv4 } from 'uuid';
 import uploadTreeImages from 'utils/aws/upload-tree-images';
 import getTreeImagePath from 'utils/aws/get-tree-image-path';
+import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
 
 export const config = {
   api: {
@@ -50,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
-    const upsertedTree = await prisma.sponsorship.upsert({
+    const upsertedTree = await prisma.tree.upsert({
       where: { id: treeId || -1 },
       create: {
         ...tree,
