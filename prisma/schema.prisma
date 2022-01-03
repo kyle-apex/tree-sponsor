@@ -196,6 +196,10 @@ model Tree {
   pictureUrl               String?
   latitude                 Decimal?        @db.Decimal(8, 5)
   longitude                Decimal?        @db.Decimal(9, 6)
+  streetViewPitch          String?         @default("")
+  streetViewHeading        String?         @default("")
+  streetViewLatitude       Decimal?        @db.Decimal(8, 5)
+  streetViewLongitude      Decimal?        @db.Decimal(9, 6)
   diameter                 Decimal?        @db.Decimal(5, 2)
   height                   Decimal?        @db.Decimal(6, 2)
   reviewStatus             ReviewStatus?   @default(New)
@@ -209,6 +213,40 @@ model Tree {
   changeLogs               TreeChangeLog[]
   lastChangedByUserId      Int?
   lastChangedByUser        User?           @relation(fields: [lastChangedByUserId], references: [id])
+  categories               Category[]      @relation("TreeToCategory")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String?
+  createdDate DateTime? @default(now())
+  pictureUrl  String?
+  path        String?   @db.VarChar(256)
+  trees       Tree[]    @relation("TreeToCategory")
+  events      Event[]   @relation("CategoryToEvent")
+}
+
+model Event {
+  id              Int        @id @default(autoincrement())
+  name            String?
+  description     String?    @db.Text
+  startDate       DateTime?
+  endDate         DateTime?
+  activeStartDate DateTime?
+  activeEndDate   DateTime?
+  identifier      String?
+  path            String?    @db.VarChar(256)
+  location        Location?  @relation(fields: [locationId], references: [id])
+  locationId      Int?
+  categories      Category[] @relation("CategoryToEvent")
+}
+
+model TreeToEvent {
+  id       Int     @id @default(autoincrement())
+  treeId   Int?
+  eventId  Int?
+  sequence Int?
+  name     String?
 }
 
 enum ChangeLogType {
@@ -273,6 +311,7 @@ model Location {
   neighborhood         Neighborhood? @relation(fields: [mapboxNeighborhoodId], references: [mapboxId])
   place                Place?        @relation(fields: [mapboxPlaceId], references: [mapboxId])
   trees                Tree[]
+  events               Event[]
 }
 
 model Neighborhood {

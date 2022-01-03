@@ -214,8 +214,8 @@ const SponsorshipAddEditForm = ({
       )}
       {activeStep == 1 && (
         <>
-          <LocationSearch></LocationSearch>
-          {false && (
+          {false && <LocationSearch></LocationSearch>}
+          {true && (
             <LocationSelector
               onViewportChange={({ latitude, longitude }) => {
                 setLatitude(latitude), setLongitude(longitude);

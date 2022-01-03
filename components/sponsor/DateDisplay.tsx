@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SponsorshipSubTitle = ({ startDate }: { startDate: Date }) => {
+const DateDisplay = ({ startDate }: { startDate: Date }) => {
   if (!startDate) return <></>;
 
   return (
@@ -10,4 +10,4 @@ const SponsorshipSubTitle = ({ startDate }: { startDate: Date }) => {
     </span>
   );
 };
-export default SponsorshipSubTitle;
+export default DateDisplay;

@@ -14,7 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import React, { SetStateAction, useState } from 'react';
 import { PartialSponsorship } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
-import { UserAvatar, SponsorshipSubTitle } from 'components/sponsor';
+import { UserAvatar, DateDisplay } from 'components/sponsor';
 import { DEFAULT_DESCRIPTION } from 'consts';
 import { DEFAULT_TITLE_PREFIX } from 'consts';
 import SponsorshipAddEditDialog from './SponsorshipAddEditDialog';
@@ -97,7 +97,7 @@ const SponsorshipDisplay = ({
               />
             }
             title={activeSponsorship?.title || getDisplayTitle(sponsorship)}
-            subheader={<SponsorshipSubTitle startDate={sponsorship.startDate} />}
+            subheader={<DateDisplay startDate={sponsorship.startDate} />}
             action={
               handleClose && (
                 <IconButton onClick={handleClose}>

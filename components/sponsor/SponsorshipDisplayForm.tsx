@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import React from 'react';
 import { useSession } from 'next-auth/client';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
-import { UserAvatar, SponsorshipSubTitle } from 'components/sponsor';
+import { UserAvatar, DateDisplay } from 'components/sponsor';
 import { DESCRIPTION_PLACEHOLDER, DEFAULT_TITLE_PREFIX } from 'consts';
 import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
@@ -57,7 +57,7 @@ const SponsorshipDisplayForm = ({
               className='full-width'
             ></TextField>
           }
-          subheader={<SponsorshipSubTitle startDate={startDate} />}
+          subheader={<DateDisplay startDate={startDate} />}
         />
 
         <CardMedia

@@ -1,67 +1,27 @@
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import MapIcon from '@mui/icons-material/MapOutlined';
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import Layout from 'components/layout/Layout';
-import SessionAvatar from 'components/SessionAvatar';
-import SponsorshipGroup from 'components/sponsor/SponsorshipGroup';
-import ShareButton from 'components/share/ShareButton';
-
-import { PartialUser } from 'interfaces';
+import { DateDisplay } from 'components/sponsor';
+import { PartialEvent } from 'interfaces';
 import { GetServerSidePropsContext } from 'next';
-import React, { useState } from 'react';
-import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
-import { SponsorshipMap, DateDisplay } from 'components/sponsor';
-import Head from 'next/head';
-import { DEFAULT_DESCRIPTION } from 'consts';
-import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
+import { useState } from 'react';
+import xss from 'xss';
 
-const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: number }) => {
-  if (user) {
-    parseResponseDateStrings(user.sponsorships);
-    parseResponseDateStrings(user.subscriptions);
-  }
-  user?.sponsorships?.forEach(sponsorship => {
-    sponsorship.user = { profilePath: user.profilePath, name: user.name, displayName: user.displayName };
-  });
-
-  let initialDate: Date;
-  const joinDate: Date = user?.subscriptions?.reduce((minDate: Date, sub) => {
-    if (!minDate) minDate = sub.createdDate;
-    if (minDate > sub.createdDate) minDate = sub.createdDate;
-    return minDate;
-  }, initialDate);
-
+const EventPage = ({ event }: { event: PartialEvent }) => {
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
     setActiveTab(newValue);
   };
 
-  const rolesText = user?.roles?.length > 0 ? user.roles.map(role => role.name).join(' | ') : null;
+  const xssSafeBio = event?.description && xss(event.description);
 
-  let featuredSponsorship = user?.sponsorships?.find(obj => obj.id == featuredId);
-
-  if (!featuredSponsorship) featuredSponsorship = user?.sponsorships?.length > 0 && user?.sponsorships[0];
-
-  const description = featuredSponsorship?.description ? featuredSponsorship.description : DEFAULT_DESCRIPTION;
-  const titlePrefix = featuredSponsorship?.title ? user?.sponsorships[0].title : user?.displayName || user?.name;
-  const title = `${titlePrefix} | Thank-a-Tree with TreeFolksYP`;
-  const imageUrl = featuredSponsorship ? featuredSponsorship.pictureUrl : '';
-
-  user?.sponsorships?.sort((a, b) => {
-    if (a.id == featuredId) return -1;
-    if (b.id == featuredId) return 1;
-    return a.startDate > b.startDate ? -1 : 1;
-  });
-
-  return (
-    <Layout>
-      {!user ? (
-        <Box>Profile not found</Box>
+  return <Layout></Layout>;
+};
+/*
+{!event ? (
+        <Box>Event not found</Box>
       ) : (
         <>
           <Head>
@@ -104,9 +64,9 @@ const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: 
                   Joined <DateDisplay startDate={joinDate}></DateDisplay>
                 </Typography>
               )}
-              {user?.profile?.bio && (
-                <Box sx={{ marginBottom: -2, alignSelf: 'center' }}>
-                  <SafeHTMLDisplay html={user.profile.bio}></SafeHTMLDisplay>
+              {xssSafeBio && (
+                <Box sx={{ textAlign: 'left', marginBottom: -2, alignSelf: 'center', a: { color: theme => theme.palette.primary.main } }}>
+                  {parse(xssSafeBio)}
                 </Box>
               )}
             </Box>
@@ -173,20 +133,18 @@ const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: 
           </Container>{' '}
         </>
       )}
-    </Layout>
-  );
-};
+      */
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { profilePath, t: featuredId } = context.query;
+  const { path } = context.query;
 
   try {
-    const results = await axios.get(process.env.URL + '/api/u/' + profilePath);
-    return { props: { user: results.data, featuredId: featuredId ?? 0 } };
+    const results = await axios.get(process.env.URL + '/api/events/' + path);
+    return { props: { event: results.data } };
   } catch (err) {
     console.log('err', err);
   }
-  return { props: { user: null, featuredId: featuredId ?? 0 } };
+  return { props: { event: null } };
 }
 
-export default UserProfilePage;
+export default EventPage;
