@@ -3,6 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 import uploadTreeImages from 'utils/aws/upload-tree-images';
 import getTreeImagePath from 'utils/aws/get-tree-image-path';
 import { PartialTree, PartialTreeImage } from 'interfaces';
+import { Prisma } from '@prisma/client';
+
+//const what: Prisma.TreeCreateInput;
 
 type TreeImage = PartialTreeImage & { uuid: string };
 
@@ -11,9 +14,10 @@ export default async function upsert(tree: PartialTree, userId: number) {
 
   if (!treeId) {
     // remove id if it's 0 for the upsert to work correctly
-    delete tree.id;
+
     tree.createdDate = new Date();
   }
+  delete tree.id;
 
   const lastChangedByUser = { connect: { id: userId } };
 

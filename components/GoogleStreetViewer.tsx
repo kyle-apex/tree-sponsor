@@ -1,9 +1,9 @@
 //30.24513
-//https://maps.googleapis.com/maps/api/streetview?size=600x300&location=30.24513,-97.769236&key=AIzaSyB5EkAThBBb4wCwk6vK_9mI233lNDtxUJ4
+//https://maps.googleapis.com/maps/api/streetview?size=600x300&location=30.24513,-97.769236&key=KEY
 /*
-<iframe width="450" height="250" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/streetview?key=AIzaSyB5EkAThBBb4wCwk6vK_9mI233lNDtxUJ4&amp;location=30.24513,-97.769236" allowfullscreen="">
+<iframe width="450" height="250" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/streetview?key=KEY&amp;location=30.24513,-97.769236" allowfullscreen="">
 </iframe>
-<iframe width="450" height="250" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/streetview?key=AIzaSyB5EkAThBBb4wCwk6vK_9mI233lNDtxUJ4&amp;location=30.27123,-97.755503" allowfullscreen="">
+<iframe width="450" height="250" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/streetview?key=KEY&amp;location=30.27123,-97.755503" allowfullscreen="">
 </iframe>
 30.27123,-97.755503
 30.25375,-97.715442
