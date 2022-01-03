@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const event = await prisma.event.findFirst({
       where: { path },
       include: {
-        categories: {},
+        categories: { include: { trees: {} } },
       },
     });
 

@@ -105,7 +105,7 @@ const UserProfilePage = ({ user, featuredId }: { user: PartialUser; featuredId: 
                 </Typography>
               )}
               {user?.profile?.bio && (
-                <Box sx={{ marginBottom: -2, alignSelf: 'center' }}>
+                <Box sx={{ marginBottom: -2, mt: 2, alignSelf: 'center' }}>
                   <SafeHTMLDisplay html={user.profile.bio}></SafeHTMLDisplay>
                 </Box>
               )}

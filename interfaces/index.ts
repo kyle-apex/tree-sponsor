@@ -32,10 +32,10 @@ export interface NextSession extends Record<string, unknown>, DefaultSession {}
 export type ReviewStatus = ReviewStatusPrisma | '';
 export type PartialSpecies = Partial<Species>;
 export type PartialTreeImage = Partial<TreeImage>;
-export type PartialTree = Partial<Tree> & { images?: PartialTreeImage[] };
+export type PartialTree = Partial<Tree> & { images?: PartialTreeImage[]; species?: PartialSpecies; location?: PartialLocation };
 
-export type PartialEvent = Partial<Event> & { categories?: PartialCategory[] };
-export type PartialCategory = Partial<Category> & { events?: PartialEvent[] };
+export type PartialEvent = Partial<Event> & { categories?: PartialCategory[]; trees?: PartialTree[] };
+export type PartialCategory = Partial<Category> & { events?: PartialEvent[]; trees?: PartialTree[] };
 
 export type PartialComment = Partial<Comment & { user?: Partial<User> } & { reactions?: Partial<Reaction>[] }>;
 export type PartialReaction = Partial<Reaction & { user?: Partial<User> }>;

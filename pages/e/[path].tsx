@@ -1,26 +1,44 @@
 import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import Layout from 'components/layout/Layout';
-import { DateDisplay } from 'components/sponsor';
+import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
+import ShareButton from 'components/share/ShareButton';
 import { PartialEvent } from 'interfaces';
 import { GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 import { useState } from 'react';
-import xss from 'xss';
+import MapIcon from '@mui/icons-material/MapOutlined';
+import DateDisplay from 'components/sponsor/DateDisplay';
+import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 
 const EventPage = ({ event }: { event: PartialEvent }) => {
   const [activeTab, setActiveTab] = useState(0);
+
+  console.log('event', event);
+
+  if (event) {
+    parseResponseDateStrings(event);
+  }
+  console.log('after event', event);
 
   const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
     setActiveTab(newValue);
   };
 
-  const xssSafeBio = event?.description && xss(event.description);
+  const description = event?.description;
+  const title = `${event.name} | Thank-a-Tree with TreeFolksYP`;
+  const imageUrl = '';
 
-  return <Layout></Layout>;
-};
-/*
-{!event ? (
+  const trees = event.categories?.flatMap(category => category.trees);
+  console.log('trees', trees);
+
+  return (
+    <Layout>
+      {!event ? (
         <Box>Event not found</Box>
       ) : (
         <>
@@ -49,24 +67,21 @@ const EventPage = ({ event }: { event: PartialEvent }) => {
                 position: 'relative',
               }}
             >
-              <Box style={{ position: 'relative', margin: '-50px auto 10px auto', width: '100px', height: '100px' }}>
-                <SessionAvatar session={{ user: user }} size={100}></SessionAvatar>
-              </Box>
+              <Box style={{ position: 'relative', margin: '-50px auto 10px auto', width: '100px', height: '100px' }}></Box>
               <Box sx={{ position: 'absolute', right: '10px' }}>
-                <ShareButton user={user}></ShareButton>
+                <ShareButton></ShareButton>
               </Box>
               <Typography variant='h2' mb={1}>
-                {user.displayName || user.name}
+                {event.name}
               </Typography>
-              {rolesText && false && <Typography variant='subtitle1'>{rolesText}</Typography>}
-              {joinDate && (
+              {event.startDate && (
                 <Typography variant='subtitle2'>
-                  Joined <DateDisplay startDate={joinDate}></DateDisplay>
+                  Date: <DateDisplay startDate={event.startDate}></DateDisplay>
                 </Typography>
               )}
-              {xssSafeBio && (
-                <Box sx={{ textAlign: 'left', marginBottom: -2, alignSelf: 'center', a: { color: theme => theme.palette.primary.main } }}>
-                  {parse(xssSafeBio)}
+              {event?.description && (
+                <Box sx={{ marginBottom: -2, mt: 2, alignSelf: 'center' }}>
+                  <SafeHTMLDisplay html={event.description}></SafeHTMLDisplay>
                 </Box>
               )}
             </Box>
@@ -93,7 +108,7 @@ const EventPage = ({ event }: { event: PartialEvent }) => {
                     variant='fullWidth'
                     aria-label='basic tabs example'
                   >
-                    <Tab label='Tokens of Appre-tree-ation' sx={{ borderTopLeftRadius: '5px' }} />
+                    <Tab label='Trees' sx={{ borderTopLeftRadius: '5px' }} />
                     <Tab
                       label={
                         <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -106,12 +121,8 @@ const EventPage = ({ event }: { event: PartialEvent }) => {
                   </Tabs>
                 </Box>
                 <Box sx={{ padding: '0 20px', textAlign: 'left', minHeight: '150px' }}>
-                  {activeTab == 0 && user.sponsorships?.length > 0 && (
-                    <SponsorshipGroup columnWidth={6} isLoading={false} sponsorships={user.sponsorships}></SponsorshipGroup>
-                  )}
-                  {activeTab == 0 && !(user.sponsorships?.length > 0) && (
-                    <Typography>{user.displayName || user.name} has not added any public Tokens of Appre-tree-ation.</Typography>
-                  )}
+                  {activeTab == 0 && trees?.length > 0 && <></>}
+                  {activeTab == 0 && !(trees?.length > 0) && <Typography>{event.name} does not have any trees.</Typography>}
 
                   {activeTab == 1 && (
                     <Box
@@ -123,23 +134,30 @@ const EventPage = ({ event }: { event: PartialEvent }) => {
                         flexDirection: 'column',
                         marginBottom: 12,
                       }}
-                    >
-                      <SponsorshipMap defaultSponsorships={user.sponsorships} isExploreMode={true}></SponsorshipMap>
-                    </Box>
+                    ></Box>
                   )}
                 </Box>
               </Box>
             </Box>
-          </Container>{' '}
+          </Container>
         </>
       )}
-      */
+    </Layout>
+  );
+};
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { path } = context.query;
 
   try {
-    const results = await axios.get(process.env.URL + '/api/events/' + path);
+    //const results = await axios.get(process.env.URL + '/api/events/' + path);
+    const results = {
+      data: {
+        name: 'Some Event',
+        startDate: eval(JSON.stringify(new Date())),
+        categories: [{ name: 'Tree of the Year', trees: { name: 'Some Other Tree' } }],
+      },
+    };
     return { props: { event: results.data } };
   } catch (err) {
     console.log('err', err);

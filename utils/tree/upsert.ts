@@ -5,8 +5,6 @@ import getTreeImagePath from 'utils/aws/get-tree-image-path';
 import { PartialTree, PartialTreeImage } from 'interfaces';
 import { Prisma } from '@prisma/client';
 
-//const what: Prisma.TreeCreateInput;
-
 type TreeImage = PartialTreeImage & { uuid: string };
 
 export default async function upsert(tree: PartialTree, userId: number) {
@@ -36,7 +34,7 @@ export default async function upsert(tree: PartialTree, userId: number) {
     }
   }
 
-  const treeToUpdate: Omit<PartialTree, 'id' | 'locationId' | 'speciesId' | 'lastChangedByUserId'> = { ...tree };
+  const treeToUpdate: Omit<PartialTree, 'id' | 'locationId' | 'speciesId' | 'lastChangedByUserId' | 'species' | 'location'> = { ...tree };
 
   const upsertedTree = await prisma.tree.upsert({
     where: { id: treeId || -1 },

@@ -230,6 +230,7 @@ model Event {
   id              Int        @id @default(autoincrement())
   name            String?
   description     String?    @db.Text
+  pictureUrl      String?
   startDate       DateTime?
   endDate         DateTime?
   activeStartDate DateTime?
@@ -343,6 +344,7 @@ model TreeImage {
   width         Int?
   height        Int?
   url           String?
+  isPrimary     Boolean?      @default(false)
   createdDate   DateTime?     @default(now())
   reviewStatus  ReviewStatus? @default(New)
   sponsorship   Sponsorship?  @relation(fields: [sponsorshipId], references: [id])
