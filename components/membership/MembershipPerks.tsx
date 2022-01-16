@@ -61,7 +61,7 @@ const MembershipPerks = () => {
             rel='noreferrer'
             style={{ textDecoration: 'none' }}
           >
-            <Typography color='primary'>Join the Google Group to receive event calendar invites (no e-mails)</Typography>
+            <Typography color='primary'>Join the Membership Google Group to receive event calendar invites (no e-mails)</Typography>
           </a>
         </li>
       </ul>
