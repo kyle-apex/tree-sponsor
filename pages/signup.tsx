@@ -130,7 +130,7 @@ const SignupPage = ({
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>TreeFolksYP Membership</TableCell>
+              <TableCell>TreeFolksYP Membership & Event Discounts</TableCell>
               <TableCell>
                 {isMembership ? (
                   <CheckCircleIcon color='primary'></CheckCircleIcon>
