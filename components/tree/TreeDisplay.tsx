@@ -14,28 +14,10 @@ import React, { SetStateAction, useState } from 'react';
 import { PartialTree } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 import Box from '@mui/material/Box';
-
+// TODO
 const useStyles = makeStyles(theme => ({
-  thumbnail: {
-    width: '45px',
-    height: '45px',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  },
-  fullImage: {
-    width: '100%',
-  },
-  title: {
-    marginTop: '10px',
-  },
-  avatar: {},
   media: {
     height: 0,
-    // paddingTop: '56.25%', // 16:9
-  },
-  subtitle: {
-    color: theme.palette.grey[600],
-    marginTop: '-20px',
   },
 }));
 
@@ -138,7 +120,6 @@ const TreeDisplay = ({
                       onDelete(tree.id);
                     }}
                   ></DeleteConfirmationDialog>
-                  <Box sx={{ display: 'flex', flex: '1 1 100%' }}></Box>
                 </>
               )}
             </CardActions>

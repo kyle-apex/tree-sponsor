@@ -14,6 +14,10 @@ import { useState } from 'react';
 import MapIcon from '@mui/icons-material/MapOutlined';
 import DateDisplay from 'components/sponsor/DateDisplay';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
+import TreeDisplay from 'components/tree/TreeDisplay';
+import Grid from '@mui/material/Grid';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useTheme from '@mui/system/useTheme';
 
 const EventPage = ({ event }: { event: PartialEvent }) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -35,6 +39,9 @@ const EventPage = ({ event }: { event: PartialEvent }) => {
 
   const trees = event.categories?.flatMap(category => category.trees);
   console.log('trees', trees);
+
+  const theme = useTheme();
+  const columnWidth = !useMediaQuery(theme.breakpoints.up('md')) ? 12 : 4;
 
   return (
     <Layout>
@@ -121,7 +128,15 @@ const EventPage = ({ event }: { event: PartialEvent }) => {
                   </Tabs>
                 </Box>
                 <Box sx={{ padding: '0 20px', textAlign: 'left', minHeight: '150px' }}>
-                  {activeTab == 0 && trees?.length > 0 && <></>}
+                  {activeTab == 0 && trees?.length > 0 && (
+                    <Grid mb={12} container spacing={5} direction='row' justifyContent='space-around' alignItems='stretch'>
+                      {trees.map(tree => (
+                        <Grid md={columnWidth} key={tree.id} item className='start'>
+                          <TreeDisplay tree={tree}></TreeDisplay>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  )}
                   {activeTab == 0 && !(trees?.length > 0) && <Typography>{event.name} does not have any trees.</Typography>}
 
                   {activeTab == 1 && (
