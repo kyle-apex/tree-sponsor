@@ -15,7 +15,7 @@ import { PartialTree } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 import Box from '@mui/material/Box';
 // TODO
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   media: {
     height: 0,
   },

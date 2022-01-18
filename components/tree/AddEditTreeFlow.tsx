@@ -1,4 +1,6 @@
 const AddEditTreeFlow = ({ isThankATree }: { isThankATree: boolean }) => {
+  console.log('isThankATree', isThankATree);
+  return <></>;
   /*
         Step 1:
             if (isThankATree) { My tree doesn't have a location: Skip }
