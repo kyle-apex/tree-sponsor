@@ -4,6 +4,7 @@ import { prisma } from 'utils/prisma/init';
 import { generateProfilePath } from 'utils/user/generate-profile-path';
 
 export const upsertSubscription = async (subscription: PartialSubscription): Promise<void> => {
+  console.log('upserting', subscription.stripeId, subscription.lastPaymentDate);
   await prisma.subscription.upsert({
     where: { stripeId: subscription.stripeId },
     create: {

@@ -60,5 +60,7 @@ export const findAllSubscriptionsForUser = async (email: string): Promise<Partia
     if (sub.product?.stripeId) sub.product.name = productIdToNameMap[sub.product.stripeId];
   });
 
+  console.log('subscriptions', subscriptions);
+
   return subscriptions;
 };
