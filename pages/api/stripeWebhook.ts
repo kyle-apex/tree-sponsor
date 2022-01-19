@@ -3,7 +3,7 @@ import { buffer } from 'micro';
 import { Stripe, stripe } from 'utils/stripe/init';
 import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+const webhookSecret = process.env.STRIPE_WEBHOOK_KEY;
 
 import Cors from 'micro-cors';
 
