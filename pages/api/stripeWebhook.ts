@@ -40,9 +40,8 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       const subscription = event.data.object as Stripe.Subscription;
       const customerId = subscription.customer as string;
 
-      const result = await stripe.customers.retrieve(customerId);
-      console.log('result', result);
-      const customer = (result.object as unknown) as Stripe.Customer;
+      const customer = (await stripe.customers.retrieve(customerId)) as Stripe.Customer;
+      //const customer = result ;
       console.log('customer', customer);
       email = customer.email;
     } else if (event.type === 'invoice.payment_failed') {
