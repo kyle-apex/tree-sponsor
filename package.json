@@ -9,7 +9,8 @@
     "type-check": "tsc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --quiet",
     "lint-fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "test": "jest -i"
+    "test": "jest -i",
+    "heroku-cleanup": "rm -rf .next/cache && find node_modules/@next -depth -maxdepth 1 -type d -name 'swc*' -exec rm -rf {} \\; -prune #Remove cache and SWC binaries to reduce heroku slug size"
   },
   "dependencies": {
     "@emotion/cache": "^11.4.0",
