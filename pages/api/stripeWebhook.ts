@@ -31,7 +31,6 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
     let email;
-    console.log('stripe event', event);
     if (
       event.type === 'customer.subscription.updated' ||
       event.type === 'customer.subscription.deleted' ||
@@ -42,15 +41,11 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const customer = (await stripe.customers.retrieve(customerId)) as Stripe.Customer;
       //const customer = result ;
-      console.log('customer', customer);
       email = customer.email;
     } else if (event.type === 'invoice.payment_failed') {
       const invoice = event.data.object as Stripe.Invoice;
-      console.log('invoice', invoice);
       email = invoice.customer_email;
     }
-
-    console.log('stripe email', email);
 
     await updateSubscriptionsForUser(email);
 
