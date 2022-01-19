@@ -11,6 +11,12 @@ const cors = Cors({
   allowMethods: ['POST', 'HEAD'],
 });
 
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     const buf = await buffer(req);
