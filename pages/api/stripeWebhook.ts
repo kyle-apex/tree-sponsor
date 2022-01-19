@@ -2,11 +2,16 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { buffer } from 'micro';
 import { Stripe, stripe } from 'utils/stripe/init';
 import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
-import { ConstructionOutlined } from '@mui/icons-material';
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+import Cors from 'micro-cors';
+
+const cors = Cors({
+  allowMethods: ['POST', 'HEAD'],
+});
+
+const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     const buf = await buffer(req);
     const sig = req.headers['stripe-signature'];
@@ -47,4 +52,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.setHeader('Allow', 'POST');
     res.status(405).end('Method Not Allowed');
   }
-}
+};
+export default cors(webhookHandler as any);
