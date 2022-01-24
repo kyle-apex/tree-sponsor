@@ -3,7 +3,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { PartialSpecies } from 'interfaces';
+import { FieldSize, PartialSpecies } from 'interfaces';
 import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useQuery, useQueryClient } from 'react-query';
@@ -14,7 +14,15 @@ async function fetchSpecies(searchText = '') {
   return data;
 }
 
-const SpeciesSelector = ({ defaultValue, onChange }: { defaultValue?: number; onChange: (val: number) => void }) => {
+const SpeciesSelector = ({
+  defaultValue,
+  onChange,
+  size = 'small',
+}: {
+  defaultValue?: number;
+  onChange: (val: number) => void;
+  size?: FieldSize;
+}) => {
   const queryClient = useQueryClient();
   const [searchText, setSearchText] = React.useState('');
   const [value, setValue] = useState<PartialSpecies | string>(null);
@@ -31,8 +39,11 @@ const SpeciesSelector = ({ defaultValue, onChange }: { defaultValue?: number; on
 
   const { data, isFetching, refetch } = useQuery<PartialSpecies[]>(['speciesOptions', searchText], () => fetchSpecies(searchText), {
     keepPreviousData: true,
-    staleTime: 60 * 1000,
     initialData: [],
+    cacheTime: 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false
   });
 
   const prefetchData = async () => {
@@ -43,12 +54,13 @@ const SpeciesSelector = ({ defaultValue, onChange }: { defaultValue?: number; on
   };
 
   useEffect(() => {
+    console.log('prefetched');
     prefetchData();
   }, []);
 
-  useEffect(() => {
+  /*useEffect(() => {
     refetch();
-  }, [searchText]);
+  }, [searchText]);*/
 
   return (
     <>
@@ -81,6 +93,7 @@ const SpeciesSelector = ({ defaultValue, onChange }: { defaultValue?: number; on
           <TextField
             {...params}
             label='Select a species'
+            size={size}
             InputProps={{
               ...params.InputProps,
               autoComplete: 'off',

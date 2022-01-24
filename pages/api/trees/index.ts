@@ -2,11 +2,12 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'utils/auth/get-session';
 import throwError from 'utils/api/throw-error';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
-import { prisma } from 'utils/prisma/init';
+import { prisma, Prisma } from 'utils/prisma/init';
 import { v4 as uuidv4 } from 'uuid';
 import uploadTreeImages from 'utils/aws/upload-tree-images';
 import getTreeImagePath from 'utils/aws/get-tree-image-path';
 import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
+import { ReviewStatus } from 'interfaces';
 
 export const config = {
   api: {
@@ -63,5 +64,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
     res.status(200).json(upsertedTree);
+  } else if (req.method === 'GET') {
+    const reviewStatus = req.query.reviewStatus as ReviewStatus;
+    const filter: Prisma.TreeFindManyArgs = {
+      orderBy: { createdDate: 'desc' },
+    };
+    if (reviewStatus) filter.where = { reviewStatus };
+    const trees = await prisma.tree.findMany(filter);
+    res.status(200).json(trees);
   }
 }

@@ -28,6 +28,8 @@ export interface DefaultSession extends Record<string, unknown> {
   expires?: string;
 }
 
+export type FieldSize = 'small' | 'medium';
+
 export interface NextSession extends Record<string, unknown>, DefaultSession {}
 export type ReviewStatus = ReviewStatusPrisma | '';
 export type PartialSpecies = Partial<Species>;

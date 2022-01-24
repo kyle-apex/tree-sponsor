@@ -28,14 +28,13 @@ const Sponsorships = ({
   isReview?: boolean;
   reviewStatusFilter?: string;
 }): JSX.Element => {
-  const apiPath = isReview ? '/api/me/sponsorships' : '/api/me/sponsorships';
   const apiKey = isReview ? ['review-sponsorships', reviewStatusFilter] : ['my-sponsorships', reviewStatusFilter];
 
   const { data: sponsorships, isFetched, refetch } = isReview
     ? useQuery<PartialSponsorship[]>(apiKey, () => fetchSponsorships(reviewStatusFilter), {
         keepPreviousData: true,
       })
-    : useGet<PartialSponsorship[]>(apiPath, apiKey);
+    : useGet<PartialSponsorship[]>('/api/me/sponsorships', apiKey);
 
   const [availableSponsorshipCount, setAvailableSponsorshipCount] = useState(0);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);

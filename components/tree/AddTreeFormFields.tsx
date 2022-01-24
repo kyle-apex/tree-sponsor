@@ -71,7 +71,6 @@ const AddTreeFormFields = ({
           onChange={e => handleChange('diameter', e.target.value)}
           type='number'
         ></TextField>
-        <AddTreeFormFields tree={tree} handleChange={handleChange}></AddTreeFormFields>
       </CardContent>
     </Card>
   );
