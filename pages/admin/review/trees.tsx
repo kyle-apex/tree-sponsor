@@ -12,6 +12,7 @@ import CardContent from '@mui/material/CardContent';
 import Card from '@mui/material/Card';
 import axios from 'axios';
 import { useUpdateQueryById } from 'utils/hooks';
+import TreeRender from 'components/tree/TreeRender';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'isTreeReviewer');
@@ -36,7 +37,7 @@ const ReviewTreesPage = () => {
   };
 
   const { updateById } = useUpdateQueryById(apiKey, updateTree);
-
+  // TODO refactor into memoized component to avoid re-render all when updating
   return (
     <>
       <AdminLayout title='Review Trees' header='Review Trees'>
@@ -50,9 +51,9 @@ const ReviewTreesPage = () => {
         <Grid container spacing={4}>
           {trees?.map(tree => (
             <Grid key={tree.id} item xs={12} sm={6} md={3}>
+              <TreeRender id={tree.id} tree={tree}></TreeRender>
               <Card>
                 <CardContent>
-                  {tree.speciesId}
                   <TreeFormFields
                     tree={tree}
                     handleChange={(propertyName: string, value) => {

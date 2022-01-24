@@ -9,7 +9,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useQuery, useQueryClient } from 'react-query';
 import { useDebouncedCallback } from 'use-debounce';
 
-async function fetchSpecies(searchText = '') {
+async function fetchSpecies(searchText = '', currentValue?: PartialSpecies | string) {
+  // TODO, why don't all the display names fill in?
+  if (typeof currentValue !== 'string' && currentValue?.commonName === searchText) return currentValue;
   const { data } = await axios.get('/api/species/options?search=' + encodeURIComponent(searchText));
   return data;
 }
@@ -37,19 +39,26 @@ const SpeciesSelector = ({
     return [data];
   };
 
-  const { data, isFetching, refetch } = useQuery<PartialSpecies[]>(['speciesOptions', searchText], () => fetchSpecies(searchText), {
-    keepPreviousData: true,
-    initialData: [],
-    cacheTime: 60 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-  });
+  const { data, isFetching, refetch } = useQuery<PartialSpecies[]>(
+    ['speciesOptions', searchText || 'id:' + defaultValue],
+    () => fetchSpecies(searchText, value),
+    {
+      keepPreviousData: true,
+      initialData: [],
+      cacheTime: 60 * 60 * 1000,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+    },
+  );
 
   const prefetchData = async () => {
     if (!defaultValue) queryClient.prefetchQuery(['speciesOptions', ''], () => fetchSpecies(''));
     else {
-      queryClient.prefetchQuery(['speciesOptions', 'id:' + defaultValue], () => fetchDefaultValue(defaultValue));
+      const data = queryClient.getQueryData(['speciesOptions', 'id:' + defaultValue]) as PartialSpecies[];
+      if (!data || data.length === 0)
+        queryClient.prefetchQuery(['speciesOptions', 'id:' + defaultValue], () => fetchDefaultValue(defaultValue));
+      else setValue(data[0]);
     }
   };
 
