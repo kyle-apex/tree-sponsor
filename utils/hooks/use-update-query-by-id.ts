@@ -9,17 +9,16 @@ export const useUpdateQueryById = <T extends { id?: string | number }>(
   const queryClient = useQueryClient();
 
   function updateQueryListItem(updatedItem: any) {
-    console.log('queryKey', queryKey);
     const previousList: T[] = queryClient.getQueryData<T[]>(queryKey);
-    console.log('previousList', previousList);
     const updatedList = [...previousList];
     const index = updatedList.findIndex(eachValue => eachValue.id === updatedItem.id);
-
+    console.log('updatedItem', updatedItem);
     if (index !== -1) {
       updatedList[index] = {
         ...updatedList[index],
         ...updatedItem,
       };
+      console.log('updatedList[index]', updatedList[index]);
       queryClient.setQueryData(queryKey, updatedList);
     }
 

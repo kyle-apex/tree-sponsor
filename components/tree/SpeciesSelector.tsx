@@ -43,24 +43,19 @@ const SpeciesSelector = ({
     cacheTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    refetchOnReconnect: false
+    refetchOnReconnect: false,
   });
 
   const prefetchData = async () => {
     if (!defaultValue) queryClient.prefetchQuery(['speciesOptions', ''], () => fetchSpecies(''));
     else {
-      queryClient.prefetchQuery(['speciesOptions', ''], () => fetchDefaultValue(defaultValue));
+      queryClient.prefetchQuery(['speciesOptions', 'id:' + defaultValue], () => fetchDefaultValue(defaultValue));
     }
   };
 
   useEffect(() => {
-    console.log('prefetched');
     prefetchData();
   }, []);
-
-  /*useEffect(() => {
-    refetch();
-  }, [searchText]);*/
 
   return (
     <>

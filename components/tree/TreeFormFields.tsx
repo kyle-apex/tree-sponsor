@@ -6,6 +6,9 @@ import SpeciesSelector from './SpeciesSelector';
 import Typography from '@mui/material/Typography';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
+import FormControl from '@mui/material/FormControl';
 
 const TreeFormFields = ({
   tree,
@@ -14,18 +17,23 @@ const TreeFormFields = ({
   tree: PartialTree;
   handleChange: (propertyName: string, value: string | number) => void;
 }) => {
+  // updating usequery via handleChange does not trigger re-render to show lower section
+  console.log('tree form field render');
   return (
     <>
       <Typography sx={{ marginBottom: 2 }} variant='inherit' color='secondary'>
         Optional Details
       </Typography>
-      <SpeciesSelector onChange={speciesId => handleChange('speciesId', speciesId)}></SpeciesSelector>
+      <SpeciesSelector onChange={speciesId => handleChange('speciesId', speciesId)} defaultValue={tree.speciesId}></SpeciesSelector>
       {tree.speciesId && (
-        <RadioGroup onChange={e => handleChange('identificationConfidence', e.target.value)}>
-          <Radio value={1}></Radio> Not sure
-          <Radio value={2}></Radio> Fairly confident
-          <Radio value={3}></Radio> Very confident
-        </RadioGroup>
+        <FormControl component='fieldset'>
+          <FormLabel component='legend'>Identification Correctness Confidence</FormLabel>
+          <RadioGroup onChange={e => handleChange('identificationConfidence', Number(e.target.value))}>
+            <FormControlLabel value={1} control={<Radio size='small' />} label='Not sure' />
+            <FormControlLabel value={2} control={<Radio size='small' />} label='Fairly confident' />
+            <FormControlLabel value={3} control={<Radio size='small' />} label='Very confident' />
+          </RadioGroup>
+        </FormControl>
       )}
       <TextField
         sx={{ marginBottom: 3, marginTop: 2 }}

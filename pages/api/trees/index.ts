@@ -68,8 +68,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const reviewStatus = req.query.reviewStatus as ReviewStatus;
     const filter: Prisma.TreeFindManyArgs = {
       orderBy: { createdDate: 'desc' },
+      take: 1,
+      where: { speciesId: null },
     };
-    if (reviewStatus) filter.where = { reviewStatus };
+    //if (reviewStatus) filter.where = { reviewStatus };
     const trees = await prisma.tree.findMany(filter);
     res.status(200).json(trees);
   }

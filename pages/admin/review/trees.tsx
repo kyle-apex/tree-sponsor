@@ -10,6 +10,8 @@ import TreeFormFields from 'components/tree/TreeFormFields';
 import Grid from '@mui/material/Grid';
 import CardContent from '@mui/material/CardContent';
 import Card from '@mui/material/Card';
+import axios from 'axios';
+import { useUpdateQueryById } from 'utils/hooks';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'isTreeReviewer');
@@ -29,12 +31,11 @@ const ReviewTreesPage = () => {
     keepPreviousData: true,
   });
 
-  const { updateById } = useUpdateQueryById(apiKey, updateTree);
-
   const updateTree = async (id: number, attributes: Record<string, unknown>) => {
-    await axios.patch('/api/tree/' + id, { reviewStatus: attributes.reviewStatus });
+    await axios.patch('/api/trees/' + id, attributes);
   };
 
+  const { updateById } = useUpdateQueryById(apiKey, updateTree);
 
   return (
     <>
@@ -51,13 +52,21 @@ const ReviewTreesPage = () => {
             <Grid key={tree.id} item xs={12} sm={6} md={3}>
               <Card>
                 <CardContent>
-                  <TreeFormFields tree={tree} handleChange={(propertyName,value) => updateTree(tree.id,{[propertyName]:value})}></TreeFormFields>
+                  {tree.speciesId}
+                  <TreeFormFields
+                    tree={tree}
+                    handleChange={(propertyName: string, value) => {
+                      updateById(tree.id, { [propertyName]: value });
+                      if (propertyName == 'speciesId') tree.speciesId = value as number;
+                    }}
+                  ></TreeFormFields>
                   <ReviewStatusSelect
+                    label='Review Status'
                     value={tree.reviewStatus}
                     onChange={(value: ReviewStatus) => {
                       if (value !== '') {
                         tree.reviewStatus = value;
-                        updateById(sponsorship.id, { reviewStatus: value });
+                        updateById(tree.id, { reviewStatus: value });
                       }
                     }}
                     mb={2}
