@@ -37,7 +37,7 @@ const ReviewTreesPage = () => {
     await axios.patch('/api/trees/' + id, attributes);
   };
 
-  const { updateById } = useUpdateQueryById(apiKey, updateTree);
+  const { updateById } = useUpdateQueryById(apiKey, updateTree, false, 500);
   // TODO refactor into memoized component to avoid re-render all when updating
   return (
     <>

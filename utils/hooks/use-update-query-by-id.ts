@@ -4,9 +4,11 @@ export const useUpdateQueryById = <T extends { id?: string | number }>(
   key: string | string[],
   updateFunction: (id: number, attributes: Record<string, unknown>) => Promise<void>,
   hasRefetch?: boolean,
+  debounceMilliseconds?: number,
 ) => {
   const queryKey = typeof key === 'string' ? [key, undefined] : key;
   const queryClient = useQueryClient();
+  let debounceHandle: NodeJS.Timeout;
 
   function updateQueryListItem(updatedItem: any) {
     //console.log('queryKey', queryKey);
@@ -24,6 +26,7 @@ export const useUpdateQueryById = <T extends { id?: string | number }>(
       queryClient.setQueryData(queryKey, updatedList);
     }
 
+    // return a rollback function
     return () => queryClient.setQueryData(queryKey, previousList);
   }
 
@@ -50,7 +53,12 @@ export const useUpdateQueryById = <T extends { id?: string | number }>(
   );
 
   const updateById = (id: number, attributes: Record<string, unknown>) => {
-    mutate({ id: id, attributes: attributes });
+    if (debounceMilliseconds) {
+      if (debounceHandle) clearTimeout(debounceHandle);
+      debounceHandle = setTimeout(() => {
+        mutate({ id: id, attributes: attributes });
+      }, debounceMilliseconds);
+    } else mutate({ id: id, attributes: attributes });
   };
 
   return { updateById, isLoading };
