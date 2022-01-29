@@ -8,11 +8,12 @@ import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useQuery, useQueryClient } from 'react-query';
 import { useDebouncedCallback } from 'use-debounce';
+import { CollectionsOutlined } from '@mui/icons-material';
 
 async function fetchSpecies(searchText = '', currentValue?: PartialSpecies | string) {
-  // TODO, why don't all the display names fill in?
-  if (typeof currentValue !== 'string' && currentValue?.commonName === searchText) return currentValue;
+  if (typeof currentValue !== 'string' && currentValue?.commonName === searchText) return [currentValue];
   const { data } = await axios.get('/api/species/options?search=' + encodeURIComponent(searchText));
+
   return data;
 }
 
@@ -35,7 +36,6 @@ const SpeciesSelector = ({
 
   const fetchDefaultValue = async (id: number) => {
     const { data } = await axios.get('/api/species/' + id);
-    setValue(data);
     return [data];
   };
 
@@ -55,10 +55,14 @@ const SpeciesSelector = ({
   const prefetchData = async () => {
     if (!defaultValue) queryClient.prefetchQuery(['speciesOptions', ''], () => fetchSpecies(''));
     else {
-      const data = queryClient.getQueryData(['speciesOptions', 'id:' + defaultValue]) as PartialSpecies[];
-      if (!data || data.length === 0)
-        queryClient.prefetchQuery(['speciesOptions', 'id:' + defaultValue], () => fetchDefaultValue(defaultValue));
-      else setValue(data[0]);
+      let data = queryClient.getQueryData(['speciesOptions', 'id:' + defaultValue]) as PartialSpecies[];
+      console.log('getting query data for ', defaultValue, data);
+      if (!data || data.length === 0) {
+        await queryClient.prefetchQuery(['speciesOptions', 'id:' + defaultValue], () => fetchDefaultValue(defaultValue));
+
+        data = queryClient.getQueryData(['speciesOptions', 'id:' + defaultValue]) as PartialSpecies[];
+        if (data && data.length === 1) setValue(data[0]);
+      } else setValue(data[0]);
     }
   };
 
@@ -96,7 +100,7 @@ const SpeciesSelector = ({
         renderInput={params => (
           <TextField
             {...params}
-            label='Select a species'
+            label='Species'
             size={size}
             InputProps={{
               ...params.InputProps,
@@ -108,6 +112,7 @@ const SpeciesSelector = ({
                 </React.Fragment>
               ),
             }}
+            InputLabelProps={{ shrink: true }}
             autoComplete='off'
           />
         )}

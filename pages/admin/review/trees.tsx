@@ -19,7 +19,7 @@ export const getServerSideProps = (ctx: GetSessionOptions) => {
 };
 
 async function fetchTrees(reviewStatusFilter = '') {
-  const queryString = reviewStatusFilter ? '?reviewStatus=' + encodeURIComponent(reviewStatusFilter) : '';
+  const queryString = reviewStatusFilter ? '?take=8&reviewStatus=' + encodeURIComponent(reviewStatusFilter) : '';
   return parsedGet<PartialTree[]>('/api/trees' + queryString);
 }
 
@@ -30,6 +30,7 @@ const ReviewTreesPage = () => {
 
   const { data: trees, isFetched, refetch } = useQuery<PartialTree[]>(apiKey, () => fetchTrees(reviewStatus), {
     keepPreviousData: true,
+    refetchOnWindowFocus: false,
   });
 
   const updateTree = async (id: number, attributes: Record<string, unknown>) => {

@@ -39,6 +39,7 @@ const TreeFormFields = ({
         sx={{ marginBottom: 3, marginTop: 2 }}
         label='Name/Nickname (ex: The Treaty Oak)'
         onChange={e => handleChange('name', e.target.value)}
+        value={tree.name}
         size='small'
         fullWidth={true}
       ></TextField>
@@ -51,6 +52,7 @@ const TreeFormFields = ({
         onChange={e => handleChange('height', e.target.value)}
         type='number'
         size='small'
+        value={tree.height}
         fullWidth={true}
       ></TextField>
       <TextField
@@ -58,6 +60,7 @@ const TreeFormFields = ({
         label='Diameter (inches)'
         onChange={e => handleChange('diameter', e.target.value)}
         type='number'
+        value={tree.diameter}
         size='small'
         fullWidth={true}
       ></TextField>

@@ -68,6 +68,15 @@ const theme = createTheme({
       fontSize: '1.2rem',
     },
   },
+  components: {
+    MuiTextField: {
+      defaultProps: {
+        InputLabelProps: {
+          shrink: true,
+        },
+      },
+    },
+  },
 });
 
 export default theme;

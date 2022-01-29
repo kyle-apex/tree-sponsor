@@ -66,12 +66,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(200).json(upsertedTree);
   } else if (req.method === 'GET') {
     const reviewStatus = req.query.reviewStatus as ReviewStatus;
+    const take = req.query.take ? Number(req.query.take) : null;
     const filter: Prisma.TreeFindManyArgs = {
       orderBy: { createdDate: 'desc' },
       //take: 1,
       //where: { id: 5 },
     };
     if (reviewStatus) filter.where = { reviewStatus };
+    if (take) filter.take = take;
     const trees = await prisma.tree.findMany(filter);
     res.status(200).json(trees);
   }
