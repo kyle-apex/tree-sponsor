@@ -19,6 +19,7 @@
     "@emotion/styled": "^11.3.0",
     "@googlemaps/react-wrapper": "^1.1.18",
     "@mui/icons-material": "^5.0.1",
+    "@mui/lab": "^5.0.0-alpha.66",
     "@mui/material": "^5.0.1",
     "@mui/styles": "^5.0.1",
     "@prisma/client": "^3.6.0",
@@ -26,6 +27,8 @@
     "aws-sdk": "^2.987.0",
     "axios": "^0.21.1",
     "crypto-js": "^4.1.1",
+    "dayjs": "^1.10.7",
+    "dotenv": "^10.0.0",
     "draft-js-export-html": "^1.4.1",
     "express": "^4.17.1",
     "fontsource-roboto": "^3.1.5",
@@ -53,8 +56,7 @@
     "stripe": "^8.145.0",
     "use-debounce": "^7.0.1",
     "uuid": "^8.3.2",
-    "xss": "^1.0.10",
-    "dotenv": "^10.0.0"
+    "xss": "^1.0.10"
   },
   "devDependencies": {
     "@testing-library/dom": "^8.11.1",

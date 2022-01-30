@@ -16,6 +16,7 @@ import dynamic from 'next/dynamic';
 import { Prisma } from '@prisma/client';
 import { useGet } from 'utils/hooks/use-get';
 import Skeleton from '@mui/material/Skeleton';
+import CenteredSection from 'components/layout/CenteredSection';
 const TextEditor = dynamic(() => import('components/TextEditor'), {
   ssr: false,
   // eslint-disable-next-line react/display-name
@@ -114,20 +115,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   };
 
   return (
-    <Box
-      className='section-background box-shadow'
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        maxWidth: '500px',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        borderColor: theme => theme.palette.primary.main,
-        borderRadius: '5px',
-        border: 'solid 1px',
-        padding: '10px 20px 30px',
-      }}
-    >
+    <CenteredSection>
       <SplitRow>
         {children}
         <a href={'/u/' + profilePathState.profilePath} target='_blank' style={{ textDecoration: 'none' }} rel='noreferrer'>
@@ -252,7 +240,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       <Typography sx={{ color: theme => theme.palette.grey[600] }} variant='body2' mt={2} mb={-1}>
         Profile updates will appear across the site after clicking &quot;Save&quot; and refreshing the page.
       </Typography>
-    </Box>
+    </CenteredSection>
   );
 };
 
