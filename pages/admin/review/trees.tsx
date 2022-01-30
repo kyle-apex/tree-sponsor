@@ -13,6 +13,11 @@ import Card from '@mui/material/Card';
 import axios from 'axios';
 import { useUpdateQueryById } from 'utils/hooks';
 import TreeRender from 'components/tree/TreeRender';
+import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
+import MapMarkerDisplay from 'components/maps/MapMarkerDisplay';
+import Box from '@mui/material/Box';
+import LocationSelector from 'components/LocationSelector';
+import TreeReview from 'components/tree/TreeReview';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'isTreeReviewer');
@@ -50,33 +55,18 @@ const ReviewTreesPage = () => {
           mb={2}
         ></ReviewStatusSelect>
         <Grid container spacing={4}>
-          {trees?.map(tree => (
-            <Grid key={tree.id} item xs={12} sm={6} md={3}>
-              <TreeRender id={tree.id} tree={tree}></TreeRender>
-              <Card>
-                <CardContent>
-                  <TreeFormFields
-                    tree={tree}
-                    handleChange={(propertyName: string, value) => {
-                      updateById(tree.id, { [propertyName]: value });
-                      if (propertyName == 'speciesId') tree.speciesId = value as number;
-                    }}
-                  ></TreeFormFields>
-                  <ReviewStatusSelect
-                    label='Review Status'
-                    value={tree.reviewStatus}
-                    onChange={(value: ReviewStatus) => {
-                      if (value !== '') {
-                        tree.reviewStatus = value;
-                        updateById(tree.id, { reviewStatus: value });
-                      }
-                    }}
-                    mb={2}
-                  />
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+          {trees?.map(tree => {
+            return (
+              <Grid key={tree.id} item xs={12} sm={6} md={3}>
+                <TreeRender id={tree.id} tree={tree}></TreeRender>
+                <Card>
+                  <CardContent>
+                    <TreeReview tree={tree} onUpdate={updateById} />
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          })}
         </Grid>
       </AdminLayout>
     </>

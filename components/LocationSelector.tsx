@@ -5,6 +5,7 @@ import MapGL, { Marker, GeolocateControl, NavigationControl } from 'react-map-gl
 import Geocoder from 'react-map-gl-geocoder';
 import RoomSharpIcon from '@mui/icons-material/RoomSharp';
 import makeStyles from '@mui/styles/makeStyles';
+import { MAP_STYLE } from 'consts';
 
 const geolocateControlStyle = {
   right: 10,
@@ -65,7 +66,7 @@ const LocationSelector = ({
           onViewportChange({ latitude: e.latitude, longitude: e.longitude, zoom: e.zoom });
         }}
         mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-        mapStyle='mapbox://styles/mapbox/satellite-streets-v11'
+        mapStyle={MAP_STYLE.STREET}
       >
         <GeolocateControl
           auto={auto}

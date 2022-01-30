@@ -16,8 +16,8 @@ const GoogleStreetViewer = ({
   latitude,
   longitude,
 }: {
-  height: number;
-  width: number;
+  height?: number;
+  width?: number;
   latitude: number;
   longitude: number;
 }) => {

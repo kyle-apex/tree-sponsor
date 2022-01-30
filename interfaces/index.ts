@@ -28,6 +28,16 @@ export interface DefaultSession extends Record<string, unknown> {
   expires?: string;
 }
 
+export type StreetViewLocation = {
+  heading?: string;
+  pitch?: string;
+} & Coordinate;
+
+export type Coordinate = {
+  latitude?: number;
+  longitude?: number;
+};
+
 export type FieldSize = 'small' | 'medium';
 
 export interface NextSession extends Record<string, unknown>, DefaultSession {}
@@ -58,6 +68,8 @@ export type PartialUser = Partial<
     profile?: Partial<Profile>;
   }
 >;
+
+export type MapStyle = 'SATELLITE' | 'STREET' | 'SIMPLE';
 
 export type Viewport = Omit<ViewportProps, 'width' | 'height'> & { height: string | number; width: string | number };
 
