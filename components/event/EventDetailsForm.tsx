@@ -6,12 +6,6 @@ import dynamic from 'next/dynamic';
 import CategoryMultiSelect from 'components/category/CategoryMultiSelect';
 import DateTimeField from 'components/form/DateTimeField';
 import Skeleton from '@mui/material/Skeleton';
-import CenteredSection from 'components/layout/CenteredSection';
-import Button from '@mui/material/Button';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import SplitRow from 'components/layout/SplitRow';
 
 const TextEditor = dynamic(() => import('components/TextEditor'), {
@@ -25,19 +19,15 @@ const TextEditor = dynamic(() => import('components/TextEditor'), {
   ),
 });
 
-const EventDetailsForm = ({ event, setEvent }: { event: PartialEvent; setEvent: (event: PartialEvent) => void }) => {
-  const updateAttribute = (name: string, value: unknown) => {
-    const newEvent: PartialEvent = { ...event, [name]: value };
-    setEvent(newEvent);
-  };
-  const router = useRouter();
+const EventDetailsForm = ({
+  event,
+  updateAttribute,
+}: {
+  event: PartialEvent;
+  updateAttribute: (name: keyof PartialEvent, value: unknown) => void;
+}) => {
   return (
-    <CenteredSection>
-      <Link href='/account'>
-        <Button onClick={() => router.back()} variant='text' size='small' sx={{ marginBottom: 2, display: 'flex', alignSelf: 'start' }}>
-          <ChevronLeftIcon /> Back
-        </Button>
-      </Link>
+    <>
       <TextField
         value={event?.name}
         onChange={e => updateAttribute('name', e.target.value)}
@@ -75,7 +65,7 @@ const EventDetailsForm = ({ event, setEvent }: { event: PartialEvent; setEvent: 
         selectedCategories={event?.categories}
         setSelectedCategories={categories => updateAttribute('categories', categories)}
       ></CategoryMultiSelect>
-    </CenteredSection>
+    </>
   );
 };
 export default EventDetailsForm;

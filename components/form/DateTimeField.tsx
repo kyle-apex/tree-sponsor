@@ -14,7 +14,7 @@ const DateTimeField = ({ value, setValue, label }: { value: Date | null; setValu
         onChange={newValue => {
           setValue(newValue);
         }}
-        inputFormat='M/D/YY h:m a'
+        inputFormat='M/D/YY h:mm a'
       />
     </LocalizationProvider>
   );

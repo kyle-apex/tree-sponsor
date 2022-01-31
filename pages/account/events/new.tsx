@@ -1,13 +1,26 @@
-import EventDetailsForm from 'components/event/EventDetailsForm';
+import Button from '@mui/material/Button';
+import AddEvent from 'components/event/AddEvent';
+import CenteredSection from 'components/layout/CenteredSection';
 import Layout from 'components/layout/Layout';
 import { PartialEvent } from 'interfaces';
-import { useState } from 'react';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { useRouter } from 'next/router';
 
 const AddEventPage = () => {
-  const [event, setEvent] = useState<PartialEvent>();
+  const onAdd = () => {
+    console.log('added');
+  };
+
+  const router = useRouter();
+
   return (
     <Layout title='Add Event'>
-      <EventDetailsForm event={event} setEvent={setEvent} />
+      <CenteredSection>
+        <Button onClick={() => router.back()} variant='text' size='small' sx={{ marginBottom: 2, display: 'flex', alignSelf: 'start' }}>
+          <ChevronLeftIcon /> Back
+        </Button>
+        <AddEvent onAdd={onAdd}></AddEvent>
+      </CenteredSection>
     </Layout>
   );
 };
