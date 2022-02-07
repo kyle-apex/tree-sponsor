@@ -75,8 +75,8 @@ model User {
   treeChangeLogs        TreeChangeLog[]
   lastChangedByTrees    Tree[]
   Event                 Event[]
+  Category              Category[]
   @@map(name: "users")
-  Category Category[]
 }
 
 model Role {

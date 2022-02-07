@@ -1,20 +1,31 @@
-import AdapterDayjs from '@mui/lab/AdapterDayjs';
+//import AdapterDayjs from '@mui/lab/AdapterDayjs';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import TextField from '@mui/material/TextField';
-
-const DateTimeField = ({ value, setValue, label }: { value: Date | null; setValue: (value: Date | null) => void; label?: string }) => {
-  console.log('setValue', value, setValue);
+// TODO: Date not updating
+const DateTimeField = ({
+  value,
+  setValue,
+  label,
+  minDateTime,
+}: {
+  value: Date | null;
+  setValue: (value: Date | null) => void;
+  label?: string;
+  minDateTime?: Date;
+}) => {
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DateTimePicker
-        renderInput={props => <TextField {...props} />}
+        renderInput={props => <TextField size='small' {...props} />}
         label={label}
         value={value}
         onChange={newValue => {
           setValue(newValue);
         }}
-        inputFormat='M/D/YY h:mm a'
+        inputFormat='M/d/yy h:mm a'
+        minDateTime={minDateTime}
       />
     </LocalizationProvider>
   );

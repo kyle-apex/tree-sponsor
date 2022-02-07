@@ -4,9 +4,13 @@ import { PartialEvent } from 'interfaces';
 import EventDetailsForm from './EventDetailsForm';
 import LoadingButton from 'components/LoadingButton';
 import axios from 'axios';
+import Box from '@mui/material/Box';
+
+const tomorrow = new Date();
+tomorrow.setDate(new Date().getDate() + 1);
 
 const AddEvent = ({ onAdd }: { onAdd: (newEvent: PartialEvent) => void }) => {
-  const eventRef = useRef<PartialEvent>({});
+  const eventRef = useRef<PartialEvent>({ startDate: tomorrow, endDate: null });
   const [isLoading, setIsLoading] = useState(false);
 
   const addEvent = async () => {
@@ -23,7 +27,7 @@ const AddEvent = ({ onAdd }: { onAdd: (newEvent: PartialEvent) => void }) => {
   return (
     <>
       <EventDetailsForm event={eventRef.current} updateAttribute={updateAttribute}></EventDetailsForm>
-      <LoadingButton variant='contained' onClick={addEvent} isLoading={isLoading}>
+      <LoadingButton variant='contained' onClick={addEvent} isLoading={isLoading} sx={{ mt: 5 }}>
         Save
       </LoadingButton>
     </>
