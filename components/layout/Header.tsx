@@ -20,6 +20,8 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import SessionAvatar from 'components/SessionAvatar';
 import NotificationIcon from 'components/notification/NotificationIcon';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useTheme from '@mui/styles/useTheme';
 
 const drawerWidth = 240;
 
@@ -79,6 +81,8 @@ const Header = () => {
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const classes = useStyles();
+  const theme = useTheme();
+  const isMobile = !useMediaQuery(theme.breakpoints.up('md'));
 
   const router = useRouter();
 
@@ -115,11 +119,18 @@ const Header = () => {
           </Typography>
 
           {!session && (
-            <Link href='/signup'>
-              <Button sx={{ marginRight: 2 }} color='inherit'>
-                Thank a Tree
-              </Button>
-            </Link>
+            <Box sx={{ marginRight: 2, flexDirection: 'row', display: 'flex' }}>
+              {!isMobile && (
+                <Link href='/signup'>
+                  <Button color='inherit'>Thank a Tree</Button>
+                </Link>
+              )}
+              <Link href='/signup'>
+                <Box sx={{ borderLeft: isMobile ? 'none' : 'solid 1px', borderColor: theme => theme.palette.secondary.main }}>
+                  <Button color={isMobile ? 'inherit' : 'secondary'}>Become a Member</Button>
+                </Box>
+              </Link>
+            </Box>
           )}
 
           {session && (
