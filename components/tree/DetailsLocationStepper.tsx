@@ -1,6 +1,5 @@
-import React, {
-  useEffect,
-} from 'react'; /*
+import React, { useEffect } from 'react';
+/*
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';

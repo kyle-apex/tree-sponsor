@@ -65,8 +65,8 @@ const TreeReview = ({ tree, onUpdate }: { tree: PartialTree; onUpdate: (id: numb
             latitude={Number(tree.latitude)}
             longitude={Number(tree.longitude)}
             onSave={({ latitude, longitude }) => {
-              tree.latitude = ((latitude + '') as unknown) as Decimal;
-              tree.longitude = ((longitude + '') as unknown) as Decimal;
+              tree.latitude = (latitude + '') as unknown as Decimal;
+              tree.longitude = (longitude + '') as unknown as Decimal;
               onUpdate(tree.id, { latitude, longitude });
             }}
           ></LocationSelectorDialog>

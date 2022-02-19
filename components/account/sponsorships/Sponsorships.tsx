@@ -30,7 +30,11 @@ const Sponsorships = ({
 }): JSX.Element => {
   const apiKey = isReview ? ['review-sponsorships', reviewStatusFilter] : ['my-sponsorships', reviewStatusFilter];
 
-  const { data: sponsorships, isFetched, refetch } = isReview
+  const {
+    data: sponsorships,
+    isFetched,
+    refetch,
+  } = isReview
     ? useQuery<PartialSponsorship[]>(apiKey, () => fetchSponsorships(reviewStatusFilter), {
         keepPreviousData: true,
       })

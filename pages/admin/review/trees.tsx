@@ -33,7 +33,7 @@ const ReviewTreesPage = () => {
 
   const apiKey = ['review-trees', reviewStatus];
 
-  const { data: trees, isFetched, refetch } = useQuery<PartialTree[]>(apiKey, () => fetchTrees(reviewStatus), {
+  const { data: trees } = useQuery<PartialTree[]>(apiKey, () => fetchTrees(reviewStatus), {
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   });
