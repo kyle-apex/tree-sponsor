@@ -22,6 +22,7 @@ import { StyledTableRow } from 'components/StyledTableRow';
 import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
 import serverSideIsAdmin from 'utils/auth/server-side-is-admin';
 import Link from 'next/link';
+import Typography from '@mui/material/Typography';
 
 export const getServerSideProps = serverSideIsAdmin;
 
@@ -75,6 +76,7 @@ const headCells = [
   { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
   { id: 'hasShirt', numeric: false, disablePadding: false, label: 'Has Shirt' },
   { id: 'amount', numeric: true, disablePadding: false, label: 'Amount' },
+  { id: 'lastPaymentDate', numeric: false, disablePadding: false, label: 'Last Payment' },
   { id: 'createdDate', numeric: false, disablePadding: false, label: 'Member Since' },
   { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
 ];
@@ -189,20 +191,40 @@ export default function EnhancedTable(): JSX.Element {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const labelId = `enhanced-table-checkbox-${index}`;
+                  const createdDate = new Date(row.createdDate);
+                  const lastPaymentDate = new Date(row.lastPaymentDate || row.createdDate);
+                  const isPaymentLate = new Date().getTime() - lastPaymentDate.getTime() > 366 * 24 * 60 * 60 * 1000;
 
                   return (
                     <StyledTableRow tabIndex={-1} key={row.id}>
                       <TableCell id={labelId} scope='row'>
                         {row.userName}
                       </TableCell>
-                      <TableCell>{row.status.toUpperCase().replace('_', ' ')}</TableCell>
+                      <TableCell
+                        sx={{
+                          color: theme => {
+                            return isPaymentLate ? theme.palette.error.main : 'inherit';
+                          },
+                        }}
+                      >
+                        {row.status.toUpperCase().replace('_', ' ')}
+                      </TableCell>
                       <TableCell className={classes.condensedCell}>
                         {row.amount >= 60 && (
                           <TeeShirtSelect updateHasShirt={updateHasShirt} hasShirt={row.hasShirt} userId={row.userId}></TeeShirtSelect>
                         )}
                       </TableCell>
                       <TableCell align='right'>${row.amount}</TableCell>
-                      <TableCell>{new Date(row.createdDate).toLocaleDateString()}</TableCell>
+                      <TableCell
+                        sx={{
+                          color: theme => {
+                            return isPaymentLate ? theme.palette.error.main : 'inherit';
+                          },
+                        }}
+                      >
+                        {lastPaymentDate.toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>{createdDate.toLocaleDateString()}</TableCell>
                       <TableCell>{row.email}</TableCell>
                     </StyledTableRow>
                   );
