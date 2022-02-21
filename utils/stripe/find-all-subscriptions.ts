@@ -6,18 +6,38 @@ import { Stripe, stripe } from './init';
 
 export const findAllSubscriptions = async (): Promise<PartialSubscription[]> => {
   let t1 = new Date().getTime();
-  const customers: Stripe.ApiList<Stripe.Customer> = await stripe.customers.list({
-    limit: 100,
-    expand: ['data.subscriptions'],
-  });
-  console.log('getCustomers Time', customers.data.length, new Date().getTime() - t1);
+
+  const allCustomers: Stripe.Customer[] = [];
+
+  //let customers: Stripe.ApiList<Stripe.Customer>;
+
+  //const starting_after = null;
+  /*
+  while (!customers.data || customers.data.length === 100) {
+    customers = await stripe.customers.list({
+      limit: 100,
+      expand: ['data.subscriptions'],
+      starting_after: starting_after
+    });
+    if (customers.data?.length > 0) { 
+      allCustomers.concat(...customers.data);
+      starting_after = allCustomers
+
+    }
+  }*/
+
+  for await (const customer of stripe.customers.list({ limit: 100, expand: ['data.subscriptions'] })) {
+    allCustomers.push(customer);
+  }
+
+  console.log('getCustomers Time', allCustomers.length, new Date().getTime() - t1);
   //console.log('customers', customers);
 
   const subscriptions: PartialSubscription[] = [];
   const productIds: string[] = [];
   t1 = new Date().getTime();
   await Promise.all(
-    customers.data.map(async (customer: Stripe.Customer) => {
+    allCustomers.map(async (customer: Stripe.Customer) => {
       if (customer?.subscriptions) {
         await Promise.all(
           customer.subscriptions.data.map(async (sub: StripeSubscription) => {
