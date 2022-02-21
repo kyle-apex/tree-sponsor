@@ -20,6 +20,7 @@ const SearchBox = ({
       id='search-box'
       label={label}
       size={size}
+      sx={{ background: 'white' }}
       defaultValue={defaultValue}
       onChange={event => {
         onChange(event.target.value);
