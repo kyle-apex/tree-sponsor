@@ -65,7 +65,14 @@ const SponsorshipActions = ({ sponsorship, signInCallbackUrl }: { sponsorship: P
         )}
       </Box>
 
-      {showComments && <CommentSection sponsorshipId={sponsorshipId} comments={comments} isFetching={isCommentsFetching}></CommentSection>}
+      {showComments && (
+        <CommentSection
+          sponsorshipId={sponsorshipId}
+          comments={comments}
+          isFetching={isCommentsFetching}
+          signInCallbackUrl={signInCallbackUrl}
+        ></CommentSection>
+      )}
     </Box>
   );
 };

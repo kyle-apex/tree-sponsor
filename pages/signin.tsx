@@ -79,6 +79,9 @@ export default function signin({
         )}
         {!message && (
           <>
+            <Box sx={{ marginBottom: 3 }} component='p'>
+              Sign in with any method using the same email address you signed up with:
+            </Box>
             {Object.values(providers).map((provider: ClientSafeProvider) => {
               return (
                 <div key={provider.name} className='provider'>

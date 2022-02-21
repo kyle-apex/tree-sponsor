@@ -5,6 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import NotificationDisplay from './NotificationDisplay';
 import { useRouter } from 'next/router';
 import Box from '@mui/material/Box';
+import NotificationMenuItem from './NotificationMenuItem';
 
 const NotificationMenu = ({
   notifications,
@@ -43,19 +44,7 @@ const NotificationMenu = ({
         sx={{ '.MuiMenu-paper': { width: '85vw', maxWidth: '500px' }, '.MuiMenu-list': { paddingTop: 0, paddingBottom: 0 } }}
       >
         {notifications?.map((notification, idx) => (
-          <Box key={notification.id}>
-            {idx > 0 && <hr style={{ margin: 0 }} />}
-            <MenuItem
-              sx={{
-                backgroundColor: !notification.isRead ? '#d8e4e0' : '',
-                paddingBottom: 1.5,
-                paddingTop: 1.5,
-                ':hover': { backgroundColor: !notification.isRead ? '#c7d6d1' : '' },
-              }}
-            >
-              <NotificationDisplay notification={notification} onAction={link => handleClick(link)} />
-            </MenuItem>
-          </Box>
+          <NotificationMenuItem key={notification.id} index={idx} notification={notification} handleClick={handleClick} />
         ))}
         {notifications?.length == 0 && (
           <Box onClick={handleClose} sx={{ padding: 1 }}>
