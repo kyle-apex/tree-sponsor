@@ -26,6 +26,7 @@ import Box from '@mui/material/Box';
 import restrictPageAccess from 'utils/auth/restrict-page-access';
 import { GetSessionOptions } from 'next-auth/client';
 import RestrictSection from 'components/RestrictSection';
+import { capitalCase } from 'change-case';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'isAdmin');
@@ -207,7 +208,7 @@ export default function EnhancedTable(): JSX.Element {
                           },
                         }}
                       >
-                        {row.status.toUpperCase().replace('_', ' ')}
+                        {capitalCase(row.status)}
                       </TableCell>
                       <TableCell className={classes.condensedCell}>
                         {row.amount >= 60 && (
