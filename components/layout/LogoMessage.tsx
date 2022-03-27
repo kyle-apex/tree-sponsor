@@ -17,7 +17,7 @@ const LogoMessage = ({
         <Box
           flexDirection='column'
           display='flex'
-          justifyContent='center'
+          justifyContent={justifyContent}
           className='box-shadow section-background'
           sx={{
             borderColor: theme => theme.palette.primary.main,
