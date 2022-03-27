@@ -2,7 +2,15 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Image from 'next/image';
 
-const LogoMessage = ({ children, hideLogo }: { children: React.ReactNode; hideLogo?: boolean }) => {
+const LogoMessage = ({
+  children,
+  hideLogo,
+  justifyContent = 'center',
+}: {
+  children: React.ReactNode;
+  hideLogo?: boolean;
+  justifyContent?: string;
+}) => {
   return (
     <Container maxWidth='xs' sx={{ minHeight: 'calc(100vh - 185px)', marginBottom: 0, display: 'flex' }}>
       <Box display='flex' justifyContent='center' alignItems='center' sx={{ width: '100%' }}>
