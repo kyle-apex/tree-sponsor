@@ -7,8 +7,9 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { useRouter } from 'next/router';
 
 const AddEventPage = () => {
-  const onAdd = () => {
+  const onAdd = (newEvent: PartialEvent) => {
     console.log('added');
+    router.push('/account/events/' + newEvent.path);
   };
 
   const router = useRouter();
