@@ -99,7 +99,7 @@ const MembershipStatus = () => {
           <Button onClick={reset} variant='outlined' color='secondary' sx={{ mb: 2 }}>
             Try Another Search
           </Button>
-          <Link href='/signup'>
+          <Link href='/signin'>
             <Button color='primary' variant='contained'>
               Login{!hasActiveMembership && ' to Renew Membership'}
             </Button>
