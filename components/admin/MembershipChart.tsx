@@ -65,13 +65,13 @@ const MembershipChart = () => {
   const [chartData, setChartData] = useState<ChartData<'bar', number[], unknown>>(null);
 
   const getData = async () => {
-    //const results = await parsedGet<ChartDataResult>('/api/members/active-by-year');
-    const results: ChartDataResult = {
+    const results = await parsedGet<ChartDataResult>('/api/members/active-by-year');
+    /*const results: ChartDataResult = {
       labels: ['2019', '2020', '2021', '2022'],
       total: [6, 12, 6, 8],
       active: [2, 6, 5, 8],
       inactive: [4, 6, 1, 0],
-    };
+    };*/
     const data = {
       labels: results.labels,
       datasets: [
