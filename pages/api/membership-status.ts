@@ -8,7 +8,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (!email) throwError(res, 'No email provided.');
 
-  const subscriptionWithDetails = await prisma.subscriptionWithDetails.findFirst({ where: { email: email } });
+  const subscriptionWithDetails = await prisma.subscriptionWithDetails.findFirst({
+    where: { email: email },
+    orderBy: { lastPaymentDate: 'desc' },
+  });
 
   console.log('subscriptionWithDetails', subscriptionWithDetails);
 
