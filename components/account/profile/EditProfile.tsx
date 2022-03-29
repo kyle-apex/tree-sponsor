@@ -29,7 +29,7 @@ const TextEditor = dynamic(() => import('components/TextEditor'), {
 });
 
 const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
-  const { data: user, isFetched } = useGet<PartialUser>('/api/me');
+  const { data: user, isFetched } = useGet<PartialUser>('/api/me', 'me');
   const [name, setName] = useState('');
   const [isChanged, setIsChanged] = useState(false);
   const [profilePathState, setProfilePathState] = useState({

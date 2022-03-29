@@ -9,6 +9,7 @@ import { PartialEvent } from 'interfaces';
 import axios from 'axios';
 
 const EditEventPage = ({ path }: { path: string }) => {
+  console.log('path', path);
   const eventRef = useRef<PartialEvent>();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,6 +31,7 @@ export default EditEventPage;
 // TODO replace this with regular, non-server side version
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { path } = context.query;
+  console.log('path', path);
 
   return { props: { path } };
 }

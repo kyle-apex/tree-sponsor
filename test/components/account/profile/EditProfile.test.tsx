@@ -6,7 +6,8 @@ import { rest } from 'msw';
 
 const server = setupServer(
   rest.get('/api/me', (_req, res, ctx) => {
-    return res(ctx.json({ name: 'Kyle', profilePath: 'kyle' }));
+    const result = res(ctx.json({ name: 'Kyle', profilePath: 'kyle' }));
+    return result;
   }),
 );
 
@@ -20,7 +21,8 @@ describe('EditProfile', () => {
 
   it('should display the form', async () => {
     const { findByLabelText } = render(<EditProfile></EditProfile>);
-    expect(await findByLabelText('Name')).toBeInTheDocument();
+    const text = await findByLabelText('Name');
+    expect(text).toBeInTheDocument();
     expect(await findByLabelText('Profile Path')).toBeInTheDocument();
   });
 
