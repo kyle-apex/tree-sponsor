@@ -64,11 +64,6 @@ const MembershipPerks = () => {
             <Typography color='primary'>Join the Membership Google Group to receive event calendar invites (no e-mails)</Typography>
           </a>
         </li>
-        <li>
-          <a href='https://smile.amazon.com/ch/74-2569827' target='_blank' rel='noreferrer' style={{ textDecoration: 'none' }}>
-            <Typography color='primary'>Raise money for TreeFolks on Amazon purchases through Amazon Smile</Typography>
-          </a>
-        </li>
       </ul>
       <Typography variant='h2' color='secondary'>
         Passive Fundraising
