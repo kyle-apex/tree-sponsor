@@ -145,6 +145,9 @@ export default function EnhancedTable(): JSX.Element {
               <Button variant='outlined'>Manage Roles</Button>
             </Link>
           </RestrictSection>
+          <Link href='/admin/membership-dashboard'>
+            <Button variant='outlined'>Membership Dashboard</Button>
+          </Link>
           <RestrictSection accessType='isReviewer'>
             <Link href='/admin/review/sponsorships'>
               <Button variant='outlined'>Review Thank-a-Trees</Button>
