@@ -19,6 +19,8 @@ import { Bar } from 'react-chartjs-2';
 import useTheme from '@mui/system/useTheme';
 import { useState, useEffect } from 'react';
 import parsedGet from 'utils/api/parsed-get';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 type ChartDataResult = {
   labels: string[];
@@ -40,10 +42,11 @@ const options: _DeepPartialObject<
   plugins: {
     title: {
       display: true,
-      text: 'Remaining Active Members Joining in a Given Year',
+      text: 'Membership Status by Join Year',
     },
   },
   responsive: true,
+  maintainAspectRatio: false,
   interaction: {
     mode: 'index' as const,
     intersect: false,
@@ -97,7 +100,11 @@ const MembershipChart = () => {
   return (
     <>
       {chartData && <Bar options={options} data={chartData} />}
-      {!chartData && <p>No data</p>}
+      {!chartData && (
+        <Box sx={{ textAlign: 'center' }}>
+          <CircularProgress size='300px' color='primary' />
+        </Box>
+      )}
     </>
   );
 };

@@ -13,7 +13,6 @@ export default async function handler(_req: NextApiRequest, res: NextApiResponse
     orderBy: { lastPaymentDate: 'desc' },
     distinct: ['email'],
   });
-  console.log(subscriptionWithDetails);
 
   const years: number[] = [];
   const dataMap: any = {};
@@ -48,10 +47,6 @@ export default async function handler(_req: NextApiRequest, res: NextApiResponse
     chartData.inactive.push(data.inactive);
     chartData.total.push(data.total);
   });
-
-  console.log(subscriptionWithDetails[0].createdDate.getFullYear());
-
-  //console.log('subscriptionWithDetails', subscriptionWithDetails);
 
   res.status(200).json(chartData);
 }
