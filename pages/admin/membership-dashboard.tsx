@@ -7,10 +7,6 @@ const MembershipDashboardPage = () => {
   return (
     <AdminLayout title='Membership Dashboard' header='Membership Dashboard'>
       <MembershipStats></MembershipStats>
-      <hr style={{ marginTop: '26px', marginBottom: '26px' }} />
-      <Box sx={{ maxHeight: '400px' }}>
-        <MembershipChart></MembershipChart>
-      </Box>
     </AdminLayout>
   );
 };
