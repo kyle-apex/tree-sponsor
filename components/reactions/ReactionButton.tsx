@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAddToQuery } from 'utils/hooks/use-add-to-query';
-import { useGet, useRemoveFromQuery } from 'utils/hooks';
+import { useRemoveFromQuery } from 'utils/hooks';
 import axios from 'axios';
 import { useSession } from 'next-auth/client';
 import { PartialReaction } from 'interfaces';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import { Session } from 'interfaces';
@@ -21,7 +20,7 @@ const ReactButton = ({
   onUnauthenticated: () => void;
 }) => {
   const [session] = useSession();
-  const [isAdding, setIsAdding] = useState(false);
+  //const [isAdding, setIsAdding] = useState(false);
 
   const { add } = useAddToQuery<PartialReaction>(`sponsorships/${sponsorshipId}/reactions`, addToDatabase);
 
@@ -29,7 +28,7 @@ const ReactButton = ({
     if (!(session as Session)?.user?.id) {
       return onUnauthenticated();
     }
-    setIsAdding(true);
+    //setIsAdding(true);
     await add({
       type: 'like',
       sponsorshipId: sponsorshipId,
@@ -38,7 +37,7 @@ const ReactButton = ({
       createdDate: new Date(),
     });
 
-    setIsAdding(false);
+    //setIsAdding(false);
   };
 
   async function addToDatabase(comment: PartialReaction) {
@@ -53,9 +52,8 @@ const ReactButton = ({
   async function handleDelete(id: number) {
     await axios.delete('/api/reactions/' + id);
   }
-  console.log('reactions', reactions);
+
   const currentUserReaction = reactions?.find(reaction => (session as Session)?.user?.id === reaction.userId);
-  console.log('cur', currentUserReaction);
 
   return (
     <>

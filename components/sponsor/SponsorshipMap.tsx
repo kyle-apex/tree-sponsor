@@ -9,10 +9,12 @@ import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import NaturePeopleIcon from '@mui/icons-material/NaturePeople';
-import { PartialSponsorship, Viewport } from 'interfaces';
+import { Coordinate, PartialSponsorship, Viewport } from 'interfaces';
 import MapMarker from './MapMarker';
 import useTheme from '@mui/styles/useTheme';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { MAP_STYLE } from 'consts';
+import centerViewport from 'utils/maps/center-viewport';
 
 const geolocateControlStyle = {
   right: 10,
@@ -38,7 +40,7 @@ const SponsorshipMap = ({
   const [activeSponsorshipId, setActiveSponsorshipId] = useState<number>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSatelliteMode, setIsSatelliteMode] = useState(false);
-  const [style, setStyle] = useState('mapbox://styles/mapbox/streets-v11?optimize=true');
+  const [style, setStyle] = useState(MAP_STYLE.STREET);
   const mapRef = useRef();
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
@@ -64,36 +66,13 @@ const SponsorshipMap = ({
 
   useEffect(() => {
     if (defaultSponsorships) {
-      let minLng, minLat, maxLng, maxLat;
-      for (const sponsorship of sponsorships) {
-        //const sponsorship = sponsorships[0];
-        if (sponsorship?.tree?.latitude) {
-          if (!minLat) minLat = sponsorship.tree.latitude;
-          if (!maxLat) maxLat = sponsorship.tree.latitude;
-          minLat = minLat < sponsorship.tree.latitude ? minLat : sponsorship.tree.latitude;
-          maxLat = maxLat > sponsorship.tree.latitude ? maxLat : sponsorship.tree.latitude;
-        }
-        if (sponsorship?.tree?.longitude) {
-          if (!minLng) minLng = sponsorship.tree.longitude;
-          if (!maxLng) maxLng = sponsorship.tree.longitude;
-          minLng = minLng < sponsorship.tree.latitude ? minLng : sponsorship.tree.longitude;
-          maxLng = maxLat > sponsorship.tree.latitude ? maxLng : sponsorship.tree.longitude;
-        }
-      }
-      if (minLng) {
-        const vp = new WebMercatorViewport({ height: 400, width: 400 });
-        const { longitude, latitude, zoom } = vp.fitBounds(
-          [
-            [Number(minLng), Number(minLat)],
-            [Number(maxLng), Number(maxLat)],
-          ],
-          {
-            padding: 80,
-          },
-        );
-        const newZoom = zoom > 17 ? 17 : zoom;
-        setViewport({ ...viewport, longitude, latitude, zoom: newZoom });
-      }
+      const centeredViewport = centerViewport(
+        viewport,
+        sponsorships.map(sponsorship => {
+          return { latitude: Number(sponsorship.tree?.latitude), longitude: Number(sponsorship.tree?.longitude) };
+        }),
+      );
+      setViewport(centeredViewport);
     }
   }, []);
 
@@ -104,10 +83,10 @@ const SponsorshipMap = ({
 
   function updateSatelliteMode(isSatelliteMode: boolean) {
     if (isSatelliteMode) {
-      setStyle('mapbox://styles/mapbox/satellite-streets-v11?optimize=true');
+      setStyle(MAP_STYLE.SATELLITE);
       setIsSatelliteMode(true);
     } else {
-      setStyle('mapbox://styles/mapbox/streets-v11?optimize=true');
+      setStyle(MAP_STYLE.STREET);
       setIsSatelliteMode(false);
     }
   }
@@ -119,7 +98,7 @@ const SponsorshipMap = ({
         onViewportChange={(nextViewport: Viewport) => setViewport(nextViewport)}
         mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         className='index-map mapboxgl-map box-shadow'
-        mapStyle={isExploreMode ? style : 'mapbox://styles/mapbox/light-v10?optimize=true'}
+        mapStyle={isExploreMode ? style : MAP_STYLE.SIMPLE}
         dragPan={!(isIndexPage && isMobile)}
       >
         {sponsorships?.map(sponsorship => {

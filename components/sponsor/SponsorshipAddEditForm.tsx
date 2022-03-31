@@ -3,13 +3,14 @@ import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import Button from '@mui/material/Button';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import axios from 'axios';
 import SponsorshipDisplayForm from './SponsorshipDisplayForm';
 import LocationSelector from 'components/LocationSelector';
 import SplitRow from 'components/layout/SplitRow';
 import { PartialSponsorship } from 'interfaces';
 import LoadingButton from 'components/LoadingButton';
+import LocationSearch from 'components/location/LocationSearch';
 
 const useStyles = makeStyles(theme => ({
   thumbnail: {
@@ -68,6 +69,7 @@ const SponsorshipAddEditForm = ({
   const [description, setDescription] = useState('');
   const [title, setTitle] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
+  const [isPrivateLocation, setIsPrivateLocation] = useState(false);
 
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
@@ -103,6 +105,7 @@ const SponsorshipAddEditForm = ({
       title,
       description,
       isPrivate,
+      isPrivateLocation,
       primaryImageUuid,
       primaryImageHeight: imageHeight,
       primaryImageWidth: imageWidth,
@@ -132,6 +135,7 @@ const SponsorshipAddEditForm = ({
       setTitle(sponsorship.title);
       setDescription(sponsorship.description);
       setIsPrivate(sponsorship.isPrivate);
+      setIsPrivateLocation(sponsorship.isPrivateLocation);
       setId(sponsorship.id);
       setPrimaryImageUuid(sponsorship.primaryImageUuid);
       setImageUrl(sponsorship.pictureUrl);
@@ -162,6 +166,8 @@ const SponsorshipAddEditForm = ({
             setDescription={setDescription}
             isPrivate={isPrivate}
             setIsPrivate={setIsPrivate}
+            isPrivateLocation={isPrivateLocation}
+            setIsPrivateLocation={setIsPrivateLocation}
             imageUrl={imageUrl}
             setImageUrl={handleImageUrl}
           ></SponsorshipDisplayForm>
@@ -208,14 +214,17 @@ const SponsorshipAddEditForm = ({
       )}
       {activeStep == 1 && (
         <>
-          <LocationSelector
-            onViewportChange={({ latitude, longitude }) => {
-              setLatitude(latitude), setLongitude(longitude);
-            }}
-            latitude={sponsorship?.tree?.latitude ? Number(sponsorship?.tree?.latitude) : null}
-            longitude={sponsorship?.tree?.longitude ? Number(sponsorship?.tree?.longitude) : null}
-            auto={!sponsorship?.tree?.latitude}
-          ></LocationSelector>
+          {false && <LocationSearch></LocationSearch>}
+          {true && (
+            <LocationSelector
+              onViewportChange={({ latitude, longitude }) => {
+                setLatitude(latitude), setLongitude(longitude);
+              }}
+              latitude={sponsorship?.tree?.latitude ? Number(sponsorship?.tree?.latitude) : null}
+              longitude={sponsorship?.tree?.longitude ? Number(sponsorship?.tree?.longitude) : null}
+              auto={!sponsorship?.tree?.latitude}
+            ></LocationSelector>
+          )}
           <SplitRow>
             <Button
               disabled={isUpserting}

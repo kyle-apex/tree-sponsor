@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { PartialNotification } from 'interfaces';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import NotificationDisplay from './NotificationDisplay';
 import { useRouter } from 'next/router';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import NotificationMenuItem from './NotificationMenuItem';
 
@@ -15,8 +14,8 @@ const NotificationMenu = ({
   onClose,
 }: {
   notifications: PartialNotification[];
-  anchorEl: Element;
-  setAnchorEl: (el: any) => void;
+  anchorEl: null | Element | ((element: Element) => Element);
+  setAnchorEl: (el: Element) => void;
   onClose: () => void;
 }) => {
   const open = Boolean(anchorEl);

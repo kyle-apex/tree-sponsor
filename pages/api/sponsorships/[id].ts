@@ -3,9 +3,12 @@ import { getSession } from 'utils/auth/get-session';
 import throwError from 'utils/api/throw-error';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { prisma } from 'utils/prisma/init';
+import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   let session, userId;
+
+  console.log('req', req.method);
 
   if (req.method !== 'GET') {
     session = await getSession({ req });
@@ -38,5 +41,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await prisma.sponsorship.delete({ where: { id: id } });
 
     res.json({ count: 1 });
+  } else if (req.method === 'PATCH') {
+    const isAuthorized = await isCurrentUserAuthorized('isReviewer', req);
+
+    if (!isAuthorized) {
+      return throwError(res, 'Access denied');
+    }
+    const result = await prisma.sponsorship.update({ where: { id }, data: req.body });
+    res.status(200).json(result);
   }
 }

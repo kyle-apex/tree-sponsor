@@ -5,7 +5,7 @@ import { prisma } from 'utils/prisma/init';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     const sponsorships = await prisma.sponsorship.findMany({
-      where: { reviewStatus: { notIn: ['Draft', 'Rejected'] } },
+      where: { reviewStatus: { notIn: ['Draft', 'Rejected'] }, isPrivate: false, isPrivateLocation: false },
       select: {
         tree: {
           select: { latitude: true, longitude: true, id: true },

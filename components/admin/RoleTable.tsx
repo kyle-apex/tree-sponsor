@@ -43,6 +43,8 @@ const headCells: HeaderCellOptions[] = [
   { id: 'name', numeric: false, disablePadding: false, label: 'Role' },
   { id: 'isAdmin', numeric: false, disablePadding: false, label: 'Is Admin?' },
   { id: 'hasAuthManagement', numeric: false, disablePadding: false, label: 'Can Manage Authentication?' },
+  { id: 'isReviewer', numeric: false, disablePadding: false, label: 'Can Review Thank-a-Trees?' },
+  { id: 'isTreeReviewer', numeric: false, disablePadding: false, label: 'Can Review Trees?' },
   { id: 'delete', numeric: false, disablePadding: false },
 ];
 
@@ -59,7 +61,7 @@ export default function RoleTable({
   const { remove } = useRemoveFromQuery('roles', handleDelete);
 
   async function handleAcessTypeChange(roleId: number, accessType: string, value: boolean) {
-    await axios.post('/api/roles/' + roleId, { [accessType]: value });
+    await axios.patch('/api/roles/' + roleId, { [accessType]: value });
     refetch();
   }
 
@@ -97,6 +99,22 @@ export default function RoleTable({
                       checked={row.hasAuthManagement}
                       onChange={event => {
                         handleAcessTypeChange(row.id, 'hasAuthManagement', event.target.checked);
+                      }}
+                    ></Checkbox>
+                  </TableCell>
+                  <TableCell>
+                    <Checkbox
+                      checked={row.isReviewer}
+                      onChange={event => {
+                        handleAcessTypeChange(row.id, 'isReviewer', event.target.checked);
+                      }}
+                    ></Checkbox>
+                  </TableCell>
+                  <TableCell>
+                    <Checkbox
+                      checked={row.isTreeReviewer}
+                      onChange={event => {
+                        handleAcessTypeChange(row.id, 'isTreeReviewer', event.target.checked);
                       }}
                     ></Checkbox>
                   </TableCell>

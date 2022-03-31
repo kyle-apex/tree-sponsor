@@ -8,7 +8,7 @@
     "jsx": "preserve",
     "lib": [
       "dom",
-      "es2017"
+      "esnext",
     ],
     "module": "esnext",
     "moduleResolution": "node",
@@ -35,6 +35,7 @@
     "next.config.js",
     "server.js",
     "pages/contact/index.tss",
-    "jest.config.ts"
+    "jest.config.ts",
+    "node_modules/.prisma"
   ]
 }

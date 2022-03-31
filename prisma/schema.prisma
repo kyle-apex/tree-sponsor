@@ -12,7 +12,7 @@ generator client {
 
 model Profile {
   id     Int     @id @default(autoincrement())
-  bio    String?
+  bio    String? @db.Text
   user   User    @relation(fields: [userId], references: [id])
   userId Int     @unique
 }
@@ -72,15 +72,23 @@ model User {
   commentReactions      CommentReaction[]
   notifications         Notification[]    @relation("user")
   notificationsAsSource Notification[]    @relation("sourceUser")
+  treeChangeLogs        TreeChangeLog[]
+  lastChangedByTrees    Tree[]
+  Event                 Event[]
+  Category              Category[]
   @@map(name: "users")
 }
 
 model Role {
-  id                Int     @id @default(autoincrement())
+  id                Int        @id @default(autoincrement())
   name              String?
-  isAdmin           Boolean @default(false)
-  hasAuthManagement Boolean @default(false)
-  users             User[]  @relation("UserToRole")
+  isAdmin           Boolean    @default(false)
+  hasAuthManagement Boolean    @default(false)
+  isReviewer        Boolean    @default(false)
+  isTreeReviewer    Boolean    @default(false)
+  users             User[]     @relation("UserToRole")
+  Event             Event[]
+  Category          Category[]
 }
 
 model VerificationRequest {
@@ -130,10 +138,10 @@ model SubscriptionWithDetails {
 
 model Comment {
   id              Int               @id @default(autoincrement())
-  createdDate     DateTime?
+  createdDate     DateTime?         @default(now())
   text            String?
   userId          Int?
-  isDeleted       Boolean?
+  isDeleted       Boolean?          @default(false)
   user            User?             @relation(fields: [userId], references: [id])
   sponsorshipId   Int?
   sponsorship     Sponsorship?      @relation(fields: [sponsorshipId], references: [id])
@@ -145,7 +153,7 @@ model Comment {
 
 model CommentReaction {
   id          Int       @id @default(autoincrement())
-  createdDate DateTime?
+  createdDate DateTime? @default(now())
   type        String?
   userId      Int?
   user        User?     @relation(fields: [userId], references: [id])
@@ -155,7 +163,7 @@ model CommentReaction {
 
 model Reaction {
   id            Int          @id @default(autoincrement())
-  createdDate   DateTime?
+  createdDate   DateTime?    @default(now())
   type          String?
   userId        Int?
   user          User?        @relation(fields: [userId], references: [id])
@@ -169,8 +177,8 @@ model Notification {
   link         String?
   parameter    String?
   count        Int?
-  createdDate  DateTime?
-  isRead       Boolean?
+  createdDate  DateTime? @default(now())
+  isRead       Boolean?  @default(false)
   userId       Int?
   user         User?     @relation("user", fields: [userId], references: [id])
   sourceUserId Int?
@@ -186,22 +194,175 @@ model Product {
 }
 
 model Tree {
-  id           Int           @id @default(autoincrement())
-  name         String?
-  pictureUrl   String?
-  latitude     Decimal?      @db.Decimal(8, 5)
-  longitude    Decimal?      @db.Decimal(9, 6)
-  sponsorships Sponsorship[]
+  id                       Int             @id @default(autoincrement())
+  name                     String?
+  createdDate              DateTime?       @default(now())
+  pictureUrl               String?
+  latitude                 Decimal?        @db.Decimal(8, 5)
+  longitude                Decimal?        @db.Decimal(9, 6)
+  streetViewPitch          String?         @default("")
+  streetViewHeading        String?         @default("")
+  streetViewLatitude       Decimal?        @db.Decimal(8, 5)
+  streetViewLongitude      Decimal?        @db.Decimal(9, 6)
+  diameter                 Decimal?        @db.Decimal(5, 2)
+  height                   Decimal?        @db.Decimal(6, 2)
+  reviewStatus             ReviewStatus?   @default(New)
+  sponsorships             Sponsorship[]
+  location                 Location?       @relation(fields: [locationId], references: [id])
+  locationId               Int?
+  species                  Species?        @relation(fields: [speciesId], references: [id])
+  speciesId                Int?
+  identificationConfidence Int?
+  images                   TreeImage[]
+  changeLogs               TreeChangeLog[]
+  lastChangedByUserId      Int?
+  lastChangedByUser        User?           @relation(fields: [lastChangedByUserId], references: [id])
+  categories               Category[]      @relation("TreeToCategory")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String?
+  createdDate DateTime? @default(now())
+  pictureUrl  String?
+  path        String?   @db.VarChar(256)
+  trees       Tree[]    @relation("TreeToCategory")
+  events      Event[]   @relation("CategoryToEvent")
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      Int?
+  role        Role?     @relation(fields: [roleId], references: [id])
+  roleId      Int?
+}
+
+model Event {
+  id              Int        @id @default(autoincrement())
+  name            String?
+  description     String?    @db.Text
+  pictureUrl      String?
+  startDate       DateTime?
+  endDate         DateTime?
+  activeStartDate DateTime?
+  activeEndDate   DateTime?
+  identifier      String?
+  path            String?    @db.VarChar(256)
+  location        Location?  @relation(fields: [locationId], references: [id])
+  locationId      Int?
+  categories      Category[] @relation("CategoryToEvent")
+  user            User?      @relation(fields: [userId], references: [id])
+  userId          Int?
+  role            Role?      @relation(fields: [roleId], references: [id])
+  roleId          Int?
+}
+
+model TreeToEvent {
+  id       Int     @id @default(autoincrement())
+  treeId   Int?
+  eventId  Int?
+  sequence Int?
+  name     String?
+}
+
+enum ChangeLogType {
+  Create
+  Update
+}
+
+model TreeChangeLog {
+  id              Int            @id @default(autoincrement())
+  type            ChangeLogType? @default(Create)
+  createdDate     DateTime?      @default(now())
+  attribute       String?
+  oldValue        String?
+  newValue        String?
+  userId          Int?
+  user            User?          @relation(fields: [userId], references: [id])
+  treeId          Int?
+  tree            Tree?          @relation(fields: [treeId], references: [id])
+  transactionUuid String?
+}
+
+model Species {
+  id              Int      @id @default(autoincrement())
+  name            String?
+  commonName      String?
+  alternateNaming String?  @db.VarChar(512)
+  genus           String?
+  species         String?
+  speciesCode     String?
+  growthForm      String?
+  percentLeafType String?
+  leafType        String?
+  growthRate      String?
+  longevity       String?
+  height          Int?
+  familyName      String?
+  orderName       String?
+  className       String?
+  isNative        Boolean? @default(false)
+  isInTexas       Boolean? @default(false)
+  searchPriority  Int?     @default(0)
+  trees           Tree[]
+}
+
+model Location {
+  id                   Int           @id @default(autoincrement())
+  name                 String?
+  address              String?
+  placeName            String?
+  latitude             Decimal?      @db.Decimal(8, 5)
+  longitude            Decimal?      @db.Decimal(9, 6)
+  mapboxId             String?
+  mapboxCategories     String?
+  mapboxPlaceType      String?
+  mapboxPlaceId        String?
+  mapboxNeighborhoodId String?
+  foursquareId         String?
+  minLat               Decimal?      @db.Decimal(8, 5)
+  maxLat               Decimal?      @db.Decimal(8, 5)
+  minLong              Decimal?      @db.Decimal(9, 6)
+  maxLong              Decimal?      @db.Decimal(9, 6)
+  neighborhood         Neighborhood? @relation(fields: [mapboxNeighborhoodId], references: [mapboxId])
+  place                Place?        @relation(fields: [mapboxPlaceId], references: [mapboxId])
+  trees                Tree[]
+  events               Event[]
+}
+
+model Neighborhood {
+  mapboxId  String     @id
+  name      String?
+  latitude  Decimal?   @db.Decimal(8, 5)
+  longitude Decimal?   @db.Decimal(9, 6)
+  minLat    Decimal?   @db.Decimal(8, 5)
+  maxLat    Decimal?   @db.Decimal(8, 5)
+  minLong   Decimal?   @db.Decimal(9, 6)
+  maxLong   Decimal?   @db.Decimal(9, 6)
+  locations Location[]
+}
+
+model Place {
+  mapboxId  String     @id
+  name      String?
+  latitude  Decimal?   @db.Decimal(8, 5)
+  longitude Decimal?   @db.Decimal(9, 6)
+  minLat    Decimal?   @db.Decimal(8, 5)
+  maxLat    Decimal?   @db.Decimal(8, 5)
+  minLong   Decimal?   @db.Decimal(9, 6)
+  maxLong   Decimal?   @db.Decimal(9, 6)
+  locations Location[]
 }
 
 model TreeImage {
   uuid          String        @id
   width         Int?
   height        Int?
-  createdDate   DateTime?
+  url           String?
+  isPrimary     Boolean?      @default(false)
+  createdDate   DateTime?     @default(now())
   reviewStatus  ReviewStatus? @default(New)
-  Sponsorship   Sponsorship?  @relation(fields: [sponsorshipId], references: [id])
+  sponsorship   Sponsorship?  @relation(fields: [sponsorshipId], references: [id])
   sponsorshipId Int?
+  tree          Tree?         @relation(fields: [treeId], references: [id])
+  treeId        Int?
 }
 
 enum ReviewStatus {
@@ -220,8 +381,8 @@ model Sponsorship {
   pictureUrl         String?
   startDate          DateTime?
   expirationDate     DateTime?
-  isPrivate          Boolean?
-  isPrivateLocation  Boolean?
+  isPrivate          Boolean?      @default(false)
+  isPrivateLocation  Boolean?      @default(false)
   reviewStatus       ReviewStatus? @default(New)
   user               User?         @relation(fields: [userId], references: [id])
   userId             Int?

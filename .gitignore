@@ -42,5 +42,8 @@ yarn-error.log*
 # vercel
 .vercel
 
+
+/prisma/treefolksyp_restore_dev_data.sql
+
 .package-lock.json
 prisma/treefolksyp_restore_dev_data.sql

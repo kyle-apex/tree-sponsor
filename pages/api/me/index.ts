@@ -32,6 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     const obj = await prisma.user.findFirst({
       where: { id: userId },
+      include: { profile: true },
     });
     res.status(200).json(obj);
   } else if (req.method === 'PATCH') {

@@ -14,14 +14,17 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import React, { SetStateAction, useState } from 'react';
 import { PartialSponsorship } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
-import { UserAvatar, SponsorshipSubTitle } from 'components/sponsor';
+import { UserAvatar, DateDisplay } from 'components/sponsor';
 import { DEFAULT_DESCRIPTION } from 'consts';
 import { DEFAULT_TITLE_PREFIX } from 'consts';
 import SponsorshipAddEditDialog from './SponsorshipAddEditDialog';
-import CommentSection from 'components/comments/CommentSection';
-import ReactionSection from 'components/reactions/ReactionButton';
 import SponsorshipActions from './SponsorshipActions';
 import { getFirstName } from 'utils/user/get-first-name';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import LocationOffIcon from '@mui/icons-material/LocationOff';
+import Tooltip from '@mui/material/Tooltip';
+import Box from '@mui/material/Box';
+import { getDisplayTitle } from 'utils/sponsorship/get-display-title';
 
 export type TreeDetail = {
   title?: string;
@@ -84,7 +87,7 @@ const SponsorshipDisplay = ({
   return (
     <>
       {sponsorship?.id && (
-        <Card sx={{ maxWidth: '500px', marginRight: handleClose ? 0 : '1px', marginBottom: '2px' }}>
+        <Card sx={{ maxWidth: '500px', marginRight: handleClose ? 0 : '1px', marginBottom: handleClose ? 0 : '2px' }}>
           <CardHeader
             avatar={
               <UserAvatar
@@ -93,8 +96,8 @@ const SponsorshipDisplay = ({
                 link={sponsorship.user?.profilePath ? '/u/' + sponsorship.user.profilePath : ''}
               />
             }
-            title={activeSponsorship?.title || sponsorship?.title || DEFAULT_TITLE_PREFIX + getFirstName(sponsorship.user)}
-            subheader={<SponsorshipSubTitle startDate={sponsorship.startDate} />}
+            title={activeSponsorship?.title || getDisplayTitle(sponsorship)}
+            subheader={<DateDisplay startDate={sponsorship.startDate} />}
             action={
               handleClose && (
                 <IconButton onClick={handleClose}>
@@ -123,7 +126,7 @@ const SponsorshipDisplay = ({
           {!isEditMode && (
             <CardActions disableSpacing sx={{ padding: 0, height: '100%', flexDirection: 'column' }}>
               <SponsorshipActions
-                sponsorshipId={sponsorship?.id}
+                sponsorship={sponsorship}
                 signInCallbackUrl={`/u/${sponsorship?.user?.profilePath}?t=${sponsorship?.id}`}
               />
             </CardActions>
@@ -163,6 +166,17 @@ const SponsorshipDisplay = ({
                       onDelete(sponsorship.id);
                     }}
                   ></DeleteConfirmationDialog>
+                  <Box sx={{ display: 'flex', flex: '1 1 100%' }}></Box>
+                  {sponsorship.isPrivate && (
+                    <Tooltip title='Hidden from public view'>
+                      <VisibilityOffIcon sx={{ color: 'var(--icon-button-color)', marginRight: 1 }} />
+                    </Tooltip>
+                  )}
+                  {sponsorship.isPrivateLocation && !sponsorship.isPrivate && (
+                    <Tooltip title='Location hidden from public view'>
+                      <LocationOffIcon sx={{ color: 'var(--icon-button-color)', marginRight: 1 }} />
+                    </Tooltip>
+                  )}
                 </>
               )}
             </CardActions>

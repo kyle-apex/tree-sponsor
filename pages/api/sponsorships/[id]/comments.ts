@@ -1,4 +1,3 @@
-import SponsorshipActions from 'components/sponsor/SponsorshipActions';
 import { DEFAULT_TITLE_PREFIX } from 'consts';
 import { NextApiRequest, NextApiResponse } from 'next';
 import throwError from 'utils/api/throw-error';

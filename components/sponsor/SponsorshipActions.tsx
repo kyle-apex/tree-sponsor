@@ -1,8 +1,7 @@
 import CommentSection from 'components/comments/CommentSection';
 import React, { useState } from 'react';
 import { useGet } from 'utils/hooks/use-get';
-import { PartialComment, PartialReaction } from 'interfaces';
-import IconButton from '@mui/material/IconButton';
+import { PartialComment, PartialReaction, PartialSponsorship } from 'interfaces';
 import Box from '@mui/system/Box';
 import ReactionButton from 'components/reactions/ReactionButton';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
@@ -11,9 +10,11 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Link from 'next/link';
 import ChevronRight from '@mui/icons-material/ChevronRight';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ReactionCount from 'components/reactions/ReactionCount';
+import ShareButton from 'components/share/ShareButton';
 
-const SponsorshipActions = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipId: number; signInCallbackUrl?: string }) => {
+const SponsorshipActions = ({ sponsorship, signInCallbackUrl }: { sponsorship: PartialSponsorship; signInCallbackUrl?: string }) => {
+  const sponsorshipId = sponsorship.id;
   const [showComments, setShowComments] = useState(false);
   const [unauthenticated, setUnauthenticated] = useState(false);
   const { data: comments, isFetching: isCommentsFetching } = useGet<PartialComment[]>(
@@ -21,7 +22,7 @@ const SponsorshipActions = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipI
     `sponsorships/${sponsorshipId}/comments`,
   );
 
-  const { data: reactions, isFetching } = useGet<PartialReaction[]>(
+  const { data: reactions } = useGet<PartialReaction[]>(
     `/api/sponsorships/${sponsorshipId}/reactions`,
     `sponsorships/${sponsorshipId}/reactions`,
   );
@@ -46,24 +47,9 @@ const SponsorshipActions = ({ sponsorshipId, signInCallbackUrl }: { sponsorshipI
             {comments?.length > 0 ? <ChatIcon /> : <ChatBubbleOutlineIcon />}
             <Typography sx={{ marginLeft: 1 }}>{comments?.length || 0}</Typography>
           </Button>
+          <ShareButton sponsorship={sponsorship} />
           <Box sx={{ flex: '1 1 100%' }}></Box>
-          {reactions?.length > 0 && (
-            <Box flexDirection='row' gap={0.5} sx={{ display: 'flex', fontSize: '.8rem', alignItems: 'center' }}>
-              <Box
-                sx={{
-                  backgroundColor: theme => theme.palette.info.main,
-                  borderRadius: '50%',
-                  textAlign: 'center',
-                  height: '24px',
-                  width: '24px',
-                  paddingTop: '4px',
-                }}
-              >
-                <ThumbUpIcon sx={{ fontSize: '12px', color: 'white' }} />
-              </Box>
-              <Typography>{reactions.length}</Typography>
-            </Box>
-          )}
+          {reactions?.length > 0 && <ReactionCount reactions={reactions} hasDialog={true} />}
         </Box>
         {!showComments && unauthenticated && (
           <Box mb={1} mt={2}>

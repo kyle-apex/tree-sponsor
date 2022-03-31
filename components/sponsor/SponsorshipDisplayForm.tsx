@@ -6,10 +6,11 @@ import TextField from '@mui/material/TextField';
 import React from 'react';
 import { useSession } from 'next-auth/client';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
-import { UserAvatar, SponsorshipSubTitle } from 'components/sponsor';
+import { UserAvatar, DateDisplay } from 'components/sponsor';
 import { DESCRIPTION_PLACEHOLDER, DEFAULT_TITLE_PREFIX } from 'consts';
 import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
+import SpeciesSelector from 'components/tree/SpeciesSelector';
 
 const SponsorshipDisplayForm = ({
   title,
@@ -20,6 +21,8 @@ const SponsorshipDisplayForm = ({
   setImageUrl,
   isPrivate,
   setIsPrivate,
+  isPrivateLocation,
+  setIsPrivateLocation,
 }: {
   title: string;
   setTitle: (param: string) => void;
@@ -27,6 +30,8 @@ const SponsorshipDisplayForm = ({
   setDescription: (param: string) => void;
   isPrivate: boolean;
   setIsPrivate: (param: boolean) => void;
+  isPrivateLocation: boolean;
+  setIsPrivateLocation: (param: boolean) => void;
   imageUrl: string;
   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 }) => {
@@ -52,7 +57,7 @@ const SponsorshipDisplayForm = ({
               className='full-width'
             ></TextField>
           }
-          subheader={<SponsorshipSubTitle startDate={startDate} />}
+          subheader={<DateDisplay startDate={startDate} />}
         />
 
         <CardMedia
@@ -82,9 +87,15 @@ const SponsorshipDisplayForm = ({
             className='full-width'
           ></TextField>
 
+          {!isPrivate && (
+            <Box sx={{ marginTop: 2, marginBottom: -2 }}>
+              <Checkbox checked={isPrivateLocation} onChange={e => setIsPrivateLocation(e.target.checked)}></Checkbox> Hide location from
+              public view
+            </Box>
+          )}
+
           <Box sx={{ marginTop: 2, marginBottom: -2 }}>
-            <Checkbox checked={isPrivate} onChange={e => setIsPrivate(e.target.checked)}></Checkbox> Hide from &quot;Explore&quot; and my
-            public profile
+            <Checkbox checked={isPrivate} onChange={e => setIsPrivate(e.target.checked)}></Checkbox> Hide entirely from public view
           </Box>
         </CardContent>
       </Card>

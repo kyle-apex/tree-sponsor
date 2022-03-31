@@ -2,7 +2,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import UserAvatar from 'components/sponsor/UserAvatar';
 import { PartialNotification } from 'interfaces';
-import Link from 'next/link';
 import React from 'react';
 
 const formatDate = (date: Date): string => {
@@ -39,6 +38,7 @@ const NotificationDisplay = ({ notification, onAction }: { notification: Partial
               <b>{userName}</b> liked <b>{notification.parameter}</b>
             </>
           )}
+          {notification.type === 'announcement' && <>{notification.parameter}</>}
         </Typography>
         <Box>
           <Typography variant='subtitle2' color='gray'>

@@ -1,5 +1,12 @@
 import type { Config } from '@jest/types';
 
+const nextJest = require('next/jest');
+
+const createJestConfig = nextJest({
+  // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
+  dir: './',
+});
+
 // Sync object
 const config: Config.InitialOptions = {
   // START PRISMA CONFIGS
@@ -7,7 +14,7 @@ const config: Config.InitialOptions = {
   clearMocks: true,
   preset: 'ts-jest',
   //testEnvironment: 'node',
-  setupFilesAfterEnv: ['<rootDir>/utils/prisma/singleton.ts', '<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/utils/prisma/singleton.ts', '<rootDir>/jest.setup.ts', 'dotenv/config'],
   moduleNameMapper: {
     '^utils/prisma/init': '<rootDir>/utils/prisma/singleton',
     '^utils/(.*)': '<rootDir>/utils/$1',
@@ -37,4 +44,4 @@ const config: Config.InitialOptions = {
   transformIgnorePatterns: ['/node_modules/', '^.+\\.module\\.(css|sass|scss)$'],
   // END NEXTJS CONFIGS
 };
-export default config;
+export default createJestConfig(config);

@@ -12,12 +12,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         sponsorships: { include: { tree: {}, user: { select: { name: true, profilePath: true, displayName: true } } } },
         roles: {},
         subscriptions: { select: { createdDate: true } },
+        profile: { select: { bio: true } },
       },
     });
 
     //console.log('user', user);
 
-    if (!user) throwError(res, 'Profile not found');
+    //if (!user) throwError(res, 'Profile not found');
 
     /* const sponsorships = await prisma.sponsorship.findMany({
       where: { userId: user.id },

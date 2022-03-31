@@ -20,11 +20,17 @@ import { TeeShirtSelect } from 'components/TeeShirtSelect';
 import { stableSort, getComparator } from 'utils/material-ui/table-helpers';
 import { StyledTableRow } from 'components/StyledTableRow';
 import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
-import serverSideIsAdmin from 'utils/auth/server-side-is-admin';
 import Link from 'next/link';
-import Typography from '@mui/material/Typography';
+import SearchBox from 'components/form/SearchBox';
+import Box from '@mui/material/Box';
+import restrictPageAccess from 'utils/auth/restrict-page-access';
+import { GetSessionOptions } from 'next-auth/client';
+import RestrictSection from 'components/RestrictSection';
+import { capitalCase } from 'change-case';
 
-export const getServerSideProps = serverSideIsAdmin;
+export const getServerSideProps = (ctx: GetSessionOptions) => {
+  return restrictPageAccess(ctx, 'isAdmin');
+};
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -42,9 +48,6 @@ const useStyles = makeStyles(theme => ({
   },
   tableContainer: {
     padding: theme.spacing(1),
-  },
-  backLink: {
-    marginTop: theme.spacing(3),
   },
   visuallyHidden: {
     border: 0,
@@ -95,7 +98,7 @@ export default function EnhancedTable(): JSX.Element {
   const debounceMilliseconds = 1;
 
   const updateUser = async (userId: number, attributes: Record<string, unknown>) => {
-    await axios.post('/api/users/' + userId, { hasShirt: !!attributes.hasShirt });
+    await axios.patch('/api/users/' + userId, { hasShirt: !!attributes.hasShirt });
   };
 
   const { updateById: updateHasShirt } = useUpdateQueryById('members', updateUser);
@@ -108,7 +111,7 @@ export default function EnhancedTable(): JSX.Element {
 
         return (
           state.userName.toLowerCase().includes(nameFilter.toLowerCase()) ||
-          (state.email && state.email.toLowerCase().includes(nameFilter.toLowerCase()))
+          (state.email && state.email.replace('.com', '').toLowerCase().includes(nameFilter.toLowerCase()))
         );
       });
 
@@ -136,29 +139,30 @@ export default function EnhancedTable(): JSX.Element {
   return (
     <Layout title='Admin'>
       <div className={classes.root}>
-        <Link href='/admin/roles'>
-          <Button variant='outlined' className={classes.backLink}>
-            Manage Roles
-          </Button>
-        </Link>
-        <h1>Admin</h1>
+        <Box sx={{ flexDirection: 'row', display: 'flex' }} gap={2}>
+          <RestrictSection accessType='hasAuthManagement'>
+            <Link href='/admin/roles'>
+              <Button variant='outlined'>Manage Roles</Button>
+            </Link>
+          </RestrictSection>
+          <Link href='/admin/membership-dashboard'>
+            <Button variant='outlined'>Membership Dashboard</Button>
+          </Link>
+          <RestrictSection accessType='isReviewer'>
+            <Link href='/admin/review/sponsorships'>
+              <Button variant='outlined'>Review Thank-a-Trees</Button>
+            </Link>
+          </RestrictSection>
+          <RestrictSection accessType='isTreeReviewer'>
+            <Link href='/admin/review/trees'>
+              <Button variant='outlined'>Review Tree Ids</Button>
+            </Link>
+          </RestrictSection>
+        </Box>
 
-        <TextField
-          className={classes.full + ' ' + classes.search}
-          id='input-with-icon-textfield'
-          label='Find a Member'
-          value={nameFilter}
-          onChange={event => {
-            setNameFilter(event.target.value);
-          }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position='start'>
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
+        <h1>Admin</h1>
+        <SearchBox label='Find a Member' onChange={setNameFilter} defaultValue={nameFilter}></SearchBox>
+
         <TablePagination
           rowsPerPageOptions={[10, 50, 100]}
           component='div'
@@ -207,7 +211,7 @@ export default function EnhancedTable(): JSX.Element {
                           },
                         }}
                       >
-                        {row.status.toUpperCase().replace('_', ' ')}
+                        {capitalCase(row.status)}
                       </TableCell>
                       <TableCell className={classes.condensedCell}>
                         {row.amount >= 60 && (

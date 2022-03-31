@@ -1,24 +1,25 @@
 import { GetSessionOptions, getSession } from 'next-auth/client';
 import { hasAccessForQueriedUser } from 'utils/prisma/has-access-for-queried-user';
+import { AccessType } from './AccessType';
 
-export default async function serverSideIsAdmin(ctx: GetSessionOptions) {
+export default async function restrictPageAccess(ctx: GetSessionOptions, accessType: AccessType | AccessType[]) {
   const session = await getSession(ctx);
 
   if (!session?.user) {
     return {
       redirect: {
-        destination: '/login', //api/auth/signin
+        destination: '/signin', //api/auth/signin
         permanent: false,
       },
     };
   }
 
-  const isAdmin = hasAccessForQueriedUser({ email: session.user.email }, 'isAdmin');
+  const hasAccess = hasAccessForQueriedUser({ email: session.user.email }, accessType);
 
-  if (!isAdmin) {
+  if (!hasAccess) {
     return {
       redirect: {
-        destination: '/login',
+        destination: '/account',
         permanent: false,
       },
     };

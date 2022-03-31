@@ -8,7 +8,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const id = Number(req.query.id);
   if (req.method === 'POST') {
-    const result = await prisma.user.update({
+    const result = await prisma.role.update({
+      where: {
+        id: id,
+      },
+      data: req.body,
+    });
+    res.status(200).json(result);
+  } else if (req.method === 'PATCH') {
+    const result = await prisma.role.update({
       where: {
         id: id,
       },

@@ -11,7 +11,6 @@ import { GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import ChevronRight from '@mui/icons-material/ChevronRight';
 
 const useStyles = makeStyles(theme => ({
   button: {

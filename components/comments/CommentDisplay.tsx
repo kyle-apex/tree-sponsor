@@ -7,6 +7,8 @@ import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 import { PartialComment } from 'interfaces';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import linkifyStr from 'linkify-string';
+import parse from 'html-react-parser';
 
 const formatCommentDate = (date: Date): string => {
   if (!date) return '';
@@ -27,6 +29,15 @@ const CommentDisplay = ({
   onDelete?: (id: number) => void;
 }) => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+  const linkifiedComment = linkifyStr(comment.text, {
+    defaultProtocol: 'https',
+    target: 'blank',
+    truncate: 42,
+    format: {
+      url: (value: string) => (value.length > 50 ? value.slice(0, 50) + '…' : value),
+    },
+  });
+
   return (
     <Box flexDirection='row' sx={{ display: 'flex' }} gap={2} mb={2}>
       <Box pt={1}>
@@ -60,7 +71,7 @@ const CommentDisplay = ({
           )}
         </Box>
         <Box>
-          <Typography variant='body2'>{comment.text}</Typography>
+          <Typography variant='body2'>{parse(linkifiedComment)}</Typography>
         </Box>
       </Box>
     </Box>

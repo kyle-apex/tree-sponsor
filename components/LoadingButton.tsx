@@ -1,5 +1,7 @@
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import { Theme } from '@mui/material/styles';
+import { SxProps } from '@mui/system/styleFunctionSx';
 import React from 'react';
 
 const LoadingButton = ({
@@ -11,6 +13,7 @@ const LoadingButton = ({
   onClick,
   isLoading,
   disabled,
+  sx,
 }: {
   children?: React.ReactNode;
   size?: 'small' | 'medium' | 'large';
@@ -20,11 +23,12 @@ const LoadingButton = ({
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   isLoading?: boolean;
   disabled?: boolean;
+  sx?: SxProps<Theme>;
 }): JSX.Element => {
   return (
     <Button
       size={size}
-      sx={{ minHeight: '40px' }}
+      sx={{ minHeight: '40px', ...sx }}
       disabled={isLoading || disabled}
       className={className}
       variant={variant}

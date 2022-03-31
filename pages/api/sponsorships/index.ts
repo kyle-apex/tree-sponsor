@@ -4,6 +4,7 @@ import throwError from 'utils/api/throw-error';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { getAvailableSponsorships } from 'utils/prisma/get-available-sponsorships';
 import { prisma } from 'utils/prisma/init';
+import { Prisma, ReviewStatus } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 import uploadTreeImages from 'utils/aws/upload-tree-images';
 import getTreeImagePath from 'utils/aws/get-tree-image-path';
@@ -17,15 +18,21 @@ export const config = {
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  let t2 = new Date().getTime();
-  const session = await getSession({ req });
+  if (req.method === 'GET') {
+    const reviewStatus = req.query.reviewStatus as ReviewStatus;
+    const filter: Prisma.SponsorshipFindManyArgs = {
+      include: { tree: {}, user: {} },
+      orderBy: { startDate: 'desc' },
+    };
+    if (reviewStatus) filter.where = { reviewStatus };
+    const sponsorships = await prisma.sponsorship.findMany(filter);
+    res.status(200).json(sponsorships);
+  } else if (req.method === 'POST') {
+    const session = await getSession({ req });
 
-  if (!session?.user?.id) return throwUnauthenticated(res);
+    if (!session?.user?.id) return throwUnauthenticated(res);
 
-  const userId = session.user.id;
-  console.log('before', new Date().getTime() - t2);
-  if (req.method === 'POST') {
-    t2 = new Date().getTime();
+    const userId = session.user.id;
     const sponsorship = req.body;
 
     if (!sponsorship) return throwError(res, 'Please submit new sponsorship data.');
@@ -97,8 +104,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       uploadTreeImages(imageUrl, sponsorship.primaryImageUuid);
     }
 
-    console.log('before upsert', new Date().getTime() - t2);
-    t2 = new Date().getTime();
     const upsertedSponsorship = await prisma.sponsorship.upsert({
       where: { id: sponsorshipId || -1 },
       create: {
@@ -112,7 +117,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         images: { upsert: [{ create: imageData, update: imageData, where: { uuid: imageData.uuid } }] },
       },
     });
-    console.log('after upsert', new Date().getTime() - t2);
     res.status(200).json(upsertedSponsorship);
   }
 }
