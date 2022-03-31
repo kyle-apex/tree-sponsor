@@ -97,7 +97,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       delete sponsorship.primaryImageWidth;
     }
 
-    if (imageUrl && !imageUrl.includes('http')) {
+    if (imageUrl && !imageUrl.includes('http://') && !imageUrl.includes('https://')) {
       const imagePath = getTreeImagePath(sponsorship.primaryImageUuid);
       sponsorship.pictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}/small`;
 
