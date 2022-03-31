@@ -100,6 +100,7 @@ const MembershipChart = () => {
   return (
     <>
       {chartData && <Bar height='400px' options={options} data={chartData} />}
+
       {!chartData && (
         <Box sx={{ textAlign: 'center' }}>
           <CircularProgress size='300px' color='primary' />
