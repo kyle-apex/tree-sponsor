@@ -53,12 +53,6 @@ const Contact = () => {
         <Typography color='secondary' variant='h1'>
           Contact Us
         </Typography>
-        <SpeciesSelector
-          defaultValue={2399}
-          onChange={id => {
-            console.log('changed', id);
-          }}
-        ></SpeciesSelector>
         <TextField
           label='Email'
           value={email}
