@@ -10,7 +10,6 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import MembershipAttritionChart from './MembershipAttritionChart';
 import MembershipChart from './MembershipChart';
 
-
 const lastMonth = new Date();
 lastMonth.setDate(lastMonth.getDate() - 30);
 
