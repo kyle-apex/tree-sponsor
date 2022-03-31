@@ -102,9 +102,9 @@ const Sponsorships = ({
                   </>
                 ) : (
                   <>
-                    {sponsorships?.length > 0
-                      ? 'You do not have any available Tokens of Appre-tree-ation.'
-                      : 'You have one Token of Appre-tree-ation left to configure.'}
+                    {availableSponsorshipCount == 1
+                      ? 'You have one Token of Appre-tree-ation left to configure.'
+                      : 'You do not have any available Tokens of Appre-tree-ation.'}
                   </>
                 )}
               </Typography>
