@@ -1,19 +1,4 @@
-const Mailchimp = require('mailchimp-api-v3');
-//var md5 = require('md5');
-
-// load and create api key and list id constants
-const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY;
-const MAILCHIMP_LIST_ID = process.env.MAILCHIMP_LIST_ID;
-
-// This bad boy will have the honor of representing mailchimp :)
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-ignore
-let mailchimp;
-
-// If api constant is not undefined go head and instatiate mailchimp
-if (MAILCHIMP_API_KEY) {
-  mailchimp = new Mailchimp(MAILCHIMP_API_KEY);
-}
+import { mailchimpPost } from '.';
 
 // ==========> This function is in charge of actually trying to add a subscriber <==============
 const addSubscriber = async (email: string, data?: Record<string, string>, update?: boolean) => {
@@ -31,7 +16,7 @@ const addSubscriber = async (email: string, data?: Record<string, string>, updat
     if (!mergeFields['LNAME']) delete mergeFields['LNAME'];
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
-    const result = await mailchimp.post(`lists/${MAILCHIMP_LIST_ID}`, {
+    const result = await mailchimpPost(`lists/${MAILCHIMP_LIST_ID}`, {
       update_existing: update !== undefined ? update : true,
       members: [
         {
