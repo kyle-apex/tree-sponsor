@@ -10,6 +10,6 @@ const listMembersForTag = async (tagId: number): Promise<any[]> => {
     results = segmentMembers.members;
   }
 
-  return results;
+  return results.map(item => item.email_address);
 };
 export default listMembersForTag;
