@@ -9,6 +9,7 @@ const listMembersForGroup = async (groupingId: string, groupId: string): Promise
       interest_category_id: groupingId,
       interest_ids: groupId,
       interest_match: 'all',
+      count: 500,
     });
     results = memberResults.members;
   }

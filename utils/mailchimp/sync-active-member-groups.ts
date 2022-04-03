@@ -21,18 +21,18 @@ const syncActiveMemberGroups = async () => {
   calendarYear.setDate(calendarYear.getDate() - 365);
 
   members.forEach(member => {
-    if (member.lastPaymentDate > calendarYear) activeEmails.push(member.email);
-    else inactiveEmails.push(member.email);
+    if (member.lastPaymentDate > calendarYear) activeEmails.push(member.email.toLowerCase());
+    else inactiveEmails.push(member.email.toLowerCase());
   });
 
   const inactiveGroupedEmails = await listMembersForGroup(groupingId, inactiveGroupId);
   const activeGroupedEmails = await listMembersForGroup(groupingId, activeGroupId);
 
-  const activeEmailsToAdd: string[] = activeEmails.filter(email => !activeGroupedEmails.includes(email));
-  const inactiveEmailsToAdd: string[] = inactiveEmails.filter(email => !inactiveGroupedEmails.includes(email));
+  const activeEmailsToAdd: string[] = activeEmails.filter(email => !activeGroupedEmails.includes(email.toLowerCase()));
+  const inactiveEmailsToAdd: string[] = inactiveEmails.filter(email => !inactiveGroupedEmails.includes(email.toLowerCase()));
 
-  const activeEmailsToRemove: string[] = activeGroupedEmails.filter(email => inactiveEmails.includes(email));
-  const inactiveEmailsToRemove: string[] = inactiveGroupedEmails.filter(email => activeEmails.includes(email));
+  const activeEmailsToRemove: string[] = activeGroupedEmails.filter(email => inactiveEmails.includes(email.toLowerCase()));
+  const inactiveEmailsToRemove: string[] = inactiveGroupedEmails.filter(email => activeEmails.includes(email.toLowerCase()));
 
   if (activeEmailsToRemove.length > 0) await removeGroupFromMembers(activeGroupId, activeEmailsToRemove);
   if (activeEmailsToAdd.length > 0) await addGroupToMembers(activeGroupId, activeEmailsToAdd);
