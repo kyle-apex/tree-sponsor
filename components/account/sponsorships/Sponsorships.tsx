@@ -83,7 +83,7 @@ const Sponsorships = ({
                 You do not have any available Tokens of Appre-tree-ation.
               </Typography>
             )}
-            {availableSponsorshipCount && (
+            {!!availableSponsorshipCount && (
               <Typography
                 sx={{
                   backgroundColor: 'white',
