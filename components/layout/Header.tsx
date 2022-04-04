@@ -125,7 +125,7 @@ const Header = () => {
                   <Button color='inherit'>Thank a Tree</Button>
                 </Link>
               )}
-              <Link href='/signup'>
+              <Link href='/membership'>
                 <Box sx={{ borderLeft: isMobile ? 'none' : 'solid 1px', borderColor: theme => theme.palette.secondary.main }}>
                   <Button color={isMobile ? 'inherit' : 'secondary'}>Become a Member</Button>
                 </Box>

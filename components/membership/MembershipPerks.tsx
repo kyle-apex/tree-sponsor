@@ -5,7 +5,7 @@ const MembershipPerks = () => {
   return (
     <>
       <Typography variant='h2' color='secondary'>
-        Stay in Touch
+        Stay in Touch With TreeFolksYP
       </Typography>
       <ul>
         <li>
@@ -18,7 +18,7 @@ const MembershipPerks = () => {
             rel='noreferrer'
             style={{ textDecoration: 'none' }}
           >
-            <Typography color='primary'>Join us on Slack</Typography>
+            <Typography color='primary'>Join us on Slack where we organize and plan our events</Typography>
           </a>
         </li>
         <li>
@@ -66,7 +66,7 @@ const MembershipPerks = () => {
         </li>
       </ul>
       <Typography variant='h2' color='secondary'>
-        Passive Fundraising
+        Passive TreeFolks Fundraising
       </Typography>
       <ul>
         <li>
