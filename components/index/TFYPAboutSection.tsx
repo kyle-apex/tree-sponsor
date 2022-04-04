@@ -41,7 +41,7 @@ const TFYPAboutSection = () => {
         </Typography>
         <div className='detail-content'>
           Grow your positive environmental impact, knowledge, and circle of friends by becoming a TreeFolks Young Professional Member.{' '}
-          <Link href='/signup'>
+          <Link href='/membership'>
             <a>
               <Typography color='primary' sx={{ fontWeight: 600 }}>
                 View our membership options!

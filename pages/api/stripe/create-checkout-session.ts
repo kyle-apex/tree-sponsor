@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const session = await getSession({ req });
     console.log('session', session);
 
-    const { price, quantity = 1, metadata = {} } = req.body;
+    const { price, quantity = 1, metadata = {}, isForMembership = false } = req.body;
 
     console.log('metadata', metadata);
 
@@ -36,8 +36,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           metadata,
         },
         metadata: metadata,
-        success_url: `${getURL()}/signup-success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${getURL()}/signup`,
+        success_url: `${getURL()}/${isForMembership ? 'membership' : 'signup'}-success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${getURL()}/${isForMembership ? 'membership' : 'signup'}`,
       });
 
       return res.status(200).json({ sessionId: stripeSession.id });

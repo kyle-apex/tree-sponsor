@@ -114,7 +114,7 @@ const MembershipStatus = () => {
           <Button onClick={reset} variant='outlined' color='secondary' sx={{ mb: 2 }}>
             Try Another Search
           </Button>
-          <Link href='/signup'>
+          <Link href='/membership'>
             <Button color='primary' variant='contained'>
               Become a Member
             </Button>
