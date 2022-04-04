@@ -5,7 +5,7 @@ const MembershipPerks = () => {
   return (
     <>
       <Typography variant='h2' color='secondary'>
-        Stay in Touch With TreeFolksYP
+        Get engaged with TreeFolksYP
       </Typography>
       <ul>
         <li>
@@ -66,7 +66,7 @@ const MembershipPerks = () => {
         </li>
       </ul>
       <Typography variant='h2' color='secondary'>
-        Passive TreeFolks Fundraising
+        Fundraise for TreeFolks passively
       </Typography>
       <ul>
         <li>
@@ -86,7 +86,7 @@ const MembershipPerks = () => {
         </li>
       </ul>
       <Typography variant='h2' color='secondary'>
-        Upcoming Events
+        Upcoming events
       </Typography>
       <GoogleCalendar></GoogleCalendar>
     </>

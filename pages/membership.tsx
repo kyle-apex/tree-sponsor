@@ -102,7 +102,7 @@ const SignupPage = ({
         <Table>
           <TableBody>
             <TableRow>
-              <TableCell>TreeFolks Donation</TableCell>
+              <TableCell>Tax Deductible TreeFolks Donation</TableCell>
               <TableCell>
                 <div>${memberships[activeMembershipIndex].price}/yr</div>
                 <Box sx={{ fontSize: '.75em', color: 'gray' }}>(Thanks!)</Box>
@@ -155,6 +155,7 @@ const SignupPage = ({
             label='How did you find out about TreeFolksYP?'
             fullWidth={true}
             size='small'
+            autoComplete='off'
           ></TextField>
         </Box>
         <Box sx={{ marginTop: 2 }}>
