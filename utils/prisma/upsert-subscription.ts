@@ -61,4 +61,14 @@ export const upsertSubscription = async (subscription: PartialSubscription): Pro
       },
     },
   });
+  if (subscription.user?.name)
+    await prisma.user.updateMany({
+      where: { email: subscription.user.email, name: null },
+      data: { name: subscription.user.name },
+    });
+  if (subscription.stripeCustomerId)
+    await prisma.user.updateMany({
+      where: { email: subscription.user.email, stripeCustomerId: null },
+      data: { stripeCustomerId: subscription.stripeCustomerId },
+    });
 };
