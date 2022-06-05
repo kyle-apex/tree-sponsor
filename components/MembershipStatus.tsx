@@ -47,6 +47,8 @@ const MembershipStatus = () => {
 
   const hasActiveMembership = status?.subscription?.lastPaymentDate > lastYear;
 
+  const userName = status?.subscription?.userName?.split(' ')[0] || '';
+
   return (
     <>
       {status == null && (
@@ -76,7 +78,7 @@ const MembershipStatus = () => {
           {hasActiveMembership && (
             <>
               <Typography variant='body2' component='p' mb={2}>
-                Thanks for being a member {status.subscription.userName.split(' ')[0]}!
+                Thanks for being a member{userName ? ' ' + userName : ''}!
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
                 Your most recent membership dues donation was {formatDate(status.subscription.lastPaymentDate)}.
@@ -86,7 +88,7 @@ const MembershipStatus = () => {
           {!hasActiveMembership && (
             <>
               <Typography variant='body2' component='p' mb={2}>
-                {status.subscription.userName.split(' ')[0]}, thank you for your support!
+                {userName ? `${userName}, thank you for your support!` : 'Thank you for your support!'}
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
                 Unfortunately <b>your membership is no longer active</b>.
