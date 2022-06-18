@@ -18,33 +18,34 @@ export const findAllSubscriptions = async (): Promise<PartialSubscription[]> => 
   const subscriptions: PartialSubscription[] = [];
   const productIds: string[] = [];
   t1 = new Date().getTime();
-  await Promise.all(
-    allSubscribedCustomers.map(async (customer: Stripe.Customer) => {
-      await Promise.all(
-        customer.subscriptions.data.map(async (sub: StripeSubscription) => {
-          const productId = sub.plan.product;
 
-          const customerName: string = getCustomerName(customer);
-          const t2 = new Date().getTime();
-          const lastPaymentDate: Date = await getLastPaymentDateForSubscription(sub);
-          console.log('getLastPayment Time', new Date().getTime() - t2);
-          const subscription: PartialSubscription = {
-            product: { stripeId: productId, amount: Math.round(sub.plan.amount / 100) },
-            stripeId: sub.id,
-            stripeCustomerId: sub.customer as string,
-            user: { email: customer.email, name: customerName },
-            status: sub.status,
-            createdDate: new Date(sub.created * 1000),
-            lastPaymentDate: lastPaymentDate,
-          };
+  for (const customer of allSubscribedCustomers) {
+    await Promise.all(
+      customer.subscriptions.data.map(async (sub: StripeSubscription) => {
+        const productId = sub.plan.product;
 
-          subscriptions.push(subscription);
+        const customerName: string = getCustomerName(customer);
 
-          if (!productIds.includes(productId)) productIds.push(productId);
-        }),
-      );
-    }),
-  );
+        const t2 = new Date().getTime();
+        const lastPaymentDate: Date = await getLastPaymentDateForSubscription(sub);
+        console.log('getLastPayment Time', new Date().getTime() - t2);
+
+        const subscription: PartialSubscription = {
+          product: { stripeId: productId, amount: Math.round(sub.plan.amount / 100) },
+          stripeId: sub.id,
+          stripeCustomerId: sub.customer as string,
+          user: { email: customer.email, name: customerName },
+          status: sub.status,
+          createdDate: new Date(sub.created * 1000),
+          lastPaymentDate: lastPaymentDate,
+        };
+
+        subscriptions.push(subscription);
+
+        if (!productIds.includes(productId)) productIds.push(productId);
+      }),
+    );
+  }
   console.log('getPayment Details Time', new Date().getTime() - t1);
 
   const productIdToNameMap = await getProductIdToNameMap(productIds);
