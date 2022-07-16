@@ -59,7 +59,6 @@ const FundraisingStats = () => {
         </Grid>
         <Grid item xs={6} sx={{ textAlign: 'center' }}>
           <StatisticIconDisplay
-            color='secondary'
             label={'Scheduled by the end of ' + currentYear}
             count={stats?.activeDonations - stats?.currentYearMemberDonations}
             isCurrency={true}
