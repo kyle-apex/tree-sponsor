@@ -139,7 +139,7 @@ export default function EnhancedTable(): JSX.Element {
   return (
     <Layout title='Admin'>
       <div className={classes.root}>
-        <Box sx={{ flexDirection: 'row', display: 'flex' }} gap={2}>
+        <Box sx={{ flexDirection: 'row', display: 'flex', flexWrap: 'wrap' }} gap={2}>
           <RestrictSection accessType='hasAuthManagement'>
             <Link href='/admin/roles'>
               <Button variant='outlined'>Manage Roles</Button>
@@ -147,6 +147,9 @@ export default function EnhancedTable(): JSX.Element {
           </RestrictSection>
           <Link href='/admin/membership-dashboard'>
             <Button variant='outlined'>Membership Dashboard</Button>
+          </Link>
+          <Link href='/admin/fundraising-dashboard'>
+            <Button variant='outlined'>Fundraising Dashboard</Button>
           </Link>
           <RestrictSection accessType='isReviewer'>
             <Link href='/admin/review/sponsorships'>

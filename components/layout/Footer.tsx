@@ -2,12 +2,13 @@ import Link from 'next/link';
 import React from 'react';
 
 const Footer = () => {
+  const year = new Date().getFullYear();
   return (
     <footer>
       <hr />
       <div className='legal'>
         <div className='legal-copyright'>
-          Copyright © 2021 TreeFolksYP. <span className='hidden-mobile'>All rights reserved.</span>
+          Copyright © {year} TreeFolksYP. <span className='hidden-mobile'>All rights reserved.</span>
         </div>
         <div className='legal-links'>
           <Link href='/legal/privacy'>
