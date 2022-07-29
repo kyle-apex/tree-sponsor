@@ -48,7 +48,7 @@ const MembershipStats = () => {
           <StatisticIconDisplay
             color={stats?.newActive ? 'primary' : 'secondary'}
             label='New Members'
-            count={stats?.active}
+            count={stats?.newActive}
             showUpIcon={!!stats?.newActive}
             isLoading={!stats || isLoading}
             description='Last 30 Days'
