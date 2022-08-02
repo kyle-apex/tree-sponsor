@@ -10,6 +10,7 @@ type Stats = {
   activeDonations: number;
   activeMembers: number;
   currentYearMemberDonations: number;
+  currentYearDonations: number;
 };
 
 const FundraisingStats = () => {
@@ -64,6 +65,24 @@ const FundraisingStats = () => {
             isCurrency={true}
             isLoading={isLoading}
             icon={<UpdateIcon fontSize='large'></UpdateIcon>}
+            color='primary'
+          ></StatisticIconDisplay>
+        </Grid>
+        <Grid item xs={6} sx={{ textAlign: 'center' }}>
+          <StatisticIconDisplay
+            color='secondary'
+            label={`${currentYear} Event Donations`}
+            count={stats?.currentYearDonations}
+            isCurrency={true}
+            isLoading={isLoading}
+          ></StatisticIconDisplay>
+        </Grid>
+        <Grid item xs={6} sx={{ textAlign: 'center' }}>
+          <StatisticIconDisplay
+            label={`Total ${currentYear} Fundraising`}
+            count={stats?.currentYearDonations + stats?.currentYearMemberDonations}
+            isCurrency={true}
+            isLoading={isLoading}
             color='primary'
           ></StatisticIconDisplay>
         </Grid>

@@ -30,7 +30,6 @@ model Account {
   createdAt          DateTime  @default(now()) @map(name: "created_at")
   updatedAt          DateTime  @default(now()) @map(name: "updated_at")
 
-
   @@index([providerAccountId], name: "providerAccountId")
   @@index([providerId], name: "providerId")
   @@index([userId], name: "userId")
@@ -76,6 +75,7 @@ model User {
   lastChangedByTrees    Tree[]
   Event                 Event[]
   Category              Category[]
+
   @@map(name: "users")
 }
 
@@ -396,4 +396,14 @@ model Sponsorship {
   subscriptionId     Int?
   comments           Comment[]
   reactions          Reaction[]
+}
+
+model Donation {
+  id          Int       @id @default(autoincrement())
+  eventId     Int?
+  label       String?
+  amount      Decimal?  @db.Decimal(6, 2)
+  source      String?
+  date        DateTime?
+  createdDate DateTime? @default(now())
 }

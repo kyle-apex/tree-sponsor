@@ -6,6 +6,7 @@ type Stats = {
   activeDonations: number;
   activeMembers: number;
   currentYearMemberDonations: number;
+  currentYearDonations: number;
 };
 
 export default async function handler(_req: NextApiRequest, res: NextApiResponse) {
@@ -21,6 +22,7 @@ export default async function handler(_req: NextApiRequest, res: NextApiResponse
     activeDonations: 0,
     activeMembers: subscriptionWithDetails.length,
     currentYearMemberDonations: 0,
+    currentYearDonations: 0,
   };
 
   stats.activeDonations = subscriptionWithDetails.reduce((previous, current) => {
@@ -29,6 +31,15 @@ export default async function handler(_req: NextApiRequest, res: NextApiResponse
     const total = previous + current.amount;
     return total;
   }, 0);
+
+  const aggregate = await prisma.donation.aggregate({
+    where: { date: { gt: calendarYear } },
+    _sum: {
+      amount: true,
+    },
+  });
+
+  if (aggregate && aggregate._sum) stats.currentYearDonations = Number(aggregate._sum.amount);
 
   res.status(200).json(stats);
 }
