@@ -30,7 +30,6 @@ model Account {
   createdAt          DateTime  @default(now()) @map(name: "created_at")
   updatedAt          DateTime  @default(now()) @map(name: "updated_at")
 
-
   @@index([providerAccountId], name: "providerAccountId")
   @@index([providerId], name: "providerId")
   @@index([userId], name: "userId")
@@ -76,6 +75,8 @@ model User {
   lastChangedByTrees    Tree[]
   Event                 Event[]
   Category              Category[]
+  checkIns              CheckIn[]
+
   @@map(name: "users")
 }
 
@@ -218,14 +219,18 @@ model Tree {
   lastChangedByUserId      Int?
   lastChangedByUser        User?           @relation(fields: [lastChangedByUserId], references: [id])
   categories               Category[]      @relation("TreeToCategory")
+  events                   Event[]         @relation("TreeToEvent")
+  checkIns                 CheckIn[]
 }
 
 model Category {
   id          Int       @id @default(autoincrement())
   name        String?
+  description String?   @db.Text
   createdDate DateTime? @default(now())
   pictureUrl  String?
   path        String?   @db.VarChar(256)
+  isPublic    Boolean?  @default(false)
   trees       Tree[]    @relation("TreeToCategory")
   events      Event[]   @relation("CategoryToEvent")
   user        User?     @relation(fields: [userId], references: [id])
@@ -238,6 +243,7 @@ model Event {
   id              Int        @id @default(autoincrement())
   name            String?
   description     String?    @db.Text
+  checkInDetails  String?    @db.Text
   pictureUrl      String?
   startDate       DateTime?
   endDate         DateTime?
@@ -252,14 +258,20 @@ model Event {
   userId          Int?
   role            Role?      @relation(fields: [roleId], references: [id])
   roleId          Int?
+  trees           Tree[]     @relation("TreeToEvent")
+  checkIns        CheckIn[]
 }
 
-model TreeToEvent {
-  id       Int     @id @default(autoincrement())
-  treeId   Int?
-  eventId  Int?
-  sequence Int?
-  name     String?
+model CheckIn {
+  id          Int       @id @default(autoincrement())
+  createdDate DateTime? @default(now())
+  email       String?
+  userId      Int?
+  user        User?     @relation(fields: [userId], references: [id])
+  treeId      Int?
+  tree        Tree?     @relation(fields: [treeId], references: [id])
+  eventId     Int?
+  event       Event?    @relation(fields: [eventId], references: [id])
 }
 
 enum ChangeLogType {

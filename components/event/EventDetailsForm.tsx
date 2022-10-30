@@ -1,4 +1,4 @@
-// TODO
+// TODO - Form Validation, Category Multi-select
 import { PartialEvent } from 'interfaces';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
@@ -31,6 +31,10 @@ const EventDetailsForm = ({
   updateAttribute: (name: keyof PartialEvent, value: unknown) => void;
 }) => {
   const [hasActiveDates, setHasActiveDates] = useState(false);
+  const [startDate, setStartDate] = useState(event.startDate);
+  const [endDate, setEndDate] = useState(event.endDate);
+  const [activeStartDate, setActiveStartDate] = useState(event.activeStartDate);
+  const [activeEndDate, setActiveEndDate] = useState(event.activeEndDate);
 
   const toggleHasActiveDates = () => {
     if (hasActiveDates) {
@@ -55,20 +59,23 @@ const EventDetailsForm = ({
       ></TextField>
       <SplitRow gap={2}>
         <DateTimeField
-          value={event?.startDate}
+          value={startDate}
           setValue={date => {
             // window['d2'] = date;
             console.log('date', date);
             updateAttribute('startDate', date);
+            setStartDate(date);
           }}
           label='Start Time'
         ></DateTimeField>
         <DateTimeField
-          value={event?.endDate}
+          value={endDate}
           setValue={date => {
             updateAttribute('endDate', date);
+            setEndDate(date);
           }}
           label='End Time'
+          minDateTime={startDate}
         ></DateTimeField>
       </SplitRow>
 
@@ -96,16 +103,18 @@ const EventDetailsForm = ({
         <h6>Tree ID/Thank-a-Tree Time Range (Optional)</h6>
         <SplitRow gap={2}>
           <DateTimeField
-            value={event?.activeStartDate}
+            value={activeStartDate}
             setValue={date => {
               updateAttribute('activeStartDate', date);
+              setActiveStartDate(date);
             }}
             label='Active Start Time'
           ></DateTimeField>
           <DateTimeField
-            value={event?.activeEndDate}
+            value={activeEndDate}
             setValue={date => {
               updateAttribute('activeEndDate', date);
+              setActiveEndDate(date);
             }}
             minDateTime={event?.activeStartDate}
             label='Active End Time'

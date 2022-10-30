@@ -46,3 +46,50 @@ A `type-check` script is also added to `package.json`, which runs TypeScript's `
 Authentication uses https://next-auth.js.org/
 
 SVG Wave Generator used on index: https://codepedia.info/svg-wave-generator/
+
+Category/Event Examples:
+
+Top 10 Patio Trees:
+New Prisma Table: Grouping? Ranking?
+Category: Patio Trees
+Category: Brewery
+Event: Patio Trees of 2022
+
+Tree of The Year:
+Category: Tree of the Year Winner
+Category: Tree of the Year Nominee
+Category: 2022 Tree of the Year Nominee
+Event: 2022 Tree of the Year Bike Tour
+
+Category: Quiet Moon Trees
+
+Event: 5K Run TreeID
+Category: 2022 Hold Out Summer Solstice
+
+Category: TreeFolksYP Happy Hours
+Category: Brewery
+
+Check-ins: At a tree if within 300ft?
+
+Monopoly Idea:
+
+- YP members get points if people checkin at their trees
+- Sponsorship can be moved once per month
+- Multiple sponsorships at the same tree adds some multiplier 2.1X, 3.2X, etc
+- You can have a link to share to a particular tree for checkins
+
+At a happy hour:
+Event: Happy Hour at Cosmic
+
+- ID Trees at the bar
+- Keep a count of new tree id's/check-ins and "Thanks!"
+- Add a group picture by a tree?
+
+What do I get for checking in at trees?
+
+- Challenge cirlces like apple watch.
+- Fill them up for both check-ins and thanks.
+- Points for your friends who already thank the trees?
+- Some other virtual prize?
+
+VR: shows tree with its sponsors, likes, comments, etc

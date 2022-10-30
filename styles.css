@@ -34,6 +34,10 @@ input.MuiOutlinedInput-input,
   background-color: white;
 }
 
+.MuiTab-root.transparent, .transparent {
+  background-color: transparent
+}
+
 .section-background {
   background-color: #fcfcfc !important;
 }
