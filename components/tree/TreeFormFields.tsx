@@ -26,9 +26,14 @@ const TreeFormFields = ({
       </Typography>
       <SpeciesSelector onChange={speciesId => handleChange('speciesId', speciesId)} defaultValue={tree.speciesId}></SpeciesSelector>
       {tree.speciesId && (
-        <FormControl component='fieldset'>
-          <FormLabel component='legend'>Identification Correctness Confidence</FormLabel>
-          <RadioGroup onChange={e => handleChange('identificationConfidence', Number(e.target.value))}>
+        <FormControl component='fieldset' sx={{ marginTop: 2 }}>
+          <FormLabel component='legend' sx={{ fontSize: '.75rem' }}>
+            Identification Correctness Confidence
+          </FormLabel>
+          <RadioGroup
+            value={tree.identificationConfidence}
+            onChange={e => handleChange('identificationConfidence', Number(e.target.value))}
+          >
             <FormControlLabel value={1} control={<Radio size='small' />} label='Not sure' />
             <FormControlLabel value={2} control={<Radio size='small' />} label='Fairly confident' />
             <FormControlLabel value={3} control={<Radio size='small' />} label='Very confident' />

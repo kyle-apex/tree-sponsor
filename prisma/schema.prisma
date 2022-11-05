@@ -75,7 +75,8 @@ model User {
   lastChangedByTrees    Tree[]
   Event                 Event[]
   Category              Category[]
-  checkIns              CheckIn[]
+  eventCheckIns         EventCheckIn[]
+  treeCheckIns          TreeCheckIn[]
 
   @@map(name: "users")
 }
@@ -220,7 +221,7 @@ model Tree {
   lastChangedByUser        User?           @relation(fields: [lastChangedByUserId], references: [id])
   categories               Category[]      @relation("TreeToCategory")
   events                   Event[]         @relation("TreeToEvent")
-  checkIns                 CheckIn[]
+  checkIns                 TreeCheckIn[]
 }
 
 model Category {
@@ -240,38 +241,50 @@ model Category {
 }
 
 model Event {
-  id              Int        @id @default(autoincrement())
+  id              Int            @id @default(autoincrement())
   name            String?
-  description     String?    @db.Text
-  checkInDetails  String?    @db.Text
+  description     String?        @db.Text
+  checkInDetails  String?        @db.Text
   pictureUrl      String?
   startDate       DateTime?
   endDate         DateTime?
   activeStartDate DateTime?
   activeEndDate   DateTime?
   identifier      String?
-  path            String?    @db.VarChar(256)
-  location        Location?  @relation(fields: [locationId], references: [id])
+  path            String?        @db.VarChar(256)
+  location        Location?      @relation(fields: [locationId], references: [id])
   locationId      Int?
-  categories      Category[] @relation("CategoryToEvent")
-  user            User?      @relation(fields: [userId], references: [id])
+  categories      Category[]     @relation("CategoryToEvent")
+  user            User?          @relation(fields: [userId], references: [id])
   userId          Int?
-  role            Role?      @relation(fields: [roleId], references: [id])
+  role            Role?          @relation(fields: [roleId], references: [id])
   roleId          Int?
-  trees           Tree[]     @relation("TreeToEvent")
-  checkIns        CheckIn[]
+  trees           Tree[]         @relation("TreeToEvent")
+  checkIns        EventCheckIn[]
 }
 
-model CheckIn {
-  id          Int       @id @default(autoincrement())
-  createdDate DateTime? @default(now())
-  email       String?
-  userId      Int?
-  user        User?     @relation(fields: [userId], references: [id])
-  treeId      Int?
-  tree        Tree?     @relation(fields: [treeId], references: [id])
-  eventId     Int?
-  event       Event?    @relation(fields: [eventId], references: [id])
+model TreeCheckIn {
+  id             Int       @id @default(autoincrement())
+  createdDate    DateTime? @default(now())
+  email          String?
+  discoveredFrom String?
+  userId         Int?
+  user           User?     @relation(fields: [userId], references: [id])
+  treeId         Int?
+  tree           Tree?     @relation(fields: [treeId], references: [id])
+}
+
+model EventCheckIn {
+  id             Int       @id @default(autoincrement())
+  createdDate    DateTime? @default(now())
+  email          String?
+  discoveredFrom String?
+  userId         Int?
+  user           User?     @relation(fields: [userId], references: [id])
+  eventId        Int?
+  event          Event?    @relation(fields: [eventId], references: [id])
+
+  @@unique([email, eventId])
 }
 
 enum ChangeLogType {

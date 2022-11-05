@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import uploadTreeImages from 'utils/aws/upload-tree-images';
 import getTreeImagePath from 'utils/aws/get-tree-image-path';
 import { Tree } from '@prisma/client';
+import { getSession } from 'utils/auth/get-session';
 
 export const config = {
   api: {
@@ -50,5 +51,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: updateData,
     });
     res.status(200).json(result);
+  } else if (req.method === 'DELETE') {
+    let isAuthorized = false; //await isCurrentUserAuthorized('isTreeReviewer', req);
+    const session = await getSession({ req });
+
+    if (!isAuthorized && session?.user?.id) {
+      const changeLog = await prisma.treeChangeLog.findFirst({
+        where: { tree: { id: id }, user: { id: session?.user?.id }, type: 'Create' },
+      });
+      console.log('changeLog', changeLog);
+      if (changeLog) isAuthorized = true;
+    }
+
+    if (isAuthorized) {
+      await prisma.tree.delete({ where: { id } });
+      res.json({ count: 1 });
+    } else {
+      return throwError(res, 'Access denied');
+    }
   }
 }

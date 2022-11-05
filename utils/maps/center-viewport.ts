@@ -28,7 +28,7 @@ const centerViewport = (viewport: Viewport, coordinates: Coordinate[]) => {
         padding: 80,
       },
     );
-    const newZoom = zoom > 16 ? 16 : zoom;
+    const newZoom = zoom > 18 ? 18 : zoom;
     return { ...viewport, longitude, latitude, zoom: newZoom };
   }
   return viewport;

@@ -8,6 +8,7 @@ import uploadTreeImages from 'utils/aws/upload-tree-images';
 import getTreeImagePath from 'utils/aws/get-tree-image-path';
 import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
 import { ReviewStatus } from 'interfaces';
+import upsertTree from 'utils/tree/upsert';
 
 export const config = {
   api: {
@@ -27,7 +28,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!tree) return throwError(res, 'Please submit new sponsorship data.');
 
-    const treeId = tree.id;
+    const upsertedTree = await upsertTree(tree, userId);
+    /*const treeId = tree.id;
 
     if (!treeId) {
       // remove id if it's 0 for the upsert to work correctly
@@ -62,7 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ...tree,
         images: { upsert: [{ create: image, update: image, where: { uuid: image.uuid } }] },
       },
-    });
+    });*/
     res.status(200).json(upsertedTree);
   } else if (req.method === 'GET') {
     const reviewStatus = req.query.reviewStatus as ReviewStatus;
@@ -74,6 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
     if (reviewStatus) filter.where = { reviewStatus };
     if (take) filter.take = take;
+    filter.where.pictureUrl = { not: null };
     const trees = await prisma.tree.findMany(filter);
     res.status(200).json(trees);
   }

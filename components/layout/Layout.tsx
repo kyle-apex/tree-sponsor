@@ -12,11 +12,13 @@ type Props = {
   isFullWidth?: boolean;
   description?: string;
   ogImage?: string;
+  header?: string;
 };
 
 const Layout = ({
   children,
   title = 'Thank-a-Tree | TreeFolksYP',
+  header,
   isFullWidth,
   description = 'Thank your favorite trees with a Token of Appre-tree-ation in support of future tree plantings through TreeFolks Young Professionals (TreeFolksYP)',
   ogImage = process.env.NEXT_PUBLIC_OG_IMAGE || 'https://tfyp-images.s3.amazonaws.com/og-image.png',
@@ -42,7 +44,7 @@ const Layout = ({
       <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css' rel='stylesheet' />
     </Head>
     <Acute />
-    <Header />
+    <Header title={header} />
     <main>
       {isFullWidth ? (
         <Box sx={{ paddingTop: theme => theme.spacing(2) }}>

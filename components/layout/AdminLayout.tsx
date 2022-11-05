@@ -3,7 +3,7 @@ import Link from 'next/link';
 import React, { ReactNode } from 'react';
 import Layout from './Layout';
 
-const AdminLayout = ({ children, title, header }: { children?: ReactNode; title?: string; header?: string }) => {
+const AdminLayout = ({ children, title, header }: { children?: ReactNode; title?: string; header?: string | ReactNode }) => {
   return (
     <Layout title={title}>
       <Link href='/admin/'>

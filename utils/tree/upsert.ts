@@ -7,7 +7,7 @@ import { Prisma } from '@prisma/client';
 
 type TreeImage = PartialTreeImage & { uuid: string };
 
-export default async function upsert(tree: PartialTree, userId: number) {
+export default async function upsertTree(tree: PartialTree, userId: number) {
   const treeId = tree.id;
 
   if (!treeId) {
@@ -19,7 +19,9 @@ export default async function upsert(tree: PartialTree, userId: number) {
 
   const lastChangedByUser = { connect: { id: userId } };
 
-  const image = (tree.images?.length > 0 && tree.images[0]) as TreeImage;
+  let image = (tree.images?.length > 0 && tree.images[0]) as TreeImage;
+
+  if (tree.pictureUrl && !image) image = { url: tree.pictureUrl, uuid: 'temp' };
 
   if (image) {
     if (!image.uuid || image.uuid === 'temp') image.uuid = uuidv4();
@@ -29,10 +31,14 @@ export default async function upsert(tree: PartialTree, userId: number) {
     if (pictureUrl && !pictureUrl.includes('http')) {
       const imagePath = getTreeImagePath(image.uuid);
       tree.pictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}/small`;
-
+      image.url = tree.pictureUrl;
       uploadTreeImages(pictureUrl, image.uuid);
     }
   }
+
+  const speciesId = tree.speciesId;
+  const species = tree.speciesId ? { connect: { id: speciesId } } : undefined;
+  delete tree.speciesId;
 
   const treeToUpdate: Omit<PartialTree, 'id' | 'locationId' | 'speciesId' | 'lastChangedByUserId' | 'species' | 'location'> = { ...tree };
 
@@ -41,11 +47,14 @@ export default async function upsert(tree: PartialTree, userId: number) {
     create: {
       ...treeToUpdate,
       lastChangedByUser,
+      species,
+      changeLogs: { create: { user: { connect: { id: userId } } } },
       images: { create: { ...image } },
     },
     update: {
       ...treeToUpdate,
       lastChangedByUser,
+      species,
       images: { upsert: [{ create: { ...image }, update: image, where: { uuid: image.uuid } }] },
     },
   });

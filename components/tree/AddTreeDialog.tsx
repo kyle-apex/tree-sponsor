@@ -4,7 +4,15 @@ import Typography from '@mui/material/Typography';
 import { PartialTree } from 'interfaces';
 import AddTreeForm from './AddTreeForm';
 
-const AddTreeDialog = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
+const AddTreeDialog = ({
+  isOpen,
+  setIsOpen,
+  onComplete,
+}: {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onComplete?: () => void;
+}) => {
   const handleClose = () => {
     setIsOpen(false);
   };
@@ -18,6 +26,7 @@ const AddTreeDialog = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: Reac
         <AddTreeForm
           onComplete={() => {
             setIsOpen(false);
+            if (onComplete) onComplete();
           }}
         ></AddTreeForm>
       </DialogContent>

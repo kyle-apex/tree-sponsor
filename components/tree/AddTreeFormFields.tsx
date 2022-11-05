@@ -35,7 +35,7 @@ const AddTreeFormFields = ({
         <ImageUploadAndPreview
           imageUrl={tree.pictureUrl}
           setImageUrl={(imageUrl: string) => {
-            handleChange('imageUrl', imageUrl);
+            handleChange('pictureUrl', imageUrl);
           }}
         />
       </CardMedia>
@@ -45,7 +45,7 @@ const AddTreeFormFields = ({
         </Typography>
         <SpeciesSelector onChange={speciesId => handleChange('speciesId', speciesId)}></SpeciesSelector>
         {tree.speciesId && (
-          <RadioGroup onChange={e => handleChange('identificationConfidence', e.target.value)}>
+          <RadioGroup onChange={e => handleChange('identificationConfidence', Number(e.target.value))}>
             <Radio value={1}></Radio> Not sure
             <Radio value={2}></Radio> Fairly confident
             <Radio value={3}></Radio> Very confident

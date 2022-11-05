@@ -104,5 +104,7 @@ ADD
 SET
     NULL ON UPDATE CASCADE;
 
--- AddForeignKey
--- AddForeignKey
+ALTER TABLE
+    `CheckIn`
+ADD
+    COLUMN `discoveredFrom` VARCHAR(191);

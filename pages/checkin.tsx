@@ -5,7 +5,7 @@ import { prisma } from 'utils/prisma/init';
 const CheckinRedirect = ({ path }: { path: string }) => {
   const router = useRouter();
   useEffect(() => {
-    router.push(`/${path}/checkin`);
+    router.push(`/e/${path}/checkin`);
   }, []);
   return <></>;
 };

@@ -62,7 +62,7 @@ const TreeDisplay = ({
         <Card sx={{ maxWidth: '500px', marginRight: handleClose ? 0 : '1px', marginBottom: handleClose ? 0 : '2px' }}>
           <CardHeader
             title={displayName}
-            subheader={<Typography>{tree.location.name}</Typography>}
+            subheader={<Typography>{tree.location?.name}</Typography>}
             action={
               handleClose && (
                 <IconButton onClick={handleClose}>
