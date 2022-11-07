@@ -13,12 +13,14 @@ const MapMarkerDisplay = ({
   defaultZoom,
   height,
   mapStyle,
+  markerScale = 1,
 }: {
   markers: Coordinate[];
-  onClick?: () => void;
+  onClick?: (coordinate?: Coordinate) => void;
   defaultZoom?: number;
   height?: string;
   mapStyle?: MapStyle;
+  markerScale: number;
 }) => {
   const mapRef = useRef();
   const theme = useTheme();
@@ -53,10 +55,11 @@ const MapMarkerDisplay = ({
               key={marker.latitude + marker.longitude}
               latitude={marker.latitude}
               longitude={marker.longitude}
-              zoom={viewport.zoom}
+              zoom={viewport.zoom * markerScale}
               onClick={() => {
-                if (onClick) onClick();
+                if (onClick) onClick(marker);
               }}
+              isSatelliteMode={mapStyle == 'SATELLITE'}
             ></MapMarker>
           );
         }

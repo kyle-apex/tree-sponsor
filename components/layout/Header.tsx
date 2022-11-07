@@ -76,7 +76,7 @@ const useStyles = makeStyles(theme => ({
   loginButton: {},
 }));
 
-const Header = () => {
+const Header = ({ title }: { title?: string }) => {
   const [session] = useSession();
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -114,8 +114,13 @@ const Header = () => {
           </Link>
 
           <Typography variant='h6' className={classes.title}>
-            <span className={!session ? 'hidden-mobile' : ''}>Thank-a-Tree</span>
-            <span className='hidden-mobile'> with TreeFolksYP</span>
+            {title && <span>{title}</span>}
+            {!title && (
+              <>
+                <span className={!session ? 'hidden-mobile' : ''}>Thank-a-Tree</span>
+                <span className='hidden-mobile'> with TreeFolksYP</span>
+              </>
+            )}
           </Typography>
 
           {!session && (

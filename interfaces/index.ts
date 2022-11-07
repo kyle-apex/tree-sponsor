@@ -47,7 +47,7 @@ export type PartialSpecies = Partial<Species>;
 export type PartialTreeImage = Partial<TreeImage>;
 export type PartialTree = Partial<Tree> & { images?: PartialTreeImage[]; species?: PartialSpecies; location?: PartialLocation };
 
-export type PartialEvent = Partial<Event> & { categories?: PartialCategory[]; trees?: PartialTree[] };
+export type PartialEvent = Partial<Event> & { categories?: PartialCategory[]; trees?: PartialTree[]; location?: PartialLocation };
 export type PartialCategory = Partial<Category> & { events?: PartialEvent[]; trees?: PartialTree[] };
 
 export type PartialDonation = Partial<Donation>;

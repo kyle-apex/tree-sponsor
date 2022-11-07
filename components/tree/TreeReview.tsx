@@ -11,10 +11,19 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import MapIcon from '@mui/icons-material/MapOutlined';
 import ImageIcon from '@mui/icons-material/Image';
+import DeleteIconButton from 'components/DeleteIconButton';
 
 type Mode = 'Image' | 'Map';
 
-const TreeReview = ({ tree, onUpdate }: { tree: PartialTree; onUpdate: (id: number, attributes: Record<string, unknown>) => void }) => {
+const TreeReview = ({
+  tree,
+  onUpdate,
+  onDelete,
+}: {
+  tree: PartialTree;
+  onUpdate: (id: number, attributes: Record<string, unknown>) => void;
+  onDelete?: (id: number) => void;
+}) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [mode, setMode] = useState<Mode>('Image');
 
@@ -57,6 +66,7 @@ const TreeReview = ({ tree, onUpdate }: { tree: PartialTree; onUpdate: (id: numb
                 setDialogOpen(true);
               }}
               mapStyle='SATELLITE'
+              markerScale={0.5}
             ></MapMarkerDisplay>
           </Box>
           <LocationSelectorDialog
@@ -90,6 +100,7 @@ const TreeReview = ({ tree, onUpdate }: { tree: PartialTree; onUpdate: (id: numb
         }}
         mb={2}
       />
+      {onDelete && <DeleteIconButton itemType='tree' title='Delete Tree?' onDelete={() => onDelete(tree.id)}></DeleteIconButton>}
     </>
   );
 };

@@ -7,6 +7,7 @@ function parseObjectDateStrings(item: Record<string, unknown>) {
     for (const key in item) {
       const value = item[key];
       if (typeof value === 'string' && isDate(value)) item[key] = new Date(value);
+      else if (value && typeof value == 'object') parseObjectDateStrings(value as Record<string, unknown>);
     }
   }
 }

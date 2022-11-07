@@ -7,7 +7,7 @@ export const useGet = <T>(
   path: string,
   key?: string | string[],
   params?: Record<string, unknown>,
-  options?: { refetchOnWindowFocus: boolean },
+  options?: { refetchOnWindowFocus?: boolean; refetchOnMount?: boolean },
 ): QueryObserverResult<T> => {
   if (!path) {
     throw new Error('Path is required');

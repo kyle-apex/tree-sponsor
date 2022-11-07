@@ -10,6 +10,9 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 const AddTreeFormFields = ({
   tree,
@@ -35,7 +38,7 @@ const AddTreeFormFields = ({
         <ImageUploadAndPreview
           imageUrl={tree.pictureUrl}
           setImageUrl={(imageUrl: string) => {
-            handleChange('imageUrl', imageUrl);
+            handleChange('pictureUrl', imageUrl);
           }}
         />
       </CardMedia>
@@ -45,11 +48,16 @@ const AddTreeFormFields = ({
         </Typography>
         <SpeciesSelector onChange={speciesId => handleChange('speciesId', speciesId)}></SpeciesSelector>
         {tree.speciesId && (
-          <RadioGroup onChange={e => handleChange('identificationConfidence', e.target.value)}>
-            <Radio value={1}></Radio> Not sure
-            <Radio value={2}></Radio> Fairly confident
-            <Radio value={3}></Radio> Very confident
-          </RadioGroup>
+          <FormControl component='fieldset' sx={{ marginTop: 2 }}>
+            <FormLabel component='legend' sx={{ fontSize: '.75rem' }}>
+              Identification Correctness Confidence
+            </FormLabel>
+            <RadioGroup onChange={e => handleChange('identificationConfidence', Number(e.target.value))}>
+              <FormControlLabel value={1} control={<Radio size='small' />} label='Not sure'></FormControlLabel>
+              <FormControlLabel value={2} control={<Radio size='small' />} label='Fairly confident'></FormControlLabel>
+              <FormControlLabel value={3} control={<Radio size='small' />} label='Very confident'></FormControlLabel>
+            </RadioGroup>
+          </FormControl>
         )}
         <TextField
           sx={{ marginBottom: 3, marginTop: 2 }}

@@ -11,6 +11,7 @@ import axios from 'axios';
 import AddTreeFormFields from './AddTreeFormFields';
 import Box from '@mui/material/Box';
 import LocationSelector from 'components/LocationSelector';
+import getImageDimensions from 'utils/aws/get-image-dimensions';
 
 const steps = [{ label: 'Details' }, { label: 'Location' }];
 
@@ -21,10 +22,19 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
   const [completed] = useState<{ [k: number]: boolean }>({});
 
   const handleChange = useCallback((propertyName: string, value: string | number) => {
-    setTree({ ...tree, [propertyName]: value });
+    console.log('handleChange', propertyName, value);
+    console.log('tree', tree);
+    //const newTree = { ...tree, [propertyName]: value };
+
+    setTree(current => {
+      return { ...current, [propertyName]: value };
+    });
+    //console.log('newTree', newTree);
   }, []);
 
   const upsertTree = async () => {
+    const { w, h } = await getImageDimensions(tree.pictureUrl);
+    tree.images = [{ url: tree.pictureUrl, width: w, height: h }];
     const updatedTree = await axios.post('/api/trees', { ...tree });
     if (updatedTree?.data?.id) handleChange('id', updatedTree.data.id);
   };

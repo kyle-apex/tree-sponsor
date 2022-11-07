@@ -5,7 +5,7 @@ import { prisma } from 'utils/prisma/init';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = Number(req.query.id);
-  if (req.method === 'POST') {
+  if (req.method === 'POST' || req.method === 'PATCH') {
     const { roleName, hasRole } = req.body;
 
     if (hasRole) await grantAccess(id, roleName, req);

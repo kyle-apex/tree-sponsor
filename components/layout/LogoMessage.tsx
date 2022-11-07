@@ -12,7 +12,16 @@ const LogoMessage = ({
   justifyContent?: string;
 }) => {
   return (
-    <Container maxWidth='xs' sx={{ minHeight: 'calc(100vh - 185px)', marginBottom: 0, display: 'flex' }}>
+    <Container
+      maxWidth='xs'
+      sx={{
+        minHeight: 'calc(100vh - 185px)',
+        marginBottom: 0,
+        display: 'flex',
+        paddingRight: 0,
+        paddingLeft: 0,
+      }}
+    >
       <Box display='flex' justifyContent='center' alignItems='center' sx={{ width: '100%' }}>
         <Box
           flexDirection='column'

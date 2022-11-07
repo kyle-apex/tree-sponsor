@@ -16,10 +16,7 @@ const AddEventPage = () => {
 
   return (
     <Layout title='Add Event'>
-      <CenteredSection>
-        <Button onClick={() => router.back()} variant='text' size='small' sx={{ marginBottom: 2, display: 'flex', alignSelf: 'start' }}>
-          <ChevronLeftIcon /> Back
-        </Button>
+      <CenteredSection backButtonText='Back' headerText='Add Event'>
         <AddEvent onAdd={onAdd}></AddEvent>
       </CenteredSection>
     </Layout>
