@@ -29,9 +29,7 @@ const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: str
         {email && !isSignedIn && (
           <div className='center'>
             <h2>Thanks for your donation!</h2>
-            <p>
-              A login link to get started with your account was sent to your email address: <b>{email || ''}</b>
-            </p>
+            <p>A login link to get started with your account was sent to your email address: {email || ''}</p>
             <p>or</p>
             <Link href='/signin'>
               <Button fullWidth variant='outlined' color='primary'>
