@@ -15,6 +15,7 @@ import {
   TreeImage,
   Category,
   Event,
+  Donation,
 } from '@prisma/client';
 import { ViewportProps } from 'react-map-gl';
 import { Stripe } from 'stripe';
@@ -48,6 +49,8 @@ export type PartialTree = Partial<Tree> & { images?: PartialTreeImage[]; species
 
 export type PartialEvent = Partial<Event> & { categories?: PartialCategory[]; trees?: PartialTree[]; location?: PartialLocation };
 export type PartialCategory = Partial<Category> & { events?: PartialEvent[]; trees?: PartialTree[] };
+
+export type PartialDonation = Partial<Donation>;
 
 export type PartialComment = Partial<Comment & { user?: Partial<User> } & { reactions?: Partial<Reaction>[] }>;
 export type PartialReaction = Partial<Reaction & { user?: Partial<User> }>;
