@@ -3,11 +3,13 @@ import Layout from 'components/layout/Layout';
 import LogoMessage from 'components/layout/LogoMessage';
 import { PartialEvent } from 'interfaces';
 import { GetServerSidePropsContext } from 'next';
+import { useEffect } from 'react';
 import formatServerProps from 'utils/api/format-server-props';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 
 const CheckinPage = ({ event }: { event: PartialEvent }) => {
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
+
   return (
     <Layout title='Event Checkin' header='TreeFolksYP'>
       <LogoMessage justifyContent='start'>

@@ -14,6 +14,7 @@ import React, { SetStateAction, useState } from 'react';
 import { PartialTree } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 import Box from '@mui/material/Box';
+import SpeciesQuiz from './SpeciesQuiz';
 // TODO
 const useStyles = makeStyles(() => ({
   media: {
@@ -27,12 +28,14 @@ const TreeDisplay = ({
   onDelete,
   handleClose,
   hasFullHeightImage,
+  title,
 }: {
   tree?: PartialTree;
   isEditMode?: boolean;
   onDelete?: (id: number) => void;
   handleClose?: () => void;
   hasFullHeightImage?: boolean;
+  title?: string;
 }) => {
   const classes = useStyles();
 
@@ -61,7 +64,7 @@ const TreeDisplay = ({
       {tree?.id && (
         <Card sx={{ maxWidth: '500px', marginRight: handleClose ? 0 : '1px', marginBottom: handleClose ? 0 : '2px' }}>
           <CardHeader
-            title={displayName}
+            title={title || displayName}
             subheader={<Typography>{tree.location?.name}</Typography>}
             action={
               handleClose && (
@@ -80,9 +83,10 @@ const TreeDisplay = ({
             title={tree.name}
           ></CardMedia>
           <CardContent sx={{ flex: '1 1 100%' }}>
-            <Typography variant='body2' color='textSecondary' component='p'>
-              Tree Details
+            <Typography variant='h6' mb={2} color='textSecondary'>
+              Click below to guess a species:
             </Typography>
+            {tree.species && <SpeciesQuiz correctSpecies={tree.species}></SpeciesQuiz>}
           </CardContent>
 
           {isEditMode && (

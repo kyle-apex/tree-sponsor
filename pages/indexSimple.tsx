@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Layout from 'components/layout/Layout';
+import Layout from '../components/layout/Layout';
 import { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -40,7 +40,7 @@ const treeBenefits: TitleSection[] = [
   { title: 'Atmosphere', description: 'Think of your favorite picnic, restaurant, bar, and/or park enhanced by trees' },
   { title: 'Activities', description: 'Do not forget to be grateful for climbing, swinging, decorating, and much more!' },
 ];
-
+// Join us at our tree plantings, giveaways, tree maintenance, and cleanup events'
 const getIcon = (title: string) => {
   switch (title) {
     case 'Pollution':
@@ -86,56 +86,18 @@ const IndexPage = ({ treeBenefits }: { treeBenefits: TitleSection[] }) => {
   return (
     <Layout isFullWidth={true}>
       <Container maxWidth='lg'>
-        <Grid
-          mt={-4}
-          container
-          className={classes.headlineContainer + ' headline-section index'}
-          direction={{ xs: 'column', sm: 'row', md: 'row' }}
-          spacing={5}
-        >
-          <Grid sm={5} md={5} xs={12} justifyContent='center' sx={{ display: 'flex', flexDirection: 'column' }} item>
-            <Typography variant='h2' color='secondary'>
-              Thank-a-Tree with TreeFolksYP
-            </Typography>
-            <Typography variant='subtitle1' className={classes.headlineSubTitle}>
-              Thank your favorite trees with a Token of Appre-tree-ation in support of future tree plantings through TreeFolks Young
-              Professionals (TreeFolksYP)
-            </Typography>
-            <Grid container direction='row' spacing={2}>
-              <Grid item>
-                <Link href='/explore'>
-                  <Button variant='outlined' color='secondary'>
-                    Explore the Map
-                  </Button>
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href='/signup'>
-                  <Button variant='contained' color='primary'>
-                    Thank a Tree
-                  </Button>
-                </Link>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item md={7} sm={7} xs={12} direction='column' container alignContent='center' justifyContent='center'>
-            <Box
-              sx={{
-                height: '475px',
-                maxHeight: 'calc(75vh)',
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                /*backgroundImage: 'url(/pin-ring.svg)',
-                backgroundRepeat: 'no-repeat',
-                backgroundAttachment: 'fixed',
-                backgroundPosition: 'center center',*/
-              }}
-            >
-              <SponsorshipMap isIndexPage={true}></SponsorshipMap>
-            </Box>
-          </Grid>
-        </Grid>
+        <Box sx={{ marginTop: '0px !important' }} p={5} className='index detail-section'>
+          <Typography variant='h2'>What is TreeFolks Young Professionals?</Typography>
+          <Typography variant='subtitle1' className={classes.headlineSubTitle}>
+            TreeFolks Young Professionals (ages 21 – 40ish) volunteer, educate, fundraise, and build community in support of the mission of
+            TreeFolks: planting, caring for, and giving people free trees to plant!
+          </Typography>
+        </Box>
+        <Box mt={-15} mb={8} className='index'>
+          <TFYPAboutSection></TFYPAboutSection>
+        </Box>
+      </Container>
+      <Container maxWidth='lg'>
         <div
           style={{
             width: '100px',
@@ -145,7 +107,7 @@ const IndexPage = ({ treeBenefits }: { treeBenefits: TitleSection[] }) => {
           }}
         ></div>
         <Typography variant='h2' color='secondary' mb={6}>
-          Why Thank-a-Tree?
+          Why Support the Urban Forest with an Annual Membership?
         </Typography>
         <Grid container direction={{ xs: 'column', sm: 'row', md: 'row' }} spacing={2} mb={5}>
           {treeBenefits.map((benefit, idx) => (
@@ -209,29 +171,6 @@ const IndexPage = ({ treeBenefits }: { treeBenefits: TitleSection[] }) => {
       <div style={{ height: '150px', width: '100%', overflow: 'hidden', transform: 'scaleY(-1) scaleX(-1)' }}>
         <CurveBottom />
       </div>
-      <Container maxWidth='lg'>
-        <Grid mt={0} className={classes.treeDetailsContainer} alignItems='center'>
-          <Typography variant='h2' color='secondary'>
-            Support the Urban Forest
-          </Typography>
-          <Typography variant='subtitle1' className={classes.headlineSubTitle}>
-            Your donation is a 100% tax deductible donation to TreeFolks to plant, care for, and give away trees in the Austin and Central
-            Texas Community. Checkout a few Tokens of Appre-tree-ation:
-          </Typography>
-
-          <SponsorshipGroup sponsorships={sponsorships} isLoading={isLoadingSponsorships} />
-        </Grid>
-        <Box mt={8} p={5} className='index detail-section'>
-          <Typography variant='h2'>What is TreeFolks Young Professionals?</Typography>
-          <Typography variant='subtitle1' className={classes.headlineSubTitle}>
-            TreeFolks Young Professionals (ages 21 – 40ish) volunteer, educate, fundraise, and build community in support of the mission of
-            TreeFolks: planting, caring for, and giving people free trees to plant!
-          </Typography>
-        </Box>
-        <Box mt={-15} className='index'>
-          <TFYPAboutSection></TFYPAboutSection>
-        </Box>
-      </Container>
     </Layout>
   );
 };

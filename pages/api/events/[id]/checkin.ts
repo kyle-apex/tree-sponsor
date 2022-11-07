@@ -68,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('attendees', attendees);
 
     if (user) {
-      await updateSubscriptionsForUser(email);
+      //await updateSubscriptionsForUser(email);
 
       subscription = await prisma.subscriptionWithDetails.findFirst({
         where: { email: email },
@@ -85,6 +85,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         where: whereFilter,
         include: {
           images: {},
+          species: { select: { id: true, commonName: true } },
         },
       });
       console.log('trees', trees);

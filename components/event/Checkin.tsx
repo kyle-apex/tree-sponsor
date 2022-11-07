@@ -23,10 +23,12 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
-import { PartialEvent, PartialUser, PartialTree, Coordinate } from 'interfaces';
+import { PartialEvent, PartialUser, PartialTree, Coordinate, PartialSpecies } from 'interfaces';
 import Attendees from './Attendees';
 import MapMarkerDisplay from 'components/maps/MapMarkerDisplay';
 import TreeDisplayDialog from 'components/tree/TreeDisplayDialog';
+import { useGet } from 'utils/hooks/use-get';
+import Skeleton from '@mui/material/Skeleton';
 
 type MembershipStatus = {
   subscription?: SubscriptionWithDetails;
@@ -57,12 +59,22 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [selectedTree, setSelectedTree] = useState<PartialTree>(null);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingExistingUser, setIsLoadingExistingUser] = useState(false);
+
   const [status, setStatus] = useState<MembershipStatus>(null);
 
   const [activeTab, setActiveTab] = useState(0);
 
+  const { data: prioritySpecies, isFetched } = useGet<PartialSpecies>(
+    '/api/species/priority',
+    'prioritySpecies',
+    {},
+    { refetchOnMount: false, refetchOnWindowFocus: false },
+  );
+
   useEffect(() => {
     if (!email) return;
+    setIsLoadingExistingUser(true);
     getMembershipStatus();
   }, []);
 
@@ -114,7 +126,19 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
   return (
     <>
-      {status == null && (
+      {isLoadingExistingUser && !status && (
+        <Box>
+          <Skeleton
+            variant='text'
+            sx={{ width: '45%', textAlign: 'center', marginBottom: 2, marginLeft: 'auto', marginRight: 'auto' }}
+            height={30}
+          />
+          <Skeleton variant='text' sx={{ width: '100%', marginBottom: 1 }} height={25} />
+          <Skeleton variant='text' sx={{ width: '100%', marginBottom: 1 }} height={25} />
+          <Skeleton variant='text' sx={{ width: '100%', marginBottom: 1 }} height={25} />
+        </Box>
+      )}
+      {status == null && !isLoadingExistingUser && (
         <>
           {false && (
             <Typography variant='h2' color='secondary' sx={{ textAlign: 'center' }}>
@@ -256,29 +280,31 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               </Typography>
             </>
           )}
-
-          {status && (
-            <>
-              <Attendees users={status.attendees}></Attendees>
-              <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
-                Learn Your Trees
-              </Typography>
-              <Box mb={3}>
-                <MapMarkerDisplay
-                  markers={status.trees.map(tree => {
-                    return { latitude: Number(tree.latitude), longitude: Number(tree.longitude) };
-                  })}
-                  height='200px'
-                  onClick={coordinate => {
-                    handleTreeClick(coordinate);
-                  }}
-                  mapStyle='SATELLITE'
-                  markerScale={0.5}
-                ></MapMarkerDisplay>
-              </Box>
-            </>
-          )}
-
+        </>
+      )}
+      {status && (
+        <>
+          <Attendees users={status.attendees}></Attendees>
+          <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
+            Tree ID Quiz
+          </Typography>
+          <Box mb={3}>
+            <MapMarkerDisplay
+              markers={status.trees.map(tree => {
+                return { latitude: Number(tree.latitude), longitude: Number(tree.longitude) };
+              })}
+              height='200px'
+              onClick={coordinate => {
+                handleTreeClick(coordinate);
+              }}
+              mapStyle='SATELLITE'
+              markerScale={0.5}
+            ></MapMarkerDisplay>
+          </Box>
+        </>
+      )}
+      {status?.isFound && (
+        <>
           <Link href='/signin'>
             <Button color='primary' variant='contained' sx={{ mb: 2 }}>
               Login{!hasActiveMembership && ' to Renew Membership'}
@@ -291,7 +317,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       {status?.isFound === false && (
         <>
-          {status && <Attendees users={status.attendees}></Attendees>}
           {activeTab == 1 && (
             <>
               <Typography variant='body2' component='p' mt={2} mb={3}>
@@ -322,6 +347,16 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       <SafeHTMLDisplay html={event?.checkInDetails}></SafeHTMLDisplay>
       <TreeDisplayDialog tree={selectedTree} open={isDialogOpen} setOpen={setIsDialogOpen}></TreeDisplayDialog>
+      {!status && (
+        <Box sx={{ display: 'none' }}>
+          <MapMarkerDisplay
+            markers={[{ latitude: Number(event.location.latitude), longitude: Number(event.location.longitude) }]}
+            height='200px'
+            mapStyle='SATELLITE'
+            markerScale={0.5}
+          ></MapMarkerDisplay>
+        </Box>
+      )}
     </>
   );
   // Membership Status

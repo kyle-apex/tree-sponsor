@@ -5,6 +5,7 @@ import TreeDisplay from './TreeDisplay';
 import makeStyles from '@mui/styles/makeStyles';
 import SponsorshipDisplayLoading from '../sponsor/SponsorshipDisplayLoading';
 import { PartialTree } from 'interfaces';
+import SpeciesQuiz from './SpeciesQuiz';
 
 const useStyles = makeStyles(theme => ({
   title: { paddingBottom: 0, paddingTop: theme.spacing(1), paddingRight: theme.spacing(1), textAlign: 'right' },
@@ -26,7 +27,7 @@ const TreeDisplayDialog = ({ open, setOpen, tree }: { open: boolean; setOpen: (i
           <SponsorshipDisplayLoading />
         ) : (
           <>
-            <TreeDisplay tree={tree} handleClose={handleClose} hasFullHeightImage={true} />
+            <TreeDisplay title='Tree ID Quiz' tree={tree} handleClose={handleClose} hasFullHeightImage={true} />
           </>
         )}
       </DialogContent>
