@@ -77,7 +77,6 @@ model User {
   Category              Category[]
   eventCheckIns         EventCheckIn[]
   treeCheckIns          TreeCheckIn[]
-
   @@map(name: "users")
 }
 
@@ -421,4 +420,14 @@ model Sponsorship {
   subscriptionId     Int?
   comments           Comment[]
   reactions          Reaction[]
+}
+
+model Donation {
+  id          Int       @id @default(autoincrement())
+  eventId     Int?
+  label       String?
+  amount      Decimal?  @db.Decimal(6, 2)
+  source      String?
+  date        DateTime?
+  createdDate DateTime? @default(now())
 }
