@@ -30,10 +30,6 @@ ALTER TABLE
 
 -- DropForeignKey
 ALTER TABLE
-    `SubscriptionWithDetails` DROP FOREIGN KEY `subscriptionwithdetails_ibfk_1`;
-
--- DropForeignKey
-ALTER TABLE
     `TreeImage` DROP FOREIGN KEY `treeimage_ibfk_1`;
 
 -- AlterTable
@@ -75,11 +71,6 @@ CREATE TABLE `_TreeToEvent` (
 -- AddForeignKey
 -- AddForeignKey
 -- AddForeignKey
-ALTER TABLE
-    `SubscriptionWithDetails`
-ADD
-    CONSTRAINT `SubscriptionWithDetails_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
 -- AddForeignKey
 ALTER TABLE
     `CheckIn`

@@ -43,13 +43,11 @@ const formatDate = (date: Date): string => {
   if (!date) return '';
 
   let dateStr = date.toLocaleString('default', { month: 'long', day: 'numeric' });
-  console.log('attempting format Date?', date);
   if (date.getFullYear() != new Date().getFullYear()) dateStr += ', ' + date.getFullYear();
   return dateStr;
 };
 
 const Checkin = ({ event }: { event?: PartialEvent }) => {
-  console.log('event', event);
   const [email, setEmail] = useLocalStorage('checkinEmail', '');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -85,7 +83,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const handleTreeClick = useCallback(
     (marker: Coordinate) => {
       const tree = status.trees.find(tree => Number(tree.latitude) == marker.latitude && Number(tree.longitude) == marker.longitude);
-      console.log('tree', tree);
       setSelectedTree(tree);
       setIsDialogOpen(true);
     },
@@ -103,7 +100,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     let status;
     if (result?.subscription) status = { ...result, isFound: true };
     else status = { ...result, isFound: false, email };
-    console.log('status', status);
     setStatus(status);
 
     setIsLoading(false);
@@ -115,6 +111,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     setFirstName('');
     setLastName('');
     setDiscoveredFrom('');
+    setIsLoadingExistingUser(null);
   };
 
   const lastYear = new Date();
@@ -255,6 +252,23 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
         </Typography>
       )}
 
+      {status?.isFound === false && activeTab == 1 && (
+        <Typography variant='body2' component='p' mt={2} mb={3}>
+          Membership status for <b>{status.email}</b> was not found.
+        </Typography>
+      )}
+      {status?.isFound === false && activeTab == 0 && (
+        <>
+          <Typography variant='body2' component='p' mt={2} mb={2}>
+            Thanks for joining for today&apos;s event. Grab a name tag (if available), meet a new friend, and test your tree knowledge
+            below!
+          </Typography>
+          <Typography variant='body2' component='p' mb={3}>
+            Don&apos;t forget to say &quot;Hey&quot; to a Core Team Member to learn more about the organization.
+          </Typography>
+        </>
+      )}
+
       {status?.isFound && (
         <>
           {hasActiveMembership && (
@@ -284,6 +298,9 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       {status && (
         <>
+          <Typography variant='body2' component='p' mb={2} mt={-2}>
+            <SafeHTMLDisplay html={event?.checkInDetails}></SafeHTMLDisplay>
+          </Typography>
           <Attendees users={status.attendees}></Attendees>
           <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
             Tree ID Quiz
@@ -317,16 +334,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       {status?.isFound === false && (
         <>
-          {activeTab == 1 && (
-            <>
-              <Typography variant='body2' component='p' mt={2} mb={3}>
-                Membership status for <b>{status.email}</b> was not found.
-              </Typography>
-              <Button onClick={reset} variant='outlined' color='secondary' sx={{ mb: 2 }}>
-                Try Another Search
-              </Button>
-            </>
-          )}
           <Typography variant='body2' component='p' mt={2} mb={2}>
             TreeFolks Young Professionals is the most fun way to support Central Texas&apos; urban forest.
           </Typography>
@@ -338,14 +345,13 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               Become a Member
             </Button>
           </Link>
-          {activeTab != 1 && (
-            <Button onClick={reset} variant='outlined' color='secondary'>
-              Add Another Check-in
-            </Button>
-          )}
+
+          <Button onClick={reset} variant='outlined' color='secondary'>
+            {activeTab != 1 ? 'Add Another Check-in' : 'Try Another Search'}
+          </Button>
         </>
       )}
-      <SafeHTMLDisplay html={event?.checkInDetails}></SafeHTMLDisplay>
+
       <TreeDisplayDialog tree={selectedTree} open={isDialogOpen} setOpen={setIsDialogOpen}></TreeDisplayDialog>
       {!status && (
         <Box sx={{ display: 'none' }}>

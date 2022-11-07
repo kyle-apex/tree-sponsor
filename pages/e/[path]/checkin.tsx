@@ -3,6 +3,8 @@ import Layout from 'components/layout/Layout';
 import LogoMessage from 'components/layout/LogoMessage';
 import { PartialEvent } from 'interfaces';
 import { GetServerSidePropsContext } from 'next';
+import { prisma } from 'utils/prisma/init';
+
 import { useEffect } from 'react';
 import formatServerProps from 'utils/api/format-server-props';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
