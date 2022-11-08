@@ -363,6 +363,18 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           ></MapMarkerDisplay>
         </Box>
       )}
+      {status && (
+        <a
+          href='https://www.instagram.com/treefolks_yp/'
+          target='_instagram'
+          rel='noreferrer'
+          style={{ width: '100%', textDecoration: 'none' }}
+        >
+          <Button variant='outlined' sx={{ mt: 2, width: '100%' }}>
+            Tag @treefolks_yp on Instagram
+          </Button>
+        </a>
+      )}
     </>
   );
   // Membership Status
