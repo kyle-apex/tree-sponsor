@@ -94,7 +94,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     const result = (await parsedGet(
       `/api/events/${event.id}/checkin?email=${encodeURIComponent(email)}&firstName=${encodeURIComponent(
         firstName,
-      )}&lastName=${encodeURIComponent(lastName)}&discoveredFrom=${encodeURIComponent(discoveredFrom)}`,
+      )}&lastName=${encodeURIComponent(lastName)}&discoveredFrom=${encodeURIComponent(discoveredFrom)}&emailOptIn=${isEmailOptIn}`,
     )) as MembershipStatus;
 
     let status;
@@ -298,7 +298,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       {status && (
         <>
-          <Typography variant='body2' component='p' mb={2} mt={-2}>
+          <Typography variant='body2' component='div' mb={2} mt={-2}>
             <SafeHTMLDisplay html={event?.checkInDetails}></SafeHTMLDisplay>
           </Typography>
           <Attendees users={status.attendees}></Attendees>
