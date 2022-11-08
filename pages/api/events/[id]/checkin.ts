@@ -18,7 +18,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let subscription;
     let user = await prisma.user.findFirst({ where: { email } });
 
-    if (!user) {
+    if (user && !user.name && firstName) {
+      user.name = `${firstName} ${lastName}`.trim();
+      await prisma.user.update({ where: { email }, data: { name: user.name } });
+    } else if (!user) {
       user = await prisma.user.create({ data: { email, name: `${firstName} ${lastName}`.trim() } });
     }
 
