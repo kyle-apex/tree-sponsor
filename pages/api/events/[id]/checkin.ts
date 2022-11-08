@@ -1,4 +1,4 @@
-import { PartialTree } from 'interfaces';
+import { PartialEventCheckIn, PartialTree } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import throwError from 'utils/api/throw-error';
 import { getLocationFilterByDistance } from 'utils/prisma/get-location-filter-by-distance';
@@ -11,6 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const firstName = String(req.query.firstName);
   const lastName = String(req.query.lastName);
   const discoveredFrom = String(req.query.discoveredFrom);
+  const emailOptIn = req.query.emailOptIn === 'true';
 
   const event = await prisma.event.findFirst({ where: { id: eventId }, include: { location: {} } });
 
@@ -26,13 +27,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const userId = user?.id;
+    const updateCheckin: PartialEventCheckIn = {
+      userId,
+      discoveredFrom,
+    };
+    const createCheckin: PartialEventCheckIn = { eventId, userId, email, discoveredFrom };
+
+    if (emailOptIn) {
+      createCheckin['emailOptIn'] = true;
+      updateCheckin['emailOptIn'] = true;
+    }
+
     const newCheckin = await prisma.eventCheckIn.upsert({
       where: { email_eventId: { email, eventId } },
-      create: { eventId, userId, email, discoveredFrom },
-      update: {
-        userId,
-        discoveredFrom,
-      },
+      create: createCheckin,
+      update: updateCheckin,
     });
     console.log('newCheckin', newCheckin);
     const oneYearAgo = new Date();
