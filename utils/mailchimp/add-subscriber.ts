@@ -6,7 +6,7 @@ const addSubscriber = async (email: string, data?: Record<string, string>, updat
   // Make sure mailchimp, email and listid are all set and not undefined
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  if (!mailchimp || !email || !MAILCHIMP_LIST_ID) {
+  if (!email || !process.env.MAILCHIMP_LIST_ID) {
     const msg = `Ignoring adding subscriber, missing params ${!email ? 'email' : 'API Key or List ID'}`;
     console.warn(msg);
     throw msg;
@@ -16,7 +16,7 @@ const addSubscriber = async (email: string, data?: Record<string, string>, updat
     if (!mergeFields['LNAME']) delete mergeFields['LNAME'];
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
-    const result = await mailchimpPost(`lists/${MAILCHIMP_LIST_ID}`, {
+    const result = await mailchimpPost(`lists/${process.env.MAILCHIMP_LIST_ID}`, {
       update_existing: update !== undefined ? update : true,
       members: [
         {

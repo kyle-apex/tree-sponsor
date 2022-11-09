@@ -1,6 +1,7 @@
 import { PartialEventCheckIn, PartialTree } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import throwError from 'utils/api/throw-error';
+import addSubscriber from 'utils/mailchimp/add-subscriber';
 import { getLocationFilterByDistance } from 'utils/prisma/get-location-filter-by-distance';
 import { prisma, Prisma } from 'utils/prisma/init';
 import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
@@ -36,6 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (emailOptIn) {
       createCheckin['emailOptIn'] = true;
       updateCheckin['emailOptIn'] = true;
+      if (email) addSubscriber(email, { FNAME: firstName, LNAME: lastName }, false);
     }
 
     const newCheckin = await prisma.eventCheckIn.upsert({
