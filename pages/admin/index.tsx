@@ -161,6 +161,11 @@ export default function EnhancedTable(): JSX.Element {
               <Button variant='outlined'>Review Tree Ids</Button>
             </Link>
           </RestrictSection>
+          <RestrictSection accessType='hasEventManagement'>
+            <Link href='/admin/events'>
+              <Button variant='outlined'>Manage Events</Button>
+            </Link>
+          </RestrictSection>
         </Box>
 
         <h1>Admin</h1>

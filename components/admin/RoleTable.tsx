@@ -45,6 +45,7 @@ const headCells: HeaderCellOptions[] = [
   { id: 'hasAuthManagement', numeric: false, disablePadding: false, label: 'Can Manage Authentication?' },
   { id: 'isReviewer', numeric: false, disablePadding: false, label: 'Can Review Thank-a-Trees?' },
   { id: 'isTreeReviewer', numeric: false, disablePadding: false, label: 'Can Review Trees?' },
+  { id: 'hasEventManagement', numeric: false, disablePadding: false, label: 'Can Manage Events?' },
   { id: 'delete', numeric: false, disablePadding: false },
 ];
 
@@ -115,6 +116,14 @@ export default function RoleTable({
                       checked={row.isTreeReviewer}
                       onChange={event => {
                         handleAcessTypeChange(row.id, 'isTreeReviewer', event.target.checked);
+                      }}
+                    ></Checkbox>
+                  </TableCell>
+                  <TableCell>
+                    <Checkbox
+                      checked={row.hasEventManagement}
+                      onChange={event => {
+                        handleAcessTypeChange(row.id, 'hasEventManagement', event.target.checked);
                       }}
                     ></Checkbox>
                   </TableCell>

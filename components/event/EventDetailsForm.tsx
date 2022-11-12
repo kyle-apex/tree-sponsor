@@ -10,7 +10,8 @@ import SplitRow from 'components/layout/SplitRow';
 import UniquePathField from 'components/form/UniquePathField';
 import Collapse from '@mui/material/Collapse';
 import Checkbox from '@mui/material/Checkbox';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import LocationSelector from 'components/LocationSelector';
 
 const TextEditor = dynamic(() => import('components/TextEditor'), {
   ssr: false,
@@ -28,10 +29,12 @@ const EventDetailsForm = ({
   updateAttribute,
 }: {
   event: PartialEvent;
-  updateAttribute: (name: keyof PartialEvent, value: unknown) => void;
+  updateAttribute: (name: keyof PartialEvent | string, value: unknown) => void;
 }) => {
   const [hasActiveDates, setHasActiveDates] = useState(false);
   const [startDate, setStartDate] = useState(event.startDate);
+  const [name, setName] = useState(event.name || '');
+  const [path, setPath] = useState(event.path || '');
   const [endDate, setEndDate] = useState(event.endDate);
   const [activeStartDate, setActiveStartDate] = useState(event.activeStartDate);
   const [activeEndDate, setActiveEndDate] = useState(event.activeEndDate);
@@ -50,8 +53,11 @@ const EventDetailsForm = ({
   return (
     <>
       <TextField
-        value={event?.name}
-        onChange={e => updateAttribute('name', e.target.value)}
+        value={name}
+        onChange={e => {
+          updateAttribute('name', e.target.value);
+          setName(e.target.value);
+        }}
         label='Name'
         size='small'
         sx={{ marginBottom: 3 }}
@@ -65,6 +71,15 @@ const EventDetailsForm = ({
             console.log('date', date);
             updateAttribute('startDate', date);
             setStartDate(date);
+          }}
+          onClose={date => {
+            if (date && !endDate) {
+              if (!endDate) {
+                const newEndDate = new Date(date.getTime());
+                newEndDate.setHours(newEndDate.getHours() + 2);
+                setEndDate(newEndDate);
+              }
+            }
           }}
           label='Start Time'
         ></DateTimeField>
@@ -89,12 +104,37 @@ const EventDetailsForm = ({
       </Box>
       <UniquePathField
         label='Event Link Path'
-        initialValue={event.path}
+        initialValue={path}
         validatorPath='/events/is-duplicate-path?path='
         onChange={newValue => {
           updateAttribute('path', newValue);
+          setPath(newValue);
         }}
       ></UniquePathField>
+      <Box sx={{ marginTop: 2, marginBottom: 3, minHeight: '110px', display: 'block' }}>
+        <TextEditor
+          label='Check-in Details'
+          placeholder='Enter details to appear on the check-in page'
+          value={event?.checkInDetails}
+          onChange={val => updateAttribute('checkInDetails', val)}
+        />
+      </Box>
+      <LocationSelector
+        onViewportChange={({ latitude, longitude }) => {
+          updateAttribute('location.latitude', latitude), updateAttribute('location.longitude', longitude);
+        }}
+        latitude={event?.location?.latitude ? Number(event?.location?.latitude) : null}
+        longitude={event?.location?.longitude ? Number(event?.location?.longitude) : null}
+        auto={!event?.location?.latitude}
+      ></LocationSelector>
+      <TextField
+        value={event?.location?.name}
+        onChange={e => updateAttribute('location.name', e.target.value)}
+        label='Location Name'
+        size='small'
+        sx={{ marginBottom: 2, marginTop: 4 }}
+        id='name-field'
+      ></TextField>
       <Box sx={{ marginTop: 2, marginBottom: -2 }}>
         <Checkbox checked={hasActiveDates} onChange={toggleHasActiveDates}></Checkbox> This event has a Tree ID/Thank-a-Tree Time Range that
         is different than the event time range

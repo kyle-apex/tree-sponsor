@@ -90,3 +90,7 @@ ALTER TABLE
   `EventCheckin`
 ADD
   COLUMN `emailOptIn` BOOLEAN NULL DEFAULT false;
+
+ALTER TABLE `Role` ADD COLUMN `hasMemberManagement` BOOLEAN NOT NULL DEFAULT false;
+
+ALTER TABLE `Role` ADD COLUMN `hasEventManagement` BOOLEAN NOT NULL DEFAULT false;

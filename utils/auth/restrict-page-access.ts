@@ -2,7 +2,17 @@ import { GetSessionOptions, getSession } from 'next-auth/client';
 import { hasAccessForQueriedUser } from 'utils/prisma/has-access-for-queried-user';
 import { AccessType } from './AccessType';
 
-export default async function restrictPageAccess(ctx: GetSessionOptions, accessType: AccessType | AccessType[]) {
+type AccessResponse = {
+  redirect?: {
+    destination: string;
+    permanent: boolean;
+  };
+  props?: {
+    path?: string;
+  };
+};
+
+export default async function restrictPageAccess(ctx: GetSessionOptions, accessType: AccessType | AccessType[]): Promise<AccessResponse> {
   const session = await getSession(ctx);
 
   if (!session?.user) {
@@ -22,6 +32,7 @@ export default async function restrictPageAccess(ctx: GetSessionOptions, accessT
         destination: '/account',
         permanent: false,
       },
+      props: {},
     };
   }
 

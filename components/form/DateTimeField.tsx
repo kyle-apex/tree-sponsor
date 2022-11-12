@@ -1,7 +1,6 @@
-//import AdapterDayjs from '@mui/lab/AdapterDayjs';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DateTimePicker from '@mui/lab/DateTimePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import TextField from '@mui/material/TextField';
 // TODO: Date not updating
 const DateTimeField = ({
@@ -9,12 +8,15 @@ const DateTimeField = ({
   setValue,
   label,
   minDateTime,
+  onClose,
 }: {
   value: Date | null;
   setValue: (value: Date | null) => void;
   label?: string;
   minDateTime?: Date;
+  onClose?: (value: Date | null) => void;
 }) => {
+  let temp: Date;
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DateTimePicker
@@ -22,8 +24,15 @@ const DateTimeField = ({
         label={label}
         value={value}
         onChange={newValue => {
+          temp = newValue;
           setValue(newValue);
         }}
+        onClose={() => {
+          setTimeout(() => {
+            onClose(temp);
+          }, 100);
+        }}
+        minutesStep={15}
         inputFormat='M/d/yy h:mm a'
         minDateTime={minDateTime}
       />

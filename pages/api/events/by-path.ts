@@ -10,6 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: { path },
       include: {
         categories: { include: { trees: {} } },
+        location: {},
       },
     });
 
