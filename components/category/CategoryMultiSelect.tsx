@@ -8,8 +8,10 @@ const CategoryMultiSelect = ({
   selectedCategories: PartialCategory[];
   setSelectedCategories: (category: PartialCategory[]) => void;
 }) => {
-  const { data: categoryOptions } = useGet('/api/categories', 'categoryOptions');
-  console.log('selectedCategories', selectedCategories, categoryOptions, setSelectedCategories);
+  const what = setSelectedCategories;
+  const who = selectedCategories;
+  //const { data: categoryOptions } = useGet('/api/categories', 'categoryOptions');
+  //console.log('selectedCategories', selectedCategories, categoryOptions, setSelectedCategories);
   return <></>;
 };
 export default CategoryMultiSelect;

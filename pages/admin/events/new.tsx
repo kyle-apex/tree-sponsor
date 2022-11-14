@@ -15,7 +15,7 @@ export const getServerSideProps = (ctx: GetSessionOptions) => {
 
 const AddEventPage = () => {
   const onAdd = (newEvent: PartialEvent) => {
-    router.push('/admin/events/' + newEvent.path);
+    router.push('/admin/events');
   };
 
   const router = useRouter();

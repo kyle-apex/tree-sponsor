@@ -52,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
     res.status(200).json(result);
   } else if (req.method === 'DELETE') {
-    let isAuthorized = false; //await isCurrentUserAuthorized('isTreeReviewer', req);
+    let isAuthorized = await isCurrentUserAuthorized('isAdmin', req);
     const session = await getSession({ req });
 
     if (!isAuthorized && session?.user?.id) {

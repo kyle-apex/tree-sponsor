@@ -32,7 +32,6 @@ const DateTimeField = ({
             onClose(temp);
           }, 100);
         }}
-        minutesStep={15}
         inputFormat='M/d/yy h:mm a'
         minDateTime={minDateTime}
       />

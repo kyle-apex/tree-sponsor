@@ -139,7 +139,7 @@ const SignupPage = ({
                     '& img': { marginLeft: '10px !important', marginRight: '-4px !important', height: '18px' },
                     '& .MuiChip-label': { fontWeight: 600 },
                   }}
-                  icon={<img src='/tree-small.svg' />}
+                  icon={<img src='/tree-small.svg' alt='tree icon' />}
                   color='primary'
                 ></Chip>
               </TableCell>

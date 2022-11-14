@@ -353,7 +353,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
 
       <TreeDisplayDialog tree={selectedTree} open={isDialogOpen} setOpen={setIsDialogOpen}></TreeDisplayDialog>
-      {!status && (
+      {!status && event.location && (
         <Box sx={{ display: 'none' }}>
           <MapMarkerDisplay
             markers={[{ latitude: Number(event.location.latitude), longitude: Number(event.location.longitude) }]}

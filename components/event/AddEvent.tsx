@@ -15,7 +15,6 @@ const AddEvent = ({ onAdd }: { onAdd: (newEvent: PartialEvent) => void }) => {
   const [isValid, setIsValid] = useState(false);
 
   const addEvent = async () => {
-    console.log('eventRef.current', eventRef.current);
     setIsLoading(true);
     const newEvent = (await axios.post('/api/events', eventRef.current))?.data as PartialEvent;
     setIsLoading(false);

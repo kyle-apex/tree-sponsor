@@ -19,7 +19,7 @@ import AdminLayout from 'components/layout/AdminLayout';
 import EventDetailsForm from 'components/event/EventDetailsForm';
 
 const EditEventPage = ({ path }: { path: string }) => {
-  console.log('path', path);
+  const router = useRouter();
   const eventRef = useRef<PartialEvent>();
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -27,7 +27,6 @@ const EditEventPage = ({ path }: { path: string }) => {
   const readEvent = async (path: string): Promise<PartialEvent> => {
     setIsLoading(true);
     const event = (await axios.get(`/api/events/by-path?path=${path}`)).data as PartialEvent;
-    console.log('read event', event);
 
     eventRef.current = event;
     setIsLoading(false);
@@ -37,6 +36,7 @@ const EditEventPage = ({ path }: { path: string }) => {
   const saveEvent = async () => {
     setIsSaving(true);
     const savedEvent = (await axios.patch('/api/events', eventRef.current)) as PartialEvent;
+    router.push('/admin/events');
     setIsSaving(false);
   };
 
@@ -45,7 +45,6 @@ const EditEventPage = ({ path }: { path: string }) => {
   }, []);
 
   const updateAttribute = (name: keyof PartialEvent | string, value: unknown) => {
-    console.log('updat attr', name, value);
     if (name.includes('.')) {
       const objectName = name.split('.')[0] as 'location' | 'trees' | 'categories';
       const propertyName = name.split('.')[1];
@@ -60,22 +59,13 @@ const EditEventPage = ({ path }: { path: string }) => {
     <AdminLayout title='Edit Event'>
       <CenteredSection backButtonText='Back' headerText='Edit Event'>
         {eventRef.current && !isLoading && <EventDetailsForm event={eventRef.current} updateAttribute={updateAttribute}></EventDetailsForm>}
-        <LoadingButton variant='contained' onClick={saveEvent} isLoading={isLoading} sx={{ mt: 5 }}>
+        <LoadingButton variant='contained' onClick={saveEvent} isLoading={isLoading || isSaving} sx={{ mt: 5 }}>
           Save
         </LoadingButton>
       </CenteredSection>
     </AdminLayout>
   );
 };
-
-// TODO replace this with regular, non-server side version
-/*
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { path } = context.query;
-  console.log('path', path);
-
-  return { props: { path } };
-}*/
 
 export default EditEventPage;
 

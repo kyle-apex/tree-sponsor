@@ -12,6 +12,8 @@ import Collapse from '@mui/material/Collapse';
 import Checkbox from '@mui/material/Checkbox';
 import React, { useState } from 'react';
 import LocationSelector from 'components/LocationSelector';
+import { paramCase } from 'change-case';
+import { useDebouncedCallback } from 'use-debounce';
 
 const TextEditor = dynamic(() => import('components/TextEditor'), {
   ssr: false,
@@ -35,6 +37,16 @@ const EventDetailsForm = ({
   const [startDate, setStartDate] = useState(event.startDate);
   const [name, setName] = useState(event.name || '');
   const [path, setPath] = useState(event.path || '');
+  const [locationName, setLocationName] = useState(event.location?.name || '');
+  const [latitude, setLatitude] = useState(event.location?.latitude || 0);
+  const [longitude, setLongitude] = useState(event.location?.longitude || 0);
+  const debouncedSetLocation = useDebouncedCallback((latitude: number, longitude: number) => {
+    setLongitude(longitude);
+    setLatitude(latitude);
+    updateAttribute('location.latitude', latitude);
+    updateAttribute('location.longitude', longitude);
+  }, 200);
+
   const [endDate, setEndDate] = useState(event.endDate);
   const [activeStartDate, setActiveStartDate] = useState(event.activeStartDate);
   const [activeEndDate, setActiveEndDate] = useState(event.activeEndDate);
@@ -55,8 +67,16 @@ const EventDetailsForm = ({
       <TextField
         value={name}
         onChange={e => {
-          updateAttribute('name', e.target.value);
-          setName(e.target.value);
+          const newName = e.target.value;
+          updateAttribute('name', newName);
+          setName(newName);
+        }}
+        onBlur={() => {
+          if (!path && name) {
+            const newPath = paramCase(name);
+            setPath(newPath);
+            updateAttribute('path', newPath);
+          }
         }}
         label='Name'
         size='small'
@@ -78,6 +98,7 @@ const EventDetailsForm = ({
                 const newEndDate = new Date(date.getTime());
                 newEndDate.setHours(newEndDate.getHours() + 2);
                 setEndDate(newEndDate);
+                updateAttribute('endDate', newEndDate);
               }
             }
           }}
@@ -121,15 +142,18 @@ const EventDetailsForm = ({
       </Box>
       <LocationSelector
         onViewportChange={({ latitude, longitude }) => {
-          updateAttribute('location.latitude', latitude), updateAttribute('location.longitude', longitude);
+          debouncedSetLocation(latitude, longitude);
         }}
-        latitude={event?.location?.latitude ? Number(event?.location?.latitude) : null}
-        longitude={event?.location?.longitude ? Number(event?.location?.longitude) : null}
-        auto={!event?.location?.latitude}
+        latitude={latitude ? Number(latitude) : null}
+        longitude={longitude ? Number(longitude) : null}
+        auto={!latitude}
       ></LocationSelector>
       <TextField
-        value={event?.location?.name}
-        onChange={e => updateAttribute('location.name', e.target.value)}
+        value={locationName}
+        onChange={e => {
+          setLocationName(e.target.value);
+          updateAttribute('location.name', e.target.value);
+        }}
         label='Location Name'
         size='small'
         sx={{ marginBottom: 2, marginTop: 4 }}

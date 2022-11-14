@@ -92,7 +92,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     let trees: PartialTree[] = [];
 
-    if (event.location.latitude) {
+    if (event.location?.latitude) {
       const whereFilter = getLocationFilterByDistance(Number(event.location.latitude), Number(event.location.longitude), 500);
 
       trees = await prisma.tree.findMany({
@@ -102,7 +102,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           species: { select: { id: true, commonName: true } },
         },
       });
-      console.log('trees', trees);
     }
 
     res.status(200).json({ subscription, checkInCount, attendees, trees });

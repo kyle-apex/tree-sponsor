@@ -13,6 +13,7 @@ import EventsTable from 'components/admin/EventsTable';
 import { useRemoveFromQuery } from 'utils/hooks/use-remove-from-query';
 import { useGet } from 'utils/hooks/use-get';
 import axios from 'axios';
+import Typography from '@mui/material/Typography';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'hasEventManagement');
@@ -25,7 +26,9 @@ async function handleDelete(id: number) {
 const ManageEventsPage = () => {
   const router = useRouter();
 
-  const { data: events, isFetching } = useGet<PartialEvent[]>('/api/events', 'events');
+  const { data: pastEvents, isFetching: pastIsFetching } = useGet<PartialEvent[]>('/api/events', 'pastEvents', { isPastEvent: true });
+  const { data: events, isFetching } = useGet<PartialEvent[]>('/api/events', 'events', { isPastEvent: false });
+
   const { remove } = useRemoveFromQuery('events', handleDelete);
 
   return (
@@ -47,7 +50,19 @@ const ManageEventsPage = () => {
         </Box>
       }
     >
-      <EventsTable events={events} isFetching={isFetching} onDelete={remove}></EventsTable>
+      <Typography mb={3} color='secondary' variant='h2'>
+        Upcoming Events
+      </Typography>
+      {events?.length > 0 && <EventsTable events={events} isFetching={isFetching} onDelete={remove}></EventsTable>}
+      {events?.length <= 0 && (
+        <Typography mb={3} variant='body1'>
+          No upcoming events
+        </Typography>
+      )}
+      <Typography mb={3} color='secondary' variant='h2'>
+        Past Events
+      </Typography>
+      <EventsTable events={pastEvents} isPastEvent={true} isFetching={pastIsFetching} onDelete={remove}></EventsTable>
     </AdminLayout>
   );
 };
