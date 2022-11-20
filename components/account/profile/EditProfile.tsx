@@ -17,6 +17,7 @@ import { Prisma } from '@prisma/client';
 import { useGet } from 'utils/hooks/use-get';
 import Skeleton from '@mui/material/Skeleton';
 import CenteredSection from 'components/layout/CenteredSection';
+import InputAdornment from '@mui/material/InputAdornment';
 const TextEditor = dynamic(() => import('components/TextEditor'), {
   ssr: false,
   // eslint-disable-next-line react/display-name
@@ -31,6 +32,9 @@ const TextEditor = dynamic(() => import('components/TextEditor'), {
 const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const { data: user, isFetched } = useGet<PartialUser>('/api/me', 'me');
   const [name, setName] = useState('');
+  const [instagramHandle, setInstagramHandle] = useState('');
+  const [twitterHandle, setTwitterHandle] = useState('');
+  const [linkedInLink, setLinkedInLink] = useState('');
   const [isChanged, setIsChanged] = useState(false);
   const [profilePathState, setProfilePathState] = useState({
     profilePath: '',
@@ -47,6 +51,12 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   useEffect(() => {
     if (!isFetched || !user) return;
     if (user.name) setName(user.name);
+    const profile = user.profile;
+    if (profile) {
+      if (profile.twitterHandle) setTwitterHandle(profile.twitterHandle);
+      if (profile.instagramHandle) setInstagramHandle(profile.instagramHandle);
+      if (profile.linkedInLink) setLinkedInLink(profile.linkedInLink);
+    }
 
     bioRef.current = user?.profile?.bio;
 
@@ -96,14 +106,25 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
 
     const bio = bioRef.current;
 
-    if (bio !== user.profile?.bio) {
+    if (
+      bio !== user.profile?.bio ||
+      user.profile?.instagramHandle !== instagramHandle ||
+      user.profile?.twitterHandle !== twitterHandle ||
+      user.profile?.linkedInLink !== linkedInLink
+    ) {
       prismaUpdateQuery.profile = {
         upsert: {
           create: {
             bio,
+            linkedInLink,
+            twitterHandle,
+            instagramHandle,
           },
           update: {
             bio,
+            linkedInLink,
+            twitterHandle,
+            instagramHandle,
           },
         },
       };
@@ -170,6 +191,48 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
             size='small'
             sx={{ marginBottom: 3 }}
             id='name-field'
+          ></TextField>
+          <TextField
+            value={instagramHandle}
+            onChange={e => {
+              setIsChanged(true);
+              setInstagramHandle(e.target.value);
+            }}
+            label='Instagram Handle'
+            size='small'
+            sx={{ marginBottom: 3 }}
+            InputProps={{
+              startAdornment: <InputAdornment position='start'>@</InputAdornment>,
+            }}
+            id='instagram-field'
+          ></TextField>
+          <TextField
+            value={twitterHandle}
+            onChange={e => {
+              setIsChanged(true);
+              setTwitterHandle(e.target.value);
+            }}
+            InputProps={{
+              startAdornment: <InputAdornment position='start'>@</InputAdornment>,
+            }}
+            label='Twitter Handle'
+            size='small'
+            sx={{ marginBottom: 3 }}
+            id='twitter-field'
+          ></TextField>
+          <TextField
+            value={linkedInLink}
+            onChange={e => {
+              setIsChanged(true);
+              setLinkedInLink(e.target.value);
+            }}
+            InputProps={{
+              startAdornment: <InputAdornment position='start'>linkedin.com/in/</InputAdornment>,
+            }}
+            label='LinkedIn Link'
+            size='small'
+            sx={{ marginBottom: 3 }}
+            id='linkedin-field'
           ></TextField>
           <TextField
             value={profilePathState.profilePath}

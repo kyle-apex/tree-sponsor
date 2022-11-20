@@ -11,10 +11,13 @@ generator client {
 }
 
 model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String? @db.Text
-  user   User    @relation(fields: [userId], references: [id])
-  userId Int     @unique
+  id              Int     @id @default(autoincrement())
+  bio             String? @db.Text
+  instagramHandle String? @db.VarChar(50)
+  linkedInLink    String? @db.VarChar(50)
+  twitterHandle   String? @db.VarChar(50)
+  user            User    @relation(fields: [userId], references: [id])
+  userId          Int     @unique
 }
 
 model Account {

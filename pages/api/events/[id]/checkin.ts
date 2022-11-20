@@ -59,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             displayName: true,
             profilePath: true,
             roles: {},
-            profile: {},
+            profile: { select: { instagramHandle: true, linkedInLink: true, twitterHandle: true } },
             subscriptions: { where: { lastPaymentDate: { gt: oneYearAgo } } },
           },
         },

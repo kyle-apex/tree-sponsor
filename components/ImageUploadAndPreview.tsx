@@ -109,10 +109,18 @@ const ImageUploadAndPreview = ({
             </Box>
           )}
 
-          <img src={imageUrl} className='full-width'></img>
+          <img src={imageUrl} className='full-width' alt='Preview'></img>
         </>
       )}
-      <input type='file' ref={fileInputRef} accept='image/*' className='hide' onChange={onSelectFile} />
+      <input
+        name='fileUpload'
+        title='File Upload'
+        type='file'
+        ref={fileInputRef}
+        accept='image/*'
+        className='hide'
+        onChange={onSelectFile}
+      />
     </Box>
   );
 };
