@@ -282,6 +282,7 @@ model EventCheckIn {
   email          String?
   emailOptIn     Boolean?  @default(false)
   discoveredFrom String?
+  isPrivate      Boolean?  @default(false)
   userId         Int?
   user           User?     @relation(fields: [userId], references: [id])
   eventId        Int?

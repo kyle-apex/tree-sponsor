@@ -29,6 +29,8 @@ import MapMarkerDisplay from 'components/maps/MapMarkerDisplay';
 import TreeDisplayDialog from 'components/tree/TreeDisplayDialog';
 import { useGet } from 'utils/hooks/use-get';
 import Skeleton from '@mui/material/Skeleton';
+import { useScrollTrigger } from '@mui/material';
+import axios from 'axios';
 
 type MembershipStatus = {
   subscription?: SubscriptionWithDetails;
@@ -103,6 +105,11 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     setStatus(status);
 
     setIsLoading(false);
+  };
+
+  const onDeleteCheckin = async (userId: number) => {
+    await axios.delete(`/api/events/delete-checkin?userId=${userId}&eventId=${event.id}`);
+    getMembershipStatus();
   };
 
   const reset = async () => {
@@ -301,7 +308,12 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           <Typography variant='body2' component='div' mb={2} mt={-2}>
             <SafeHTMLDisplay html={event?.checkInDetails}></SafeHTMLDisplay>
           </Typography>
-          <Attendees users={status.attendees}></Attendees>
+          <Attendees
+            users={status.attendees}
+            onDelete={userId => {
+              onDeleteCheckin(userId);
+            }}
+          ></Attendees>
           <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
             Tree ID Quiz
           </Typography>

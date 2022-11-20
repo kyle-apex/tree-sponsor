@@ -3,14 +3,14 @@ import Typography from '@mui/material/Typography';
 import { PartialUser } from 'interfaces';
 import Attendee from './Attendee';
 
-const Attendees = ({ users }: { users: PartialUser[] }) => {
+const Attendees = ({ users, onDelete }: { users: PartialUser[]; onDelete?: (userId: number) => void }) => {
   return (
     <Box mb={2} component='section'>
       <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
         Who&apos;s here:
       </Typography>
       {users?.map(user => {
-        return <Attendee key={user.id} user={user} />;
+        return <Attendee key={user.id} onDelete={() => onDelete(user.id)} user={user} />;
       })}
     </Box>
   );

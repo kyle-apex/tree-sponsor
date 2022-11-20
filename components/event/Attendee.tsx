@@ -3,6 +3,8 @@ import Typography from '@mui/material/Typography';
 import UserAvatar from 'components/sponsor/UserAvatar';
 import Link from 'next/link';
 import { PartialUser } from 'interfaces';
+import RestrictSection from 'components/RestrictSection';
+import DeleteIconButton from 'components/DeleteIconButton';
 
 const userNameDisplay = ({ user }: { user: PartialUser }) => (
   <Typography
@@ -15,7 +17,7 @@ const userNameDisplay = ({ user }: { user: PartialUser }) => (
   </Typography>
 );
 
-const Attendee = ({ user }: { user: PartialUser }) => {
+const Attendee = ({ user, onDelete }: { user: PartialUser; onDelete: () => void }) => {
   const isCoreTeam = !!user.roles?.find(role => role.name == 'Core Team');
   // TODO: Remove This
   user.profilePath = null;
@@ -38,6 +40,9 @@ const Attendee = ({ user }: { user: PartialUser }) => {
               Member
             </Typography>
           )}
+          <RestrictSection accessType='isAdmin'>
+            <DeleteIconButton onDelete={onDelete} tooltip='Remove Checkin'></DeleteIconButton>
+          </RestrictSection>
         </Box>
       </Box>
     </Box>
