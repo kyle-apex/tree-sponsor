@@ -140,7 +140,7 @@ const SignupPage = ({
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Slack & Facebook Group Access</TableCell>
+              <TableCell>Slack Access</TableCell>
               <TableCell>
                 {isMembership ? (
                   <CheckCircleIcon color='primary'></CheckCircleIcon>

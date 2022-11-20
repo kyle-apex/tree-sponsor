@@ -66,7 +66,7 @@ export const MembershipOptions = () => {
       subheader: '',
       price: '20',
       buttonText: 'Join Today',
-      description: ['1 Tree Donated', 'Event Discounts', 'Exclusive Facebook Group/Slack Access'],
+      description: ['1 Tree Donated', 'Event Discounts', 'Exclusive Slack Access'],
       buttonVariant: outlined,
     },
     {
@@ -74,7 +74,7 @@ export const MembershipOptions = () => {
       subheader: '',
       price: '60',
       buttonText: 'Join Today',
-      description: ['3 Trees Donated', 'Event Discounts', 'Exclusive Facebook Group/Slack Access'],
+      description: ['3 Trees Donated', 'Event Discounts', 'Exclusive Slack Access'],
       buttonVariant: contained,
     },
     {
@@ -82,7 +82,7 @@ export const MembershipOptions = () => {
       subheader: '',
       price: '100+',
       buttonText: 'Join Today',
-      description: ['5+  Tree Donated', 'Event Discounts', 'Exclusive Facebook Group/Slack Access'],
+      description: ['5+  Tree Donated', 'Event Discounts', 'Exclusive Slack Access'],
       buttonVariant: outlined,
     },
   ];
