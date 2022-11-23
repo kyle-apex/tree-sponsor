@@ -6,9 +6,15 @@ import { PartialUser } from 'interfaces';
 import RestrictSection from 'components/RestrictSection';
 import DeleteIconButton from 'components/DeleteIconButton';
 import IconButton from '@mui/material/IconButton';
-import ContactPage from '@mui/icons-material/ContactPage';
+import ContactPageIcon from '@mui/icons-material/ContactPage';
+import SettingsIcon from '@mui/icons-material/Settings';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import Tooltip from '@mui/material/Tooltip';
 import AttendeeContactDialog from './AttendeeContactDialog';
 import { useState } from 'react';
+import useLocalStorage from 'utils/hooks/use-local-storage';
+import AttendeeSettingsDialog from './AttendeeSettingsDialog';
+import useHashToggle from 'utils/hooks/use-hash-toggle';
 
 const userNameDisplay = ({ user }: { user: PartialUser }) => (
   <Typography
@@ -21,9 +27,23 @@ const userNameDisplay = ({ user }: { user: PartialUser }) => (
   </Typography>
 );
 
-const Attendee = ({ user, onDelete, isEditMode }: { user: PartialUser; onDelete: () => void; isEditMode?: boolean }) => {
+const Attendee = ({
+  user,
+  onDelete,
+  isEditMode,
+  onSetIsPrivate,
+  isPrivate,
+}: {
+  user: PartialUser;
+  onDelete: () => void;
+  isEditMode?: boolean;
+  onSetIsPrivate?: () => void;
+  isPrivate?: boolean;
+}) => {
   const isCoreTeam = !!user.roles?.find(role => role.name == 'Core Team');
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
+  const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useHashToggle('settings', false);
+  const [email] = useLocalStorage('checkinEmail', '');
   // TODO: Remove This
   user.profilePath = null;
   const hasContact = user.profile?.instagramHandle || user.profile?.twitterHandle || user.profile?.linkedInLink;
@@ -51,16 +71,39 @@ const Attendee = ({ user, onDelete, isEditMode }: { user: PartialUser; onDelete:
               <DeleteIconButton onDelete={onDelete} tooltip='Remove Checkin'></DeleteIconButton>
             </RestrictSection>
           )}
+          <Box sx={{ flex: '1 1 auto' }}></Box>
+          {(email == user.email || email == `"${user.email}"`) && (
+            <>
+              {isPrivate && (
+                <Tooltip title='Hidden from other attendees'>
+                  <VisibilityOffIcon color='secondary'></VisibilityOffIcon>
+                </Tooltip>
+              )}
+              <IconButton
+                onClick={() => {
+                  setIsSettingsDialogOpen(true);
+                }}
+              >
+                <SettingsIcon color='secondary'></SettingsIcon>
+              </IconButton>
+              <AttendeeSettingsDialog
+                onSetIsPrivate={onSetIsPrivate}
+                user={user}
+                isOpen={isSettingsDialogOpen}
+                setIsOpen={setIsSettingsDialogOpen}
+                isPrivate={isPrivate}
+              ></AttendeeSettingsDialog>
+            </>
+          )}
 
           {hasContact && (
             <>
-              <Box sx={{ flex: '1 1 auto' }}></Box>
               <IconButton
                 onClick={() => {
                   setIsContactDialogOpen(true);
                 }}
               >
-                <ContactPage color='secondary'></ContactPage>
+                <ContactPageIcon color='secondary'></ContactPageIcon>
               </IconButton>
               <AttendeeContactDialog user={user} isOpen={isContactDialogOpen} setIsOpen={setIsContactDialogOpen}></AttendeeContactDialog>
             </>

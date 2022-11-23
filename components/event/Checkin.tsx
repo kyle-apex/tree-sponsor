@@ -23,7 +23,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
-import { PartialEvent, PartialUser, PartialTree, Coordinate, PartialSpecies } from 'interfaces';
+import { PartialEvent, PartialUser, PartialTree, Coordinate, PartialSpecies, PartialEventCheckIn } from 'interfaces';
 import Attendees from './Attendees';
 import MapMarkerDisplay from 'components/maps/MapMarkerDisplay';
 import TreeDisplayDialog from 'components/tree/TreeDisplayDialog';
@@ -39,6 +39,7 @@ type MembershipStatus = {
   attendees?: PartialUser[];
   checkInCount?: number;
   trees: PartialTree[];
+  myCheckin?: PartialEventCheckIn;
 };
 
 const formatDate = (date: Date): string => {
@@ -57,6 +58,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [isEmailOptIn, setIsEmailOptIn] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedTree, setSelectedTree] = useState<PartialTree>(null);
+  const [isPrivate, setIsPrivate] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingExistingUser, setIsLoadingExistingUser] = useState(false);
@@ -103,12 +105,19 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     if (result?.subscription) status = { ...result, isFound: true };
     else status = { ...result, isFound: false, email };
     setStatus(status);
+    setIsPrivate(status.myCheckin?.isPrivate);
 
     setIsLoading(false);
   };
 
   const onDeleteCheckin = async (userId: number) => {
     await axios.delete(`/api/events/delete-checkin?userId=${userId}&eventId=${event.id}`);
+    getMembershipStatus();
+  };
+
+  const setCheckinIsPrivate = async (isPrivate: boolean) => {
+    if (!status.myCheckin?.userId) return;
+    await axios.delete(`/api/events/update-checkin?userId=${status.myCheckin?.userId}&eventId=${event.id}&isPrivate=${isPrivate}`);
     getMembershipStatus();
   };
 
@@ -127,6 +136,13 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const hasActiveMembership = status?.subscription?.lastPaymentDate > lastYear;
 
   const userName = status?.subscription?.userName?.split(' ')[0] || '';
+
+  const updateIsPrivate = async () => {
+    const newIsPrivate = !isPrivate;
+    setIsPrivate(newIsPrivate);
+    await axios.patch('/api/me/checkin/' + status.myCheckin.id, { isPrivate: newIsPrivate });
+    getMembershipStatus();
+  };
 
   return (
     <>
@@ -313,6 +329,8 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             onDelete={userId => {
               onDeleteCheckin(userId);
             }}
+            onSetIsPrivate={updateIsPrivate}
+            isPrivate={isPrivate}
           ></Attendees>
           <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
             Tree ID Quiz

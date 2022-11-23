@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
     const createCheckin: PartialEventCheckIn = { eventId, userId, email, discoveredFrom };
 
-    if (emailOptIn) {
+    if (emailOptIn && firstName) {
       createCheckin['emailOptIn'] = true;
       updateCheckin['emailOptIn'] = true;
       if (email) addSubscriber(email, { FNAME: firstName, LNAME: lastName }, false);
@@ -58,18 +58,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             image: true,
             displayName: true,
             profilePath: true,
+            email: true,
             roles: {},
             profile: { select: { instagramHandle: true, linkedInLink: true, twitterHandle: true } },
-            subscriptions: { where: { lastPaymentDate: { gt: oneYearAgo } } },
+            subscriptions: { where: { lastPaymentDate: { gt: oneYearAgo } }, select: { lastPaymentDate: true } },
           },
         },
       },
     });
     console.log('checkins', checkins);
     const checkInCount = checkins.length;
+    let myCheckin;
     const attendees = checkins
-      .filter(checkin => checkin.user)
+      .filter(checkin => {
+        if (checkin.userId == userId) {
+          myCheckin = checkin;
+          return true;
+        }
+        if (checkin.isPrivate) return false;
+        return checkin.user;
+      })
       .map(checkIn => {
+        if (checkIn.user?.id != userId) delete checkIn.user.email;
         return checkIn.user;
       });
     attendees.sort((a, b) => {
@@ -104,6 +114,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    res.status(200).json({ subscription, checkInCount, attendees, trees });
+    res.status(200).json({ subscription, checkInCount, attendees, trees, myCheckin });
   }
 }

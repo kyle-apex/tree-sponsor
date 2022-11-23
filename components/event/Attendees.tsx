@@ -6,9 +6,21 @@ import { PartialUser } from 'interfaces';
 import { useState } from 'react';
 import Attendee from './Attendee';
 import EditIcon from '@mui/icons-material/Edit';
+import useLocalStorage from 'utils/hooks/use-local-storage';
 
-const Attendees = ({ users, onDelete }: { users: PartialUser[]; onDelete?: (userId: number) => void }) => {
+const Attendees = ({
+  users,
+  onDelete,
+  onSetIsPrivate,
+  isPrivate,
+}: {
+  users: PartialUser[];
+  onDelete?: (userId: number) => void;
+  onSetIsPrivate?: () => void;
+  isPrivate?: boolean;
+}) => {
   const [isEditMode, setIsEditMode] = useState(false);
+
   return (
     <Box mb={2} component='section'>
       <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
@@ -26,7 +38,16 @@ const Attendees = ({ users, onDelete }: { users: PartialUser[]; onDelete?: (user
         </RestrictSection>
       </Typography>
       {users?.map(user => {
-        return <Attendee key={user.id} isEditMode={isEditMode} onDelete={() => onDelete(user.id)} user={user} />;
+        return (
+          <Attendee
+            key={user.id}
+            isEditMode={isEditMode}
+            onDelete={() => onDelete(user.id)}
+            onSetIsPrivate={onSetIsPrivate}
+            isPrivate={isPrivate}
+            user={user}
+          />
+        );
       })}
     </Box>
   );
