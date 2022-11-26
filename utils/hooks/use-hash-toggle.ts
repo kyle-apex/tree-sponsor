@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 
-export default function useHashToggle(hash: string, defaultValue?: boolean) {
+export default function useHashToggle(hash: string, defaultValue?: boolean): [boolean, (value: boolean) => void] {
   const initial = !!defaultValue;
   const [value, setValue] = useState(initial || false);
   const router = useRouter();

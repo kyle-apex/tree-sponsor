@@ -2,6 +2,9 @@ import { PartialEventCheckIn, PartialTree } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import throwError from 'utils/api/throw-error';
 import addSubscriber from 'utils/mailchimp/add-subscriber';
+import addTagToMembers from 'utils/mailchimp/add-tag-to-members';
+import getOrCreateTagId from 'utils/mailchimp/get-or-create-tag-id';
+import getTagId from 'utils/mailchimp/get-tag-id';
 import { getLocationFilterByDistance } from 'utils/prisma/get-location-filter-by-distance';
 import { prisma, Prisma } from 'utils/prisma/init';
 import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
@@ -38,6 +41,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       createCheckin['emailOptIn'] = true;
       updateCheckin['emailOptIn'] = true;
       if (email) addSubscriber(email, { FNAME: firstName, LNAME: lastName }, false);
+      // add mailchimp tag
+      const eventTagId = await getOrCreateTagId(new Date().getFullYear() + ' ' + event.name);
+      addTagToMembers(eventTagId, [email]);
     }
 
     const newCheckin = await prisma.eventCheckIn.upsert({

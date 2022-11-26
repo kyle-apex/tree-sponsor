@@ -18,7 +18,7 @@ import RestrictSection from 'components/RestrictSection';
 
 export const getServerSideProps = serverSideIsAuthenticated;
 
-const AccountPage = ({ user }: { user: PartialUser }) => {
+const AccountPage = () => {
   const [activeDonationAmount, setActiveDonationAmount] = useState(0);
   const [activeTab, setActiveTab] = useState('membership');
   const router = useRouter();

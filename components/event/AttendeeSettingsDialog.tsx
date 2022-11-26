@@ -19,6 +19,7 @@ import { Prisma } from 'utils/prisma/init';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import Divider from '@mui/material/Divider';
+type booleanFunc = (isOpen: boolean) => void;
 
 const AttendeeSettingsDialog = ({
   isOpen,
@@ -28,7 +29,7 @@ const AttendeeSettingsDialog = ({
   onSetIsPrivate,
 }: {
   isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>> | booleanFunc;
   isPrivate: boolean;
   onSetIsPrivate?: () => void;
   user: PartialUser;
