@@ -19,6 +19,8 @@ import { Prisma } from 'utils/prisma/init';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import Divider from '@mui/material/Divider';
+import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
+import TextField from '@mui/material/TextField';
 type booleanFunc = (isOpen: boolean) => void;
 
 const AttendeeSettingsDialog = ({
@@ -44,6 +46,8 @@ const AttendeeSettingsDialog = ({
   const [profile, setProfile] = useState(user?.profile);
   const [isSaving, setIsSaving] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [imageUrl, setImageUrl] = useState(user?.image);
+  const [displayName, setDisplayName] = useState(user?.displayName || user?.name);
 
   const [session] = useSession();
   const params: SignOutParams = {};
@@ -56,6 +60,8 @@ const AttendeeSettingsDialog = ({
   const save = async () => {
     setIsSaving(true);
     const prismaUpdateQuery: Prisma.UserUpdateInput = {
+      image: imageUrl,
+      displayName,
       profile: {
         upsert: {
           create: profile,
@@ -104,6 +110,40 @@ const AttendeeSettingsDialog = ({
               <Typography mb={3} variant='h6'>
                 Contact Information/Display Name
               </Typography>
+              <Box
+                sx={{
+                  borderRadius: '100%',
+                  height: '100px',
+                  width: '100px',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  overflow: 'hidden',
+                  mb: 5,
+                  boxShadow: 'inset 0 0px 0px 1px hsl(0deg 0% 0% / 20%), 0px 0px 2px grey',
+                }}
+              >
+                <ImageUploadAndPreview
+                  imageUrl={imageUrl}
+                  setImageUrl={newImageUrl => {
+                    setImageUrl(newImageUrl);
+                  }}
+                  maxHeight={250}
+                  maxWidth={250}
+                  size='small'
+                  hideEditButton={true}
+                ></ImageUploadAndPreview>
+              </Box>
+              <TextField
+                value={displayName}
+                onChange={e => {
+                  setDisplayName(e.target.value);
+                }}
+                fullWidth
+                label='Name'
+                size='small'
+                sx={{ marginBottom: 3 }}
+                id='name-field'
+              ></TextField>
               <AttendeeContactForm profile={profile} setProfile={setProfile}></AttendeeContactForm>
             </>
           )}
@@ -133,7 +173,15 @@ const AttendeeSettingsDialog = ({
         }}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setSnackbarMessage('')} severity='success' color='info' sx={{ width: '100%' }}>
+        <Alert
+          onClose={() => {
+            setSnackbarMessage('');
+            setIsOpen(false);
+          }}
+          severity='success'
+          color='info'
+          sx={{ width: '100%' }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
