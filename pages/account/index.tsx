@@ -18,7 +18,7 @@ import RestrictSection from 'components/RestrictSection';
 
 export const getServerSideProps = serverSideIsAuthenticated;
 
-const AccountPage = ({ user }: { user: PartialUser }) => {
+const AccountPage = () => {
   const [activeDonationAmount, setActiveDonationAmount] = useState(0);
   const [activeTab, setActiveTab] = useState('membership');
   const router = useRouter();
@@ -51,11 +51,11 @@ const AccountPage = ({ user }: { user: PartialUser }) => {
         <Typography color='secondary' variant='h1'>
           Account
         </Typography>
-        <a href={'/u/' + user?.profilePath} target='_blank' style={{ textDecoration: 'none' }} rel='noreferrer'>
+        <Link href='/profile'>
           <Button variant='text' size='small' sx={{ marginBottom: 2, display: 'flex', alignSelf: 'start' }}>
-            <span>Launch Profile</span> <LaunchIcon sx={{ marginLeft: 1, fontSize: '1rem' }} />
+            Edit Profile/Contact Info
           </Button>
-        </a>
+        </Link>
       </SplitRow>
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} mb={4}>

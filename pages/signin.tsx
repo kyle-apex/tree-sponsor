@@ -149,7 +149,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   if (session) {
     return {
       redirect: {
-        destination: context.query.callbackUrl && context.query.callbackUrl.includes('/u/') ? context.query.callbackUrl : '/account',
+        destination:
+          context.query.callbackUrl && (context.query.callbackUrl.includes('/u/') || context.query.callbackUrl.includes('/checkin'))
+            ? context.query.callbackUrl
+            : '/account',
       },
     };
   }

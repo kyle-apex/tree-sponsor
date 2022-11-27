@@ -44,7 +44,7 @@ const Acute = () => {
       window['isAcuteInitialized'] = true;
       const script = document.createElement('script');
       script.src = '/acute.js';
-      document.body.appendChild(script);
+      //document.body.appendChild(script);
     }
   }, []);
 

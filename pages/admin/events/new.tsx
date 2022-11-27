@@ -5,21 +5,27 @@ import Layout from 'components/layout/Layout';
 import { PartialEvent } from 'interfaces';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { useRouter } from 'next/router';
+import { GetSessionOptions } from 'next-auth/client';
+import restrictPageAccess from 'utils/auth/restrict-page-access';
+import AdminLayout from 'components/layout/AdminLayout';
+
+export const getServerSideProps = (ctx: GetSessionOptions) => {
+  return restrictPageAccess(ctx, 'hasEventManagement');
+};
 
 const AddEventPage = () => {
   const onAdd = (newEvent: PartialEvent) => {
-    console.log('added');
-    router.push('/account/events/' + newEvent.path);
+    router.push('/admin/events');
   };
 
   const router = useRouter();
 
   return (
-    <Layout title='Add Event'>
+    <AdminLayout title='Add Event'>
       <CenteredSection backButtonText='Back' headerText='Add Event'>
         <AddEvent onAdd={onAdd}></AddEvent>
       </CenteredSection>
-    </Layout>
+    </AdminLayout>
   );
 };
 export default AddEventPage;

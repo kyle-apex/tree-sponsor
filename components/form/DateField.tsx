@@ -1,8 +1,7 @@
-//import AdapterDayjs from '@mui/lab/AdapterDayjs';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import TextField from '@mui/material/TextField';
-import DatePicker from '@mui/lab/DatePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 // TODO: Date not updating
 const DateField = ({ value, setValue, label }: { value: Date | null; setValue: (value: Date | null) => void; label?: string }) => {
   console.log('rerender', value);

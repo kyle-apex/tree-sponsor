@@ -90,3 +90,36 @@ ALTER TABLE
   `EventCheckin`
 ADD
   COLUMN `emailOptIn` BOOLEAN NULL DEFAULT false;
+
+ALTER TABLE
+  `Role`
+ADD
+  COLUMN `hasMemberManagement` BOOLEAN NOT NULL DEFAULT false;
+
+ALTER TABLE
+  `Role`
+ADD
+  COLUMN `hasEventManagement` BOOLEAN NOT NULL DEFAULT false;
+
+-- AlterTable
+ALTER TABLE
+  `profile`
+ADD
+  COLUMN `instagramHandle` VARCHAR(50);
+
+-- AlterTable
+ALTER TABLE
+  `profile`
+ADD
+  COLUMN `twitterHandle` VARCHAR(50);
+
+-- AlterTable
+ALTER TABLE
+  `profile`
+ADD
+  COLUMN `linkedInLink` VARCHAR(50);
+
+ALTER TABLE
+  `EventCheckin`
+ADD
+  COLUMN `isPrivate` BOOLEAN NULL DEFAULT false;

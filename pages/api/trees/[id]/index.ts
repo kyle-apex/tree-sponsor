@@ -2,12 +2,12 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import throwError from 'utils/api/throw-error';
 import { prisma, Prisma } from 'utils/prisma/init';
 import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
-import { PartialTree } from 'interfaces';
+import { PartialTree, PartialTreeImage } from 'interfaces';
 import { v4 as uuidv4 } from 'uuid';
 
 import uploadTreeImages from 'utils/aws/upload-tree-images';
 import getTreeImagePath from 'utils/aws/get-tree-image-path';
-import { Tree } from '@prisma/client';
+import { Tree, TreeImage } from '@prisma/client';
 import { getSession } from 'utils/auth/get-session';
 
 export const config = {
@@ -37,13 +37,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const pictureUrl = tree?.pictureUrl;
 
     if (pictureUrl && !pictureUrl.includes('http')) {
-      const image = { uuid: uuidv4() };
-      const imagePath = getTreeImagePath(image.uuid);
-      updateData.pictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}/small`;
+      // find existing tree
+      const existingTree = await prisma.tree.findFirst({ where: { id: tree.id }, include: { images: true } });
+      let image = existingTree?.images?.find(img => img.url == existingTree.pictureUrl) as Partial<TreeImage>;
+
+      if (!image) {
+        image = { uuid: uuidv4() };
+        const imagePath = getTreeImagePath(image.uuid);
+        updateData.pictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}/small`;
+        updateData.images = {
+          upsert: [{ create: { uuid: image.uuid, url: String(updateData.pictureUrl) }, update: image, where: { uuid: image.uuid } }],
+        };
+      }
 
       uploadTreeImages(pictureUrl, image.uuid);
-
-      updateData.images = { upsert: [{ create: image, update: image, where: { uuid: image.uuid } }] };
     }
 
     const result = await prisma.tree.update({
@@ -52,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
     res.status(200).json(result);
   } else if (req.method === 'DELETE') {
-    let isAuthorized = false; //await isCurrentUserAuthorized('isTreeReviewer', req);
+    let isAuthorized = await isCurrentUserAuthorized('isAdmin', req);
     const session = await getSession({ req });
 
     if (!isAuthorized && session?.user?.id) {

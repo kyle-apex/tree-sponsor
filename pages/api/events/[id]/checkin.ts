@@ -1,7 +1,11 @@
-import { PartialEventCheckIn, PartialTree } from 'interfaces';
+import { PartialEventCheckIn, PartialTree, PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import throwError from 'utils/api/throw-error';
 import addSubscriber from 'utils/mailchimp/add-subscriber';
+import addTagToMembers from 'utils/mailchimp/add-tag-to-members';
+import addTagToMembersByName from 'utils/mailchimp/add-tag-to-members-by-name';
+import getOrCreateTagId from 'utils/mailchimp/add-tag-to-members-by-name';
+import getTagId from 'utils/mailchimp/get-tag-id';
 import { getLocationFilterByDistance } from 'utils/prisma/get-location-filter-by-distance';
 import { prisma, Prisma } from 'utils/prisma/init';
 import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
@@ -18,14 +22,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     let subscription;
-    let user = await prisma.user.findFirst({ where: { email } });
+    let user = (await prisma.user.findFirst({ where: { email }, include: { profile: {} } })) as PartialUser;
+
+    if (user && !user.profile) {
+      user.profile = await prisma.profile.create({ data: { userId: user.id } });
+    }
 
     if (user && !user.name && firstName) {
       user.name = `${firstName} ${lastName}`.trim();
       await prisma.user.update({ where: { email }, data: { name: user.name } });
-    } else if (!user) {
-      user = await prisma.user.create({ data: { email, name: `${firstName} ${lastName}`.trim() } });
     }
+    if (!user) {
+      user = await prisma.user.create({ data: { email, name: `${firstName} ${lastName}`.trim(), profile: {} } });
+    }
+
+    const existingCheckin = await prisma.eventCheckIn.findFirst({
+      where: { email, eventId },
+    });
 
     const userId = user?.id;
     const updateCheckin: PartialEventCheckIn = {
@@ -34,10 +47,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
     const createCheckin: PartialEventCheckIn = { eventId, userId, email, discoveredFrom };
 
-    if (emailOptIn) {
+    if (emailOptIn && firstName) {
       createCheckin['emailOptIn'] = true;
       updateCheckin['emailOptIn'] = true;
       if (email) addSubscriber(email, { FNAME: firstName, LNAME: lastName }, false);
+    }
+
+    if (!existingCheckin) {
+      // add mailchimp tag
+      const tagName = new Date().getFullYear() + ' ' + event.name;
+      if (email) addTagToMembersByName(tagName, [email]);
     }
 
     const newCheckin = await prisma.eventCheckIn.upsert({
@@ -45,7 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       create: createCheckin,
       update: updateCheckin,
     });
-    console.log('newCheckin', newCheckin);
+    //console.log('newCheckin', newCheckin);
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
     const checkins = await prisma.eventCheckIn.findMany({
@@ -58,18 +77,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             image: true,
             displayName: true,
             profilePath: true,
+            email: true,
             roles: {},
-            profile: {},
-            subscriptions: { where: { lastPaymentDate: { gt: oneYearAgo } } },
+            profile: { select: { instagramHandle: true, linkedInLink: true, twitterHandle: true } },
+            subscriptions: { where: { lastPaymentDate: { gt: oneYearAgo } }, select: { lastPaymentDate: true } },
           },
         },
       },
     });
-    console.log('checkins', checkins);
+    //console.log('checkins', checkins);
     const checkInCount = checkins.length;
+    let myCheckin;
     const attendees = checkins
-      .filter(checkin => checkin.user)
+      .filter(checkin => {
+        if (checkin.userId == userId) {
+          myCheckin = checkin;
+          return true;
+        }
+        if (checkin.isPrivate) return false;
+        return checkin.user;
+      })
       .map(checkIn => {
+        if (checkIn.user?.id != userId) delete checkIn.user.email;
         return checkIn.user;
       });
     attendees.sort((a, b) => {
@@ -79,7 +108,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (b.subscriptions?.length > a.subscriptions?.length) return 1;
       return a.name < b.name ? -1 : 1;
     });
-    console.log('attendees', attendees);
+    //console.log('attendees', attendees);
 
     if (user) {
       //await updateSubscriptionsForUser(email);
@@ -92,7 +121,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     let trees: PartialTree[] = [];
 
-    if (event.location.latitude) {
+    if (event.location?.latitude) {
       const whereFilter = getLocationFilterByDistance(Number(event.location.latitude), Number(event.location.longitude), 500);
 
       trees = await prisma.tree.findMany({
@@ -102,9 +131,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           species: { select: { id: true, commonName: true } },
         },
       });
-      console.log('trees', trees);
     }
 
-    res.status(200).json({ subscription, checkInCount, attendees, trees });
+    res.status(200).json({ subscription, checkInCount, attendees, trees, myCheckin });
   }
 }

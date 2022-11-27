@@ -23,16 +23,6 @@ const MembershipPerks = () => {
         </li>
         <li>
           <a
-            href={process.env.FACEBOOK_GROUP_INVITE_URL || 'https://www.facebook.com/groups/2524568387782501'}
-            target='_blank'
-            rel='noreferrer'
-            style={{ textDecoration: 'none' }}
-          >
-            <Typography color='primary'>Join the TreeFolks Young Professionals Facebook group</Typography>
-          </a>
-        </li>
-        <li>
-          <a
             href={
               process.env.GOOGLE_CALENDAR_INVITE_URL ||
               'https://calendar.google.com/calendar/u/4?cid=dHJlZWZvbGtzLm9yZ19tNmpyZWVuZmk4MjNtZmM4dGQ0aHZhNGk1MEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t'

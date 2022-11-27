@@ -34,7 +34,7 @@ const UniquePathField = ({
   const handleChange = async (event: { target: { value: string } }) => {
     //setIsChanged(true);
     const value = event.target.value;
-    const hasPatternError = !/^[a-z-]+$/.test(value);
+    const hasPatternError = !/^[a-z0-9-]+$/.test(value);
     setState(state => {
       return { ...state, value, hasPatternError };
     });
@@ -54,13 +54,13 @@ const UniquePathField = ({
         onChange={handleChange}
         label={label || 'path'}
         size='small'
-        inputProps={{ pattern: '[a-z-]' }}
+        inputProps={{ pattern: '[a-z0-9-]' }}
         sx={{ marginBottom: 3 }}
         error={state.isDuplicate || state.hasPatternError}
         spellCheck='false'
         id='profile-path-field'
       ></TextField>
-      {state.hasPatternError && <ErrorText>{label} must only contain lower case letters and &quot;-&quot;</ErrorText>}
+      {state.hasPatternError && <ErrorText>{label} must only contain lower case letters, numbers, and &quot;-&quot;</ErrorText>}
       {state.isDuplicate && <ErrorText>{label} is already in use</ErrorText>}
     </>
   );
