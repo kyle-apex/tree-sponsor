@@ -8,7 +8,7 @@ import { PartialUser } from 'interfaces';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import { signIn, useSession } from 'next-auth/client';
+import { signIn, signOut, SignOutParams, useSession } from 'next-auth/client';
 import AttendeeContactForm from './AttendeeContactForm';
 import { useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
@@ -37,11 +37,16 @@ const AttendeeSettingsDialog = ({
   const handleClose = () => {
     setIsOpen(false);
   };
+  console.log('user', user);
+  if (user?.profile) {
+    console.log('ATTENDEE HAS USER', user.profile);
+  }
   const [profile, setProfile] = useState(user?.profile);
   const [isSaving, setIsSaving] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const [session] = useSession();
+  const params: SignOutParams = {};
 
   const setIsPrivate = async (isPrivate: boolean) => {
     await onSetIsPrivate();
@@ -75,18 +80,26 @@ const AttendeeSettingsDialog = ({
             <Checkbox checked={isPrivate} onChange={e => setIsPrivate(e.target.checked)}></Checkbox> Hide my name from public view
           </Box>
           <Divider sx={{ mb: 2 }}></Divider>
-          {!session && (
+          {(!session || session.user.email != user.email) && (
             <>
               <Typography mb={2} variant='body1'>
                 To share your LinkedIn, Instagram, or Twitter contact info with other attendees, login with your email address to update
                 your profile:
               </Typography>
-              <Button color='secondary' variant='contained' fullWidth onClick={() => signIn()}>
+              <Button
+                color='secondary'
+                variant='contained'
+                fullWidth
+                onClick={() => {
+                  if (session) signOut({ redirect: false });
+                  signIn();
+                }}
+              >
                 Login to Edit Contact Info
               </Button>
             </>
           )}
-          {session && (
+          {session && session.user.email == user.email && (
             <>
               <Typography mb={3} variant='h6'>
                 Contact Information/Display Name
@@ -94,12 +107,12 @@ const AttendeeSettingsDialog = ({
               <AttendeeContactForm profile={profile} setProfile={setProfile}></AttendeeContactForm>
             </>
           )}
-          {!session && (
+          {(!session || session.user.email != user.email) && (
             <Button fullWidth color='inherit' sx={{ mt: 3 }} onClick={handleClose}>
               Close
             </Button>
           )}
-          {session && (
+          {session && session.user.email == user.email && (
             <SplitRow>
               <Button fullWidth color='inherit' sx={{ mt: 3 }} onClick={handleClose}>
                 Close

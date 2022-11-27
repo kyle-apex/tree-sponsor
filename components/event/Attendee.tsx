@@ -83,6 +83,7 @@ const Attendee = ({
                 onClick={() => {
                   setIsSettingsDialogOpen(true);
                 }}
+                sx={{ padding: 0 }}
               >
                 <SettingsIcon color='secondary'></SettingsIcon>
               </IconButton>
@@ -102,6 +103,7 @@ const Attendee = ({
                 onClick={() => {
                   setIsContactDialogOpen(true);
                 }}
+                sx={{ padding: 0 }}
               >
                 <ContactPageIcon color='secondary'></ContactPageIcon>
               </IconButton>
