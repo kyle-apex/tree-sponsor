@@ -3,11 +3,7 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import Typography from '@mui/material/Typography';
-import SessionAvatar from 'components/SessionAvatar';
 import { PartialUser } from 'interfaces';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import InstagramIcon from '@mui/icons-material/Instagram';
 import { signIn, signOut, SignOutParams, useSession } from 'next-auth/client';
 import AttendeeContactForm from './AttendeeContactForm';
 import { useState } from 'react';
@@ -39,10 +35,6 @@ const AttendeeSettingsDialog = ({
   const handleClose = () => {
     setIsOpen(false);
   };
-  console.log('user', user);
-  if (user?.profile) {
-    console.log('ATTENDEE HAS USER', user.profile);
-  }
   const [profile, setProfile] = useState(user?.profile);
   const [isSaving, setIsSaving] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');

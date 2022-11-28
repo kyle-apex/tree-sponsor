@@ -1,11 +1,3 @@
-/* TODO
-- Members at the event
-
-- Map of trees on Top if more than 1
-- Tree Display: Image, Species, Species details?
-    - Thanks?, comments? reactions?
-- Checkins? 
-*/
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useCallback, useEffect, useState } from 'react';
