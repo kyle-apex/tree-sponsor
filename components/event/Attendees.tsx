@@ -13,11 +13,13 @@ const Attendees = ({
   onDelete,
   onSetIsPrivate,
   isPrivate,
+  onRefresh,
 }: {
   users: PartialUser[];
   onDelete?: (userId: number) => void;
   onSetIsPrivate?: () => void;
   isPrivate?: boolean;
+  onRefresh?: () => void;
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
 
@@ -46,6 +48,7 @@ const Attendees = ({
             onSetIsPrivate={onSetIsPrivate}
             isPrivate={isPrivate}
             user={user}
+            onRefresh={onRefresh}
           />
         );
       })}

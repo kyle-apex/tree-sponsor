@@ -73,6 +73,7 @@ const AttendeeSettingsDialog = ({
     await axios.patch('/api/me', prismaUpdateQuery);
     setSnackbarMessage('Saved');
     setIsSaving(false);
+    setIsOpen(false);
   };
 
   return (
@@ -176,7 +177,6 @@ const AttendeeSettingsDialog = ({
         <Alert
           onClose={() => {
             setSnackbarMessage('');
-            setIsOpen(false);
           }}
           severity='success'
           color='info'

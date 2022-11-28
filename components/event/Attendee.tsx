@@ -33,17 +33,25 @@ const Attendee = ({
   isEditMode,
   onSetIsPrivate,
   isPrivate,
+  onRefresh,
 }: {
   user: PartialUser;
   onDelete: () => void;
   isEditMode?: boolean;
   onSetIsPrivate?: () => void;
   isPrivate?: boolean;
+  onRefresh?: () => void;
 }) => {
   const isCoreTeam = !!user.roles?.find(role => role.name == 'Core Team');
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
   const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useHashToggle('settings', false);
   const [email] = useLocalStorage('checkinEmail', '');
+
+  const onSettingsDialogClose = (val: boolean) => {
+    setIsSettingsDialogOpen(val);
+    onRefresh();
+  };
+
   // TODO: Remove This
   user.profilePath = null;
   const hasContact = user.profile?.instagramHandle || user.profile?.twitterHandle || user.profile?.linkedInLink;
@@ -83,7 +91,7 @@ const Attendee = ({
                 onClick={() => {
                   setIsSettingsDialogOpen(true);
                 }}
-                sx={{ padding: 0 }}
+                sx={{ ml: 1, padding: 0 }}
               >
                 <SettingsIcon color='secondary'></SettingsIcon>
               </IconButton>
@@ -91,7 +99,7 @@ const Attendee = ({
                 onSetIsPrivate={onSetIsPrivate}
                 user={user}
                 isOpen={isSettingsDialogOpen}
-                setIsOpen={setIsSettingsDialogOpen}
+                setIsOpen={onSettingsDialogClose}
                 isPrivate={isPrivate}
               ></AttendeeSettingsDialog>
             </>
@@ -103,7 +111,7 @@ const Attendee = ({
                 onClick={() => {
                   setIsContactDialogOpen(true);
                 }}
-                sx={{ padding: 0 }}
+                sx={{ ml: 1, padding: 0 }}
               >
                 <ContactPageIcon color='secondary'></ContactPageIcon>
               </IconButton>
