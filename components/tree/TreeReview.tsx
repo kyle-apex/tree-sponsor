@@ -12,6 +12,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import MapIcon from '@mui/icons-material/MapOutlined';
 import ImageIcon from '@mui/icons-material/Image';
 import DeleteIconButton from 'components/DeleteIconButton';
+import getImageDimensions from 'utils/aws/get-image-dimensions';
 
 type Mode = 'Image' | 'Map';
 
@@ -50,7 +51,7 @@ const TreeReview = ({
       {mode == 'Image' && (
         <ImageUploadAndPreview
           imageUrl={tree.pictureUrl}
-          setImageUrl={(imageUrl: string) => {
+          setImageUrl={async (imageUrl: string) => {
             tree.pictureUrl = imageUrl;
             onUpdate(tree.id, { pictureUrl: imageUrl });
           }}

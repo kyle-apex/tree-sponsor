@@ -36,6 +36,7 @@
     "express": "^4.17.2",
     "fontsource-roboto": "^3.1.5",
     "html-react-parser": "^1.4.8",
+    "image-size": "^1.0.2",
     "linkify-string": "^3.0.4",
     "linkifyjs": "^3.0.5",
     "mailchimp-api-v3": "^1.15.0",
