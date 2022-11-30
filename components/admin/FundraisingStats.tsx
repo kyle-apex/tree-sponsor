@@ -64,7 +64,7 @@ const FundraisingStats = () => {
             count={stats?.activeDonations - stats?.currentYearMemberDonations}
             isCurrency={true}
             isLoading={isLoading}
-            icon={<UpdateIcon fontSize='large'></UpdateIcon>}
+            icon={<UpdateIcon fontSize='medium'></UpdateIcon>}
             color='primary'
           ></StatisticIconDisplay>
         </Grid>

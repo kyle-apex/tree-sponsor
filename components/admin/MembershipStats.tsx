@@ -37,7 +37,7 @@ const MembershipStats = () => {
       <Grid container spacing={4}>
         <Grid item xs={4} sx={{ textAlign: 'center' }}>
           <StatisticIconDisplay
-            icon={<GroupsIcon fontSize='large' />}
+            icon={<GroupsIcon fontSize='medium' />}
             color='secondary'
             label='Active Members'
             count={stats?.active}
