@@ -40,9 +40,23 @@ export type Coordinate = {
   longitude?: number;
 };
 
+export type Attendee = {
+  name?: string;
+  email?: string;
+  userId?: number;
+  isMember: boolean;
+  eventName?: string;
+  eventId?: string;
+  createdDate?: Date;
+  checkinId?: number;
+  discoveredFrom?: string;
+  emailOptIn?: string;
+}
+export type PartialAttendee = Partial<Attendee>;
+
 export type FieldSize = 'small' | 'medium';
 
-export interface NextSession extends Record<string, unknown>, DefaultSession {}
+export interface NextSession extends Record<string, unknown>, DefaultSession { }
 export type ReviewStatus = ReviewStatusPrisma | '';
 export type PartialSpecies = Partial<Species>;
 export type PartialTreeImage = Partial<TreeImage>;
@@ -50,7 +64,7 @@ export type PartialTree = Partial<Tree> & { images?: PartialTreeImage[]; species
 
 export type PartialEvent = Partial<Event> & { categories?: PartialCategory[]; trees?: PartialTree[]; location?: PartialLocation };
 export type PartialCategory = Partial<Category> & { events?: PartialEvent[]; trees?: PartialTree[] };
-export type PartialEventCheckIn = Partial<EventCheckIn>;
+export type PartialEventCheckIn = Partial<EventCheckIn> & { user?: PartialUser; event?: PartialEvent };
 export type PartialProfile = Partial<Profile>;
 
 export type PartialDonation = Partial<Donation>;

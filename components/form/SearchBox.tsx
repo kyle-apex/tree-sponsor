@@ -8,11 +8,13 @@ const SearchBox = ({
   onChange,
   size = 'small',
   defaultValue,
+  mb
 }: {
   label: string;
   onChange: (value: string) => void;
   size?: 'small' | 'medium';
   defaultValue?: string;
+  mb?: number
 }) => {
   return (
     <TextField
@@ -20,7 +22,7 @@ const SearchBox = ({
       id='search-box'
       label={label}
       size={size}
-      sx={{ background: 'white' }}
+      sx={{ background: 'white', mb }}
       defaultValue={defaultValue}
       onChange={event => {
         onChange(event.target.value);
