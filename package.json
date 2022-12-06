@@ -4,6 +4,7 @@
   "engines": {
     "node": "14.x"
   },
+  "cacheDirectories": [".next/cache"],
   "scripts": {
     "dev": "next",
     "server": "node server.js",
