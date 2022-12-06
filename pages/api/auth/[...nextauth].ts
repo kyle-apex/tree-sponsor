@@ -36,8 +36,8 @@ export default NextAuth({
     // Passwordless / email sign in
     Providers.Email({
       server: {
-        host: 'smtp.sendgrid.net',
-        port: 587,
+        host: process.env.SENDGRID_HOST || 'smtp.sendgrid.net',
+        port: Number(process.env.SENDGRID_PORT) || 587,
         auth: {
           user: 'apikey',
           pass: process.env.SENDGRID_API_KEY2,
@@ -128,14 +128,14 @@ function html({ url, email }: Record<'url' | 'host' | 'email', string>) {
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td align="center" style="padding: 10px 0px 20px 0px; font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-        <strong>TreeFolks Tree Sponsorship and Young Professionals</strong>
+        <strong>TreeFolks Young Professionals</strong>
       </td>
     </tr>
   </table>
   <table width="100%" border="0" cellspacing="20" cellpadding="0" style="background: ${mainBackgroundColor}; max-width: 600px; margin: auto; border-radius: 10px;">
     <tr>
       <td align="center" style="padding: 10px 0px 0px 0px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-        Sign in as <strong>${escapedEmail}</strong> to manage your account tree sponsorship and subscription.
+        Sign in as <strong>${escapedEmail}</strong> to manage your account and donations.
       </td>
     </tr>
     <tr>
