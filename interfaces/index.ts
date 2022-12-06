@@ -51,12 +51,12 @@ export type Attendee = {
   checkinId?: number;
   discoveredFrom?: string;
   emailOptIn?: string;
-}
+};
 export type PartialAttendee = Partial<Attendee>;
 
 export type FieldSize = 'small' | 'medium';
 
-export interface NextSession extends Record<string, unknown>, DefaultSession { }
+export interface NextSession extends Record<string, unknown>, DefaultSession {}
 export type ReviewStatus = ReviewStatusPrisma | '';
 export type PartialSpecies = Partial<Species>;
 export type PartialTreeImage = Partial<TreeImage>;
