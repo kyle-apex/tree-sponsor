@@ -36,7 +36,7 @@ const SpeciesQuiz = ({ correctSpecies }: { correctSpecies: PartialSpecies }) => 
 
   useEffect(() => {
     setSpeciesOptions(getQuizOptions(prioritySpecies, correctSpecies));
-  }, [correctSpecies?.id]);
+  }, [correctSpecies?.id, prioritySpecies]);
 
   const handleClick = (newlyClickedSpeciesId: number) => {
     if (clickedSpeciesId === null) {
