@@ -41,11 +41,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     const userId = user?.id;
-    const updateCheckin: PartialEventCheckIn = {
+    const updateCheckin: Prisma.EventCheckInUncheckedUpdateInput = {
       userId,
       discoveredFrom,
     };
-    const createCheckin: PartialEventCheckIn = { eventId, userId, email, discoveredFrom };
+    const createCheckin: Prisma.EventCheckInUncheckedCreateInput = { eventId, userId, email, discoveredFrom };
 
     if (emailOptIn && firstName) {
       createCheckin['emailOptIn'] = true;
