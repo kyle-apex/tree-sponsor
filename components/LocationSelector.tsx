@@ -6,6 +6,7 @@ import Geocoder from 'react-map-gl-geocoder';
 import RoomSharpIcon from '@mui/icons-material/RoomSharp';
 import makeStyles from '@mui/styles/makeStyles';
 import { MAP_STYLE } from 'consts';
+import { MapStyle } from 'interfaces';
 
 const geolocateControlStyle = {
   right: 10,
@@ -32,11 +33,15 @@ const LocationSelector = ({
   latitude,
   longitude,
   auto,
+  mapStyle = 'STREET',
+  zoom = 16,
 }: {
   onViewportChange: (viewport: { longitude: number; latitude: number; zoom: number }) => void;
   longitude?: number;
   latitude?: number;
   auto?: boolean;
+  mapStyle?: MapStyle;
+  zoom?: number;
 }) => {
   const mapRef = useRef();
 
@@ -46,7 +51,7 @@ const LocationSelector = ({
   const [viewport, setViewport] = React.useState({
     longitude: START_LONGITUDE,
     latitude: START_LATITUDE,
-    zoom: 16,
+    zoom: zoom,
   });
 
   //30.476811100617866, -97.85117098722235
@@ -66,7 +71,7 @@ const LocationSelector = ({
           onViewportChange({ latitude: e.latitude, longitude: e.longitude, zoom: e.zoom });
         }}
         mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-        mapStyle={MAP_STYLE.STREET}
+        mapStyle={MAP_STYLE[mapStyle]}
       >
         <GeolocateControl
           auto={auto}

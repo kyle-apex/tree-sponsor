@@ -110,6 +110,7 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
           latitude={tree?.latitude ? Number(tree?.latitude) : null}
           longitude={tree?.longitude ? Number(tree?.longitude) : null}
           auto={!tree?.latitude}
+          mapStyle='SATELLITE'
         ></LocationSelector>
         <SplitRow>
           <Button
