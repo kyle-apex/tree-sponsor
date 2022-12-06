@@ -315,9 +315,11 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       {status && (
         <>
-          <Typography variant='body2' component='div' mb={2} mt={-2}>
-            <SafeHTMLDisplay html={event?.checkInDetails}></SafeHTMLDisplay>
-          </Typography>
+          {event?.checkInDetails && event.checkInDetails != '<p><br></p>' && (
+            <Typography variant='body2' component='div' mb={2} mt={-2}>
+              <SafeHTMLDisplay html={event?.checkInDetails}></SafeHTMLDisplay>
+            </Typography>
+          )}
           <Attendees
             users={status.attendees}
             onDelete={userId => {
