@@ -1,6 +1,9 @@
 {
   "name": "tree-sponsor",
   "version": "0.0.1",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "dev": "next",
     "server": "node server.js",

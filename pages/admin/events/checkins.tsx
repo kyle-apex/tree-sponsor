@@ -46,35 +46,30 @@ import SearchBox from 'components/form/SearchBox';
 import { useDebouncedCallback } from 'use-debounce';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
-    return restrictPageAccess(ctx, 'hasEventManagement');
+  return restrictPageAccess(ctx, 'hasEventManagement');
 };
 
 async function handleDelete(id: number) {
-    await axios.delete('/api/events/delete-checkin?checkinId=' + id);
+  await axios.delete('/api/events/delete-checkin?checkinId=' + id);
 }
 // TODO: Paginate
 const CheckinsPage = () => {
-    const router = useRouter();
-    const [searchString, setSearchString] = useState('');
-    const debouncedSetSearchText = useDebouncedCallback((value: string) => {
-        setSearchString(value);
-    }, 300);
+  const router = useRouter();
+  const [searchString, setSearchString] = useState('');
+  const debouncedSetSearchText = useDebouncedCallback((value: string) => {
+    setSearchString(value);
+  }, 300);
 
+  const { data: attendees, isFetching } = useGet<PartialEvent[]>('/api/events/attendees', 'attendees', { searchString });
 
-    const { data: attendees, isFetching } = useGet<PartialEvent[]>('/api/events/attendees', 'attendees', { searchString });
+  const { remove } = useRemoveFromQuery('attendees', handleDelete);
 
-    const { remove } = useRemoveFromQuery('attendees', handleDelete);
+  return (
+    <AdminLayout title='Attendees' header='Attendees'>
+      <SearchBox mb={2} label='Search Attendees' onChange={debouncedSetSearchText} defaultValue={searchString}></SearchBox>
 
-    return (
-        <AdminLayout
-            title='Attendees'
-            header='Attendees'
-        >
-            <SearchBox mb={2} label='Search Attendees' onChange={debouncedSetSearchText} defaultValue={searchString}></SearchBox>
-
-            <AttendeesTable attendees={attendees} isFetching={isFetching} onDelete={remove}></AttendeesTable>
-        </AdminLayout>
-    );
+      <AttendeesTable attendees={attendees} isFetching={isFetching} onDelete={remove}></AttendeesTable>
+    </AdminLayout>
+  );
 };
 export default CheckinsPage;
-
