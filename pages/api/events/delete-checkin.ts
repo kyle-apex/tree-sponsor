@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     let event;
     if (req.query.checkinId) {
-      event = await prisma.eventCheckIn.deleteMany({ where: { id: Number(req.query.checkinId) } })
+      event = await prisma.eventCheckIn.deleteMany({ where: { id: Number(req.query.checkinId) } });
     } else {
       const userId = Number(req.query.userId);
       const eventId = Number(req.query.eventId);
@@ -23,7 +23,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         where: { userId, eventId },
       });
     }
-
 
     res.status(200).json(event);
   }
