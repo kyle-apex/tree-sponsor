@@ -14,6 +14,7 @@ export default CheckinRedirect;
 export async function getServerSideProps() {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(23);
   const event = await prisma.event.findFirst({
     where: {
       startDate: { lt: tomorrow },
