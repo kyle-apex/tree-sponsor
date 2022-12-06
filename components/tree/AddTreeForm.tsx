@@ -22,8 +22,8 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
   const [completed] = useState<{ [k: number]: boolean }>({});
 
   const handleChange = useCallback((propertyName: string, value: string | number) => {
-    console.log('handleChange', propertyName, value);
-    console.log('tree', tree);
+    //console.log('handleChange', propertyName, value);
+    //console.log('tree', tree);
     //const newTree = { ...tree, [propertyName]: value };
 
     setTree(current => {
@@ -110,6 +110,7 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
           latitude={tree?.latitude ? Number(tree?.latitude) : null}
           longitude={tree?.longitude ? Number(tree?.longitude) : null}
           auto={!tree?.latitude}
+          mapStyle='SATELLITE'
         ></LocationSelector>
         <SplitRow>
           <Button

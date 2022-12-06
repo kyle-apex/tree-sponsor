@@ -1,11 +1,3 @@
-/* TODO
-- Members at the event
-
-- Map of trees on Top if more than 1
-- Tree Display: Image, Species, Species details?
-    - Thanks?, comments? reactions?
-- Checkins? 
-*/
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useCallback, useEffect, useState } from 'react';
@@ -38,6 +30,7 @@ type MembershipStatus = {
   isFound?: boolean;
   email?: string;
   attendees?: PartialUser[];
+  attendeesCount?: number;
   checkInCount?: number;
   trees: PartialTree[];
   myCheckin?: PartialEventCheckIn;
@@ -332,7 +325,16 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             }}
             onSetIsPrivate={updateIsPrivate}
             isPrivate={isPrivate}
+            onRefresh={() => {
+              getMembershipStatus();
+            }}
           ></Attendees>
+          {status.checkInCount > status.attendees?.length && (
+            <Typography variant='body2' ml={0} mt={-2} mb={3} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
+              + {status.checkInCount - status.attendees?.length} other attendee
+              {status.checkInCount - status.attendees?.length == 1 ? '' : 's'}
+            </Typography>
+          )}
           <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
             Tree ID Quiz
           </Typography>

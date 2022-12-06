@@ -88,6 +88,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     //console.log('checkins', checkins);
     const checkInCount = checkins.length;
     let myCheckin;
+    const attendeesCount = checkins?.length;
     const attendees = checkins
       .filter(checkin => {
         if (checkin.userId == userId) {
@@ -133,6 +134,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    res.status(200).json({ subscription, checkInCount, attendees, trees, myCheckin });
+    res.status(200).json({ subscription, checkInCount, attendees, trees, myCheckin, attendeesCount });
   }
 }

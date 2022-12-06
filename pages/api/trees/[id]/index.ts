@@ -9,6 +9,7 @@ import uploadTreeImages from 'utils/aws/upload-tree-images';
 import getTreeImagePath from 'utils/aws/get-tree-image-path';
 import { Tree, TreeImage } from '@prisma/client';
 import { getSession } from 'utils/auth/get-session';
+import getBase64ImageDimensions from 'utils/aws/get-base64-image-dimensions';
 
 export const config = {
   api: {
@@ -38,16 +39,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (pictureUrl && !pictureUrl.includes('http')) {
       // find existing tree
-      const existingTree = await prisma.tree.findFirst({ where: { id: tree.id }, include: { images: true } });
+      const existingTree = await prisma.tree.findFirst({ where: { id: id }, include: { images: true } });
       let image = existingTree?.images?.find(img => img.url == existingTree.pictureUrl) as Partial<TreeImage>;
+
+      const { width, height } = getBase64ImageDimensions(pictureUrl);
 
       if (!image) {
         image = { uuid: uuidv4() };
         const imagePath = getTreeImagePath(image.uuid);
         updateData.pictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}/small`;
+
+        image['width'] = width;
+        image['height'] = height;
+
         updateData.images = {
-          upsert: [{ create: { uuid: image.uuid, url: String(updateData.pictureUrl) }, update: image, where: { uuid: image.uuid } }],
+          upsert: [
+            { create: { uuid: image.uuid, url: String(updateData.pictureUrl), width, height }, update: image, where: { uuid: image.uuid } },
+          ],
         };
+      } else {
+        updateData.images = {
+          update: { data: { width, height }, where: { uuid: image.uuid } },
+        };
+        delete updateData.pictureUrl;
       }
 
       uploadTreeImages(pictureUrl, image.uuid);

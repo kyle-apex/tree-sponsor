@@ -33,14 +33,14 @@ const StatisticIconDisplay = ({
   //<StatisticIconDisplay icon={} showUpIcon={} showDownIcon={} color={} label={} description={}></StatisticIconDisplay>
   return (
     <>
-      <Typography variant='h3' color={color}>
-        {showUpIcon && <ArrowDropUpIcon fontSize='large' />}
-        {showDownIcon && <ArrowDropDownIcon fontSize='large' />}
+      <Typography variant='h4' color={color}>
+        {showUpIcon && <ArrowDropUpIcon fontSize='medium' />}
+        {showDownIcon && <ArrowDropDownIcon fontSize='medium' />}
         {!!icon && !isLoading && <>{icon} </>}
         {isLoading && <CircularProgress size={20}></CircularProgress>}
         {formatCount(count, isCurrency)}
       </Typography>
-      <Typography variant='subtitle1'>{label}</Typography>
+      <Typography variant='subtitle2'>{label}</Typography>
       {description && (
         <Typography variant='body2' color='textSecondary'>
           {description}

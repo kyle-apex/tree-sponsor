@@ -10,14 +10,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!isAuthorized) {
       return throwError(res, 'Access denied');
     }
-    const userId = Number(req.query.userId);
-    const eventId = Number(req.query.eventId);
+    let event;
+    if (req.query.checkinId) {
+      event = await prisma.eventCheckIn.deleteMany({ where: { id: Number(req.query.checkinId) } })
+    } else {
+      const userId = Number(req.query.userId);
+      const eventId = Number(req.query.eventId);
 
-    if (!eventId || !userId) return throwError(res, 'Invalid input');
+      if (!eventId || !userId) return throwError(res, 'Invalid input');
 
-    const event = await prisma.eventCheckIn.deleteMany({
-      where: { userId, eventId },
-    });
+      event = await prisma.eventCheckIn.deleteMany({
+        where: { userId, eventId },
+      });
+    }
+
 
     res.status(200).json(event);
   }

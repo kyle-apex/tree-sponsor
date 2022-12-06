@@ -45,6 +45,8 @@ const DeleteConfirmationDialog = ({
           latitude={latitude}
           longitude={longitude}
           auto={!latitude}
+          mapStyle='SATELLITE'
+          zoom={19}
         ></LocationSelector>
       </DialogContent>
       <DialogActions>
