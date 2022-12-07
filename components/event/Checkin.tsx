@@ -341,7 +341,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             Tree ID Quiz
           </Typography>
           <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
-            Click a tree map marker below to learn about the trees around us and test your tree species knowledge
+            Click tree map markers below to learn about trees around us and test your knowledge
           </Typography>
           <Box mb={3}>
             <MapMarkerDisplay
