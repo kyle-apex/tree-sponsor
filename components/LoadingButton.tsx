@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Theme } from '@mui/material/styles';
 import { SxProps } from '@mui/system/styleFunctionSx';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 const LoadingButton = ({
   children,
@@ -13,6 +13,8 @@ const LoadingButton = ({
   onClick,
   isLoading,
   disabled,
+  startIcon,
+  //isLoadingOnClick,
   sx,
 }: {
   children?: React.ReactNode;
@@ -23,8 +25,17 @@ const LoadingButton = ({
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   isLoading?: boolean;
   disabled?: boolean;
+  startIcon?: React.ReactNode;
+  //isLoadingOnClick?: boolean;
   sx?: SxProps<Theme>;
 }): JSX.Element => {
+  /*const handleClick = useCallback(
+    a => {
+      onClick(a);
+      isLoading = true;
+    },
+    [onClick],
+  );*/
   return (
     <Button
       size={size}
@@ -34,6 +45,7 @@ const LoadingButton = ({
       variant={variant}
       color={color}
       onClick={onClick}
+      startIcon={!isLoading ? startIcon : null}
     >
       {!isLoading ? children : <CircularProgress size={24} color={color} />}
     </Button>
