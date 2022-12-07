@@ -1,7 +1,7 @@
 import { WebMercatorViewport } from 'react-map-gl';
 import { Coordinate, Viewport } from 'interfaces';
 
-const centerViewport = (viewport: Viewport, coordinates: Coordinate[]) => {
+const centerViewport = (viewport: Viewport, coordinates: Coordinate[], width?: number, height?: number) => {
   let minLng, minLat, maxLng, maxLat;
   for (const coordinate of coordinates) {
     if (coordinate.latitude) {
@@ -18,15 +18,14 @@ const centerViewport = (viewport: Viewport, coordinates: Coordinate[]) => {
     }
   }
   if (minLng) {
-    const vp = new WebMercatorViewport({ height: 400, width: 400 });
+    console.log('viewport', viewport);
+    const vp = new WebMercatorViewport({ height: height || 400, width: width || 400 });
     const { longitude, latitude, zoom } = vp.fitBounds(
       [
         [Number(minLng), Number(minLat)],
         [Number(maxLng), Number(maxLat)],
       ],
-      {
-        padding: 80,
-      },
+      { padding: { top: 30, left: 40, right: 40, bottom: 60 } },
     );
     const newZoom = zoom > 18 ? 18 : zoom;
     return { ...viewport, longitude, latitude, zoom: newZoom };

@@ -34,7 +34,7 @@ const MapMarkerDisplay = ({
     zoom: defaultZoom || 10.7,
   });
   useEffect(() => {
-    const centeredViewport = centerViewport(viewport, markers);
+    const centeredViewport = centerViewport(viewport, markers, 200, 350);
     setViewport(centeredViewport);
   }, []);
 

@@ -14,6 +14,7 @@ import { useRemoveFromQuery } from 'utils/hooks/use-remove-from-query';
 import { useGet } from 'utils/hooks/use-get';
 import axios from 'axios';
 import Typography from '@mui/material/Typography';
+import LoadingButton from 'components/LoadingButton';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'hasEventManagement');
@@ -25,6 +26,7 @@ async function handleDelete(id: number) {
 
 const ManageEventsPage = () => {
   const router = useRouter();
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const { data: pastEvents, isFetching: pastIsFetching } = useGet<PartialEvent[]>('/api/events', 'pastEvents', { isPastEvent: true });
   const { data: events, isFetching } = useGet<PartialEvent[]>('/api/events', 'events', { isPastEvent: false });
@@ -37,16 +39,18 @@ const ManageEventsPage = () => {
       header={
         <Box component='div' flexDirection='row' sx={{ display: 'flex' }} justifyContent='space-between'>
           <span>Manage Events</span>
-          <Button
+          <LoadingButton
             onClick={() => {
+              setIsNavigating(true);
               router.push('/admin/events/new');
             }}
+            isLoading={isNavigating}
             startIcon={<AddIcon />}
             variant='contained'
             sx={{ width: '140px' }}
           >
             Add Event
-          </Button>
+          </LoadingButton>
         </Box>
       }
     >
