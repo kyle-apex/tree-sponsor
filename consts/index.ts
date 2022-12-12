@@ -9,3 +9,5 @@ export const MAP_STYLE = {
   STREET: 'mapbox://styles/mapbox/streets-v11?optimize=true',
   SIMPLE: 'mapbox://styles/mapbox/light-v10?optimize=true',
 };
+
+export const BASE_TITLE = 'TreeFolksYP';

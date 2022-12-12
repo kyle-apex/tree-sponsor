@@ -20,7 +20,7 @@ const LaunchPortalButton = ({ stripeCustomerId }: { stripeCustomerId?: string })
       onClick={() => launchClientPortal(stripeCustomerId)}
       isLoading={isLaunching}
     >
-      Manage
+      Manage Donation
     </LoadingButton>
   );
 };

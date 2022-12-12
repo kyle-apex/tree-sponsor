@@ -20,6 +20,7 @@ import AtmosphereImage from 'components/index/icons/AtmosphereImage';
 import ActivitiesImage from 'components/index/icons/ActivitiesImage';
 import AnimalsImage from 'components/index/icons/AnimalsImage';
 import SponsorshipGroup from 'components/sponsor/SponsorshipGroup';
+import SignupForm from 'components/membership/SignUpForm';
 
 const useStyles = makeStyles(theme => ({
   headlineContainer: {
@@ -57,7 +58,7 @@ const getIcon = (title: string) => {
       return <ActivitiesImage />;
   }
 };
-
+/*
 export const getStaticProps = async () => {
   return {
     props: {
@@ -65,8 +66,18 @@ export const getStaticProps = async () => {
     },
   };
 };
-
-const IndexPage = ({ treeBenefits }: { treeBenefits: TitleSection[] }) => {
+*/
+const IndexPage = ({
+  treeBenefits,
+  stripePriceIdLow,
+  stripePriceIdMedium,
+  stripePriceIdHigh,
+}: {
+  treeBenefits: TitleSection[];
+  stripePriceIdLow: string;
+  stripePriceIdMedium: string;
+  stripePriceIdHigh: string;
+}) => {
   const [sponsorships, setSponsorships] = useState<PartialSponsorship[]>([]);
   const [isLoadingSponsorships, setIsLoadingSponsorships] = useState(false);
 
@@ -127,52 +138,52 @@ const IndexPage = ({ treeBenefits }: { treeBenefits: TitleSection[] }) => {
           ))}
         </Grid>
       </Container>
-      <div style={{ height: '150px', width: '100%', marginTop: '-40px', overflow: 'hidden' }}>
+      <div style={{ height: '150px', width: '100%', marginTop: '-80px', overflow: 'hidden' }}>
         <CurveTop />
       </div>
       <div className='wide-container index'>
-        <Container maxWidth='lg'>
-          <Typography variant='h2' color='white' mb={4} mt={4} sx={{ textAlign: 'center' }}>
-            How can I Thank-a-Tree?
+        <Container maxWidth='sm'>
+          <Typography color='white' variant='h1' sx={{ fontSize: '2rem' }}>
+            Become a Member
           </Typography>
-          <Grid container direction={{ xs: 'column', sm: 'row' }}>
-            <Grid item sm={4}>
-              <Box>
-                <Box className='step-number'>1</Box>
-              </Box>
-              <Typography variant='subtitle1' className='step-text'>
-                Snap a picture of your most appreciated tree(s)
-              </Typography>
-            </Grid>
-            <Grid item sm={4}>
-              <Box>
-                <Box className='step-number'>2</Box>
-              </Box>
-              <Typography variant='subtitle1' className='step-text'>
-                Support your tree(s) and future tree plantings with an annual TreeFolks donation of $20/tree
-              </Typography>
-            </Grid>
-            <Grid item sm={4} className='center'>
-              <Box>
-                <Box className='step-number'>3</Box>
-              </Box>
-              <Typography variant='subtitle1' className='step-text'>
-                Thank-a-Tree by adding a Token of Appre-tree-ation to the map
-              </Typography>
-              <Link href='/signup'>
-                <Button variant='outlined' color='inherit'>
-                  Get Started
-                </Button>
-              </Link>
-            </Grid>
-          </Grid>
+          <Typography variant='body2' mb={-1}>
+            Support the Central Texas urban forest by becoming a TreeFolks Young Professionals (TreeFolksYP) member. Please select an annual
+            TreeFolks donation level below:
+          </Typography>
         </Container>
       </div>
-      <div style={{ height: '150px', width: '100%', overflow: 'hidden', transform: 'scaleY(-1) scaleX(-1)' }}>
+      <div
+        style={{
+          height: '360px',
+          marginBottom: '-360px',
+          width: '100%',
+          overflow: 'hidden',
+          transform: 'scaleY(-1) scaleX(-1)',
+          marginTop: '-1px',
+        }}
+      >
         <CurveBottom />
       </div>
+      <Box>
+        <SignupForm
+          stripePriceIdHigh={stripePriceIdHigh}
+          stripePriceIdLow={stripePriceIdLow}
+          stripePriceIdMedium={stripePriceIdMedium}
+        ></SignupForm>
+      </Box>
     </Layout>
   );
 };
 
 export default IndexPage;
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      stripePriceIdLow: process.env.STRIPE_PRICE_ID_LOW,
+      stripePriceIdMedium: process.env.STRIPE_PRICE_ID_MEDIUM,
+      stripePriceIdHigh: process.env.STRIPE_PRICE_ID_HIGH,
+      treeBenefits: treeBenefits,
+    },
+  };
+}

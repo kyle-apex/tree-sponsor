@@ -22,7 +22,7 @@ import SessionAvatar from 'components/SessionAvatar';
 import NotificationIcon from 'components/notification/NotificationIcon';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import useTheme from '@mui/styles/useTheme';
-
+import { BASE_TITLE } from 'consts';
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -37,6 +37,7 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     color: theme.palette.primary.main,
     marginLeft: theme.spacing(2),
+    cursor: 'pointer',
   },
   hide: {
     display: 'none',
@@ -113,25 +114,17 @@ const Header = ({ title }: { title?: string }) => {
             </a>
           </Link>
 
-          <Typography variant='h6' className={classes.title}>
-            {title && <span>{title}</span>}
-            {!title && (
-              <>
-                <span className={!session ? 'hidden-mobile' : ''}>Thank-a-Tree</span>
-                <span className='hidden-mobile'> with TreeFolksYP</span>
-              </>
-            )}
-          </Typography>
+          <Link href='/'>
+            <Typography variant='h6' className={classes.title}>
+              {title && <span>{title}</span>}
+              {!title && <span>{BASE_TITLE}</span>}
+            </Typography>
+          </Link>
 
           {!session && (
             <Box sx={{ marginRight: 2, flexDirection: 'row', display: 'flex' }}>
-              {!isMobile && (
-                <Link href='/signup'>
-                  <Button color='inherit'>Thank a Tree</Button>
-                </Link>
-              )}
               <Link href='/membership'>
-                <Box sx={{ borderLeft: isMobile ? 'none' : 'solid 1px', borderColor: theme => theme.palette.secondary.main }}>
+                <Box>
                   <Button color={isMobile ? 'inherit' : 'secondary'}>Become a Member</Button>
                 </Box>
               </Link>
@@ -228,7 +221,7 @@ const Header = ({ title }: { title?: string }) => {
               className={classes.loginButton}
               onClick={() => router.push('/signup')}
             >
-              Thank a Tree
+              Become a Member
             </Button>
           </ListItem>
         )}
