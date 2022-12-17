@@ -19,6 +19,8 @@ import Link from 'next/link';
 import ChevronRight from '@mui/icons-material/ChevronRight';
 import Typography from '@mui/material/Typography';
 import { useSession } from 'next-auth/client';
+import { Subscriptions } from '@mui/icons-material';
+import { Session } from 'interfaces';
 
 const TabLabel = ({ title, pricing, subtitle }: { title: string; pricing: string; subtitle: string }) => (
   <>
@@ -38,6 +40,7 @@ const SignupPage = ({
   stripePriceIdHigh: string;
 }) => {
   const [session] = useSession();
+  const mySession = session as Session;
   const memberships = [
     { trees: 1, price: 20, hasShirt: false, stripePriceId: stripePriceIdLow },
     { trees: 3, price: 60, hasShirt: true, stripePriceId: stripePriceIdMedium },
@@ -54,24 +57,24 @@ const SignupPage = ({
   return (
     <Layout title='Sign Up'>
       <Container maxWidth='sm'>
-        <Box mb={2}>
-          <Link href={session ? '/account' : '/signin'}>
-            <a style={{ textDecoration: 'none' }}>
-              <Box flexDirection='row' sx={{ display: 'flex' }} gap={0.4}>
-                <Typography color='primary'>
-                  {session ? 'Configure existing Tokens of Appre-tree-ation in your account' : 'Already signed up? Login to thank trees'}
-                </Typography>
-                <ChevronRight color='primary' />
-              </Box>
-            </a>
-          </Link>
-        </Box>
+        {mySession?.user?.subscriptions?.length > 0 && (
+          <Box mb={2}>
+            <Link href={session ? '/account' : '/signin'}>
+              <a style={{ textDecoration: 'none' }}>
+                <Box flexDirection='row' sx={{ display: 'flex' }} gap={0.4}>
+                  <Typography color='primary'>Thanks for being a member! Click here to manage your account</Typography>
+                  <ChevronRight color='primary' />
+                </Box>
+              </a>
+            </Link>
+          </Box>
+        )}
         <Typography color='secondary' variant='h1' sx={{ fontSize: '2rem' }}>
-          Thank-a-Tree / Start a Membership
+          Become a Member
         </Typography>
         <p>
-          Whether you want to thank a tree, join TreeFolks Young Professionals (TreeFolksYP), or both, you are in the right place. Please
-          select a TreeFolks donation level below:
+          Support the Central Texas urban forest by becoming a TreeFolks Young Professionals (TreeFolksYP) member. Please select an annual
+          TreeFolks donation level below:
         </p>
         <Tabs
           sx={{
@@ -99,20 +102,6 @@ const SignupPage = ({
         <Table>
           <TableBody>
             <TableRow>
-              <TableCell>Tokens of Appre-tree-ation</TableCell>
-              <TableCell>
-                <Chip
-                  label={memberships[activeMembershipIndex].trees}
-                  sx={{
-                    '& img': { marginLeft: '10px !important', marginRight: '-4px !important', height: '18px' },
-                    '& .MuiChip-label': { fontWeight: 600 },
-                  }}
-                  icon={<img src='/tree-small.svg' alt='tree icon' />}
-                  color='primary'
-                ></Chip>
-              </TableCell>
-            </TableRow>
-            <TableRow>
               <TableCell>TreeFolks Donation</TableCell>
               <TableCell>
                 <div>${memberships[activeMembershipIndex].price}/yr</div>
@@ -130,7 +119,7 @@ const SignupPage = ({
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>TreeFolksYP Membership & Event Discounts</TableCell>
+              <TableCell>Event Discounts</TableCell>
               <TableCell>
                 {isMembership ? (
                   <CheckCircleIcon color='primary'></CheckCircleIcon>
@@ -149,6 +138,20 @@ const SignupPage = ({
                 )}
               </TableCell>
             </TableRow>
+            <TableRow>
+              <TableCell>Tokens of Appre-tree-ation</TableCell>
+              <TableCell>
+                <Chip
+                  label={memberships[activeMembershipIndex].trees}
+                  sx={{
+                    '& img': { marginLeft: '10px !important', marginRight: '-4px !important', height: '18px' },
+                    '& .MuiChip-label': { fontWeight: 600 },
+                  }}
+                  icon={<img src='/tree-small.svg' alt='tree icon' />}
+                  color='primary'
+                ></Chip>
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
         <Box sx={{ marginTop: 2 }}>
@@ -164,9 +167,7 @@ const SignupPage = ({
                   color='secondary'
                 />
               }
-              label={`In addition to my token${
-                activeMembershipIndex == 0 ? '' : 's'
-              } of appre-tree-ation, I would like to be a part of TreeFolks Young Professionals and receive email updates for events and volunteer opportunities`}
+              label={`I would like to receive email updates for events and volunteer opportunities`}
             />
           </FormGroup>
           <CheckoutButton

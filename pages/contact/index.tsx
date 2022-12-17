@@ -53,6 +53,10 @@ const Contact = () => {
         <Typography color='secondary' variant='h1'>
           Contact Us
         </Typography>
+        <Typography variant='body2' mb={4}>
+          TreeFolks Young Professionals is a group of passionate volunteers, so while we may not respond immediately, we will respond as
+          soon as we can!
+        </Typography>
         <TextField
           label='Email'
           value={email}

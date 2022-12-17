@@ -21,6 +21,7 @@ import Typography from '@mui/material/Typography';
 import { useSession } from 'next-auth/client';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { Session } from 'interfaces';
 
 const TabLabel = ({ title, pricing, subtitle }: { title: string; pricing: string; subtitle: string }) => (
   <>
@@ -40,6 +41,8 @@ const SignupPage = ({
   stripePriceIdHigh: string;
 }) => {
   const [session] = useSession();
+
+  const mySession = session as Session;
   const [foundFrom, setFoundFrom] = useState('');
 
   const memberships = [
@@ -58,20 +61,18 @@ const SignupPage = ({
   return (
     <Layout title='Sign Up'>
       <Container maxWidth='sm'>
-        <Box mb={2}>
-          <Link href={session ? '/account' : '/signin'}>
-            <a style={{ textDecoration: 'none' }}>
-              <Box flexDirection='row' sx={{ display: 'flex' }} gap={0.4}>
-                <Typography color='primary'>
-                  {session
-                    ? 'Thanks for being a member!  Click here to manage your account'
-                    : 'Already signed up? Login to manage your account'}
-                </Typography>
-                <ChevronRight color='primary' />
-              </Box>
-            </a>
-          </Link>
-        </Box>
+        {mySession?.user?.subscriptions?.length > 0 && (
+          <Box mb={2}>
+            <Link href={session ? '/account' : '/signin'}>
+              <a style={{ textDecoration: 'none' }}>
+                <Box flexDirection='row' sx={{ display: 'flex' }} gap={0.4}>
+                  <Typography color='primary'>Thanks for being a member! Click here to manage your account</Typography>
+                  <ChevronRight color='primary' />
+                </Box>
+              </a>
+            </Link>
+          </Box>
+        )}
         <Typography color='secondary' variant='h1' sx={{ fontSize: '2rem' }}>
           Become a Member
         </Typography>

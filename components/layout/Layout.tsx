@@ -5,6 +5,7 @@ import Footer from './Footer';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Acute from 'components/acute/Acute';
+import { BASE_TITLE } from 'consts';
 
 type Props = {
   children?: ReactNode;
@@ -17,7 +18,7 @@ type Props = {
 
 const Layout = ({
   children,
-  title = 'Thank-a-Tree | TreeFolksYP',
+  title = 'TreeFolksYP',
   header,
   isFullWidth,
   description = 'Thank your favorite trees with a Token of Appre-tree-ation in support of future tree plantings through TreeFolks Young Professionals (TreeFolksYP)',
@@ -27,16 +28,10 @@ const Layout = ({
     <Head>
       <title>
         {title}
-        {title != 'Thank-a-Tree | TreeFolksYP' ? ` - Thank-a-Tree | TreeFolksYP` : ``}
+        {title != BASE_TITLE ? ` - ${BASE_TITLE}` : ``}
       </title>
       {ogImage && <meta property='og:image' content={ogImage} key='ogimage' />}
-      {title && (
-        <meta
-          property='og:title'
-          content={title != 'Thank-a-Tree | TreeFolksYP' ? title + ' - Thank-a-Tree | TreeFolksYP' : title}
-          key='ogtitle'
-        />
-      )}
+      {title && <meta property='og:title' content={title != BASE_TITLE ? title + ` - ${BASE_TITLE}` : title} key='ogtitle' />}
       {description && <meta property='og:description' content={description} key='ogdesc' />}
       <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
       <meta charSet='utf-8' />

@@ -56,7 +56,10 @@ const Subscriptions = ({
 
   const refreshFromStripe = async () => {
     setIsRefreshing(true);
-    await axios.post('/api/me/update-from-stripe', { email: session?.user?.email });
+    try {
+      await axios.post('/api/me/update-from-stripe', { email: session?.user?.email });
+      // eslint-disable-next-line no-empty
+    } catch (err) {}
     await refetch();
     setIsRefreshing(false);
   };

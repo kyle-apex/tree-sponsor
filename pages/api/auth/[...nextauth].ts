@@ -67,10 +67,11 @@ export default NextAuth({
       if (!session.user.roles && session.user.id) {
         const userWithRoles = (await prisma.user.findFirst({
           where: { id: session.user.id },
-          include: { roles: {} },
+          include: { roles: {}, subscriptions: {} },
         })) as PartialUser;
 
         if (userWithRoles.roles) session.user.roles = userWithRoles.roles;
+        if (userWithRoles.subscriptions) session.user.subscriptions = userWithRoles.subscriptions;
       }
       return session;
     },
