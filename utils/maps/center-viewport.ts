@@ -18,7 +18,6 @@ const centerViewport = (viewport: Viewport, coordinates: Coordinate[], width?: n
     }
   }
   if (minLng) {
-    console.log('viewport', viewport);
     const vp = new WebMercatorViewport({ height: height || 400, width: width || 400 });
     const { longitude, latitude, zoom } = vp.fitBounds(
       [
