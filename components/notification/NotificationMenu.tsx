@@ -48,7 +48,7 @@ const NotificationMenu = ({
         ))}
         {notifications?.length == 0 && (
           <Box onClick={handleClose} sx={{ padding: 1 }}>
-            No noficiations found
+            No notifications found
           </Box>
         )}
       </Menu>

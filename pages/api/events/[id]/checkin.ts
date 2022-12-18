@@ -57,6 +57,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // add mailchimp tag
       const tagName = new Date().getFullYear() + ' ' + event.name;
       if (email) addTagToMembersByName(tagName, [email]);
+      // update the db with any membership changes
+      updateSubscriptionsForUser(email);
     }
 
     const newCheckin = await prisma.eventCheckIn.upsert({
@@ -112,8 +114,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     //console.log('attendees', attendees);
 
     if (user) {
-      //await updateSubscriptionsForUser(email);
-
       subscription = await prisma.subscriptionWithDetails.findFirst({
         where: { email: email },
         orderBy: { lastPaymentDate: 'desc' },
