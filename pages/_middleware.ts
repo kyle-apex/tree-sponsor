@@ -1,7 +1,7 @@
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 
 type Environment = 'production' | 'development' | 'other';
-export function middleware(req: NextRequest, ev: NextFetchEvent) {
+export function middleware(req: NextRequest, _ev: NextFetchEvent) {
   const currentEnv = process.env.NODE_ENV as Environment;
   console.log('env', process.env.NODE_ENV);
 
