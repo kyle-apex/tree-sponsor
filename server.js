@@ -27,3 +27,14 @@ app.prepare().then(() => {
   https.createServer(options, server).listen(ports.https);
   console.log('Running https at', 'https://localhost:3443');
 });
+
+var forceSsl = function (req, res, next) {
+  if (req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect(['https://', req.get('Host'), req.url].join(''));
+  }
+  return next();
+};
+
+if (!dev) {
+  app.use(forceSsl);
+}
