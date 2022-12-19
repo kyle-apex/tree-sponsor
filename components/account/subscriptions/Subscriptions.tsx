@@ -101,15 +101,27 @@ const Subscriptions = ({
                   <div className={classes.amount}>
                     ${subscription?.amount}/<span>year</span>
                   </div>
-                  <div className='center'>
-                    {subscription.status === 'active' ? 'Renews' : 'Expiration'}:{' '}
-                    {new Date(subscription.expirationDate).toLocaleString('default', { month: 'long', day: 'numeric' })}
-                    <span>, {new Date(subscription.expirationDate).getFullYear()}</span>
-                  </div>
+                  {subscription.status != 'canceled' ? (
+                    <div className='center'>
+                      {subscription.status === 'active' ? 'Renews' : 'Expiration'}:{' '}
+                      {new Date(subscription.expirationDate).toLocaleString('default', { month: 'long', day: 'numeric' })}
+                      <span>, {new Date(subscription.expirationDate).getFullYear()}</span>
+                    </div>
+                  ) : (
+                    <div className='center'>Canceled</div>
+                  )}
                   <div></div>
                 </CardContent>
                 <CardActions>
-                  <LaunchPortalButton stripeCustomerId={subscription.stripeCustomerId}></LaunchPortalButton>
+                  {subscription.status != 'canceled' ? (
+                    <LaunchPortalButton stripeCustomerId={subscription.stripeCustomerId}></LaunchPortalButton>
+                  ) : (
+                    <Link href='/membership' sx={{ width: '100%', textDecoration: 'none' }}>
+                      <Button size='large' variant='outlined' sx={{ width: '100%' }}>
+                        Start New Membership
+                      </Button>
+                    </Link>
+                  )}
                 </CardActions>
               </Card>
             </Grid>

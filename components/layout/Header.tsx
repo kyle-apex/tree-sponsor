@@ -173,11 +173,13 @@ const Header = ({ title }: { title?: string }) => {
               </ListItem>
             </Link>
           )}
-          <Link href='/explore'>
-            <ListItem button>
-              <ListItemText primary='Tree Map' />
-            </ListItem>
-          </Link>
+          {false && (
+            <Link href='/explore'>
+              <ListItem button>
+                <ListItemText primary='Tree Map' />
+              </ListItem>
+            </Link>
+          )}
           {session && (
             <Link href='/profile'>
               <ListItem button>
@@ -250,7 +252,7 @@ const Header = ({ title }: { title?: string }) => {
               </Button>
             )}
           </ListItem>
-          {session && (
+          {session && false && (
             <ListItem button>
               <Button
                 sx={{ marginTop: 1 }}

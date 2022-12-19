@@ -17,6 +17,16 @@ export const findAllSubscriptionsForUser = async (email: string): Promise<Partia
 
   await Promise.all(
     customers.data.map(async (customer: Stripe.Customer) => {
+      const canceledSubs = await stripe.subscriptions.list({
+        customer: customer.id,
+        status: 'canceled',
+      });
+
+      if (canceledSubs?.data?.length > 0 && customer?.subscriptions) {
+        if (!customer?.subscriptions.data) customer.subscriptions.data = [];
+        customer.subscriptions.data = customer.subscriptions.data.concat(canceledSubs?.data);
+      }
+
       if (customer?.subscriptions) {
         await Promise.all(
           customer.subscriptions.data.map(async (sub: StripeSubscription) => {
