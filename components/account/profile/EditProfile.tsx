@@ -12,12 +12,12 @@ import parsedGet from 'utils/api/parsed-get';
 import LaunchIcon from '@mui/icons-material/Launch';
 import SplitRow from 'components/layout/SplitRow';
 import Button from '@mui/material/Button';
-import dynamic from 'next/dynamic';
 import { Prisma } from '@prisma/client';
 import { useGet } from 'utils/hooks/use-get';
 import Skeleton from '@mui/material/Skeleton';
 import CenteredSection from 'components/layout/CenteredSection';
 import InputAdornment from '@mui/material/InputAdornment';
+import dynamic from 'next/dynamic';
 const TextEditor = dynamic(() => import('components/TextEditor'), {
   ssr: false,
   // eslint-disable-next-line react/display-name

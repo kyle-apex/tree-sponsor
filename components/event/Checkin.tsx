@@ -17,13 +17,19 @@ import Checkbox from '@mui/material/Checkbox';
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
 import { PartialEvent, PartialUser, PartialTree, Coordinate, PartialSpecies, PartialEventCheckIn } from 'interfaces';
 import Attendees from './Attendees';
-import MapMarkerDisplay from 'components/maps/MapMarkerDisplay';
 import TreeDisplayDialog from 'components/tree/TreeDisplayDialog';
 import { useGet } from 'utils/hooks/use-get';
 import Skeleton from '@mui/material/Skeleton';
 import { useScrollTrigger } from '@mui/material';
 import axios from 'axios';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
+
+import dynamic from 'next/dynamic';
+const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
+  ssr: false,
+  // eslint-disable-next-line react/display-name
+  loading: () => <Skeleton variant='rectangular' sx={{ width: '100%' }} height={200} />,
+});
 
 type MembershipStatus = {
   subscription?: SubscriptionWithDetails;
