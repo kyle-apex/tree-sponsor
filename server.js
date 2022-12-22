@@ -10,7 +10,10 @@ const ports = {
 };
 // eslint-disable-next-line no-undef
 const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
+const hostname = 'localhost';
+const port = 3443;
+// when using middleware `hostname` and `port` must be provided below
+const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 const server = express();
 
