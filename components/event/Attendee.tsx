@@ -76,7 +76,7 @@ const Attendee = ({
           )}
           {isEditMode && (
             <RestrictSection accessType='isAdmin'>
-              <DeleteIconButton onDelete={onDelete} tooltip='Remove Checkin'></DeleteIconButton>
+              <DeleteIconButton onDelete={onDelete} tooltip='Remove Checkin' title='Remove Checkin' itemType='checkin'></DeleteIconButton>
             </RestrictSection>
           )}
           <Box sx={{ flex: '1 1 auto' }}></Box>

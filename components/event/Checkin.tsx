@@ -368,7 +368,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
         <>
           <Link href='/signin'>
             <Button color='primary' variant='contained' sx={{ mb: 2 }}>
-              Login{!hasActiveMembership && ' to Renew Membership'}
+              {!hasActiveMembership ? 'Login to Renew Membership' : 'Manage Account'}
             </Button>
           </Link>
           <Button onClick={reset} variant='outlined' color='secondary'>
