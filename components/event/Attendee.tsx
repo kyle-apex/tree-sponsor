@@ -74,18 +74,32 @@ const Attendee = ({
       </Box>
       <Box className='full-width'>
         <Box flexDirection='row' gap={1} sx={{ display: 'flex', marginBottom: 0.5, width: '100%', alignItems: 'center', height: '100%' }}>
-          {user.profilePath && <Link href={'/u/' + user.profilePath}>{userNameDisplay({ user })}</Link>}
-          {!user.profilePath && userNameDisplay({ user })}
-          {roleDisplay && (
-            <Typography variant='subtitle2' color='gray'>
-              {roleDisplay}
-            </Typography>
-          )}
-          {isEditMode && (
-            <RestrictSection accessType='isAdmin'>
-              <DeleteIconButton onDelete={onDelete} tooltip='Remove Checkin' title='Remove Checkin' itemType='checkin'></DeleteIconButton>
-            </RestrictSection>
-          )}
+          <Box>
+            <Box flexDirection='row' gap={1} sx={{ display: 'flex', width: '100%', alignItems: 'center', height: '100%' }}>
+              {!user.profilePath && userNameDisplay({ user })}
+              {roleDisplay && (
+                <Typography variant='subtitle2' color='gray' sx={{ fontSize: '.8rem' }}>
+                  {roleDisplay}
+                </Typography>
+              )}
+
+              {isEditMode && (
+                <RestrictSection accessType='isAdmin'>
+                  <DeleteIconButton
+                    onDelete={onDelete}
+                    tooltip='Remove Checkin'
+                    title='Remove Checkin'
+                    itemType='checkin'
+                  ></DeleteIconButton>
+                </RestrictSection>
+              )}
+            </Box>
+            {user.profile?.organization && (
+              <Typography variant='subtitle2' color='gray' sx={{ fontStyle: 'italic', fontSize: '.7rem' }}>
+                {user.profile.organization}
+              </Typography>
+            )}
+          </Box>
           <Box sx={{ flex: '1 1 auto' }}></Box>
           {(email == user.email || email == `"${user.email}"`) && (
             <>

@@ -6,6 +6,17 @@ const AttendeeContactForm = ({ profile, setProfile }: { profile: PartialProfile;
   return (
     <>
       <TextField
+        value={profile.organization}
+        onChange={e => {
+          setProfile({ ...profile, organization: e.target.value });
+        }}
+        fullWidth
+        label='Company/Organization'
+        size='small'
+        sx={{ marginBottom: 3 }}
+        id='organization-field'
+      ></TextField>
+      <TextField
         value={profile.instagramHandle}
         onChange={e => {
           setProfile({ ...profile, instagramHandle: e.target.value });
