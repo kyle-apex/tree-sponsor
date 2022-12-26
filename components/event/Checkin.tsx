@@ -368,9 +368,20 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
         <>
           <Link href='/signin'>
             <Button color='primary' variant='contained' sx={{ mb: 2 }}>
-              {!hasActiveMembership ? 'Login to Renew Membership' : 'Manage Account'}
+              {!hasActiveMembership ? 'Login to Renew Membership' : 'My Membership'}
             </Button>
           </Link>
+          {hasActiveMembership && (
+            <Typography variant='body2' sx={{ color: 'gray', textAlign: 'left', fontStyle: 'italic' }} mt={-2}>
+              <p>Login with your email to:</p>
+              <ul>
+                <li>View membership perks</li>
+                <li>Update profile and contact info</li>
+                <li>Update credit card/donation amount</li>
+                <li>Discover more ways to support TreeFolks</li>
+              </ul>
+            </Typography>
+          )}
           <Button onClick={reset} variant='outlined' color='secondary'>
             Add Another Check-in
           </Button>

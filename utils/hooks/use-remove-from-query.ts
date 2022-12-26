@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 
 export const useRemoveFromQuery = <T extends { id?: string | number }>(
-  key: string | string[],
+  key: string | (string | Record<string, unknown>)[],
   removeFunction: (id: number) => void,
   hasRefetch?: boolean,
 ) => {
