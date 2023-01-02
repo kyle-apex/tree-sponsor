@@ -34,7 +34,7 @@ const StatisticIconDisplay = ({
   //<StatisticIconDisplay icon={} showUpIcon={} showDownIcon={} color={} label={} description={}></StatisticIconDisplay>
   return (
     <>
-      <Typography variant='h4' color={color}>
+      <Typography variant='h5' className='statistic-icon' color={color}>
         {showUpIcon && <ArrowDropUpIcon fontSize='medium' />}
         {showDownIcon && <ArrowDropDownIcon fontSize='medium' />}
         {!!icon && !isLoading && <>{icon} </>}

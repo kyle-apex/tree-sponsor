@@ -19,6 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   calendarYear.setDate(calendarYear.getDate() - 365);
 
   const { startDate, endDate } = getYearDateRange(year);
+  console.log('startDate', startDate, endDate);
 
   let whereFilter: Prisma.SubscriptionWithDetailsWhereInput = { lastPaymentDate: { gt: calendarYear } };
 
@@ -39,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   };
 
   stats.activeDonations = subscriptionWithDetails.reduce((previous, current) => {
-    if (current.lastPaymentDate.getFullYear() == year) stats.currentYearMemberDonations += current.amount;
+    if (current.lastPaymentDate.getFullYear() == year || endDate) stats.currentYearMemberDonations += current.amount;
 
     const total = previous + current.amount;
     return total;

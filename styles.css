@@ -97,8 +97,8 @@ input.MuiOutlinedInput-input,
 }
 
 .index .detail-image {
-  max-height: 175px;
-  max-width: 175px;
+  height: 175px;
+  width: 175px;
   border-radius: 20px;
   box-shadow: 0 5px 5px 0 rgb(66 66 66 / 8%), 0 3px 3px 3px rgb(66 66 66 / 16%);
 }
@@ -107,6 +107,10 @@ input.MuiOutlinedInput-input,
   width: 50px;
   margin-right: 10px;
   margin-left: 10px;
+}
+
+.statistic-icon > svg {
+  vertical-align: sub;
 }
 
 .wide-container {

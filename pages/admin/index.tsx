@@ -78,8 +78,8 @@ const headCells = [
   { id: 'userName', numeric: false, disablePadding: false, label: 'Name' },
   { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
   { id: 'hasShirt', numeric: false, disablePadding: false, label: 'Has Shirt' },
-  { id: 'amount', numeric: true, disablePadding: false, label: 'Amount' },
-  { id: 'lastPaymentDate', numeric: false, disablePadding: false, label: 'Last Payment' },
+  /*{ id: 'amount', numeric: true, disablePadding: false, label: 'Amount' },*/
+  { id: 'lastPaymentDate', numeric: false, disablePadding: false, label: 'Last Donation' },
   { id: 'createdDate', numeric: false, disablePadding: false, label: 'Member Since' },
   { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
 ];
@@ -226,7 +226,6 @@ export default function EnhancedTable(): JSX.Element {
                           <TeeShirtSelect updateHasShirt={updateHasShirt} hasShirt={row.hasShirt} userId={row.userId}></TeeShirtSelect>
                         )}
                       </TableCell>
-                      <TableCell align='right'>${row.amount}</TableCell>
                       <TableCell
                         sx={{
                           color: theme => {
