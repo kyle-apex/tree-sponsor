@@ -57,17 +57,18 @@ const ReviewTreesPage = () => {
   return (
     <>
       <AdminLayout
-        title='Review Trees'
+        title='Manage Trees'
         header={
-          <Box component='div' flexDirection='row' sx={{ display: 'flex' }} justifyContent='space-between'>
-            <span>Review Trees</span>
+          <Box component='div' flexDirection='row' sx={{ display: 'flex', alignItems: 'center' }} justifyContent='space-between'>
+            <span>Manage Trees</span>
             <Button
               onClick={() => {
                 setIsDialogOpen(true);
               }}
               startIcon={<AddIcon />}
               variant='contained'
-              sx={{ width: '130px' }}
+              sx={{ width: '120px', height: '36.5px' }}
+              size='small'
             >
               Add Tree
             </Button>

@@ -7,6 +7,8 @@ import Typography from '@mui/material/Typography';
 import CardActions from '@mui/material/CardActions';
 import makeStyles from '@mui/styles/makeStyles';
 import ClearIcon from '@mui/icons-material/Clear';
+import ChevronRight from '@mui/icons-material/ChevronRight';
+import ChevronLeft from '@mui/icons-material/ChevronLeft';
 import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -43,13 +45,30 @@ const TreeDisplay = ({
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [activeTree, setActiveTree] = useState<PartialTree>();
   const [imageCacheKey, setImageCacheKey] = useState('');
+  const [displayedImageIndex, setDisplayedImageIndex] = useState(0);
 
   const handleDialogClose = (isOpen: SetStateAction<boolean>) => {
     setIsEditDialogOpen(isOpen);
     if (!isOpen) setImageCacheKey('?cacheKey=' + new Date().getTime());
   };
 
-  const image = tree?.images?.length > 0 ? tree.images[0] : null;
+  const nextImage = () => {
+    setDisplayedImageIndex(idx => {
+      idx++;
+      if (idx >= tree.images.length) idx = 0;
+      return idx;
+    });
+  };
+
+  const prevImage = () => {
+    setDisplayedImageIndex(idx => {
+      idx--;
+      if (idx < 0) idx = tree.images.length - 1;
+      return idx;
+    });
+  };
+
+  const image = tree?.images?.length > 0 ? tree.images[displayedImageIndex] : null;
 
   let displayName;
 
@@ -77,11 +96,23 @@ const TreeDisplay = ({
           <CardMedia
             sx={{
               paddingTop: hasFullHeightImage ? (image.height ? (image.height / image.width) * 100 + '%' : '90%') : '90%',
+              position: 'relative',
             }}
             className={classes.media}
             image={image.url + imageCacheKey}
             title={tree.name}
-          ></CardMedia>
+          >
+            {tree?.images?.length > 1 && (
+              <IconButton aria-label='share' size='large' sx={{ top: '50%', right: 0, position: 'absolute' }} onClick={nextImage}>
+                <ChevronRight />
+              </IconButton>
+            )}
+            {tree?.images?.length > 1 && (
+              <IconButton aria-label='share' size='large' sx={{ top: '50%', left: 0, position: 'absolute' }} onClick={prevImage}>
+                <ChevronLeft />
+              </IconButton>
+            )}
+          </CardMedia>
           <CardContent sx={{ flex: '1 1 100%' }}>
             <Typography variant='h6' mb={2} color='textSecondary'>
               Click below to guess a species:

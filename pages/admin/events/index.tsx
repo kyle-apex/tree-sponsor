@@ -1,12 +1,9 @@
 import { PartialEvent } from 'interfaces';
-import Sponsorships from 'components/account/sponsorships/Sponsorships';
 import AdminLayout from 'components/layout/AdminLayout';
-import { ReviewStatusSelect } from 'components/ReviewStatusSelect';
 import React, { useState } from 'react';
 import restrictPageAccess from 'utils/auth/restrict-page-access';
 import { GetSessionOptions } from 'next-auth/client';
 import AddIcon from '@mui/icons-material/Add';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import { useRouter } from 'next/router';
 import EventsTable from 'components/admin/EventsTable';
@@ -15,6 +12,7 @@ import { useGet } from 'utils/hooks/use-get';
 import axios from 'axios';
 import Typography from '@mui/material/Typography';
 import LoadingButton from 'components/LoadingButton';
+import Link from 'next/link';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'hasEventManagement');
@@ -31,7 +29,8 @@ const ManageEventsPage = () => {
   const { data: pastEvents, isFetching: pastIsFetching } = useGet<PartialEvent[]>('/api/events', 'pastEvents', { isPastEvent: true });
   const { data: events, isFetching } = useGet<PartialEvent[]>('/api/events', 'events', { isPastEvent: false });
 
-  const { remove } = useRemoveFromQuery('events', handleDelete);
+  const { remove: removePast } = useRemoveFromQuery(['events', { isPastEvent: true }], handleDelete);
+  const { remove } = useRemoveFromQuery(['events', { isPastEvent: false }], handleDelete);
 
   return (
     <AdminLayout
@@ -54,6 +53,11 @@ const ManageEventsPage = () => {
         </Box>
       }
     >
+      <Box mb={2} mt={-2}>
+        <Link href='/admin/events/checkins'>
+          <a>Manage Checkins</a>
+        </Link>
+      </Box>
       <Typography mb={3} color='secondary' variant='h2'>
         Upcoming Events
       </Typography>
@@ -66,7 +70,7 @@ const ManageEventsPage = () => {
       <Typography mb={3} color='secondary' variant='h2'>
         Past Events
       </Typography>
-      <EventsTable events={pastEvents} isPastEvent={true} isFetching={pastIsFetching} onDelete={remove}></EventsTable>
+      <EventsTable events={pastEvents} isPastEvent={true} isFetching={pastIsFetching} onDelete={removePast}></EventsTable>
     </AdminLayout>
   );
 };

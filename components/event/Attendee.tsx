@@ -27,6 +27,16 @@ const userNameDisplay = ({ user }: { user: PartialUser }) => (
   </Typography>
 );
 
+const hasRole = (user: PartialUser, roleName: string): boolean => {
+  return !!user.roles?.find(role => role.name == roleName);
+};
+
+const getRoleDisplay = (user: PartialUser): string => {
+  if (hasRole(user, 'Staff')) return 'Staff';
+  else if (hasRole(user, 'Core Team')) return 'Core Team';
+  else if (user.subscriptions?.length > 0) return 'Member';
+};
+
 const Attendee = ({
   user,
   onDelete,
@@ -42,7 +52,6 @@ const Attendee = ({
   isPrivate?: boolean;
   onRefresh?: () => void;
 }) => {
-  const isCoreTeam = !!user.roles?.find(role => role.name == 'Core Team');
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
   const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useHashToggle('settings', false);
   const [email] = useLocalStorage('checkinEmail', '');
@@ -55,6 +64,9 @@ const Attendee = ({
   // TODO: Remove This
   user.profilePath = null;
   const hasContact = user.profile?.instagramHandle || user.profile?.twitterHandle || user.profile?.linkedInLink;
+
+  const roleDisplay = getRoleDisplay(user);
+
   return (
     <Box flexDirection='row' sx={{ display: 'flex' }} gap={2} mb={2}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -62,23 +74,32 @@ const Attendee = ({
       </Box>
       <Box className='full-width'>
         <Box flexDirection='row' gap={1} sx={{ display: 'flex', marginBottom: 0.5, width: '100%', alignItems: 'center', height: '100%' }}>
-          {user.profilePath && <Link href={'/u/' + user.profilePath}>{userNameDisplay({ user })}</Link>}
-          {!user.profilePath && userNameDisplay({ user })}
-          {isCoreTeam && (
-            <Typography variant='subtitle2' color='gray'>
-              Core Team
-            </Typography>
-          )}
-          {!isCoreTeam && user.subscriptions?.length > 0 && (
-            <Typography variant='subtitle2' color='gray'>
-              Member
-            </Typography>
-          )}
-          {isEditMode && (
-            <RestrictSection accessType='isAdmin'>
-              <DeleteIconButton onDelete={onDelete} tooltip='Remove Checkin'></DeleteIconButton>
-            </RestrictSection>
-          )}
+          <Box>
+            <Box flexDirection='row' gap={1} sx={{ display: 'flex', width: '100%', alignItems: 'center', height: '100%' }}>
+              {!user.profilePath && userNameDisplay({ user })}
+              {roleDisplay && (
+                <Typography variant='subtitle2' color='gray' sx={{ fontSize: '.8rem' }}>
+                  {roleDisplay}
+                </Typography>
+              )}
+
+              {isEditMode && (
+                <RestrictSection accessType='isAdmin'>
+                  <DeleteIconButton
+                    onDelete={onDelete}
+                    tooltip='Remove Checkin'
+                    title='Remove Checkin'
+                    itemType='checkin'
+                  ></DeleteIconButton>
+                </RestrictSection>
+              )}
+            </Box>
+            {user.profile?.organization && (
+              <Typography variant='subtitle2' color='gray' sx={{ fontStyle: 'italic', fontSize: '.7rem' }}>
+                {user.profile.organization}
+              </Typography>
+            )}
+          </Box>
           <Box sx={{ flex: '1 1 auto' }}></Box>
           {(email == user.email || email == `"${user.email}"`) && (
             <>

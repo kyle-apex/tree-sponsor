@@ -123,3 +123,9 @@ ALTER TABLE
   `EventCheckin`
 ADD
   COLUMN `isPrivate` BOOLEAN NULL DEFAULT false;
+
+-- AlterTable
+ALTER TABLE
+  `profile`
+ADD
+  COLUMN `organization` VARCHAR(75);

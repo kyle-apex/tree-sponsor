@@ -81,7 +81,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             profilePath: true,
             email: true,
             roles: {},
-            profile: { select: { instagramHandle: true, linkedInLink: true, twitterHandle: true } },
+            profile: { select: { instagramHandle: true, linkedInLink: true, twitterHandle: true, organization: true } },
             subscriptions: { where: { lastPaymentDate: { gt: oneYearAgo } }, select: { lastPaymentDate: true } },
           },
         },

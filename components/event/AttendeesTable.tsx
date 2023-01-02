@@ -9,13 +9,12 @@ import makeStyles from '@mui/styles/makeStyles';
 import { TableHeader } from 'components/TableHeader';
 import { StyledTableRow } from 'components/StyledTableRow';
 import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/router';
 
 import { PartialAttendee, PartialEvent } from 'interfaces';
 import { Router } from '@mui/icons-material';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
+import AttendeeTableRow from './AttendeeTableRow';
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -54,10 +53,12 @@ export default function AttendeesTable({
   attendees,
   isFetching,
   onDelete,
+  onUpdate,
 }: {
   attendees: PartialAttendee[];
   isFetching: boolean;
   onDelete?: (eventId: number) => void;
+  onUpdate?: (id: number, updates: PartialAttendee) => void;
 }) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [currentId, setCurrentId] = useState(0);
@@ -68,6 +69,11 @@ export default function AttendeesTable({
   const edit = (path: string) => {
     if (!path) return;
     router.push(`/admin/events/${path}`);
+  };
+
+  const handleDeleteClick = (id: number) => {
+    setCurrentId(id);
+    setIsConfirmOpen(true);
   };
 
   return (
@@ -85,38 +91,7 @@ export default function AttendeesTable({
                 </TableRow>
               )}
               {attendees.map((attendee: PartialAttendee) => {
-                return (
-                  <StyledTableRow tabIndex={-1} key={attendee.checkinId}>
-                    <TableCell scope='row'>{attendee.eventName}</TableCell>
-                    <TableCell scope='row'>{attendee.name}</TableCell>
-                    <TableCell scope='row'>{attendee.email}</TableCell>
-                    <TableCell scope='row'>{attendee.isMember}</TableCell>
-                    <TableCell scope='row'>
-                      {attendee.createdDate?.toLocaleDateString() + ' ' + attendee.createdDate?.toLocaleTimeString()}
-                    </TableCell>
-                    <TableCell scope='row'>{attendee.discoveredFrom}</TableCell>
-                    <TableCell>
-                      <IconButton
-                        onClick={() => {
-                          edit(attendee.email);
-                        }}
-                        size='large'
-                      >
-                        <EditIcon></EditIcon>
-                      </IconButton>
-
-                      <IconButton
-                        onClick={() => {
-                          setCurrentId(attendee.checkinId);
-                          setIsConfirmOpen(true);
-                        }}
-                        size='large'
-                      >
-                        <DeleteIcon></DeleteIcon>
-                      </IconButton>
-                    </TableCell>
-                  </StyledTableRow>
-                );
+                return <AttendeeTableRow key={attendee.checkinId} attendee={attendee} onDelete={handleDeleteClick} onUpdate={onUpdate} />;
               })}
             </TableBody>
           )}
