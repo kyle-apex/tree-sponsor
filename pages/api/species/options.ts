@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const query: Prisma.SpeciesFindManyArgs = {
       orderBy: [{ searchPriority: 'desc' }, { commonName: 'asc' }],
       select: { commonName: true, name: true, id: true },
-
+      distinct: 'commonName',
       take: 100,
     };
 
