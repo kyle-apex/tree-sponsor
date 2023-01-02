@@ -6,7 +6,8 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 const formatCount = (count: number, isCurrency?: boolean): string => {
   if (isCurrency && count) {
     return '$' + count.toFixed(2);
-  } else return count || count === 0 ? count + '' : '';
+  } else if (isCurrency) return '$0';
+  else return count || count === 0 ? count + '' : '';
 };
 
 const StatisticIconDisplay = ({

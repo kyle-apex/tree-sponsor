@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from 'react-query';
 
 export const useAddToQuery = <T extends { id?: number | string }>(
-  key: string,
+  key: string | (string | Record<string, unknown>)[],
   addFunction: (newObject: Partial<T>) => Promise<T>,
   hasRefetch?: boolean,
 ) => {
-  const queryKey = [key, undefined];
+  const queryKey = typeof key === 'string' ? [key, undefined] : key;
   const queryClient = useQueryClient();
 
   function addQueryListItem(newItem: Partial<T>) {

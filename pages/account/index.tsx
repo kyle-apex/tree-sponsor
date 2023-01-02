@@ -64,7 +64,7 @@ const AccountPage = () => {
       </SplitRow>
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} mb={4}>
-        <Tabs className='account-tabs' value={activeTab} onChange={handleTabChange} variant='fullWidth' aria-label='basic tabs example'>
+        <Tabs className='account-tabs' value={activeTab} onChange={handleTabChange} variant='fullWidth'>
           <Tab label='Membership' value='membership' />
           {user?.subscriptions?.length > 0 && <Tab label='Thank-A-Tree' value='thanks' />}
           <Tab label='Billing' value='billing' />
