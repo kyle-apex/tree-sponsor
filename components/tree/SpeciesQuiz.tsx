@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useGet } from 'utils/hooks/use-get';
+import Fade from '@mui/material/Fade';
+import Grow from '@mui/material/Grow';
 
 function getQuizOptions(species: PartialSpecies[], correctSpecies: PartialSpecies): PartialSpecies[] {
   const options: PartialSpecies[] = [];
@@ -54,10 +56,17 @@ const SpeciesQuiz = ({ correctSpecies }: { correctSpecies: PartialSpecies }) => 
             : 'inherit';
 
         let icon;
+        const isIncorrect = species.id == clickedSpeciesId && species.id != correctSpecies.id;
+        const isCorrect = species.id == clickedSpeciesId && species.id == correctSpecies.id;
+
         if (species.id == clickedSpeciesId) {
           icon =
             species.id == correctSpecies.id ? (
-              <CheckCircleOutlineIcon sx={{ marginRight: 1 }} />
+              <Grow in={true} timeout={{ enter: 1000 }}>
+                <Fade in={true} timeout={{ enter: 1000 }}>
+                  <CheckCircleOutlineIcon sx={{ marginRight: 1 }} />
+                </Fade>
+              </Grow>
             ) : (
               <HighlightOffIcon sx={{ marginRight: 1 }} />
             );
@@ -70,6 +79,7 @@ const SpeciesQuiz = ({ correctSpecies }: { correctSpecies: PartialSpecies }) => 
             <Button
               fullWidth={true}
               variant={variant}
+              className={isIncorrect ? 'shake' : isCorrect ? 'grow' : ''}
               color={color}
               disabled={clickedSpeciesId && color == 'inherit'}
               onClick={() => {
