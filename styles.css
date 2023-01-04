@@ -295,7 +295,7 @@ input.MuiOutlinedInput-input,
 }
 
 .shake {
-  animation: shake 0.3s;
+  animation: shake 0.5s;
   animation-iteration-count: 1;
 }
 @keyframes shake {
@@ -307,11 +307,11 @@ input.MuiOutlinedInput-input,
 }
 
 .grow {
-  animation: grow .6s;
+  animation: grow .7s;
   animation-iteration-count: 1;
 }
 @keyframes grow {
   0% { transform: scale(1); }
-  75% { transform: scale(1.05); }
+  75% { transform: scaleX(1.06) scaleY(1.2); }
   100% { transform: scale(1); }
 }
