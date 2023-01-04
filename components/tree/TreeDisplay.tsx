@@ -17,6 +17,8 @@ import { PartialTree } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 import Box from '@mui/material/Box';
 import SpeciesQuiz from './SpeciesQuiz';
+import Button from '@mui/material/Button';
+import PhotoViewDialog from 'components/PhotoViewDialog';
 // TODO
 const useStyles = makeStyles(() => ({
   media: {
@@ -46,6 +48,7 @@ const TreeDisplay = ({
   const [activeTree, setActiveTree] = useState<PartialTree>();
   const [imageCacheKey, setImageCacheKey] = useState('');
   const [displayedImageIndex, setDisplayedImageIndex] = useState(0);
+  const [isPhotoViewOpen, setIsPhotoViewOpen] = useState(false);
 
   const handleDialogClose = (isOpen: SetStateAction<boolean>) => {
     setIsEditDialogOpen(isOpen);
@@ -77,30 +80,36 @@ const TreeDisplay = ({
   } else {
     displayName = tree.name;
   }
-
+  const imagePaddingTop = hasFullHeightImage ? (image.height ? (image.height / image.width) * 100 + '%' : '90%') : '90%';
+  const hasSpeciesQuiz = !!tree.species;
   return (
     <>
       {tree?.id && (
         <Card sx={{ maxWidth: '500px', marginRight: handleClose ? 0 : '1px', marginBottom: handleClose ? 0 : '2px' }}>
-          <CardHeader
-            title={title || displayName}
-            subheader={<Typography>{tree.location?.name}</Typography>}
-            action={
-              handleClose && (
-                <IconButton onClick={handleClose}>
-                  <ClearIcon></ClearIcon>
-                </IconButton>
-              )
-            }
-          />
+          {!hasSpeciesQuiz && (
+            <CardHeader
+              title={title || displayName}
+              subheader={<Typography>{tree.location?.name}</Typography>}
+              action={
+                handleClose && (
+                  <IconButton onClick={handleClose}>
+                    <ClearIcon></ClearIcon>
+                  </IconButton>
+                )
+              }
+            />
+          )}
           <CardMedia
             sx={{
-              paddingTop: hasFullHeightImage ? (image.height ? (image.height / image.width) * 100 + '%' : '90%') : '90%',
+              paddingTop: `min(45vh,${imagePaddingTop})`,
               position: 'relative',
             }}
             className={classes.media}
             image={image.url + imageCacheKey}
             title={tree.name}
+            onClick={() => {
+              setIsPhotoViewOpen(true);
+            }}
           >
             {tree?.images?.length > 1 && (
               <IconButton aria-label='share' size='large' sx={{ top: '50%', right: 0, position: 'absolute' }} onClick={nextImage}>
@@ -113,12 +122,21 @@ const TreeDisplay = ({
               </IconButton>
             )}
           </CardMedia>
-          <CardContent sx={{ flex: '1 1 100%' }}>
-            <Typography variant='h6' mb={2} color='textSecondary'>
-              Click below to guess a species:
-            </Typography>
-            {tree.species && <SpeciesQuiz correctSpecies={tree.species}></SpeciesQuiz>}
-          </CardContent>
+          <PhotoViewDialog imageUrl={image.url} open={isPhotoViewOpen} setOpen={setIsPhotoViewOpen}></PhotoViewDialog>
+          {hasSpeciesQuiz && (
+            <CardContent sx={{ flex: '1 1 100%', background: 'url(/background-lighter.svg)' }}>
+              <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
+                Tree ID Quiz
+              </Typography>
+              <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
+                Click below to guess a species:
+              </Typography>
+              <SpeciesQuiz correctSpecies={tree.species}></SpeciesQuiz>
+              <Button fullWidth color='inherit' sx={{ mt: 3 }} onClick={handleClose}>
+                Close
+              </Button>
+            </CardContent>
+          )}
 
           {isEditMode && (
             <CardActions disableSpacing>
