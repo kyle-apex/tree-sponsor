@@ -55,7 +55,7 @@ const ImageUploadAndPreview = ({
         const ctx = canvas.getContext('2d');
         if (ctx) ctx.drawImage(img, 0, 0, width, height);
 
-        const dataUrl = canvas.toDataURL('image/jpeg');
+        const dataUrl = canvas.toDataURL('image/jpeg', 1);
         console.log('dataUrl', width, height, dataUrl, file.type);
 
         setImageUrl(dataUrl);
