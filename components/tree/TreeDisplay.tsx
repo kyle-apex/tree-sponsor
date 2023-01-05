@@ -119,10 +119,13 @@ const TreeDisplay = ({
               onClick={() => {
                 setIsPhotoViewOpen(true);
               }}
-              sx={{ right: 5, top: 5 }}
+              sx={{ left: 5, top: 5 }}
               className='hoverImageIconButton'
             >
               <FullscreenIcon></FullscreenIcon>
+            </IconButton>
+            <IconButton onClick={handleClose} sx={{ right: 5, top: 5 }} className='hoverImageIconButton'>
+              <ClearIcon></ClearIcon>
             </IconButton>
             {tree?.images?.length > 1 && (
               <IconButton aria-label='share' sx={{ top: '50%', right: 5 }} className='hoverImageIconButton' onClick={nextImage}>
@@ -145,7 +148,7 @@ const TreeDisplay = ({
                 Click below to guess a species:
               </Typography>
               <SpeciesQuiz correctSpecies={tree.species}></SpeciesQuiz>
-              <Button fullWidth color='inherit' sx={{ mt: 3 }} onClick={handleClose}>
+              <Button fullWidth color='inherit' sx={{ mt: 2 }} onClick={handleClose}>
                 Close
               </Button>
             </CardContent>
