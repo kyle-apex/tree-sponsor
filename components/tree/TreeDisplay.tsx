@@ -16,6 +16,7 @@ import React, { SetStateAction, useState } from 'react';
 import { PartialTree } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 import Box from '@mui/material/Box';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import SpeciesQuiz from './SpeciesQuiz';
 import Button from '@mui/material/Button';
 import PhotoViewDialog from 'components/PhotoViewDialog';
@@ -55,7 +56,9 @@ const TreeDisplay = ({
     if (!isOpen) setImageCacheKey('?cacheKey=' + new Date().getTime());
   };
 
-  const nextImage = () => {
+  const nextImage: React.MouseEventHandler<HTMLButtonElement> = e => {
+    e.stopPropagation();
+
     setDisplayedImageIndex(idx => {
       idx++;
       if (idx >= tree.images.length) idx = 0;
@@ -63,7 +66,8 @@ const TreeDisplay = ({
     });
   };
 
-  const prevImage = () => {
+  const prevImage: React.MouseEventHandler<HTMLButtonElement> = e => {
+    e.stopPropagation();
     setDisplayedImageIndex(idx => {
       idx--;
       if (idx < 0) idx = tree.images.length - 1;
@@ -111,13 +115,22 @@ const TreeDisplay = ({
               setIsPhotoViewOpen(true);
             }}
           >
+            <IconButton
+              onClick={() => {
+                setIsPhotoViewOpen(true);
+              }}
+              sx={{ right: 5, top: 5 }}
+              className='hoverImageIconButton'
+            >
+              <FullscreenIcon></FullscreenIcon>
+            </IconButton>
             {tree?.images?.length > 1 && (
-              <IconButton aria-label='share' size='large' sx={{ top: '50%', right: 0, position: 'absolute' }} onClick={nextImage}>
+              <IconButton aria-label='share' sx={{ top: '50%', right: 5 }} className='hoverImageIconButton' onClick={nextImage}>
                 <ChevronRight />
               </IconButton>
             )}
             {tree?.images?.length > 1 && (
-              <IconButton aria-label='share' size='large' sx={{ top: '50%', left: 0, position: 'absolute' }} onClick={prevImage}>
+              <IconButton aria-label='share' sx={{ top: '50%', left: 5 }} className='hoverImageIconButton' onClick={prevImage}>
                 <ChevronLeft />
               </IconButton>
             )}

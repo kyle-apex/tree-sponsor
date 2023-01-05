@@ -294,6 +294,11 @@ input.MuiOutlinedInput-input,
   display: inline-block;
 }
 
+.hoverImageIconButton {
+  background-color: rgba(255,255,255,.2);
+  position: absolute;
+}
+
 .shake {
   animation: shake 0.20s;
   animation-iteration-count: 3;
