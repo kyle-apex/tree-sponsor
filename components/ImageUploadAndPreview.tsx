@@ -34,8 +34,8 @@ const ImageUploadAndPreview = ({
 
       // Add the file name to the data URL
       img.onload = () => {
-        const MAX_WIDTH = maxWidth ?? 1100;
-        const MAX_HEIGHT = maxHeight ?? 900;
+        const MAX_WIDTH = maxWidth ?? 1600;
+        const MAX_HEIGHT = maxHeight ?? 1600;
         let width = img.width;
         let height = img.height;
 

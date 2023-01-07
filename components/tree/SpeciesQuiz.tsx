@@ -62,8 +62,8 @@ const SpeciesQuiz = ({ correctSpecies }: { correctSpecies: PartialSpecies }) => 
         if (species.id == clickedSpeciesId) {
           icon =
             species.id == correctSpecies.id ? (
-              <Grow in={true} timeout={{ enter: 1000 }}>
-                <Fade in={true} timeout={{ enter: 1000 }}>
+              <Grow in={true} timeout={{ enter: 1200 }}>
+                <Fade in={true} timeout={{ enter: 1200 }}>
                   <CheckCircleOutlineIcon sx={{ marginRight: 1 }} />
                 </Fade>
               </Grow>
