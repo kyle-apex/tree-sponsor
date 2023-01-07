@@ -81,7 +81,7 @@ const MembershipStatus = () => {
                 Thanks for being a member{userName ? ' ' + userName : ''}!
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
-                Your most recent membership dues donation was {formatDate(status.subscription.lastPaymentDate)}.
+                Your most recent membership donation was {formatDate(status.subscription.lastPaymentDate)}.
               </Typography>
             </>
           )}
@@ -94,7 +94,7 @@ const MembershipStatus = () => {
                 Unfortunately <b>your membership is no longer active</b>.
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
-                Your most recent membership dues donation was {formatDate(status.subscription.lastPaymentDate)}.
+                Your most recent membership donation was {formatDate(status.subscription.lastPaymentDate)}.
               </Typography>
             </>
           )}
