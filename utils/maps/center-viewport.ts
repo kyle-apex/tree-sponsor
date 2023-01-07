@@ -13,10 +13,11 @@ const centerViewport = (viewport: Viewport, coordinates: Coordinate[], width?: n
     if (coordinate.longitude) {
       if (!minLng) minLng = coordinate.longitude;
       if (!maxLng) maxLng = coordinate.longitude;
-      minLng = minLng < coordinate.latitude ? minLng : coordinate.longitude;
-      maxLng = maxLat > coordinate.latitude ? maxLng : coordinate.longitude;
+      minLng = minLng < coordinate.longitude ? minLng : coordinate.longitude;
+      maxLng = maxLng > coordinate.longitude ? maxLng : coordinate.longitude;
     }
   }
+
   if (minLng) {
     const vp = new WebMercatorViewport({ height: height || 400, width: width || 400 });
     const { longitude, latitude, zoom } = vp.fitBounds(
@@ -24,7 +25,7 @@ const centerViewport = (viewport: Viewport, coordinates: Coordinate[], width?: n
         [Number(minLng), Number(minLat)],
         [Number(maxLng), Number(maxLat)],
       ],
-      { padding: { top: 30, left: 40, right: 40, bottom: 60 } },
+      { padding: { top: 30, left: 60, right: 60, bottom: 60 } },
     );
     const newZoom = zoom > 18 ? 18 : zoom;
     return { ...viewport, longitude, latitude, zoom: newZoom };
