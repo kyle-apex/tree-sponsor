@@ -20,16 +20,12 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
   const [isUpserting, setIsUpserting] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [completed] = useState<{ [k: number]: boolean }>({});
+  const [imageUuid, setImageUuid] = useState('');
 
   const handleChange = useCallback((propertyName: string, value: string | number) => {
-    //console.log('handleChange', propertyName, value);
-    //console.log('tree', tree);
-    //const newTree = { ...tree, [propertyName]: value };
-
     setTree(current => {
       return { ...current, [propertyName]: value };
     });
-    //console.log('newTree', newTree);
   }, []);
 
   const upsertTree = async () => {
@@ -37,6 +33,9 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
     tree.images = [{ url: tree.pictureUrl, width: w, height: h }];
     const updatedTree = await axios.post('/api/trees', { ...tree });
     if (updatedTree?.data?.id) handleChange('id', updatedTree.data.id);
+    if (updatedTree?.data?.pictureUrl) {
+      handleChange('pictureUrl', updatedTree.data.pictureUrl);
+    }
   };
 
   const handleStep = (step: number) => () => {
