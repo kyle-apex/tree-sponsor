@@ -297,10 +297,10 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           {hasActiveMembership && (
             <>
               <Typography variant='body2' component='p' mb={2}>
-                Thanks for being a member.
+                Thanks for continuing to support the urban forest with your membership donation to TreeFolks!
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
-                Your most recent membership donation was {formatDate(status.subscription.lastPaymentDate)}.
+                Your most recent annual donation was {formatDate(status.subscription.lastPaymentDate)}.
               </Typography>
             </>
           )}

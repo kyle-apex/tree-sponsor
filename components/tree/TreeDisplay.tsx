@@ -38,7 +38,7 @@ const TreeDisplay = ({
   tree?: PartialTree;
   isEditMode?: boolean;
   onDelete?: (id: number) => void;
-  handleClose?: () => void;
+  handleClose?: React.MouseEventHandler<HTMLButtonElement>;
   hasFullHeightImage?: boolean;
   title?: string;
 }) => {

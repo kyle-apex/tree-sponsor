@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import { PartialUser } from 'interfaces';
 import { signIn, signOut, SignOutParams, useSession } from 'next-auth/client';
 import AttendeeContactForm from './AttendeeContactForm';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import SplitRow from 'components/layout/SplitRow';
 import LoadingButton from 'components/LoadingButton';
@@ -40,6 +40,7 @@ const AttendeeSettingsDialog = ({
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [imageUrl, setImageUrl] = useState(user?.image);
   const [displayName, setDisplayName] = useState(user?.displayName || user?.name);
+  const imageUploadRef = useRef<React.ElementRef<typeof ImageUploadAndPreview>>(null);
 
   const [session] = useSession();
   const params: SignOutParams = {};
@@ -66,6 +67,12 @@ const AttendeeSettingsDialog = ({
     setSnackbarMessage('Saved');
     setIsSaving(false);
     setIsOpen(false);
+  };
+
+  const openFileBrowser = () => {
+    if (!imageUploadRef?.current) return;
+
+    imageUploadRef.current.openFileBrowser();
   };
 
   return (
@@ -105,26 +112,40 @@ const AttendeeSettingsDialog = ({
               </Typography>
               <Box
                 sx={{
-                  borderRadius: '100%',
-                  height: '100px',
-                  width: '100px',
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
-                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  textAlign: 'left',
+                  alignItems: 'center',
+                  justifyContent: 'start',
+                  gap: '30px',
                   mb: 5,
-                  boxShadow: 'inset 0 0px 0px 1px hsl(0deg 0% 0% / 20%), 0px 0px 2px grey',
                 }}
               >
-                <ImageUploadAndPreview
-                  imageUrl={imageUrl}
-                  setImageUrl={newImageUrl => {
-                    setImageUrl(newImageUrl);
+                <Box
+                  sx={{
+                    borderRadius: '100%',
+                    height: '85px',
+                    width: '85px',
+                    overflow: 'hidden',
+
+                    boxShadow: 'inset 0 0px 0px 1px hsl(0deg 0% 0% / 20%), 0px 0px 2px grey',
                   }}
-                  maxHeight={250}
-                  maxWidth={250}
-                  size='small'
-                  hideEditButton={true}
-                ></ImageUploadAndPreview>
+                >
+                  <ImageUploadAndPreview
+                    imageUrl={imageUrl}
+                    setImageUrl={newImageUrl => {
+                      setImageUrl(newImageUrl);
+                    }}
+                    maxHeight={250}
+                    maxWidth={250}
+                    size='small'
+                    hideEditButton={true}
+                    ref={imageUploadRef}
+                  ></ImageUploadAndPreview>
+                </Box>
+                <Button variant='outlined' onClick={openFileBrowser}>
+                  Update Photo
+                </Button>
               </Box>
               <TextField
                 value={displayName}

@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Image from 'next/image';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
 const useStyles = makeStyles(theme => ({
   title: { paddingBottom: 0, paddingTop: theme.spacing(1), paddingRight: theme.spacing(1), textAlign: 'right' },
@@ -26,7 +27,7 @@ const PhotoViewDialog = ({ open, setOpen, imageUrl }: { open: boolean; setOpen: 
   return (
     <Dialog open={open} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', minWidth: '200px', margin: 2 } }} onClose={handleClose}>
       <DialogContent sx={{ padding: 0, position: 'relative' }} className={classes.content} onDoubleClick={handleClose}>
-        <IconButton onClick={handleClose} className='hoverImageIconButton' sx={{ position: 'absolute', right: 15, top: 15 }}>
+        <IconButton onClick={handleClose} className='hoverImageIconButton' sx={{ position: 'absolute', right: 15, top: 15, zIndex: 5000 }}>
           <ClearIcon></ClearIcon>
         </IconButton>
         {isLoading && (
@@ -34,12 +35,16 @@ const PhotoViewDialog = ({ open, setOpen, imageUrl }: { open: boolean; setOpen: 
             <CircularProgress size={100} />
           </Box>
         )}
-        <img
-          alt='Full size image'
-          style={{ maxWidth: '100%', marginBottom: '-7px', display: isLoading ? 'none' : 'inherit' }}
-          src={url}
-          onLoad={() => setIsLoading(false)}
-        />
+        <TransformWrapper centerZoomedOut={true}>
+          <TransformComponent>
+            <img
+              alt='Full size image'
+              style={{ maxWidth: '95vw', maxHeight: '95vh', marginBottom: '-7px', display: isLoading ? 'none' : 'inherit' }}
+              src={url}
+              onLoad={() => setIsLoading(false)}
+            />
+          </TransformComponent>
+        </TransformWrapper>
       </DialogContent>
     </Dialog>
   );
