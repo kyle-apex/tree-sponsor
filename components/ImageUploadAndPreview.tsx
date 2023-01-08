@@ -72,7 +72,6 @@ const ImageUploadAndPreview = forwardRef(
           if (ctx) ctx.drawImage(img, 0, 0, width, height);
 
           const dataUrl = canvas.toDataURL('image/jpeg');
-          console.log('dataUrl', width, height, dataUrl, file.type);
 
           setImageUrl(dataUrl);
         };
