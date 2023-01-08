@@ -16,7 +16,8 @@ const TreeDisplayDialog = ({ open, setOpen, tree }: { open: boolean; setOpen: (i
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleClose = () => {
+  const handleClose: React.MouseEventHandler<HTMLButtonElement> = e => {
+    e.stopPropagation();
     setOpen(false);
   };
 
