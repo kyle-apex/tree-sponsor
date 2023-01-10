@@ -91,13 +91,6 @@ const AccountPage = () => {
                   </a>
                 </Link>
               </li>
-              <li>
-                <Link href='#thanks'>
-                  <a style={{ textDecoration: 'none' }}>
-                    <Typography color='primary'>Thank my favorite trees</Typography>
-                  </a>
-                </Link>
-              </li>
             </>
           ) : (
             <li>

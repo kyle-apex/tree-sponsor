@@ -15,7 +15,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
-import { PartialEvent, PartialUser, PartialTree, Coordinate, PartialSpecies, PartialEventCheckIn } from 'interfaces';
+import { PartialEvent, PartialUser, PartialTree, Coordinate, PartialSpecies, PartialEventCheckIn, PartialSubscription } from 'interfaces';
 import Attendees from './Attendees';
 import TreeDisplayDialog from 'components/tree/TreeDisplayDialog';
 import { useGet } from 'utils/hooks/use-get';
@@ -48,6 +48,16 @@ const formatDate = (date: Date): string => {
   let dateStr = date.toLocaleString('default', { month: 'long', day: 'numeric' });
   if (date.getFullYear() != new Date().getFullYear()) dateStr += ', ' + date.getFullYear();
   return dateStr;
+};
+
+const getDonationDateMessage = (subscription: PartialSubscription): string => {
+  const anniversary = new Date(subscription.lastPaymentDate);
+  anniversary.setFullYear(anniversary.getFullYear() + 1);
+  const anniversaryNumber = Math.max(1, anniversary.getFullYear() - subscription.createdDate.getFullYear());
+
+  return `🥳 Your ${anniversaryNumber}${
+    anniversaryNumber == 1 ? 'st' : anniversaryNumber == 2 ? 'nd' : anniversaryNumber == 3 ? 'rd' : 'th'
+  } TreeFolksYP Membership anniversary donation will be ${formatDate(anniversary)}.`;
 };
 
 const Checkin = ({ event }: { event?: PartialEvent }) => {
@@ -274,15 +284,28 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           Welcome{userName ? ' ' + userName : ''}!
         </Typography>
       )}
+      {status && event?.checkInDetails && event.checkInDetails != '<p><br></p>' && (
+        <>
+          <Typography variant='body2' component='div' mt={-2}>
+            <SafeHTMLDisplay html={event?.checkInDetails}></SafeHTMLDisplay>
+          </Typography>
+          <hr style={{ width: '100%', marginTop: '10px', marginBottom: '20px' }} />
+        </>
+      )}
 
       {status?.isFound === false && activeTab == 1 && (
-        <Typography variant='body2' component='p' mt={2} mb={3}>
-          Membership status for <b>{status.email}</b> was not found.
-        </Typography>
+        <>
+          <Typography variant='body2' component='p' mb={2}>
+            Membership status for <b>{status.email}</b> was not found.
+          </Typography>
+          <Typography variant='body2' component='p' mb={3}>
+            Click the &quot;Try Another Search&quot; button below to try another e-mail address.
+          </Typography>
+        </>
       )}
       {status?.isFound === false && activeTab == 0 && (
         <>
-          <Typography variant='body2' component='p' mt={2} mb={2}>
+          <Typography variant='body2' component='p' mb={2}>
             Thanks for joining for today&apos;s event. Grab a name tag (if available), meet a new friend, and test your tree knowledge
             below!
           </Typography>
@@ -297,10 +320,10 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           {hasActiveMembership && (
             <>
               <Typography variant='body2' component='p' mb={2}>
-                Thanks for continuing to support the urban forest with your membership donation to TreeFolks!
+                🌳 Thanks for continuing to support the urban forest with your membership donation to TreeFolks!
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
-                Your most recent annual donation was {formatDate(status.subscription.lastPaymentDate)}.
+                {getDonationDateMessage(status.subscription)}
               </Typography>
             </>
           )}
@@ -321,11 +344,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       {status && (
         <>
-          {event?.checkInDetails && event.checkInDetails != '<p><br></p>' && (
-            <Typography variant='body2' component='div' mb={2} mt={-2}>
-              <SafeHTMLDisplay html={event?.checkInDetails}></SafeHTMLDisplay>
-            </Typography>
-          )}
           <Attendees
             users={status.attendees}
             onDelete={userId => {
@@ -393,7 +411,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             TreeFolks Young Professionals is the most fun way to support Central Texas&apos; urban forest.
           </Typography>
           <Typography variant='body2' component='p' mb={3}>
-            Join today by starting an annual donation to TreeFolks starting at $20:
+            Join today by starting an annual donation to TreeFolks starting at $20/yr:
           </Typography>
           <Link href='/membership'>
             <Button color='primary' variant='contained' sx={{ mb: 2 }}>
