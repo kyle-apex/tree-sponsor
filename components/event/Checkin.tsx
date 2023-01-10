@@ -361,7 +361,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               {status.checkInCount - status.attendees?.length == 1 ? '' : 's'}
             </Typography>
           )}
-          <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
+          <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={3} mt={1}>
             Tree ID Quiz
           </Typography>
           <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
@@ -450,9 +450,5 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
     </>
   );
-  // Membership Status
-  // Ice Breaker of the day/info about event (need a page to save this)
-  // Who is here
-  // Trees around you
 };
 export default Checkin;
