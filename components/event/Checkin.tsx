@@ -15,7 +15,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
-import { PartialEvent, PartialUser, PartialTree, Coordinate, PartialSpecies, PartialEventCheckIn } from 'interfaces';
+import { PartialEvent, PartialUser, PartialTree, Coordinate, PartialSpecies, PartialEventCheckIn, PartialSubscription } from 'interfaces';
 import Attendees from './Attendees';
 import TreeDisplayDialog from 'components/tree/TreeDisplayDialog';
 import { useGet } from 'utils/hooks/use-get';
@@ -48,6 +48,16 @@ const formatDate = (date: Date): string => {
   let dateStr = date.toLocaleString('default', { month: 'long', day: 'numeric' });
   if (date.getFullYear() != new Date().getFullYear()) dateStr += ', ' + date.getFullYear();
   return dateStr;
+};
+
+const getDonationDateMessage = (subscription: PartialSubscription): string => {
+  const anniversary = new Date(subscription.lastPaymentDate);
+  anniversary.setFullYear(anniversary.getFullYear() + 1);
+  const anniversaryNumber = Math.max(1, anniversary.getFullYear() - subscription.createdDate.getFullYear());
+
+  return `🥳 Your ${anniversaryNumber}${
+    anniversaryNumber == 1 ? 'st' : anniversaryNumber == 2 ? 'nd' : anniversaryNumber == 3 ? 'rd' : 'th'
+  } TreeFolksYP Membership anniversary donation will be ${formatDate(anniversary)}.`;
 };
 
 const Checkin = ({ event }: { event?: PartialEvent }) => {
@@ -305,10 +315,10 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           {hasActiveMembership && (
             <>
               <Typography variant='body2' component='p' mb={2}>
-                Thanks for continuing to support the urban forest with your membership donation to TreeFolks!
+                🌳 Thanks for continuing to support the urban forest with your membership donation to TreeFolks!
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
-                Your most recent annual donation was {formatDate(status.subscription.lastPaymentDate)}.
+                {getDonationDateMessage(status.subscription)}
               </Typography>
             </>
           )}
