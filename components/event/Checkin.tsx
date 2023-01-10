@@ -274,6 +274,14 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           Welcome{userName ? ' ' + userName : ''}!
         </Typography>
       )}
+      {status && event?.checkInDetails && event.checkInDetails != '<p><br></p>' && (
+        <>
+          <Typography variant='body2' component='div' mt={-2}>
+            <SafeHTMLDisplay html={event?.checkInDetails}></SafeHTMLDisplay>
+          </Typography>
+          <hr style={{ width: '100%', marginTop: '10px', marginBottom: '20px' }} />
+        </>
+      )}
 
       {status?.isFound === false && activeTab == 1 && (
         <Typography variant='body2' component='p' mt={2} mb={3}>
@@ -321,11 +329,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       {status && (
         <>
-          {event?.checkInDetails && event.checkInDetails != '<p><br></p>' && (
-            <Typography variant='body2' component='div' mb={2} mt={-2}>
-              <SafeHTMLDisplay html={event?.checkInDetails}></SafeHTMLDisplay>
-            </Typography>
-          )}
           <Attendees
             users={status.attendees}
             onDelete={userId => {
