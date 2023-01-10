@@ -294,13 +294,18 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
 
       {status?.isFound === false && activeTab == 1 && (
-        <Typography variant='body2' component='p' mt={2} mb={3}>
-          Membership status for <b>{status.email}</b> was not found.
-        </Typography>
+        <>
+          <Typography variant='body2' component='p' mb={2}>
+            Membership status for <b>{status.email}</b> was not found.
+          </Typography>
+          <Typography variant='body2' component='p' mb={3}>
+            Click the &quot;Try Another Search&quot; button below to try another e-mail address.
+          </Typography>
+        </>
       )}
       {status?.isFound === false && activeTab == 0 && (
         <>
-          <Typography variant='body2' component='p' mt={2} mb={2}>
+          <Typography variant='body2' component='p' mb={2}>
             Thanks for joining for today&apos;s event. Grab a name tag (if available), meet a new friend, and test your tree knowledge
             below!
           </Typography>
@@ -406,7 +411,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             TreeFolks Young Professionals is the most fun way to support Central Texas&apos; urban forest.
           </Typography>
           <Typography variant='body2' component='p' mb={3}>
-            Join today by starting an annual donation to TreeFolks starting at $20:
+            Join today by starting an annual donation to TreeFolks starting at $20/yr:
           </Typography>
           <Link href='/membership'>
             <Button color='primary' variant='contained' sx={{ mb: 2 }}>
