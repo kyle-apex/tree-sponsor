@@ -14,7 +14,7 @@ const MembershipPerks = ({ isMember }: { isMember?: boolean }) => {
               <a href={'https://band.us/n/a4ae81veK4TfW'} target='_blank' rel='noreferrer' style={{ textDecoration: 'none' }}>
                 <Typography color='primary'>Join our members only group on BAND for:</Typography>
               </a>
-              <ul>
+              <ul style={{ color: 'var(--secondary-text-color)' }}>
                 <li>Members only updates and events</li>
                 <li>Subscribing to our events calendar</li>
                 <li>Member communications</li>
