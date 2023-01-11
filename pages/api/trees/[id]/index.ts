@@ -14,7 +14,7 @@ import getBase64ImageDimensions from 'utils/aws/get-base64-image-dimensions';
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '8mb',
+      sizeLimit: '20mb',
     },
   },
 };
