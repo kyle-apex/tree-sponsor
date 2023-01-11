@@ -13,7 +13,7 @@ import upsertTree from 'utils/tree/upsert';
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '8mb',
+      sizeLimit: '20mb',
     },
   },
 };
