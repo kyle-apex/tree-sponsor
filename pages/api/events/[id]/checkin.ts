@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       user.name = `${firstName} ${lastName}`.trim();
       await prisma.user.update({ where: { email }, data: { name: user.name } });
     }
-    if (!user) {
+    if (!user && firstName) {
       user = await prisma.user.create({ data: { email, name: `${firstName} ${lastName}`.trim(), profile: {} } });
     }
 
@@ -71,11 +71,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       updateSubscriptionsForUser(email);
     }
 
-    const newCheckin = await prisma.eventCheckIn.upsert({
-      where: { email_eventId: { email, eventId } },
-      create: createCheckin,
-      update: updateCheckin,
-    });
+    if (userId) {
+      const newCheckin = await prisma.eventCheckIn.upsert({
+        where: { email_eventId: { email, eventId } },
+        create: createCheckin,
+        update: updateCheckin,
+      });
+    }
     //console.log('newCheckin', newCheckin);
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);

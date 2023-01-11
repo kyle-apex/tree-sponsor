@@ -25,7 +25,7 @@ const Attendees = ({
 
   return (
     <Box mb={2} component='section'>
-      <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
+      <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={3} mt={1}>
         Who&apos;s here:{' '}
         <RestrictSection accessType='isAdmin'>
           <IconButton

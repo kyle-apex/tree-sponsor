@@ -46,7 +46,7 @@ const ManageEventsPage = () => {
             isLoading={isNavigating}
             startIcon={<AddIcon />}
             variant='contained'
-            sx={{ width: '140px' }}
+            sx={{ width: '140px', height: '36.5px' }}
           >
             Add Event
           </LoadingButton>

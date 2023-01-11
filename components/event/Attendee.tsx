@@ -109,14 +109,16 @@ const Attendee = ({
                   <VisibilityOffIcon color='secondary'></VisibilityOffIcon>
                 </Tooltip>
               )}
-              <IconButton
-                onClick={() => {
-                  setIsSettingsDialogOpen(true);
-                }}
-                sx={{ ml: 1, padding: 0 }}
-              >
-                <SettingsIcon color='secondary'></SettingsIcon>
-              </IconButton>
+              {(user.displayName || user.name) && (
+                <IconButton
+                  onClick={() => {
+                    setIsSettingsDialogOpen(true);
+                  }}
+                  sx={{ ml: 1, padding: 0 }}
+                >
+                  <SettingsIcon color='secondary'></SettingsIcon>
+                </IconButton>
+              )}
               <AttendeeSettingsDialog
                 onSetIsPrivate={onSetIsPrivate}
                 user={user}
