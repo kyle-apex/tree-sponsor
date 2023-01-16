@@ -23,6 +23,7 @@ import Skeleton from '@mui/material/Skeleton';
 import { useScrollTrigger } from '@mui/material';
 import axios from 'axios';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
+import formatDateString from 'utils/formatDateString';
 
 import dynamic from 'next/dynamic';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
@@ -42,14 +43,6 @@ type MembershipStatus = {
   myCheckin?: PartialEventCheckIn;
 };
 
-const formatDate = (date: Date): string => {
-  if (!date) return '';
-
-  let dateStr = date.toLocaleString('default', { month: 'long', day: 'numeric' });
-  if (date.getFullYear() != new Date().getFullYear()) dateStr += ', ' + date.getFullYear();
-  return dateStr;
-};
-
 const getDonationDateMessage = (subscription: PartialSubscription): string => {
   const anniversary = new Date(subscription.lastPaymentDate);
   anniversary.setFullYear(anniversary.getFullYear() + 1);
@@ -57,7 +50,7 @@ const getDonationDateMessage = (subscription: PartialSubscription): string => {
 
   return `🥳 Your ${anniversaryNumber}${
     anniversaryNumber == 1 ? 'st' : anniversaryNumber == 2 ? 'nd' : anniversaryNumber == 3 ? 'rd' : 'th'
-  } TreeFolksYP Membership anniversary donation will be ${formatDate(anniversary)}.`;
+  } TreeFolksYP Membership anniversary donation will be ${formatDateString(anniversary)}.`;
 };
 
 const Checkin = ({ event }: { event?: PartialEvent }) => {
@@ -179,7 +172,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             {event?.name}
           </Typography>
           <Typography variant='subtitle2' sx={{ fontSize: '.8rem' }} color='gray' mb={2}>
-            {formatDate(event?.startDate)}
+            {formatDateString(event?.startDate)}
             {event.location?.name && ' - ' + event.location.name}
           </Typography>
           <Typography variant='subtitle2' mb={2}>
@@ -339,7 +332,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 Unfortunately <b>your membership is no longer active</b>.
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
-                Your most recent membership donation was {formatDate(status.subscription.lastPaymentDate)}.
+                Your most recent membership donation was {formatDateString(status.subscription.lastPaymentDate)}.
               </Typography>
             </>
           )}

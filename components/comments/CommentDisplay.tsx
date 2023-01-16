@@ -9,15 +9,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import linkifyStr from 'linkify-string';
 import parse from 'html-react-parser';
-
-const formatCommentDate = (date: Date): string => {
-  if (!date) return '';
-
-  let dateStr = date.toLocaleString('default', { month: 'short', day: 'numeric' });
-
-  if (date.getFullYear() != new Date().getFullYear()) dateStr += ' ' + date.getFullYear();
-  return dateStr;
-};
+import formatDateString from 'utils/formatDateString';
 
 const CommentDisplay = ({
   comment,
@@ -51,7 +43,7 @@ const CommentDisplay = ({
             </Typography>
           </Link>
           <Typography variant='subtitle2' color='gray'>
-            {formatCommentDate(comment.createdDate)}
+            {formatDateString(comment.createdDate)}
           </Typography>
           {comment.user.id == currentUserId && comment.id && onDelete && (
             <Box sx={{ textAlign: 'right', flex: '1 1 auto', color: 'gray' }}>
