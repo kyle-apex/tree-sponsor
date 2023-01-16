@@ -301,6 +301,9 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           <Typography variant='body2' component='p' mb={3}>
             Click the &quot;Try Another Search&quot; button below to try another e-mail address.
           </Typography>
+          <Button onClick={reset} variant='contained' color='secondary' sx={{ marginBottom: 3 }}>
+            Try Another Search
+          </Button>
         </>
       )}
       {status?.isFound === false && activeTab == 0 && (
@@ -342,7 +345,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           )}
         </>
       )}
-      {status && (
+      {status && !(status.isFound === false && activeTab == 1) && (
         <>
           <Attendees
             users={status.attendees}
@@ -405,7 +408,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           </Button>
         </>
       )}
-      {status?.isFound === false && (
+      {status?.isFound === false && activeTab != 1 && (
         <>
           <Typography variant='body2' component='p' mt={2} mb={2}>
             TreeFolks Young Professionals is the most fun way to support Central Texas&apos; urban forest.
@@ -436,7 +439,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           ></MapMarkerDisplay>
         </Box>
       )}
-      {status && (
+      {status && !(status.isFound === false && activeTab == 1) && (
         <a
           href='https://www.instagram.com/treefolks_yp/'
           target='_instagram'
