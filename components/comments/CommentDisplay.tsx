@@ -43,7 +43,7 @@ const CommentDisplay = ({
             </Typography>
           </Link>
           <Typography variant='subtitle2' color='gray'>
-            {formatDateString(comment.createdDate)}
+            {formatDateString(comment.createdDate, true)}
           </Typography>
           {comment.user.id == currentUserId && comment.id && onDelete && (
             <Box sx={{ textAlign: 'right', flex: '1 1 auto', color: 'gray' }}>
