@@ -26,6 +26,7 @@ import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
 import formatDateString from 'utils/formatDateString';
 
 import dynamic from 'next/dynamic';
+import CheckinHistoryDialog from './CheckinHistoryDialog';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
   // eslint-disable-next-line react/display-name
@@ -41,6 +42,7 @@ type MembershipStatus = {
   checkInCount?: number;
   trees: PartialTree[];
   myCheckin?: PartialEventCheckIn;
+  myCheckins?: PartialEventCheckIn[];
 };
 
 const getDonationDateMessage = (subscription: PartialSubscription): string => {
@@ -60,6 +62,8 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [discoveredFrom, setDiscoveredFrom] = useState('');
   const [isEmailOptIn, setIsEmailOptIn] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
+
   const [selectedTree, setSelectedTree] = useState<PartialTree>(null);
   const [isPrivate, setIsPrivate] = useState(false);
 
@@ -396,6 +400,26 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               </ul>
             </Typography>
           )}
+          {status.myCheckins?.length > 0 && (
+            <>
+              <Button
+                color='secondary'
+                variant='contained'
+                onClick={() => {
+                  setIsHistoryDialogOpen(true);
+                }}
+                sx={{ mb: 2 }}
+              >
+                View Check-in History
+              </Button>
+              <CheckinHistoryDialog
+                checkins={status.myCheckins}
+                isOpen={isHistoryDialogOpen}
+                setIsOpen={setIsHistoryDialogOpen}
+              ></CheckinHistoryDialog>
+            </>
+          )}
+
           <Button onClick={reset} variant='outlined' color='secondary'>
             Add Another Check-in
           </Button>
