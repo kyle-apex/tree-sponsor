@@ -7,17 +7,19 @@ const MapMarker = ({
   onClick,
   latitude,
   longitude,
+  isQuiz,
 }: {
   isSatelliteMode?: boolean;
   zoom: number;
   onClick: () => void;
   latitude: number;
   longitude: number;
+  isQuiz?: boolean;
 }) => {
   return (
     <Marker className='marker' latitude={latitude} longitude={longitude}>
       <img
-        src={isSatelliteMode ? '/pin-right-bright.svg' : '/pin-ring.svg'}
+        src={isQuiz ? '/pin-quiz.svg' : isSatelliteMode ? '/pin-right-bright.svg' : '/pin-ring.svg'}
         style={{
           width: (50 * zoom) / 10 + 'px',
           marginLeft: (-50 * zoom) / 20 + 'px',
