@@ -14,6 +14,7 @@ const MapMarkerDisplay = ({
   height,
   mapStyle,
   markerScale = 1,
+  isQuiz,
 }: {
   markers: Coordinate[];
   onClick?: (coordinate?: Coordinate) => void;
@@ -21,6 +22,7 @@ const MapMarkerDisplay = ({
   height?: string;
   mapStyle?: MapStyle;
   markerScale: number;
+  isQuiz?: boolean;
 }) => {
   const mapRef = useRef();
   const theme = useTheme();
@@ -60,6 +62,7 @@ const MapMarkerDisplay = ({
                 if (onClick) onClick(marker);
               }}
               isSatelliteMode={mapStyle == 'SATELLITE'}
+              isQuiz={isQuiz}
             ></MapMarker>
           );
         }

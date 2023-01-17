@@ -378,6 +378,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               }}
               mapStyle='SATELLITE'
               markerScale={0.5}
+              isQuiz={true}
             ></MapMarkerDisplay>
           </Box>
         </>
@@ -453,6 +454,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             height='200px'
             mapStyle='SATELLITE'
             markerScale={0.5}
+            isQuiz={true}
           ></MapMarkerDisplay>
         </Box>
       )}
