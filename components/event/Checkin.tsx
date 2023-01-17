@@ -85,7 +85,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     if (!email) return;
     setIsLoadingExistingUser(true);
     getMembershipStatus();
-  }, []);
+  }, [event?.id]);
 
   const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
     setActiveTab(newValue);
@@ -417,6 +417,9 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 checkins={status.myCheckins}
                 isOpen={isHistoryDialogOpen}
                 setIsOpen={setIsHistoryDialogOpen}
+                onNavigate={() => {
+                  setStatus(null);
+                }}
               ></CheckinHistoryDialog>
             </>
           )}
