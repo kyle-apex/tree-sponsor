@@ -23,6 +23,7 @@ import Skeleton from '@mui/material/Skeleton';
 import { useScrollTrigger } from '@mui/material';
 import axios from 'axios';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
+import formatDateString from 'utils/formatDateString';
 
 import dynamic from 'next/dynamic';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
@@ -42,14 +43,6 @@ type MembershipStatus = {
   myCheckin?: PartialEventCheckIn;
 };
 
-const formatDate = (date: Date): string => {
-  if (!date) return '';
-
-  let dateStr = date.toLocaleString('default', { month: 'long', day: 'numeric' });
-  if (date.getFullYear() != new Date().getFullYear()) dateStr += ', ' + date.getFullYear();
-  return dateStr;
-};
-
 const getDonationDateMessage = (subscription: PartialSubscription): string => {
   const anniversary = new Date(subscription.lastPaymentDate);
   anniversary.setFullYear(anniversary.getFullYear() + 1);
@@ -57,7 +50,7 @@ const getDonationDateMessage = (subscription: PartialSubscription): string => {
 
   return `🥳 Your ${anniversaryNumber}${
     anniversaryNumber == 1 ? 'st' : anniversaryNumber == 2 ? 'nd' : anniversaryNumber == 3 ? 'rd' : 'th'
-  } TreeFolksYP Membership anniversary donation will be ${formatDate(anniversary)}.`;
+  } TreeFolksYP Membership anniversary donation will be ${formatDateString(anniversary)}.`;
 };
 
 const Checkin = ({ event }: { event?: PartialEvent }) => {
@@ -179,7 +172,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             {event?.name}
           </Typography>
           <Typography variant='subtitle2' sx={{ fontSize: '.8rem' }} color='gray' mb={2}>
-            {formatDate(event?.startDate)}
+            {formatDateString(event?.startDate)}
             {event.location?.name && ' - ' + event.location.name}
           </Typography>
           <Typography variant='subtitle2' mb={2}>
@@ -301,6 +294,9 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           <Typography variant='body2' component='p' mb={3}>
             Click the &quot;Try Another Search&quot; button below to try another e-mail address.
           </Typography>
+          <Button onClick={reset} variant='contained' color='secondary' sx={{ marginBottom: 3 }}>
+            Try Another Search
+          </Button>
         </>
       )}
       {status?.isFound === false && activeTab == 0 && (
@@ -336,13 +332,13 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 Unfortunately <b>your membership is no longer active</b>.
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
-                Your most recent membership donation was {formatDate(status.subscription.lastPaymentDate)}.
+                Your most recent membership donation was {formatDateString(status.subscription.lastPaymentDate)}.
               </Typography>
             </>
           )}
         </>
       )}
-      {status && (
+      {status && !(status.isFound === false && activeTab == 1) && (
         <>
           <Attendees
             users={status.attendees}
@@ -406,7 +402,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           </Button>
         </>
       )}
-      {status?.isFound === false && (
+      {status?.isFound === false && activeTab != 1 && (
         <>
           <Typography variant='body2' component='p' mt={2} mb={2}>
             TreeFolks Young Professionals is the most fun way to support Central Texas&apos; urban forest.
@@ -438,7 +434,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           ></MapMarkerDisplay>
         </Box>
       )}
-      {status && (
+      {status && !(status.isFound === false && activeTab == 1) && (
         <a
           href='https://www.instagram.com/treefolks_yp/'
           target='_instagram'

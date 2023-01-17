@@ -6,20 +6,12 @@ import parsedGet from 'utils/api/parsed-get';
 import { SubscriptionWithDetails } from '@prisma/client';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
+import formatDateString from 'utils/formatDateString';
 
 type MembershipStatus = {
   subscription: SubscriptionWithDetails;
   isFound: boolean;
   email?: string;
-};
-
-const formatDate = (date: Date): string => {
-  if (!date) return '';
-
-  let dateStr = date.toLocaleString('default', { month: 'long', day: 'numeric' });
-
-  if (date.getFullYear() != new Date().getFullYear()) dateStr += ', ' + date.getFullYear();
-  return dateStr;
 };
 
 const MembershipStatus = () => {
@@ -81,7 +73,7 @@ const MembershipStatus = () => {
                 Thanks for being a member{userName ? ' ' + userName : ''}!
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
-                Your most recent membership donation was {formatDate(status.subscription.lastPaymentDate)}.
+                Your most recent membership donation was {formatDateString(status.subscription.lastPaymentDate)}.
               </Typography>
             </>
           )}
@@ -94,7 +86,7 @@ const MembershipStatus = () => {
                 Unfortunately <b>your membership is no longer active</b>.
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
-                Your most recent membership donation was {formatDate(status.subscription.lastPaymentDate)}.
+                Your most recent membership donation was {formatDateString(status.subscription.lastPaymentDate)}.
               </Typography>
             </>
           )}
