@@ -4,6 +4,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import Divider from '@mui/material/Divider';
 import { PartialEventCheckIn } from 'interfaces';
+import { signOut, useSession, signIn } from 'next-auth/client';
 import CheckinHistory from './CheckinHistory';
 
 const CheckinHistoryDialog = ({
@@ -13,13 +14,15 @@ const CheckinHistoryDialog = ({
   onNavigate,
 }: {
   isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>> | ((val: boolean) => void);
   checkins: PartialEventCheckIn[];
   onNavigate?: () => void;
 }) => {
   const handleClose = () => {
     setIsOpen(false);
   };
+
+  const [session] = useSession();
   return (
     <Dialog open={isOpen} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '300px', margin: '0px' } }} onClose={handleClose}>
       <DialogTitle sx={{ backgroundColor: '#6E4854', marginBottom: 2 }}>
@@ -28,13 +31,33 @@ const CheckinHistoryDialog = ({
         </Typography>
       </DialogTitle>
       <DialogContent className=''>
-        <CheckinHistory
-          checkins={checkins}
-          handleClose={() => {
-            handleClose();
-            if (onNavigate) onNavigate();
-          }}
-        />
+        {session && (
+          <CheckinHistory
+            checkins={checkins}
+            handleClose={() => {
+              handleClose();
+              if (onNavigate) onNavigate();
+            }}
+          />
+        )}
+        {!session && (
+          <>
+            <Typography mb={2} variant='body1'>
+              To view your check-in history, login with your email address:
+            </Typography>
+            <Button
+              color='secondary'
+              variant='contained'
+              fullWidth
+              onClick={() => {
+                if (session) signOut({ redirect: false });
+                signIn();
+              }}
+            >
+              Login to View History
+            </Button>
+          </>
+        )}
         <Divider sx={{ marginBottom: 1 }}></Divider>
         <Button fullWidth color='inherit' sx={{ mt: 2 }} onClick={handleClose}>
           Close
