@@ -70,7 +70,6 @@ export default NextAuth({
           where: { id: session.user.id },
           include: { roles: {}, subscriptions: {}, eventCheckIns: { include: { event: { include: { location: true } } } } },
         })) as PartialUser;
-        console.log('userWithRoles', userWithRoles);
 
         if (userWithRoles.roles) session.user.roles = userWithRoles.roles;
         if (userWithRoles.subscriptions) session.user.subscriptions = userWithRoles.subscriptions;
