@@ -27,6 +27,7 @@ import formatDateString from 'utils/formatDateString';
 
 import dynamic from 'next/dynamic';
 import CheckinHistoryDialog from './CheckinHistoryDialog';
+import useHashToggle from 'utils/hooks/use-hash-toggle';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
   // eslint-disable-next-line react/display-name
@@ -62,7 +63,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [discoveredFrom, setDiscoveredFrom] = useState('');
   const [isEmailOptIn, setIsEmailOptIn] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
+  const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useHashToggle('history', false);
 
   const [selectedTree, setSelectedTree] = useState<PartialTree>(null);
   const [isPrivate, setIsPrivate] = useState(false);
@@ -85,7 +86,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     if (!email) return;
     setIsLoadingExistingUser(true);
     getMembershipStatus();
-  }, []);
+  }, [event?.id]);
 
   const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
     setActiveTab(newValue);
@@ -417,6 +418,9 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 checkins={status.myCheckins}
                 isOpen={isHistoryDialogOpen}
                 setIsOpen={setIsHistoryDialogOpen}
+                onNavigate={() => {
+                  setStatus(null);
+                }}
               ></CheckinHistoryDialog>
             </>
           )}

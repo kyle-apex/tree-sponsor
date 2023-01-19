@@ -27,6 +27,7 @@ const MapMarker = ({
           cursor: 'pointer',
         }}
         onClick={() => onClick()}
+        alt='Map Marker'
       />
     </Marker>
   );
