@@ -51,7 +51,7 @@ const getDonationDateMessage = (subscription: PartialSubscription): string => {
   anniversary.setFullYear(anniversary.getFullYear() + 1);
   const anniversaryNumber = Math.max(1, anniversary.getFullYear() - subscription.createdDate.getFullYear());
 
-  return `🥳 Your ${anniversaryNumber}${
+  return `Your ${anniversaryNumber}${
     anniversaryNumber == 1 ? 'st' : anniversaryNumber == 2 ? 'nd' : anniversaryNumber == 3 ? 'rd' : 'th'
   } TreeFolksYP Membership anniversary donation will be ${formatDateString(anniversary)}.`;
 };
@@ -324,15 +324,24 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 🌳 &nbsp;Thanks for continuing to support the urban forest with your membership donation to TreeFolks!
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
-                {getDonationDateMessage(status.subscription)}
+                🥳 &nbsp;{getDonationDateMessage(status.subscription)}
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
                 👥 &nbsp;Keep up special events and opportunities in our
                 <a href={process.env.BAND_URL || 'https://band.us/n/a4ae81veK4TfW'} target='_blank' rel='noreferrer' style={{}}>
-                  <span style={{ marginLeft: '4px' }}>members only BAND App group</span>
+                  <span style={{ marginLeft: '4px' }}>members only BAND App community</span>
                 </a>
                 .
               </Typography>
+              {status.myCheckin?.user?.roles?.find(role => role.name === 'Core Team') && (
+                <Typography variant='body2' component='p' mb={2}>
+                  🗓 &nbsp;Help plan/organize in the
+                  <a href={process.env.BAND_CORE_TEAM_URL || 'https://band.us/n/aaa18bv1q2U44'} target='_blank' rel='noreferrer' style={{}}>
+                    <span style={{ marginLeft: '4px' }}>Core Team BAND</span>
+                  </a>
+                  .
+                </Typography>
+              )}
             </>
           )}
           {!hasActiveMembership && (
