@@ -39,11 +39,6 @@ const MembershipPerks = ({ isMember }: { isMember?: boolean }) => {
       </Typography>
       <ul>
         <li>
-          <a href='https://smile.amazon.com/ch/74-2569827' target='_blank' rel='noreferrer' style={{ textDecoration: 'none' }}>
-            <Typography color='primary'>Raise money for TreeFolks on Amazon purchases through Amazon Smile</Typography>
-          </a>
-        </li>
-        <li>
           <a
             href='https://www.bing.com/?publ=BINGIP&crea=MY01IK&form=MY01IK&ocid=MY01IK&programname=GwBShare&cid=840-742569827'
             target='_blank'
