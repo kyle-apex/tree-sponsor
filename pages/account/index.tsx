@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import RestrictSection from 'components/RestrictSection';
 import { useSession } from 'next-auth/client';
+import CheckinHistoryDialog from 'components/event/CheckinHistoryDialog';
 
 export const getServerSideProps = serverSideIsAuthenticated;
 
@@ -24,6 +25,7 @@ const AccountPage = () => {
   const [activeTab, setActiveTab] = useState('membership');
   const router = useRouter();
   const [nextSession] = useSession();
+  const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
 
   const session = nextSession as Session;
   const user = session?.user;
@@ -101,6 +103,27 @@ const AccountPage = () => {
               </Link>
             </li>
           )}
+          {user?.eventCheckIns?.length > 0 && (
+            <li>
+              <a
+                onClick={() => {
+                  setIsHistoryDialogOpen(true);
+                }}
+                style={{ textDecoration: 'none', cursor: 'pointer' }}
+              >
+                <Typography color='primary'>View my event attendance history</Typography>
+              </a>
+              <CheckinHistoryDialog
+                checkins={user.eventCheckIns}
+                isOpen={isHistoryDialogOpen}
+                setIsOpen={setIsHistoryDialogOpen}
+                onNavigate={() => {
+                  setIsHistoryDialogOpen(false);
+                }}
+              ></CheckinHistoryDialog>
+            </li>
+          )}
+
           <RestrictSection accessType='isAdmin'>
             <li>
               <Link href='/admin'>

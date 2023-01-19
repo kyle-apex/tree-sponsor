@@ -7,6 +7,7 @@ import { generateProfilePath } from 'utils/user/generate-profile-path';
 import { User } from '.prisma/client';
 import { Session, PartialUser } from 'interfaces';
 import { AccessTypes } from 'utils/auth/AccessType';
+import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 
 function getProfilePictureUrl(profile: Profile): string {
   if (typeof profile?.picture === 'string') return profile.picture;
@@ -67,11 +68,16 @@ export default NextAuth({
       if (!session.user.roles && session.user.id) {
         const userWithRoles = (await prisma.user.findFirst({
           where: { id: session.user.id },
-          include: { roles: {}, subscriptions: {} },
+          include: { roles: {}, subscriptions: {}, eventCheckIns: { include: { event: { include: { location: true } } } } },
         })) as PartialUser;
+        console.log('userWithRoles', userWithRoles);
 
         if (userWithRoles.roles) session.user.roles = userWithRoles.roles;
         if (userWithRoles.subscriptions) session.user.subscriptions = userWithRoles.subscriptions;
+        if (userWithRoles.eventCheckIns) {
+          parseResponseDateStrings(userWithRoles.eventCheckIns);
+          session.user.eventCheckIns = userWithRoles.eventCheckIns;
+        }
       }
       return session;
     },
