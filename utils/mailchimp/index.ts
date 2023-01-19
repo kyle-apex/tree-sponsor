@@ -9,7 +9,6 @@ const MAILCHIMP_LIST_ID = process.env.MAILCHIMP_LIST_ID;
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 let mailchimp;
-console.log('og api key', MAILCHIMP_API_KEY);
 // If api constant is not undefined go head and instatiate mailchimp
 if (MAILCHIMP_API_KEY) {
   mailchimp = new Mailchimp(MAILCHIMP_API_KEY);

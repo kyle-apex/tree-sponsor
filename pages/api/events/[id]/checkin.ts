@@ -46,6 +46,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       user = await prisma.user.create({ data: { email, name: `${firstName} ${lastName}`.trim(), profile: {} } });
     }
 
+    const myCheckins = await prisma.eventCheckIn.findMany({
+      where: { eventId: { not: eventId }, email: email },
+      include: { event: { include: { location: true } } },
+    });
+
     const existingCheckin = await prisma.eventCheckIn.findFirst({
       where: { email, eventId },
     });
@@ -149,6 +154,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    res.status(200).json({ subscription, checkInCount, attendees, trees, myCheckin, attendeesCount });
+    res.status(200).json({ subscription, checkInCount, attendees, trees, myCheckin, attendeesCount, myCheckins });
   }
 }
