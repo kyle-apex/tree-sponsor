@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import { PartialUser } from 'interfaces';
 import { signIn, signOut, SignOutParams, useSession } from 'next-auth/client';
 import AttendeeContactForm from './AttendeeContactForm';
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import SplitRow from 'components/layout/SplitRow';
 import LoadingButton from 'components/LoadingButton';
@@ -17,7 +17,19 @@ import Snackbar from '@mui/material/Snackbar';
 import Divider from '@mui/material/Divider';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import TextField from '@mui/material/TextField';
+import dynamic from 'next/dynamic';
+import Skeleton from '@mui/material/Skeleton';
 type booleanFunc = (isOpen: boolean) => void;
+const TextEditor = dynamic(() => import('components/TextEditor'), {
+  ssr: false,
+  // eslint-disable-next-line react/display-name
+  loading: () => (
+    <>
+      <Skeleton variant='text' sx={{ width: '15%' }} />
+      <Skeleton variant='rectangular' sx={{ width: '100%', marginBottom: 3 }} height={100} />
+    </>
+  ),
+});
 
 const AttendeeSettingsDialog = ({
   isOpen,
@@ -68,6 +80,12 @@ const AttendeeSettingsDialog = ({
     setIsSaving(false);
     setIsOpen(false);
   };
+
+  const handleBioChange = useCallback((newValue: string) => {
+    setProfile(prof => {
+      return { ...prof, bio: newValue };
+    });
+  }, []);
 
   const openFileBrowser = () => {
     if (!imageUploadRef?.current) return;
@@ -159,6 +177,14 @@ const AttendeeSettingsDialog = ({
                 id='name-field'
               ></TextField>
               <AttendeeContactForm profile={profile} setProfile={setProfile}></AttendeeContactForm>
+              <Box sx={{ marginBottom: 3, minHeight: '110px', display: 'block' }}>
+                <TextEditor
+                  label='Bio'
+                  placeholder='Enter a short bio to display on your profile...'
+                  value={user?.profile?.bio}
+                  onChange={handleBioChange}
+                />
+              </Box>
             </>
           )}
           {(!session || session.user.email != user.email) && (
