@@ -64,13 +64,18 @@ const Attendee = ({
 
   // TODO: Remove This
   user.profilePath = null;
-  const hasContact = user.profile?.instagramHandle || user.profile?.twitterHandle || user.profile?.linkedInLink;
+  const hasContact = user.profile?.instagramHandle || user.profile?.twitterHandle || user.profile?.linkedInLink || user.profile?.bio;
 
   const roleDisplay = getRoleDisplay(user);
 
   return (
     <Box flexDirection='row' sx={{ display: 'flex' }} gap={2} mb={2}>
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Box
+        sx={{ display: 'flex', alignItems: 'center' }}
+        onClick={() => {
+          setIsContactDialogOpen(true);
+        }}
+      >
         <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
       </Box>
       <Box className='full-width'>
@@ -129,16 +134,18 @@ const Attendee = ({
             </>
           )}
 
-          {hasContact && (
+          {(hasContact || user.image) && (
             <>
-              <IconButton
-                onClick={() => {
-                  setIsContactDialogOpen(true);
-                }}
-                sx={{ ml: 1, padding: 0 }}
-              >
-                <ContactPageIcon color='secondary'></ContactPageIcon>
-              </IconButton>
+              {hasContact && (
+                <IconButton
+                  onClick={() => {
+                    setIsContactDialogOpen(true);
+                  }}
+                  sx={{ ml: 1, padding: 0 }}
+                >
+                  <ContactPageIcon color='secondary'></ContactPageIcon>
+                </IconButton>
+              )}
               <AttendeeContactDialog user={user} isOpen={isContactDialogOpen} setIsOpen={setIsContactDialogOpen}></AttendeeContactDialog>
             </>
           )}
