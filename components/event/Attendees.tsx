@@ -14,12 +14,16 @@ const Attendees = ({
   onSetIsPrivate,
   isPrivate,
   onRefresh,
+  isShowAll = false,
+  limit = 10,
 }: {
   users: PartialUser[];
   onDelete?: (userId: number) => void;
   onSetIsPrivate?: () => void;
   isPrivate?: boolean;
   onRefresh?: () => void;
+  isShowAll?: boolean;
+  limit?: number;
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
 
@@ -39,18 +43,19 @@ const Attendees = ({
           </IconButton>
         </RestrictSection>
       </Typography>
-      {users?.map(user => {
-        return (
-          <Attendee
-            key={user.id}
-            isEditMode={isEditMode}
-            onDelete={() => onDelete(user.id)}
-            onSetIsPrivate={onSetIsPrivate}
-            isPrivate={isPrivate}
-            user={user}
-            onRefresh={onRefresh}
-          />
-        );
+      {users?.map((user, idx) => {
+        if (isShowAll || idx < limit)
+          return (
+            <Attendee
+              key={user.id}
+              isEditMode={isEditMode}
+              onDelete={() => onDelete(user.id)}
+              onSetIsPrivate={onSetIsPrivate}
+              isPrivate={isPrivate}
+              user={user}
+              onRefresh={onRefresh}
+            />
+          );
       })}
     </Box>
   );

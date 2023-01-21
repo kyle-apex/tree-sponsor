@@ -52,9 +52,11 @@ const getDonationDateMessage = (subscription: PartialSubscription): string => {
   const anniversaryNumber = Math.max(1, anniversary.getFullYear() - subscription.createdDate.getFullYear());
 
   return `Your ${anniversaryNumber}${
-    anniversaryNumber == 1 ? 'st' : anniversaryNumber == 2 ? 'nd' : anniversaryNumber == 3 ? 'rd' : 'th'
+    anniversaryNumber == 1 ? 'st' : anniversaryNumber == 2 ? 'd' : anniversaryNumber == 3 ? 'rd' : 'th'
   } TreeFolksYP Membership anniversary donation will be ${formatDateString(anniversary)}.`;
 };
+
+const attendeesDisplayLimit = 8;
 
 const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [email, setEmail] = useLocalStorage('checkinEmail', '');
@@ -74,6 +76,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [status, setStatus] = useState<MembershipStatus>(null);
 
   const [activeTab, setActiveTab] = useState(0);
+  const [isShowAllAttendees, setIsShowAllAttendees] = useState(false);
 
   const { data: prioritySpecies, isFetched } = useGet<PartialSpecies>(
     '/api/species/priority',
@@ -371,12 +374,25 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             onRefresh={() => {
               getMembershipStatus();
             }}
+            isShowAll={isShowAllAttendees}
+            limit={attendeesDisplayLimit}
           ></Attendees>
-          {status.checkInCount > status.attendees?.length && (
+          {status.checkInCount > status.attendees?.length && (isShowAllAttendees || status.attendees?.length <= attendeesDisplayLimit) && (
             <Typography variant='body2' ml={0} mt={-2} mb={3} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
               + {status.checkInCount - status.attendees?.length} other attendee
               {status.checkInCount - status.attendees?.length == 1 ? '' : 's'}
             </Typography>
+          )}
+          {!isShowAllAttendees && status.attendees?.length > attendeesDisplayLimit && (
+            <Button
+              sx={{ marginTop: -2, marginBottom: 3, textTransform: 'none', color: 'var(--secondary-text-color)' }}
+              onClick={() => {
+                setIsShowAllAttendees(true);
+              }}
+              variant='outlined'
+            >
+              Show All {status.checkInCount} Attendees
+            </Button>
           )}
           <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={3} mt={1}>
             Tree ID Quiz
