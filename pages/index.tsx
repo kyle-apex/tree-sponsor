@@ -177,7 +177,7 @@ const IndexPage = ({
 
 export default IndexPage;
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   return {
     props: {
       stripePriceIdLow: process.env.STRIPE_PRICE_ID_LOW,
