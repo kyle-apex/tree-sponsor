@@ -10,7 +10,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { SponsorshipMap } from 'components/sponsor';
 import TFYPAboutSection from 'components/index/TFYPAboutSection';
 import parsedGet from 'utils/api/parsed-get';
-import { TitleSection } from 'interfaces';
+import { PartialUser, TitleSection } from 'interfaces';
 
 import { PartialSponsorship } from 'interfaces';
 import { PollutionIcon, FloodingIcon, CurveTop, CurveBottom } from 'components/index/icons';
@@ -21,6 +21,9 @@ import ActivitiesImage from 'components/index/icons/ActivitiesImage';
 import AnimalsImage from 'components/index/icons/AnimalsImage';
 import SponsorshipGroup from 'components/sponsor/SponsorshipGroup';
 import SignupForm from 'components/membership/SignupForm';
+import { Prisma } from '@prisma/client';
+import CoreTeamBio from 'components/index/CoreTeamBio';
+import Divider from '@mui/material/Divider';
 
 const useStyles = makeStyles(theme => ({
   headlineContainer: {
@@ -72,11 +75,13 @@ const IndexPage = ({
   stripePriceIdLow,
   stripePriceIdMedium,
   stripePriceIdHigh,
+  users,
 }: {
   treeBenefits: TitleSection[];
   stripePriceIdLow: string;
   stripePriceIdMedium: string;
   stripePriceIdHigh: string;
+  users: PartialUser[];
 }) => {
   const [sponsorships, setSponsorships] = useState<PartialSponsorship[]>([]);
   const [isLoadingSponsorships, setIsLoadingSponsorships] = useState(false);
@@ -171,19 +176,54 @@ const IndexPage = ({
           stripePriceIdMedium={stripePriceIdMedium}
         ></SignupForm>
       </Box>
+
+      <Container maxWidth='lg' sx={{ textAlign: 'center' }}>
+        <div
+          style={{
+            width: '100px',
+            marginBottom: '24px',
+            height: '3px',
+            backgroundColor: '#486e62',
+            textAlign: 'center',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            marginTop: '56px',
+          }}
+        ></div>
+        <Typography variant='h2' color='secondary' mb={5} sx={{ textAlign: 'center' }}>
+          Meet Our Core Team
+        </Typography>
+
+        <Grid container direction={{ xs: 'column', sm: 'row', md: 'row' }} spacing={2} mb={5}>
+          {users?.map((user: PartialUser) => (
+            <Grid key={user.id} item xs={12} sm={6} md={4} mb={4}>
+              <CoreTeamBio user={user}></CoreTeamBio>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
     </Layout>
   );
 };
 
 export default IndexPage;
-
 export async function getStaticProps() {
+  const users = await prisma.user.findMany({
+    where: {
+      roles: { some: { name: 'Core Team' } },
+      profile: { bio: { not: null } },
+    },
+    select: { name: true, displayName: true, image: true, profile: { select: { bio: true } } },
+    orderBy: { roles: { _count: 'desc' } },
+  });
+  console.log('users', users);
   return {
     props: {
       stripePriceIdLow: process.env.STRIPE_PRICE_ID_LOW,
       stripePriceIdMedium: process.env.STRIPE_PRICE_ID_MEDIUM,
       stripePriceIdHigh: process.env.STRIPE_PRICE_ID_HIGH,
-      treeBenefits: treeBenefits,
+      treeBenefits,
+      users,
     },
   };
 }
