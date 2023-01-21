@@ -211,6 +211,7 @@ export async function getStaticProps() {
   const users = await prisma.user.findMany({
     where: {
       roles: { some: { name: 'Core Team' } },
+      profile: { bio: { not: null } },
     },
     select: { name: true, displayName: true, image: true, profile: { select: { bio: true } } },
     orderBy: { roles: { _count: 'desc' } },
