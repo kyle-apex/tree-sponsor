@@ -21,9 +21,9 @@ import ActivitiesImage from 'components/index/icons/ActivitiesImage';
 import AnimalsImage from 'components/index/icons/AnimalsImage';
 import SponsorshipGroup from 'components/sponsor/SponsorshipGroup';
 import SignupForm from 'components/membership/SignupForm';
-import { Prisma } from '@prisma/client';
 import CoreTeamBio from 'components/index/CoreTeamBio';
 import Divider from '@mui/material/Divider';
+import { prisma } from 'utils/prisma/init';
 
 const useStyles = makeStyles(theme => ({
   headlineContainer: {
@@ -216,7 +216,6 @@ export async function getStaticProps() {
     select: { name: true, displayName: true, image: true, profile: { select: { bio: true } } },
     orderBy: { roles: { _count: 'desc' } },
   });
-  console.log('users', users);
   return {
     props: {
       stripePriceIdLow: process.env.STRIPE_PRICE_ID_LOW,

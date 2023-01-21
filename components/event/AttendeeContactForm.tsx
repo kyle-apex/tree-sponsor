@@ -11,6 +11,7 @@ const AttendeeContactForm = ({ profile, setProfile }: { profile: PartialProfile;
           setProfile({ ...profile, instagramHandle: e.target.value });
         }}
         fullWidth
+        autoCapitalize='off'
         label='Instagram Handle'
         size='small'
         sx={{ marginBottom: 3 }}
@@ -27,6 +28,7 @@ const AttendeeContactForm = ({ profile, setProfile }: { profile: PartialProfile;
         InputProps={{
           startAdornment: <InputAdornment position='start'>@</InputAdornment>,
         }}
+        autoCapitalize='off'
         fullWidth
         label='Twitter Handle'
         size='small'
@@ -42,6 +44,7 @@ const AttendeeContactForm = ({ profile, setProfile }: { profile: PartialProfile;
         InputProps={{
           startAdornment: <InputAdornment position='start'>linkedin.com/in/</InputAdornment>,
         }}
+        autoCapitalize='off'
         label='LinkedIn Link'
         size='small'
         sx={{ marginBottom: 3 }}
