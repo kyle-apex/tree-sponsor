@@ -198,6 +198,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
               setIsChanged(true);
               setInstagramHandle(e.target.value);
             }}
+            autoCapitalize='off'
             label='Instagram Handle'
             size='small'
             sx={{ marginBottom: 3 }}
@@ -212,6 +213,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
               setIsChanged(true);
               setTwitterHandle(e.target.value);
             }}
+            autoCapitalize='off'
             InputProps={{
               startAdornment: <InputAdornment position='start'>@</InputAdornment>,
             }}
@@ -226,6 +228,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
               setIsChanged(true);
               setLinkedInLink(e.target.value);
             }}
+            autoCapitalize='off'
             InputProps={{
               startAdornment: <InputAdornment position='start'>linkedin.com/in/</InputAdornment>,
             }}

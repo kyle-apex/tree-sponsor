@@ -216,7 +216,6 @@ export async function getStaticProps() {
     select: { name: true, displayName: true, image: true, profile: { select: { bio: true } } },
     orderBy: { roles: { _count: 'desc' } },
   });
-  console.log('users', users);
   return {
     props: {
       stripePriceIdLow: process.env.STRIPE_PRICE_ID_LOW,
