@@ -19,7 +19,10 @@ const CoreTeamBio = ({ user }: { user: PartialUser }) => {
         {user.displayName || user.name}
       </Typography>
       <Typography variant='body2' sx={{ fontStyle: 'italic', textAlign: 'left' }}>
-        {user.profile?.bio?.replace(/(<([^>]+)>)/gi, '').substring(0, 500)}
+        {user.profile?.bio
+          ?.replace(/(<([^>]+)>)/gi, '')
+          .replace(/&nbsp;/g, ' ')
+          .substring(0, 500)}
       </Typography>
     </Box>
   );
