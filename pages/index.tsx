@@ -215,7 +215,7 @@ export async function getStaticProps() {
       image: { not: null },
     },
     select: { name: true, displayName: true, image: true, profile: { select: { bio: true } } },
-    orderBy: { roles: { _count: 'desc' } },
+    orderBy: [{ roles: { _count: 'desc' } }, { createdAt: 'asc' }],
   });
   return {
     props: {
