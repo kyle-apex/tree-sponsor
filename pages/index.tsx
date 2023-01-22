@@ -194,7 +194,7 @@ const IndexPage = ({
           Meet Our Core Team
         </Typography>
 
-        <Grid container direction={{ xs: 'column', sm: 'row', md: 'row' }} spacing={2} mb={5}>
+        <Grid container direction={{ xs: 'column', sm: 'row', md: 'row' }} spacing={2} mb={6}>
           {users?.map((user: PartialUser) => (
             <Grid key={user.id} item xs={12} sm={6} md={4} mb={4}>
               <CoreTeamBio user={user}></CoreTeamBio>
