@@ -1,5 +1,6 @@
 import Typography from '@mui/material/Typography';
 import RestrictSection from 'components/RestrictSection';
+import Link from 'next/link';
 import GoogleCalendar from './GoogleCalendar';
 
 const MembershipPerks = ({ isMember }: { isMember?: boolean }) => {
@@ -51,6 +52,13 @@ const MembershipPerks = ({ isMember }: { isMember?: boolean }) => {
           >
             <Typography color='primary'>Follow @treefolks_yp on Instagram</Typography>
           </a>
+        </li>
+        <li>
+          <Link href='/calendar'>
+            <a style={{ textDecoration: 'none' }}>
+              <Typography color='primary'>Subscribe to the event calendar</Typography>
+            </a>
+          </Link>
         </li>
       </ul>
       <Typography variant='h2' color='secondary'>
