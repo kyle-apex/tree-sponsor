@@ -6,6 +6,7 @@ module.exports = {
       'platform-lookaside.fbsbx.com',
       'lh3.googleusercontent.com',
       'treefolks.org',
+      'www.treefolks.org',
     ],
   },
   swcMinify: false,
