@@ -212,6 +212,7 @@ export async function getStaticProps() {
     where: {
       roles: { some: { name: 'Core Team' } },
       profile: { bio: { not: null } },
+      image: { not: null },
     },
     select: { name: true, displayName: true, image: true, profile: { select: { bio: true } } },
     orderBy: { roles: { _count: 'desc' } },
