@@ -30,7 +30,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : ''}`);
       return;
     }
-    let email;
+    let email: string;
     if (
       event.type === 'customer.subscription.updated' ||
       event.type === 'customer.subscription.deleted' ||
@@ -48,6 +48,10 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     await updateSubscriptionsForUser(email);
+
+    setTimeout(() => {
+      updateSubscriptionsForUser(email);
+    }, 10000);
 
     res.json({ received: true });
   } else {
