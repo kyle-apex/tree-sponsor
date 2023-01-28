@@ -28,6 +28,7 @@ import formatDateString from 'utils/formatDateString';
 import dynamic from 'next/dynamic';
 import CheckinHistoryDialog from './CheckinHistoryDialog';
 import useHashToggle from 'utils/hooks/use-hash-toggle';
+import useWindowFocus from 'utils/hooks/use-window-focus';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
   // eslint-disable-next-line react/display-name
@@ -84,6 +85,16 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     {},
     { refetchOnMount: false, refetchOnWindowFocus: false },
   );
+
+  useWindowFocus(async () => {
+    console.log('status', status);
+    if (status?.attendees?.length > 0) {
+      const result = (await parsedGet(`/api/events/${event.id}/attendees?email=${encodeURIComponent(email)}`)) as PartialUser[];
+      setStatus(current => {
+        return { ...current, ...result };
+      });
+    }
+  }, [status]);
 
   useEffect(() => {
     if (!email) return;
