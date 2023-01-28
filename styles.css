@@ -87,6 +87,42 @@ input.MuiOutlinedInput-input,
   animation-timing-function: linear;
 }
 
+.fade-in { animation: fadeIn 1s; }
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.inset-box-shadow > span > span
+{
+  /*background-color: #fff;*/
+  height: 200px;
+  /*margin: 32px 24px;*/
+  text-align: center;
+  width: 200px;
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 1;
+  position:relative
+}
+
+.inset-box-shadow > span > span::after
+{
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-box-shadow: inset 0 0 4px 0px rgba(0,0,0,.3);   
+  -moz-box-shadow: inset 0 0 4px 0px rgba(0,0,0,.3);
+  box-shadow: inset 0 0 4px 0px rgba(0,0,0,.3);
+  border-radius: 50%;
+  overflow: hidden;
+}
+
 .index.detail-section {
   background-color: #486e62;
   color: white;

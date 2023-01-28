@@ -20,6 +20,7 @@ import {
 } from '@prisma/client';
 import { ViewportProps } from 'react-map-gl';
 import { Stripe } from 'stripe';
+import { OverridableStringUnion } from '@mui/types';
 
 export interface DefaultSession extends Record<string, unknown> {
   user?: {
@@ -97,3 +98,7 @@ export type Viewport = Omit<ViewportProps, 'width' | 'height'> & { height: strin
 export type Session = Partial<NextSession> & { user?: PartialUser };
 
 export type TitleSection = { title: string; description: string };
+
+export type MuiColor = OverridableStringUnion<
+  'inherit' | 'action' | 'disabled' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
+>;
