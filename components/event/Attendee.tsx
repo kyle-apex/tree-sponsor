@@ -107,7 +107,7 @@ const Attendee = ({
             )}
           </Box>
           <Box sx={{ flex: '1 1 auto' }}></Box>
-          {(email == user.email || email == `"${user.email}"`) && (
+          {(email?.toLowerCase() == user.email?.toLowerCase() || email?.toLowerCase() == `"${user.email?.toLowerCase()}"`) && (
             <>
               {isPrivate && (
                 <Tooltip title='Hidden from other attendees'>
