@@ -245,7 +245,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             placeholder='me@example.com'
             value={email}
             onChange={e => setEmail(e.target.value)}
-            autoCapitalize='off'
+            autoCapitalize='none'
             autoCorrect='off'
             size='small'
             fullWidth
