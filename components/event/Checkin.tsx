@@ -241,12 +241,11 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             InputLabelProps={{
               shrink: true,
             }}
+            inputProps={{ autoCapitalize: 'none', autoCorrect: 'off' }}
             label='Email Address'
             placeholder='me@example.com'
             value={email}
             onChange={e => setEmail(e.target.value)}
-            autoCapitalize='none'
-            autoCorrect='off'
             size='small'
             fullWidth
             required
@@ -415,7 +414,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           </Typography>
           <Box mb={3}>
             <MapMarkerDisplay
-              markers={status.trees.map(tree => {
+              markers={status?.trees?.map(tree => {
                 return { latitude: Number(tree.latitude), longitude: Number(tree.longitude) };
               })}
               height='200px'
