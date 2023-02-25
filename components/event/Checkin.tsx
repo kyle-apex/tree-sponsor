@@ -29,6 +29,7 @@ import formatDateString from 'utils/formatDateString';
 import dynamic from 'next/dynamic';
 import CheckinHistoryDialog from './CheckinHistoryDialog';
 import useHashToggle from 'utils/hooks/use-hash-toggle';
+import useWindowFocus from 'utils/hooks/use-window-focus';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
   // eslint-disable-next-line react/display-name
@@ -85,6 +86,15 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     {},
     { refetchOnMount: false, refetchOnWindowFocus: false },
   );
+
+  useWindowFocus(async () => {
+    if (status?.attendees?.length > 0) {
+      const result = (await parsedGet(`/api/events/${event.id}/attendees?email=${encodeURIComponent(email)}`)) as PartialUser[];
+      setStatus(current => {
+        return { ...current, ...result };
+      });
+    }
+  }, [status]);
 
   useEffect(() => {
     if (!email) return;
@@ -231,6 +241,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             InputLabelProps={{
               shrink: true,
             }}
+            inputProps={{ autoCapitalize: 'none', autoCorrect: 'off' }}
             label='Email Address'
             placeholder='me@example.com'
             value={email}
@@ -373,7 +384,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           </Typography>
           <Box mb={3}>
             <MapMarkerDisplay
-              markers={status.trees.map(tree => {
+              markers={status?.trees?.map(tree => {
                 return { latitude: Number(tree.latitude), longitude: Number(tree.longitude) };
               })}
               height='200px'
@@ -415,6 +426,26 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               Show All {status.checkInCount} Attendees
             </Button>
           )}
+          <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={3} mt={1}>
+            Tree ID Quiz
+          </Typography>
+          <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
+            Click tree map markers below to learn about trees around us and test your knowledge
+          </Typography>
+          <Box mb={3}>
+            <MapMarkerDisplay
+              markers={status.trees.map(tree => {
+                return { latitude: Number(tree.latitude), longitude: Number(tree.longitude) };
+              })}
+              height='200px'
+              onClick={coordinate => {
+                handleTreeClick(coordinate);
+              }}
+              mapStyle='SATELLITE'
+              markerScale={0.5}
+              isQuiz={true}
+            ></MapMarkerDisplay>
+          </Box>
         </>
       )}
       {status?.isFound && (
