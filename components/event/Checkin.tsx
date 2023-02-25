@@ -426,26 +426,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               Show All {status.checkInCount} Attendees
             </Button>
           )}
-          <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={3} mt={1}>
-            Tree ID Quiz
-          </Typography>
-          <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
-            Click tree map markers below to learn about trees around us and test your knowledge
-          </Typography>
-          <Box mb={3}>
-            <MapMarkerDisplay
-              markers={status.trees.map(tree => {
-                return { latitude: Number(tree.latitude), longitude: Number(tree.longitude) };
-              })}
-              height='200px'
-              onClick={coordinate => {
-                handleTreeClick(coordinate);
-              }}
-              mapStyle='SATELLITE'
-              markerScale={0.5}
-              isQuiz={true}
-            ></MapMarkerDisplay>
-          </Box>
         </>
       )}
       {status?.isFound && (
