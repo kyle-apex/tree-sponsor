@@ -1,13 +1,10 @@
-import Link from 'next/link';
 import Layout from '../components/layout/Layout';
 import { useEffect, useState } from 'react';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import makeStyles from '@mui/styles/makeStyles';
-import { SponsorshipMap } from 'components/sponsor';
 import TFYPAboutSection from 'components/index/TFYPAboutSection';
 import parsedGet from 'utils/api/parsed-get';
 import { PartialUser, TitleSection } from 'interfaces';
@@ -19,10 +16,8 @@ import ShadeImage from 'components/index/icons/ShadeImage';
 import AtmosphereImage from 'components/index/icons/AtmosphereImage';
 import ActivitiesImage from 'components/index/icons/ActivitiesImage';
 import AnimalsImage from 'components/index/icons/AnimalsImage';
-import SponsorshipGroup from 'components/sponsor/SponsorshipGroup';
 import SignupForm from 'components/membership/SignupForm';
 import CoreTeamBio from 'components/index/CoreTeamBio';
-import Divider from '@mui/material/Divider';
 import { prisma } from 'utils/prisma/init';
 
 const useStyles = makeStyles(theme => ({

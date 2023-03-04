@@ -20,7 +20,8 @@ import Attendees from './Attendees';
 import TreeDisplayDialog from 'components/tree/TreeDisplayDialog';
 import { useGet } from 'utils/hooks/use-get';
 import Skeleton from '@mui/material/Skeleton';
-import { useScrollTrigger } from '@mui/material';
+import Divider from '@mui/material/Divider';
+import useScrollTrigger from '@mui/material/useScrollTrigger';
 import axios from 'axios';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
 import formatDateString from 'utils/formatDateString';
@@ -53,11 +54,11 @@ const getDonationDateMessage = (subscription: PartialSubscription): string => {
   const anniversaryNumber = Math.max(1, anniversary.getFullYear() - subscription.createdDate.getFullYear());
 
   return `Your ${anniversaryNumber}${
-    anniversaryNumber == 1 ? 'st' : anniversaryNumber == 2 ? 'd' : anniversaryNumber == 3 ? 'rd' : 'th'
+    anniversaryNumber == 1 ? 'st' : anniversaryNumber == 2 ? 'nd' : anniversaryNumber == 3 ? 'rd' : 'th'
   } TreeFolksYP Membership anniversary donation will be ${formatDateString(anniversary)}.`;
 };
 
-const attendeesDisplayLimit = 8;
+const attendeesDisplayLimit = 50;
 
 const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [email, setEmail] = useLocalStorage('checkinEmail', '');
@@ -87,7 +88,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   );
 
   useWindowFocus(async () => {
-    console.log('status', status);
     if (status?.attendees?.length > 0) {
       const result = (await parsedGet(`/api/events/${event.id}/attendees?email=${encodeURIComponent(email)}`)) as PartialUser[];
       setStatus(current => {
@@ -376,6 +376,26 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       {status && !(status.isFound === false && activeTab == 1) && (
         <>
+          <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={3} mt={1}>
+            Tree ID Quiz
+          </Typography>
+          <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
+            Click tree map markers below to learn about trees around us and test your knowledge
+          </Typography>
+          <Box mb={3}>
+            <MapMarkerDisplay
+              markers={status?.trees?.map(tree => {
+                return { latitude: Number(tree.latitude), longitude: Number(tree.longitude) };
+              })}
+              height='200px'
+              onClick={coordinate => {
+                handleTreeClick(coordinate);
+              }}
+              mapStyle='SATELLITE'
+              markerScale={0.5}
+              isQuiz={true}
+            ></MapMarkerDisplay>
+          </Box>
           <Attendees
             users={status.attendees}
             onDelete={userId => {
@@ -406,30 +426,12 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               Show All {status.checkInCount} Attendees
             </Button>
           )}
-          <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={3} mt={1}>
-            Tree ID Quiz
-          </Typography>
-          <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
-            Click tree map markers below to learn about trees around us and test your knowledge
-          </Typography>
-          <Box mb={3}>
-            <MapMarkerDisplay
-              markers={status?.trees?.map(tree => {
-                return { latitude: Number(tree.latitude), longitude: Number(tree.longitude) };
-              })}
-              height='200px'
-              onClick={coordinate => {
-                handleTreeClick(coordinate);
-              }}
-              mapStyle='SATELLITE'
-              markerScale={0.5}
-              isQuiz={true}
-            ></MapMarkerDisplay>
-          </Box>
         </>
       )}
       {status?.isFound && (
         <>
+          <hr style={{ width: '100%', marginTop: '10px', marginBottom: '30px' }} />
+
           <Link href='/signin'>
             <Button color='primary' variant='contained' sx={{ mb: 2 }}>
               {!hasActiveMembership ? 'Login to Renew Membership' : 'My Membership'}
