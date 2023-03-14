@@ -18,7 +18,7 @@ const TreeFormFields = ({
   handleChange: (propertyName: string, value: string | number) => void;
 }) => {
   // updating usequery via handleChange does not trigger re-render to show lower section
-  console.log('tree form field render');
+  //console.log('tree form field render');
   return (
     <>
       <Typography sx={{ marginBottom: 2 }} variant='inherit' color='secondary'>
@@ -32,7 +32,10 @@ const TreeFormFields = ({
           </FormLabel>
           <RadioGroup
             value={tree.identificationConfidence}
-            onChange={e => handleChange('identificationConfidence', Number(e.target.value))}
+            onChange={e => {
+              handleChange('identificationConfidence', Number(e.target.value));
+              tree.identificationConfidence = Number(e.target.value);
+            }}
           >
             <FormControlLabel value={1} control={<Radio size='small' />} label='Not sure' />
             <FormControlLabel value={2} control={<Radio size='small' />} label='Fairly confident' />
