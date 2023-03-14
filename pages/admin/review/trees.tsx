@@ -87,7 +87,6 @@ const ReviewTreesPage = () => {
           {trees?.map(tree => {
             return (
               <Grid key={tree.id} item xs={12} sm={6} md={3}>
-                <TreeRender id={tree.id} tree={tree}></TreeRender>
                 <Card>
                   <CardContent>
                     <TreeReview tree={tree} onUpdate={updateById} onDelete={handleDelete} />

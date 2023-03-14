@@ -32,14 +32,14 @@ const LocationSelector = ({
   onViewportChange,
   latitude,
   longitude,
-  auto,
+  zoomToLocation,
   mapStyle = 'STREET',
   zoom = 16,
 }: {
   onViewportChange: (viewport: { longitude: number; latitude: number; zoom: number }) => void;
   longitude?: number;
   latitude?: number;
-  auto?: boolean;
+  zoomToLocation?: boolean;
   mapStyle?: MapStyle;
   zoom?: number;
 }) => {
@@ -67,18 +67,27 @@ const LocationSelector = ({
         width='100%'
         height='50vh'
         onViewportChange={(e: { longitude: number; latitude: number; zoom: number }) => {
+          console.log('e', e);
           setViewport(e);
+
           onViewportChange({ latitude: e.latitude, longitude: e.longitude, zoom: e.zoom });
         }}
         mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         mapStyle={MAP_STYLE[mapStyle]}
       >
         <GeolocateControl
-          auto={auto}
+          auto={true}
           style={geolocateControlStyle}
           positionOptions={{ enableHighAccuracy: true }}
           trackUserLocation={true}
-          fitBoundsOptions={{ maxZoom: 18 }}
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onViewportChange={(e: { longitude: number; latitude: number; zoom: number }) => {
+            if (zoomToLocation) {
+              e.zoom = zoom;
+              setViewport(e);
+            }
+          }}
+          fitBoundsOptions={{ maxZoom: 20, zoom }}
         />
         <Geocoder
           mapRef={mapRef}
