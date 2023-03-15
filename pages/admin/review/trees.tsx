@@ -14,7 +14,6 @@ import CardContent from '@mui/material/CardContent';
 import Card from '@mui/material/Card';
 import axios from 'axios';
 import { useRemoveFromQuery, useUpdateQueryById } from 'utils/hooks';
-import TreeRender from 'components/tree/TreeRender';
 import TreeReview from 'components/tree/TreeReview';
 import AddTreeDialog from 'components/tree/AddTreeDialog';
 import Button from '@mui/material/Button';
