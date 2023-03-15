@@ -18,6 +18,10 @@ a {
   cursor: pointer;
 }
 
+.MuiDialog-paper {
+  margin: 32px 0px;
+}
+
 .hide {
   display: none;
 }
