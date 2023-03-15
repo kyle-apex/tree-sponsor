@@ -81,7 +81,7 @@ const LocationSelector = ({
           positionOptions={{ enableHighAccuracy: true }}
           trackUserLocation={false}
           // eslint-disable-next-line @typescript-eslint/no-empty-function
-          onViewportChange={(e: { longitude: number; latitude: number; zoom: number }) => {}}
+          onViewportChange={() => {}}
           onGeolocate={(e: any) => {
             if (zoomToLocation || geolocatedRef.current) {
               setViewport({ longitude: e.coords.longitude, latitude: e.coords.latitude, zoom });
