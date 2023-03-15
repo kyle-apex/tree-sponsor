@@ -44,6 +44,7 @@ const LocationSelector = ({
   zoom?: number;
 }) => {
   const mapRef = useRef();
+  const geolocatedRef = useRef<boolean>();
 
   const START_LONGITUDE = longitude || -97.7405213210974;
   const START_LATITUDE = latitude || 30.27427678853506;
@@ -67,7 +68,6 @@ const LocationSelector = ({
         width='100%'
         height='50vh'
         onViewportChange={(e: { longitude: number; latitude: number; zoom: number }) => {
-          console.log('e', e);
           setViewport(e);
 
           onViewportChange({ latitude: e.latitude, longitude: e.longitude, zoom: e.zoom });
@@ -79,13 +79,14 @@ const LocationSelector = ({
           auto={true}
           style={geolocateControlStyle}
           positionOptions={{ enableHighAccuracy: true }}
-          trackUserLocation={true}
+          trackUserLocation={false}
           // eslint-disable-next-line @typescript-eslint/no-empty-function
-          onViewportChange={(e: { longitude: number; latitude: number; zoom: number }) => {
-            if (zoomToLocation) {
-              e.zoom = zoom;
-              setViewport(e);
+          onViewportChange={(e: { longitude: number; latitude: number; zoom: number }) => {}}
+          onGeolocate={(e: any) => {
+            if (zoomToLocation || geolocatedRef.current) {
+              setViewport({ longitude: e.coords.longitude, latitude: e.coords.latitude, zoom });
             }
+            geolocatedRef.current = true;
           }}
           fitBoundsOptions={{ maxZoom: 20, zoom }}
         />
