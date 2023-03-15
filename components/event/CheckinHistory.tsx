@@ -15,10 +15,10 @@ const CheckinHistory = ({ checkins, handleClose }: { checkins: PartialEventCheck
             {idx > 0 && <Divider sx={{ marginBottom: 1 }}></Divider>}
             <Link href={`/e/${event?.path}/checkin`} key={event?.id}>
               <Box sx={{ cursor: 'pointer' }} onClick={handleClose}>
-                <Typography variant='subtitle1' color='secondary' mb={-1}>
+                <Typography variant='subtitle1' color='secondary' sx={{ lineHeight: 'normal' }}>
                   {event?.name}
                 </Typography>
-                <Typography variant='subtitle2' sx={{ fontSize: '.8rem' }} color='gray' mb={2}>
+                <Typography variant='subtitle2' sx={{ fontSize: '.8rem' }} color='gray' mb={1}>
                   {formatDateString(event?.startDate)}
                   {event?.location?.name && ' - ' + event.location.name}
                 </Typography>

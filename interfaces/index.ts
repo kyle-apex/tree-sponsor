@@ -87,7 +87,7 @@ export type PartialUser = Partial<
     sponsorships?: PartialSponsorship[];
     subscriptions?: Partial<Subscription>[];
     profile?: Partial<Profile>;
-    eventCheckIns?: Partial<EventCheckIn>[];
+    eventCheckIns?: PartialEventCheckIn[];
   }
 >;
 
