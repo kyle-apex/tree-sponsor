@@ -24,7 +24,7 @@ const CheckinHistoryDialog = ({
 
   const [session] = useSession();
   return (
-    <Dialog open={isOpen} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '300px', margin: '0px' } }} onClose={handleClose}>
+    <Dialog open={isOpen} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px', margin: '0px' } }} onClose={handleClose}>
       <DialogTitle sx={{ backgroundColor: '#6E4854', marginBottom: 2 }}>
         <Typography color='white' variant='h6'>
           Event History

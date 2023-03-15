@@ -51,6 +51,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       include: { event: { include: { location: true } } },
     });
 
+    myCheckins?.sort((a, b) => {
+      return a.event?.startDate > b.event?.startDate ? -1 : 1;
+    });
+
     const existingCheckin = await prisma.eventCheckIn.findFirst({
       where: { email, eventId },
     });

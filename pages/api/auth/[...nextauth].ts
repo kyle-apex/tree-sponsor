@@ -68,7 +68,11 @@ export default NextAuth({
       if (!session.user.roles && session.user.id) {
         const userWithRoles = (await prisma.user.findFirst({
           where: { id: session.user.id },
-          include: { roles: {}, subscriptions: {}, eventCheckIns: { include: { event: { include: { location: true } } } } },
+          include: {
+            roles: {},
+            subscriptions: {},
+            eventCheckIns: { include: { event: { include: { location: true } } } },
+          },
         })) as PartialUser;
 
         if (userWithRoles.roles) session.user.roles = userWithRoles.roles;
@@ -76,6 +80,10 @@ export default NextAuth({
         if (userWithRoles.eventCheckIns) {
           parseResponseDateStrings(userWithRoles.eventCheckIns);
           session.user.eventCheckIns = userWithRoles.eventCheckIns;
+
+          userWithRoles.eventCheckIns.sort((a, b) => {
+            return a.event?.startDate > b.event?.startDate ? -1 : 1;
+          });
         }
       }
       return session;
