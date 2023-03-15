@@ -14,7 +14,6 @@ import CardContent from '@mui/material/CardContent';
 import Card from '@mui/material/Card';
 import axios from 'axios';
 import { useRemoveFromQuery, useUpdateQueryById } from 'utils/hooks';
-import TreeRender from 'components/tree/TreeRender';
 import TreeReview from 'components/tree/TreeReview';
 import AddTreeDialog from 'components/tree/AddTreeDialog';
 import Button from '@mui/material/Button';
@@ -87,7 +86,6 @@ const ReviewTreesPage = () => {
           {trees?.map(tree => {
             return (
               <Grid key={tree.id} item xs={12} sm={6} md={3}>
-                <TreeRender id={tree.id} tree={tree}></TreeRender>
                 <Card>
                   <CardContent>
                     <TreeReview tree={tree} onUpdate={updateById} onDelete={handleDelete} />

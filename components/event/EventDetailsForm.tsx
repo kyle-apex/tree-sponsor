@@ -146,7 +146,7 @@ const EventDetailsForm = ({
         }}
         latitude={latitude ? Number(latitude) : null}
         longitude={longitude ? Number(longitude) : null}
-        auto={!latitude}
+        zoomToLocation={!latitude}
       ></LocationSelector>
       <TextField
         value={locationName}

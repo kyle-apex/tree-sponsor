@@ -222,7 +222,7 @@ const SponsorshipAddEditForm = ({
               }}
               latitude={sponsorship?.tree?.latitude ? Number(sponsorship?.tree?.latitude) : null}
               longitude={sponsorship?.tree?.longitude ? Number(sponsorship?.tree?.longitude) : null}
-              auto={!sponsorship?.tree?.latitude}
+              zoomToLocation={!sponsorship?.tree?.latitude}
             ></LocationSelector>
           )}
           <SplitRow>
