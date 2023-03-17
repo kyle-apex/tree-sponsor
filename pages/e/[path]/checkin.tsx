@@ -13,7 +13,7 @@ const CheckinPage = ({ event }: { event: PartialEvent }) => {
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
 
   return (
-    <Layout title='Event Checkin' header='TreeFolksYP'>
+    <Layout title='Event Checkin' header='TreeFolksYP' ogImage='https://tfyp-images.s3.amazonaws.com/Event+Check-in.png'>
       <LogoMessage justifyContent='start'>
         <Checkin event={parsedEvent} />
       </LogoMessage>
