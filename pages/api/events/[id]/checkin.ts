@@ -69,7 +69,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (emailOptIn && firstName) {
       createCheckin['emailOptIn'] = true;
       updateCheckin['emailOptIn'] = true;
-      if (email) addSubscriber(email, { FNAME: firstName, LNAME: lastName }, false);
+      if (email) await addSubscriber(email, { FNAME: firstName, LNAME: lastName }, false);
     }
 
     if (!existingCheckin) {

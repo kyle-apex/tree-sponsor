@@ -1,13 +1,13 @@
 import { mailchimpGet } from '.';
 
 const getTagId = async (tagName: string): Promise<number> => {
-  const segmentsOutput = await mailchimpGet(`lists/${process.env.MAILCHIMP_LIST_ID}/segments`, { fields: 'segments.id,segments.name' });
-  console.log('segmentsOutput', segmentsOutput);
-  const segment = segmentsOutput?.segments?.find((segment: any) => {
-    if (segment.name == tagName) return true;
+  const tagResponse = await mailchimpGet(`lists/${process.env.MAILCHIMP_LIST_ID}/tag-search`, {
+    name: tagName,
   });
+  //console.log('tagResponse', tagResponse);
+  const tag = tagResponse?.tags?.length > 0 ? tagResponse.tags[0] : null;
 
-  return segment?.id;
+  return tag?.id;
 };
 
 export default getTagId;
