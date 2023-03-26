@@ -4,6 +4,7 @@ import formatDateString from 'utils/formatDateString';
 import { PartialEventCheckIn } from 'interfaces';
 import Link from 'next/link';
 import Divider from '@mui/material/Divider';
+import EventNameDisplay from './EventNameDisplay';
 
 const CheckinHistory = ({ checkins, handleClose }: { checkins: PartialEventCheckIn[]; handleClose?: () => void }) => {
   return (
@@ -15,9 +16,7 @@ const CheckinHistory = ({ checkins, handleClose }: { checkins: PartialEventCheck
             {idx > 0 && <Divider sx={{ marginBottom: 1 }}></Divider>}
             <Link href={`/e/${event?.path}/checkin`} key={event?.id}>
               <Box sx={{ cursor: 'pointer' }} onClick={handleClose}>
-                <Typography variant='subtitle1' color='secondary' sx={{ lineHeight: 'normal' }}>
-                  {event?.name}
-                </Typography>
+                <EventNameDisplay name={event?.name} />
                 <Typography variant='subtitle2' sx={{ fontSize: '.8rem' }} color='gray' mb={1}>
                   {formatDateString(event?.startDate)}
                   {event?.location?.name && ' - ' + event.location.name}
