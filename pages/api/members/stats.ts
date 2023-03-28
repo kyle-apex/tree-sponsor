@@ -7,7 +7,7 @@ type Stats = {
   active: number;
   newActive: number;
   newInactive: number;
-  percentageByYear: number[];
+  percentageByYear: { percentage: number; bestPercentage: number }[];
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -77,8 +77,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return (previousValue += memberCountByYear[currentYear]);
       }
     }, 0);
-    return Math.round((1 - inactiveCount / totalCount) * 100);
+    console.log('inactiveCount', inactiveCount);
+    console.log('totalCount', totalCount);
+    console.log('activeCount', stats.active);
+
+    return {
+      percentage: Math.round((1 - inactiveCount / totalCount) * 100),
+      bestPercentage: Math.round((1 - inactiveCount / (stats.active + inactiveCount)) * 100),
+    };
   });
+
+  console.log('percentageByYear', percentageByYear);
 
   stats.percentageByYear = percentageByYear;
 

@@ -12,14 +12,17 @@ import {
   ElementChartOptions,
   PluginChartOptions,
   ScaleChartOptions,
+  PointElement,
+  LineElement,
+  LineController,
 } from 'chart.js';
 import { _DeepPartialObject } from 'chart.js/types/utils';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Chart } from 'react-chartjs-2';
 import useTheme from '@mui/system/useTheme';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, PointElement, LineElement, LineController);
 
 const options: _DeepPartialObject<
   CoreChartOptions<'bar'> &
@@ -37,7 +40,7 @@ const options: _DeepPartialObject<
     tooltip: {
       callbacks: {
         label: function (context) {
-          return ' ' + context.formattedValue + '%';
+          return ' ' + context.formattedValue + '%' + ' - ' + context.dataset.label;
         },
       },
     },
@@ -49,35 +52,39 @@ const options: _DeepPartialObject<
     mode: 'index' as const,
     intersect: false,
   },
-  scales: {
-    x: {
-      stacked: true,
-    },
-    y: {
-      stacked: true,
-    },
-  },
 };
 
 options.indexAxis = 'y';
 
-const MembershipAttritionChart = ({ chartData }: { chartData: number[] }) => {
+const MembershipAttritionChart = ({ chartData }: { chartData: { percentage: number; bestPercentage: number }[] }) => {
   const theme = useTheme();
 
   const data = chartData && {
     labels: chartData.map((_val, idx) => 'Year ' + String(idx + 1)),
     datasets: [
       {
-        label: 'Percentage Retained',
-        data: chartData,
+        label: 'Retained',
+        data: chartData.map(data => data.percentage),
         backgroundColor: theme.palette.secondary.light,
+        order: 0,
+      },
+      {
+        label: 'Best Possible (if everyone stays active)',
+        data: chartData.map(data => data.bestPercentage),
+        backgroundColor: '#f1f1f1',
+        type: 'line',
+        order: 1,
       },
     ],
   };
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 
   return (
     <>
-      {data && <Bar height='300px' options={options} data={data} />}
+      {/* 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore */}
+      {data && <Chart type='bar' height='300px' options={options} data={data} />}
       {!data && (
         <Box sx={{ textAlign: 'center' }}>
           <CircularProgress size='300px' color='primary' />
