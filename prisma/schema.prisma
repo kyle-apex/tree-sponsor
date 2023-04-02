@@ -390,6 +390,7 @@ model TreeImage {
   height        Int?
   url           String?
   isPrimary     Boolean?      @default(false)
+  sequence      Int?          @default(0)
   createdDate   DateTime?     @default(now())
   reviewStatus  ReviewStatus? @default(New)
   sponsorship   Sponsorship?  @relation(fields: [sponsorshipId], references: [id])

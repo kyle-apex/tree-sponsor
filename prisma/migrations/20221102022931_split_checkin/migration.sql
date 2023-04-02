@@ -129,3 +129,9 @@ ALTER TABLE
   `profile`
 ADD
   COLUMN `organization` VARCHAR(75);
+
+-- AlterTable
+ALTER TABLE
+  `TreeImage`
+ADD
+  COLUMN `sequence` INTEGER default 0;

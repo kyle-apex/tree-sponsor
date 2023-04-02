@@ -157,7 +157,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       trees = await prisma.tree.findMany({
         where: whereFilter,
         include: {
-          images: {},
+          images: { orderBy: { sequence: 'asc' } },
           species: { select: { id: true, commonName: true } },
         },
       });
