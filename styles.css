@@ -14,6 +14,14 @@ a {
   text-align: center;
 }
 
+span.MuiInputLabel-asterisk {
+  color: darkred;
+}
+
+.disabled-primary-button.Mui-disabled {
+  background-color: rgba(72, 110, 98, .6) !important;
+}
+
 .clickable {
   cursor: pointer;
 }

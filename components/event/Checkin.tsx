@@ -266,17 +266,21 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               ></TextField>
               <FormGroup sx={{ marginBottom: 2 }}>
                 <FormControlLabel
-                  sx={{ '& .MuiFormControlLabel-label': { fontSize: '.8rem' } }}
+                  sx={{
+                    '.MuiSvgIcon-root': { color: 'rgba(0, 0, 0, 0.4)' },
+                    '& .MuiFormControlLabel-label': { fontSize: '.8rem', color: 'var(--secondary-text-color)', fontStyle: 'italic' },
+                  }}
                   control={
                     <Checkbox
                       checked={isEmailOptIn}
                       onChange={e => {
                         setIsEmailOptIn(e.target.checked);
                       }}
-                      color='secondary'
+                      color='default'
+                      size='small'
                     />
                   }
-                  label={`Keep me in the loop with an occassional event announcement email/monthly newsletter`}
+                  label={`Learn about future events via our monthly email`}
                 />
               </FormGroup>{' '}
             </Box>
@@ -286,6 +290,10 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             disabled={!email || (activeTab == 0 && (!firstName || !lastName))}
             color='primary'
             onClick={getMembershipStatus}
+            sx={{
+              '& .Mui-disabled': { backgroundColor: 'rgba(72, 110, 98, .6)', display: 'none' },
+            }}
+            className='disabled-primary-button'
           >
             Check-in
           </LoadingButton>

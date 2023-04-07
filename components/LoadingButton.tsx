@@ -39,7 +39,10 @@ const LoadingButton = ({
   return (
     <Button
       size={size}
-      sx={{ minHeight: '40px', ...sx }}
+      sx={{
+        minHeight: '40px',
+        ...sx,
+      }}
       disabled={isLoading || disabled}
       className={className}
       variant={variant}
