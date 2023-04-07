@@ -267,7 +267,12 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 <FormControlLabel
                   sx={{
                     '.MuiSvgIcon-root': { color: 'rgba(0, 0, 0, 0.4)' },
-                    '& .MuiFormControlLabel-label': { fontSize: '.8rem', color: 'var(--secondary-text-color)', fontStyle: 'italic' },
+                    '& .MuiFormControlLabel-label': {
+                      fontSize: '.75rem',
+                      color: 'var(--secondary-text-color)',
+                      fontStyle: 'italic',
+                    },
+                    marginRight: '0px',
                   }}
                   control={
                     <Checkbox
