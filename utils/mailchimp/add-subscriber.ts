@@ -2,7 +2,7 @@ import { mailchimpPost } from '.';
 
 // ==========> This function is in charge of actually trying to add a subscriber <==============
 const addSubscriber = async (email: string, data?: Record<string, string>, update?: boolean) => {
-  const { status, ...mergeFields } = data;
+  const { status, tags, ...mergeFields } = data;
   // Make sure mailchimp, email and listid are all set and not undefined
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
@@ -27,6 +27,7 @@ const addSubscriber = async (email: string, data?: Record<string, string>, updat
       ],
     });
     console.log('result', result);
+    return result;
   } catch (err) {
     console.log('error adding subscriber', err);
   }

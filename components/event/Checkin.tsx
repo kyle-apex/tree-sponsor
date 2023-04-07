@@ -30,6 +30,7 @@ import dynamic from 'next/dynamic';
 import CheckinHistoryDialog from './CheckinHistoryDialog';
 import useHashToggle from 'utils/hooks/use-hash-toggle';
 import useWindowFocus from 'utils/hooks/use-window-focus';
+import EventNameDisplay from './EventNameDisplay';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
   // eslint-disable-next-line react/display-name
@@ -187,9 +188,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               Welcome!
             </Typography>
           )}
-          <Typography variant='subtitle1' color='secondary' mb={-1}>
-            {event?.name}
-          </Typography>
+          <EventNameDisplay name={event?.name} />
           <Typography variant='subtitle2' sx={{ fontSize: '.8rem' }} color='gray' mb={2}>
             {formatDateString(event?.startDate)}
             {event.location?.name && ' - ' + event.location.name}

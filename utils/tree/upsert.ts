@@ -63,6 +63,22 @@ export default async function upsertTree(tree: PartialTree, userId: number) {
   };
 
   if (image) {
+    let newSequence = 0;
+
+    // get max sequence
+    if (treeId) {
+      const maxSequence = await prisma.treeImage.aggregate({
+        _max: {
+          sequence: true,
+        },
+        where: {
+          treeId,
+        },
+      });
+      if (maxSequence?._max?.sequence >= 0) newSequence = maxSequence?._max?.sequence + 1;
+      image.sequence = newSequence;
+    }
+
     upsertArgs.create.images = { create: { ...image } };
     upsertArgs.update.images = { upsert: [{ create: { ...image }, update: image, where: { uuid: image.uuid } }] };
   }

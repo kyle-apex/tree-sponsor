@@ -14,7 +14,7 @@ type Stats = {
   active: number;
   newActive: number;
   newInactive: number;
-  percentageByYear: number[];
+  percentageByYear: { percentage: number; bestPercentage: number }[];
 };
 
 const MembershipStats = () => {

@@ -69,7 +69,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (emailOptIn && firstName) {
       createCheckin['emailOptIn'] = true;
       updateCheckin['emailOptIn'] = true;
-      if (email) await addSubscriber(email, { FNAME: firstName, LNAME: lastName }, false);
+      if (email) {
+        const result = await addSubscriber(email, { FNAME: firstName, LNAME: lastName }, false);
+        if (result?.new_members?.length > 0) {
+          addTagToMembersByName('Event Attendee', [email]);
+        }
+      }
     }
 
     if (!existingCheckin) {
@@ -152,7 +157,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       trees = await prisma.tree.findMany({
         where: whereFilter,
         include: {
-          images: {},
+          images: { orderBy: { sequence: 'asc' } },
           species: { select: { id: true, commonName: true } },
         },
       });
