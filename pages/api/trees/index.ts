@@ -26,45 +26,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     const tree = req.body;
 
-    if (!tree) return throwError(res, 'Please submit new sponsorship data.');
+    if (!tree) return throwError(res, 'Please submit new tree data.');
 
     const upsertedTree = await upsertTree(tree, userId);
-    /*const treeId = tree.id;
 
-    if (!treeId) {
-      // remove id if it's 0 for the upsert to work correctly
-      delete tree.id;
-      tree.createdDate = new Date();
-    }
-
-    tree.lastChangedByUser = { connect: { id: userId } };
-
-    const image = tree.images?.length > 0 && tree.images[0];
-
-    if (image) {
-      if (!image.uuid || image.uuid === 'temp') image.uuid = uuidv4();
-
-      const pictureUrl = image?.url;
-
-      if (pictureUrl && !pictureUrl.includes('http')) {
-        const imagePath = getTreeImagePath(image.uuid);
-        tree.pictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}/small`;
-
-        uploadTreeImages(pictureUrl, image.uuid);
-      }
-    }
-
-    const upsertedTree = await prisma.tree.upsert({
-      where: { id: treeId || -1 },
-      create: {
-        ...tree,
-        images: { create: image },
-      },
-      update: {
-        ...tree,
-        images: { upsert: [{ create: image, update: image, where: { uuid: image.uuid } }] },
-      },
-    });*/
     res.status(200).json(upsertedTree);
   } else if (req.method === 'GET') {
     const reviewStatus = req.query.reviewStatus as ReviewStatus;
