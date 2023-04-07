@@ -189,7 +189,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             </Typography>
           )}
           <EventNameDisplay name={event?.name} />
-          <Typography variant='subtitle2' sx={{ fontSize: '.8rem' }} color='gray' mb={2}>
+          <Typography variant='subtitle2' sx={{ fontSize: '.75rem' }} color='gray' mb={2}>
             {formatDateString(event?.startDate)}
             {event.location?.name && ' - ' + event.location.name}
           </Typography>
