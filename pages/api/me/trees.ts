@@ -3,7 +3,8 @@ import { getSession } from 'utils/auth/get-session';
 import throwError from 'utils/api/throw-error';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { prisma, Prisma } from 'utils/prisma/init';
-import { ReviewStatus } from 'interfaces';
+import { PartialTreeChangeLog, ReviewStatus } from 'interfaces';
+import { TreeChangeLog } from '@prisma/client';
 
 export const config = {
   api: {
@@ -36,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     //if (reviewStatus) filter.where = { reviewStatus };
     if (take) filter.take = take;
     //filter.where.pictureUrl = { not: null };
-    const treeChangeLogs = await prisma.treeChangeLog.findMany(filter);
+    const treeChangeLogs = (await prisma.treeChangeLog.findMany(filter)) as PartialTreeChangeLog[];
     const trees = treeChangeLogs
       .map(changeLog => {
         return changeLog.tree;

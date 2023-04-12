@@ -10,18 +10,14 @@ import SplitRow from 'components/layout/SplitRow';
 
 const PreviewAndReorderImagesDialog = ({
   images,
-  treeId,
   isOpen,
   setIsOpen,
-  onComplete,
   onAdd,
   onDelete,
 }: {
   images: PartialTreeImage[];
-  treeId: number;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onComplete?: () => void;
   onAdd?: (imageUrl: string) => void;
   onDelete?: (uuid: string) => void;
 }) => {
@@ -41,7 +37,7 @@ const PreviewAndReorderImagesDialog = ({
       </DialogTitle>
       <DialogContent className=''>
         <Typography mb={3} variant='h2'></Typography>
-        <PreviewAndReorderImages treeId={treeId} images={images} onAdd={onAdd} onDelete={onDelete} />
+        <PreviewAndReorderImages images={images} onAdd={onAdd} onDelete={onDelete} />
       </DialogContent>
     </Dialog>
   );

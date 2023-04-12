@@ -92,7 +92,6 @@ const TreeReview = ({
           <PreviewAndReorderImagesDialog
             isOpen={imageDialogOpen}
             setIsOpen={setImageDialogOpen}
-            treeId={tree.id}
             images={tree.images}
             onAdd={async (imageUrl: string) => {
               if (!tree.images?.length) tree.pictureUrl = imageUrl;

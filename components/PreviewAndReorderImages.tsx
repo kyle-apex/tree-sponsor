@@ -9,12 +9,10 @@ import Box from '@mui/material/Box';
 
 const PreviewAndReorderImages = ({
   images,
-  treeId,
   onAdd,
   onDelete,
 }: {
   images: PartialTreeImage[];
-  treeId: number;
   onAdd?: (imageUrl: string) => void;
   onDelete?: (uuid: string) => void;
 }) => {
