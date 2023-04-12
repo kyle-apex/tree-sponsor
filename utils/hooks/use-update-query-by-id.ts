@@ -31,8 +31,9 @@ export const useUpdateQueryById = <T extends { id?: string | number }>(
   }
 
   const { mutate, isLoading } = useMutation(
-    async (inputs: { id: number; attributes: Record<string, unknown> }) => {
+    async (inputs: { id: number; attributes: Record<string, unknown>; callback?: () => void }) => {
       await updateFunction(inputs.id, inputs.attributes);
+      if (inputs.callback) inputs.callback();
     },
     {
       onMutate: updateQueryListItem,
@@ -52,13 +53,13 @@ export const useUpdateQueryById = <T extends { id?: string | number }>(
     },
   );
 
-  const updateById = (id: number, attributes: Record<string, unknown>) => {
+  const updateById = (id: number, attributes: Record<string, unknown>, callback?: () => void) => {
     if (debounceMilliseconds) {
       if (debounceHandle) clearTimeout(debounceHandle);
       debounceHandle = setTimeout(() => {
-        mutate({ id: id, attributes: attributes });
+        mutate({ id: id, attributes: attributes, callback });
       }, debounceMilliseconds);
-    } else mutate({ id: id, attributes: attributes });
+    } else mutate({ id: id, attributes: attributes, callback });
   };
 
   return { updateById, isLoading };

@@ -6,6 +6,7 @@ import { useTheme } from '@mui/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import centerViewport from 'utils/maps/center-viewport';
 import { MAP_STYLE } from 'consts';
+import CornerEditIcon from 'components/tree/CornerEditIcon';
 
 const MapMarkerDisplay = ({
   markers,
@@ -15,6 +16,7 @@ const MapMarkerDisplay = ({
   mapStyle,
   markerScale = 1,
   isQuiz,
+  isEdit,
 }: {
   markers: Coordinate[];
   onClick?: (coordinate?: Coordinate) => void;
@@ -23,6 +25,7 @@ const MapMarkerDisplay = ({
   mapStyle?: MapStyle;
   markerScale: number;
   isQuiz?: boolean;
+  isEdit?: boolean;
 }) => {
   const mapRef = useRef();
   const theme = useTheme();
@@ -46,7 +49,7 @@ const MapMarkerDisplay = ({
       ref={mapRef}
       onViewportChange={(nextViewport: Viewport) => setViewport(nextViewport)}
       mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-      className='index-map mapboxgl-map box-shadow'
+      className={isEdit ? 'mapboxgl-map box-shadow' : 'index-map mapboxgl-map box-shadow'}
       mapStyle={MAP_STYLE[mapStyle]}
       dragPan={!isMobile}
     >
@@ -67,6 +70,7 @@ const MapMarkerDisplay = ({
           );
         }
       })}
+      {isEdit && <CornerEditIcon onClick={onClick}></CornerEditIcon>}
     </MapGL>
   );
 };

@@ -1,8 +1,9 @@
 /* eslint-disable react/display-name */
-import { Box } from '@mui/system';
 import ImageIcon from '@mui/icons-material/Image';
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
+import Box from '@mui/material/Box';
+import CornerEditIcon from './tree/CornerEditIcon';
 
 type FileBrowserHandle = {
   openFileBrowser: () => void;
@@ -17,6 +18,7 @@ const ImageUploadAndPreview = forwardRef(
       maxWidth,
       hideEditButton,
       size = 'default',
+      addSubtitleText = 'Click to Add Picture',
     }: {
       imageUrl: string;
       setImageUrl: (val: string) => void; //React.Dispatch<React.SetStateAction<string>>;
@@ -24,6 +26,7 @@ const ImageUploadAndPreview = forwardRef(
       maxWidth?: number;
       hideEditButton?: boolean;
       size?: 'small' | 'default';
+      addSubtitleText?: string;
     },
     ref: React.Ref<FileBrowserHandle>,
   ) => {
@@ -100,29 +103,12 @@ const ImageUploadAndPreview = forwardRef(
         {!imageUrl && (
           <>
             <ImageIcon sx={{ color: 'lightgray', fontSize: size == 'small' ? '20px' : '50px' }}></ImageIcon>
-            {size !== 'small' && <Box sx={{ color: 'gray', marginLeft: '5px' }}>Click to Add Picture</Box>}
+            {size !== 'small' && <Box sx={{ color: 'gray', marginLeft: '5px' }}>{addSubtitleText}</Box>}
           </>
         )}
         {imageUrl && (
           <>
-            {!hideEditButton && (
-              <Box alignSelf='end' sx={{ marginBottom: '-45px', zIndex: '1' }}>
-                <Box
-                  sx={{
-                    width: '35px',
-                    height: '35px',
-                    backgroundColor: '#9c9c9c',
-                    borderRadius: '50%',
-                    border: 'solid 1px white',
-                    marginRight: '10px',
-                    float: 'right',
-                    textAlign: 'center',
-                  }}
-                >
-                  <EditIcon sx={{ color: 'white', marginTop: '3px' }} />
-                </Box>
-              </Box>
-            )}
+            {!hideEditButton && <CornerEditIcon />}
 
             <img src={imageUrl} className='full-width' alt='Preview'></img>
           </>

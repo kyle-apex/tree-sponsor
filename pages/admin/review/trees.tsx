@@ -46,7 +46,20 @@ const ReviewTreesPage = () => {
 
   const { updateById } = useUpdateQueryById(apiKey, updateTree, false, 500);
 
+  const handleUpdateById = async (id: number, attributes: Record<string, unknown>) => {
+    const pictureUrl: string = attributes.pictureUrl as string;
+
+    if (pictureUrl && !pictureUrl.startsWith('https://')) {
+      await updateById(id, attributes, refetchTrees);
+    } else await updateById(id, attributes);
+  };
+
   const { remove } = useRemoveFromQuery<PartialTree>(apiKey, handleDelete);
+
+  const handleDeleteImage = async (uuid: string) => {
+    await axios.delete('/api/treeImages/' + uuid);
+    refetchTrees();
+  };
 
   async function handleDelete(treeId: number) {
     await axios.delete('/api/trees/' + treeId);
@@ -86,9 +99,15 @@ const ReviewTreesPage = () => {
           {trees?.map(tree => {
             return (
               <Grid key={tree.id} item xs={12} sm={6} md={3}>
-                <Card>
+                <Card sx={{ '.MuiCardContent-root': { padding: 0, paddingBottom: 0 } }}>
                   <CardContent>
-                    <TreeReview tree={tree} onUpdate={updateById} onDelete={handleDelete} />
+                    <TreeReview
+                      tree={tree}
+                      onUpdate={handleUpdateById}
+                      onDelete={handleDelete}
+                      isAdmin={true}
+                      onDeleteImage={handleDeleteImage}
+                    />
                   </CardContent>
                 </Card>
               </Grid>
