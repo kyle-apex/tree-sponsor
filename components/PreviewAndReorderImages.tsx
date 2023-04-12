@@ -24,7 +24,7 @@ const PreviewAndReorderImages = ({
       {images.map(image => {
         return (
           <Grid item xs={12} sm={6} md={3} key={image.uuid}>
-            <Box sx={{ position: 'relative', width: '100%', height: '80px' }}>
+            <Box sx={{ position: 'relative', width: '80px', height: '80px', marginLeft: 'auto', marginRight: 'auto' }}>
               <Box sx={{ position: 'absolute', top: '0px', width: '100%', height: '100%' }}>
                 <Image width='100%' height='100%' src={image?.url}></Image>
               </Box>

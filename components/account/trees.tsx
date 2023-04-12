@@ -88,7 +88,7 @@ const AccountTrees = () => {
         </Box>
       )}
       {trees?.length > 0 && (
-        <SplitRow alignItems='center'>
+        <SplitRow alignItems='center' mobileFlexDirection='column'>
           <Typography variant='h2' color='secondary'>
             <Button
               onClick={() => {
@@ -111,7 +111,7 @@ const AccountTrees = () => {
               page={page}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
-              labelRowsPerPage='Visible Trees:'
+              labelRowsPerPage='Trees per page:'
             />
           </Box>
         </SplitRow>
