@@ -3,12 +3,8 @@ import { getSession } from 'utils/auth/get-session';
 import throwError from 'utils/api/throw-error';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { prisma, Prisma } from 'utils/prisma/init';
-import { v4 as uuidv4 } from 'uuid';
-import uploadTreeImages from 'utils/aws/upload-tree-images';
-import getTreeImagePath from 'utils/aws/get-tree-image-path';
-import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
-import { ReviewStatus } from 'interfaces';
-import upsertTree from 'utils/tree/upsert';
+import { PartialTreeChangeLog, ReviewStatus } from 'interfaces';
+import { TreeChangeLog } from '@prisma/client';
 
 export const config = {
   api: {
@@ -23,29 +19,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!session?.user?.id) return throwUnauthenticated(res);
   const userId = session.user.id;
 
-  if (req.method === 'POST') {
-    const tree = req.body;
-
-    if (!tree) return throwError(res, 'Please submit new tree data.');
-
-    const upsertedTree = await upsertTree(tree, userId);
-
-    res.status(200).json(upsertedTree);
-  } else if (req.method === 'GET') {
+  if (req.method === 'GET') {
     const reviewStatus = req.query.reviewStatus as ReviewStatus;
     const take = req.query.take ? Number(req.query.take) : null;
-    const filter: Prisma.TreeFindManyArgs = {
+    const filter: Prisma.TreeChangeLogFindManyArgs = {
       orderBy: { createdDate: 'desc' },
       include: {
-        images: { orderBy: { sequence: 'asc' } },
+        tree: {
+          include: {
+            images: { orderBy: { sequence: 'asc' } },
+          },
+        },
       },
       //take: 1,
-      //where: { id: 5 },
+      where: { userId, type: 'Create' },
     };
-    if (reviewStatus) filter.where = { reviewStatus };
+    //if (reviewStatus) filter.where = { reviewStatus };
     if (take) filter.take = take;
-    filter.where.pictureUrl = { not: null };
-    const trees = await prisma.tree.findMany(filter);
+    //filter.where.pictureUrl = { not: null };
+    const treeChangeLogs = (await prisma.treeChangeLog.findMany(filter)) as PartialTreeChangeLog[];
+    const trees = treeChangeLogs
+      .map(changeLog => {
+        return changeLog.tree;
+      })
+      .filter(tree => tree?.id);
     res.status(200).json(trees);
   }
 }

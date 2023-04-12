@@ -35,6 +35,7 @@ const EditEventPage = ({ path }: { path: string }) => {
 
   const saveEvent = async () => {
     setIsSaving(true);
+    console.log(' eventRef.current', eventRef.current);
     const savedEvent = (await axios.patch('/api/events', eventRef.current)) as PartialEvent;
     router.push('/admin/events');
     setIsSaving(false);
@@ -50,6 +51,7 @@ const EditEventPage = ({ path }: { path: string }) => {
       const propertyName = name.split('.')[1];
 
       const object = { ...eventRef.current[objectName], [propertyName]: value };
+      console.log('objectName', objectName, object, propertyName, value);
 
       eventRef.current = { ...eventRef.current, [objectName]: object };
     } else eventRef.current = { ...eventRef.current, [name]: value };

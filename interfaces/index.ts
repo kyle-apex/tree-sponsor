@@ -17,6 +17,7 @@ import {
   Event,
   Donation,
   EventCheckIn,
+  TreeChangeLog,
 } from '@prisma/client';
 import { ViewportProps } from 'react-map-gl';
 import { Stripe } from 'stripe';
@@ -61,7 +62,9 @@ export interface NextSession extends Record<string, unknown>, DefaultSession {}
 export type ReviewStatus = ReviewStatusPrisma | '';
 export type PartialSpecies = Partial<Species>;
 export type PartialTreeImage = Partial<TreeImage>;
+
 export type PartialTree = Partial<Tree> & { images?: PartialTreeImage[]; species?: PartialSpecies; location?: PartialLocation };
+export type PartialTreeChangeLog = Partial<TreeChangeLog> & { tree: PartialTree };
 
 export type PartialEvent = Partial<Event> & { categories?: PartialCategory[]; trees?: PartialTree[]; location?: PartialLocation };
 export type PartialCategory = Partial<Category> & { events?: PartialEvent[]; trees?: PartialTree[] };

@@ -24,8 +24,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   //if (!session?.user?.id) return throwUnauthenticated(res);
   //const userId = session.user.id;
   const id = Number(req.query.id);
+  const session = await getSession({ req });
+
   if (req.method === 'PATCH') {
-    const isAuthorized = await isCurrentUserAuthorized('isTreeReviewer', req);
+    let isAuthorized = await isCurrentUserAuthorized('isTreeReviewer', req);
+
+    if (!isAuthorized && session?.user?.id) {
+      const changeLog = await prisma.treeChangeLog.findFirst({
+        where: { tree: { id: id }, user: { id: session?.user?.id }, type: 'Create' },
+      });
+      console.log('changeLog', changeLog);
+      if (changeLog) isAuthorized = true;
+    }
 
     if (!isAuthorized) {
       return throwError(res, 'Access denied');
@@ -39,33 +49,55 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (pictureUrl && !pictureUrl.includes('http')) {
       // find existing tree
-      const existingTree = await prisma.tree.findFirst({ where: { id: id }, include: { images: true } });
-      let image = existingTree?.images?.find(img => img.url == existingTree.pictureUrl) as Partial<TreeImage>;
+      const existingTree = await prisma.tree.findFirst({ where: { id: id }, include: { images: { orderBy: { sequence: 'asc' } } } });
+      //let image = existingTree?.images?.find(img => img.url == existingTree.pictureUrl) as Partial<TreeImage>;
 
       const { width, height } = getBase64ImageDimensions(pictureUrl);
 
-      if (!image) {
-        image = { uuid: uuidv4() };
-        const imagePath = getTreeImagePath(image.uuid);
-        updateData.pictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}/small`;
+      //if (!image) {
+      let newSequence = 0;
 
-        image['width'] = width;
-        image['height'] = height;
+      if (existingTree?.images?.length > 0) {
+        existingTree.images.forEach(image => {
+          if (image.sequence >= newSequence) newSequence = image.sequence + 1;
+        });
+      }
+      const image: Partial<TreeImage> = { uuid: uuidv4() };
+      const imagePath = getTreeImagePath(image.uuid);
 
-        updateData.images = {
-          upsert: [
-            { create: { uuid: image.uuid, url: String(updateData.pictureUrl), width, height }, update: image, where: { uuid: image.uuid } },
-          ],
-        };
-      } else {
+      const newPictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}/small`;
+      console.log('existing url', existingTree.pictureUrl);
+      delete updateData.pictureUrl;
+
+      if (newSequence == 0) updateData.pictureUrl = newPictureUrl;
+      else if (!existingTree.pictureUrl) {
+        updateData.pictureUrl = existingTree.images[0].url;
+        console.log('updating basic', updateData.pictureUrl);
+      }
+
+      image['width'] = width;
+      image['height'] = height;
+
+      updateData.images = {
+        upsert: [
+          {
+            create: { uuid: image.uuid, url: newPictureUrl, width, height, sequence: newSequence },
+            update: image,
+            where: { uuid: image.uuid },
+          },
+        ],
+      };
+      /*} else {
         updateData.images = {
           update: { data: { width, height }, where: { uuid: image.uuid } },
         };
         delete updateData.pictureUrl;
-      }
+      }*/
 
-      uploadTreeImages(pictureUrl, image.uuid);
+      await uploadTreeImages(pictureUrl, image.uuid);
     }
+
+    console.log('tree patch updateData', id, updateData, updateData.images);
 
     const result = await prisma.tree.update({
       where: { id },
@@ -74,7 +106,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(200).json(result);
   } else if (req.method === 'DELETE') {
     let isAuthorized = await isCurrentUserAuthorized('isAdmin', req);
-    const session = await getSession({ req });
 
     if (!isAuthorized && session?.user?.id) {
       const changeLog = await prisma.treeChangeLog.findFirst({

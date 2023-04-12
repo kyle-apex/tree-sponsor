@@ -36,13 +36,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       upsertedEvent = await prisma.event.create({ data: data });
     } else {
-      const data = { ...req.body } as Prisma.EventUpdateInput;
-      delete data.location;
+      delete req.body.location;
+      const data = { ...req.body } as Prisma.EventUncheckedUpdateInput;
       delete data.categories;
       //data.user = { connect: { id: session.user.id } };
 
       if (event?.location?.id) {
         await prisma.location.update({ data: { ...event.location }, where: { id: event.location.id } });
+      } else {
+        const newLocation = await prisma.location.create({ data: { ...event.location } });
+        data.locationId = newLocation.id;
       }
 
       upsertedEvent = await prisma.event.update({ data, where: { id: event.id } });

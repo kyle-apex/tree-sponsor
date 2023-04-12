@@ -17,12 +17,14 @@ import { useRouter } from 'next/router';
 import RestrictSection from 'components/RestrictSection';
 import { useSession } from 'next-auth/client';
 import CheckinHistoryDialog from 'components/event/CheckinHistoryDialog';
+import useHash from 'utils/hooks/use-hash';
+import AccountTrees from 'components/account/trees';
 
 export const getServerSideProps = serverSideIsAuthenticated;
 
 const AccountPage = () => {
   const [activeDonationAmount, setActiveDonationAmount] = useState(0);
-  const [activeTab, setActiveTab] = useState('membership');
+  const [activeTab, setActiveTab] = useHash('membership');
   const router = useRouter();
   const [nextSession] = useSession();
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
@@ -30,26 +32,8 @@ const AccountPage = () => {
   const session = nextSession as Session;
   const user = session?.user;
 
-  useEffect(() => {
-    const onHashChangeStart = (url: string) => {
-      const urlSplit = url.split('#');
-      if (urlSplit.length > 0) {
-        const tabName = urlSplit[1];
-        if (tabName && ['membership', 'thanks', 'billing'].includes(tabName)) setActiveTab(tabName);
-      }
-    };
-
-    onHashChangeStart(router.asPath);
-
-    router.events.on('hashChangeStart', onHashChangeStart);
-
-    return () => {
-      router.events.off('hashChangeStart', onHashChangeStart);
-    };
-  }, [router.events]);
-
   const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: string) => {
-    router.push('/account', `#${newValue}`);
+    setActiveTab(newValue);
   };
 
   return (
@@ -68,7 +52,7 @@ const AccountPage = () => {
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} mb={4}>
         <Tabs className='account-tabs' value={activeTab} onChange={handleTabChange} variant='fullWidth'>
           <Tab label='Membership' value='membership' />
-          {user?.subscriptions?.length > 0 && <Tab label='Thank-A-Tree' value='thanks' />}
+          <Tab label='Tree ID' value='trees' />
           <Tab label='Billing' value='billing' />
         </Tabs>
       </Box>
@@ -123,6 +107,23 @@ const AccountPage = () => {
               ></CheckinHistoryDialog>
             </li>
           )}
+          <li>
+            <a
+              style={{ textDecoration: 'none', cursor: 'pointer' }}
+              onClick={() => {
+                setActiveTab('trees');
+              }}
+            >
+              <Typography color='primary'>Add tree identifications</Typography>
+            </a>
+          </li>
+          <li>
+            <Link href='/account/thank-a-tree'>
+              <a style={{ textDecoration: 'none' }}>
+                <Typography color='primary'>Thank a Tree</Typography>
+              </a>
+            </Link>
+          </li>
 
           <RestrictSection accessType='isAdmin'>
             <li>
@@ -136,11 +137,10 @@ const AccountPage = () => {
         </ul>
         <MembershipPerks isMember={user?.subscriptions?.length > 0}></MembershipPerks>
       </Box>
-      {user?.subscriptions?.length > 0 && (
-        <Box hidden={'thanks' != activeTab}>
-          <Sponsorships activeDonationAmount={activeDonationAmount}></Sponsorships>
-        </Box>
-      )}
+
+      <Box hidden={'trees' != activeTab}>
+        <AccountTrees></AccountTrees>
+      </Box>
 
       <Box hidden={'billing' != activeTab}>
         <Subscriptions setActiveDonationAmount={setActiveDonationAmount} isSectionActive={'thanks' === activeTab}></Subscriptions>

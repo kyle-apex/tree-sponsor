@@ -22,7 +22,7 @@ const AddTreeFormFields = ({
   handleChange: (propertyName: string, value: string | number) => void;
 }) => {
   return (
-    <Card>
+    <Card sx={{ boxShadow: 'none', '.MuiCardContent-root': { paddingRight: 0, paddingLeft: 0 } }}>
       <CardMedia
         sx={{
           display: 'flex',
@@ -46,7 +46,7 @@ const AddTreeFormFields = ({
         <Typography sx={{ marginBottom: 2 }} variant='h6' color='secondary'>
           Optional Details
         </Typography>
-        <SpeciesSelector onChange={speciesId => handleChange('speciesId', speciesId)}></SpeciesSelector>
+        <SpeciesSelector size='medium' onChange={speciesId => handleChange('speciesId', speciesId)}></SpeciesSelector>
         {tree.speciesId && (
           <FormControl component='fieldset' sx={{ marginTop: 2 }}>
             <FormLabel component='legend' sx={{ fontSize: '.75rem' }}>
