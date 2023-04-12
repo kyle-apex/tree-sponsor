@@ -8,18 +8,18 @@ function getUrlHash(url: string): string {
   return hash;
 }
 
-export default function useHash(hash: string): [string, (value: string) => void] {
+export default function useHash(hash: string, validHashes?: string[]): [string, (value: string) => void] {
   const [value, setValue] = useState(hash);
   const router = useRouter();
   useEffect(() => {
-    const hash = getUrlHash(router?.asPath);
-    if (hash) setValue(hash);
+    const urlHash = getUrlHash(router?.asPath);
+    if (urlHash && (!validHashes || validHashes.includes(urlHash))) setValue(hash);
   }, []);
 
   useEffect(() => {
     const onHashChangeStart = (url: string) => {
       const hash = getUrlHash(url);
-      if (hash && hash != value) setValue(hash);
+      if (hash && hash != value && (!validHashes || validHashes.includes(hash))) setValue(hash);
     };
 
     onHashChangeStart(router.asPath);

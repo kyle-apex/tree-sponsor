@@ -24,7 +24,7 @@ export const getServerSideProps = serverSideIsAuthenticated;
 
 const AccountPage = () => {
   const [activeDonationAmount, setActiveDonationAmount] = useState(0);
-  const [activeTab, setActiveTab] = useHash('membership');
+  const [activeTab, setActiveTab] = useHash('membership', ['membership', 'trees', 'billing']);
   const router = useRouter();
   const [nextSession] = useSession();
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
