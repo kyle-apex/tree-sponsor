@@ -20,6 +20,8 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import SpeciesQuiz from './SpeciesQuiz';
 import Button from '@mui/material/Button';
 import PhotoViewDialog from 'components/PhotoViewDialog';
+import { useSwipeable } from 'react-swipeable';
+
 // TODO
 const useStyles = makeStyles(() => ({
   media: {
@@ -57,7 +59,7 @@ const TreeDisplay = ({
   };
 
   const nextImage: React.MouseEventHandler<HTMLButtonElement> = e => {
-    e.stopPropagation();
+    e?.stopPropagation();
 
     setDisplayedImageIndex(idx => {
       idx++;
@@ -67,13 +69,18 @@ const TreeDisplay = ({
   };
 
   const prevImage: React.MouseEventHandler<HTMLButtonElement> = e => {
-    e.stopPropagation();
+    e?.stopPropagation();
     setDisplayedImageIndex(idx => {
       idx--;
       if (idx < 0) idx = tree.images.length - 1;
       return idx;
     });
   };
+
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => prevImage(null),
+    onSwipedRight: () => nextImage(null),
+  });
 
   const image = tree?.images?.length > 0 ? tree.images[displayedImageIndex] : null;
 
@@ -114,6 +121,7 @@ const TreeDisplay = ({
             onClick={() => {
               setIsPhotoViewOpen(true);
             }}
+            {...swipeHandlers}
           >
             <IconButton
               onClick={() => {
