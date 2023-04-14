@@ -21,6 +21,7 @@ import SpeciesQuiz from './SpeciesQuiz';
 import Button from '@mui/material/Button';
 import PhotoViewDialog from 'components/PhotoViewDialog';
 import { useSwipeable } from 'react-swipeable';
+import MobileStepper from '@mui/material/MobileStepper';
 
 // TODO
 const useStyles = makeStyles(() => ({
@@ -78,8 +79,8 @@ const TreeDisplay = ({
   };
 
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => prevImage(null),
-    onSwipedRight: () => nextImage(null),
+    onSwipedLeft: () => nextImage(null),
+    onSwipedRight: () => prevImage(null),
   });
 
   const image = tree?.images?.length > 0 ? tree.images[displayedImageIndex] : null;
@@ -141,9 +142,42 @@ const TreeDisplay = ({
               </IconButton>
             )}
             {tree?.images?.length > 1 && (
-              <IconButton aria-label='share' sx={{ top: '50%', left: 5 }} className='hoverImageIconButton' onClick={prevImage}>
-                <ChevronLeft />
-              </IconButton>
+              <>
+                <IconButton aria-label='share' sx={{ top: '50%', left: 5 }} className='hoverImageIconButton' onClick={prevImage}>
+                  <ChevronLeft />
+                </IconButton>
+                <MobileStepper
+                  sx={{
+                    bottom: '0px',
+                    position: 'absolute',
+                    backgroundColor: 'transparent',
+                    textAlign: 'center',
+                    justifyContent: 'center',
+                    '.MuiMobileStepper-dot': {
+                      alignSelf: 'center',
+                      height: '7px',
+                      width: '7px',
+                      backgroundColor: 'rgba(175, 175, 175, 0.7)',
+                    },
+                    '.MuiMobileStepper-dotActive': {
+                      backgroundColor: 'white !important',
+                    },
+                    '.MuiMobileStepper-dots': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                      borderRadius: '6px',
+                      padding: '3px 6px',
+                    },
+                  }}
+                  steps={tree?.images?.length}
+                  activeStep={displayedImageIndex}
+                  onClick={e => {
+                    e.stopPropagation();
+                    nextImage(null);
+                  }}
+                  backButton={<></>}
+                  nextButton={<></>}
+                ></MobileStepper>
+              </>
             )}
           </CardMedia>
           <PhotoViewDialog imageUrl={image.url} open={isPhotoViewOpen} setOpen={setIsPhotoViewOpen}></PhotoViewDialog>
