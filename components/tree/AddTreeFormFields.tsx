@@ -3,7 +3,6 @@ import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import TextField from '@mui/material/TextField';
 import { PartialTree } from 'interfaces';
 import SpeciesSelector from './SpeciesSelector';
-import Typography from '@mui/material/Typography';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 
@@ -13,6 +12,11 @@ import CardMedia from '@mui/material/CardMedia';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const AddTreeFormFields = ({
   tree,
@@ -60,25 +64,39 @@ const AddTreeFormFields = ({
           </FormControl>
         )}
         <TextField
-          sx={{ marginBottom: 3, marginTop: 2 }}
+          sx={{ mb: 3, mt: 2 }}
           label='Name/Nickname (ex: The Treaty Oak)'
           onChange={e => handleChange('name', e.target.value)}
         ></TextField>
-        <Typography sx={{ marginBottom: 2 }} color='secondary' variant='h6'>
-          Advanced Details
-        </Typography>
-        <TextField
-          sx={{ marginBottom: 2 }}
-          label='Height Estimation (feet)'
-          onChange={e => handleChange('height', e.target.value)}
-          type='number'
-        ></TextField>
-        <TextField
-          sx={{ marginBottom: 2 }}
-          label='Diameter (inches)'
-          onChange={e => handleChange('diameter', e.target.value)}
-          type='number'
-        ></TextField>
+        <Accordion
+          sx={{
+            mb: 2,
+            mt: 0,
+            '&:before': { opacity: 0.2 },
+          }}
+        >
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls='panel1a-content' id='panel1a-header'>
+            <Typography color='secondary' variant='inherit' sx={{ fontSize: '1.2rem' }}>
+              Advanced Details
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <TextField
+              sx={{ marginBottom: 2 }}
+              label='Height Estimation (feet)'
+              onChange={e => handleChange('height', e.target.value)}
+              type='number'
+              fullWidth
+            ></TextField>
+            <TextField
+              sx={{ marginBottom: 2 }}
+              label='Diameter (inches)'
+              onChange={e => handleChange('diameter', e.target.value)}
+              type='number'
+              fullWidth
+            ></TextField>
+          </AccordionDetails>
+        </Accordion>
       </CardContent>
     </Card>
   );
