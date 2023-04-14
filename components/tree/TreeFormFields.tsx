@@ -3,12 +3,16 @@ import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import TextField from '@mui/material/TextField';
 import { PartialTree } from 'interfaces';
 import SpeciesSelector from './SpeciesSelector';
-import Typography from '@mui/material/Typography';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const TreeFormFields = ({
   tree,
@@ -52,27 +56,40 @@ const TreeFormFields = ({
         size='small'
         fullWidth={true}
       ></TextField>
-      <Typography sx={{ marginBottom: 2 }} color='secondary' variant='inherit'>
-        Advanced Details
-      </Typography>
-      <TextField
-        sx={{ marginBottom: 2 }}
-        label='Height Estimation (feet)'
-        onChange={e => handleChange('height', e.target.value)}
-        defaultValue={tree.height}
-        type='number'
-        size='small'
-        fullWidth={true}
-      ></TextField>
-      <TextField
-        sx={{ marginBottom: 2 }}
-        label='Diameter (inches)'
-        onChange={e => handleChange('diameter', e.target.value)}
-        type='number'
-        defaultValue={tree.diameter}
-        size='small'
-        fullWidth={true}
-      ></TextField>
+
+      <Accordion
+        sx={{
+          mb: 2,
+          mt: 0,
+          '&:before': { opacity: 0.2 },
+        }}
+      >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls='panel1a-content' id='panel1a-header'>
+          <Typography color='secondary' variant='inherit'>
+            Advanced Details
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <TextField
+            sx={{ marginBottom: 2 }}
+            label='Height Estimation (feet)'
+            onChange={e => handleChange('height', e.target.value)}
+            defaultValue={tree.height}
+            type='number'
+            size='small'
+            fullWidth={true}
+          ></TextField>
+          <TextField
+            sx={{ marginBottom: 2 }}
+            label='Diameter (inches)'
+            onChange={e => handleChange('diameter', e.target.value)}
+            type='number'
+            defaultValue={tree.diameter}
+            size='small'
+            fullWidth={true}
+          ></TextField>
+        </AccordionDetails>
+      </Accordion>
     </>
   );
 };

@@ -77,17 +77,19 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
           ) : (
             <></>
           )}
-          <LoadingButton
-            disabled={isUpserting || !tree.pictureUrl}
-            variant='contained'
-            color='secondary'
-            isLoading={isUpserting}
-            onClick={() => {
-              saveStep(activeStep, true);
-            }}
-          >
-            Save
-          </LoadingButton>
+          {false && (
+            <LoadingButton
+              disabled={isUpserting || !tree.pictureUrl}
+              variant='contained'
+              color='secondary'
+              isLoading={isUpserting}
+              onClick={() => {
+                saveStep(activeStep, true);
+              }}
+            >
+              Save
+            </LoadingButton>
+          )}
           <Button
             disabled={isUpserting || !tree.pictureUrl}
             variant='contained'
@@ -101,16 +103,18 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
         </SplitRow>
       </Box>
       <Box sx={{ display: activeStep === 1 ? 'block' : 'none' }}>
-        <LocationSelector
-          onViewportChange={({ latitude, longitude }) => {
-            handleChange('latitude', latitude);
-            handleChange('longitude', longitude);
-          }}
-          latitude={tree?.latitude ? Number(tree?.latitude) : null}
-          longitude={tree?.longitude ? Number(tree?.longitude) : null}
-          zoomToLocation={!tree?.latitude}
-          mapStyle='SATELLITE'
-        ></LocationSelector>
+        <Box sx={{ mb: 3 }}>
+          <LocationSelector
+            onViewportChange={({ latitude, longitude }) => {
+              handleChange('latitude', latitude);
+              handleChange('longitude', longitude);
+            }}
+            latitude={tree?.latitude ? Number(tree?.latitude) : null}
+            longitude={tree?.longitude ? Number(tree?.longitude) : null}
+            zoomToLocation={!tree?.latitude}
+            mapStyle='SATELLITE'
+          ></LocationSelector>
+        </Box>
         <SplitRow>
           <Button
             disabled={isUpserting}
