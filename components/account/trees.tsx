@@ -123,7 +123,7 @@ const AccountTrees = () => {
           return (
             <Grid key={tree.id} item xs={12} sm={6} md={3}>
               <Card sx={{ '.MuiCardContent-root': { padding: 0, paddingBottom: 0 } }}>
-                <CardContent>
+                <CardContent sx={{ pb: '0 !important' }}>
                   <TreeReview tree={tree} onUpdate={handleUpdateById} onDelete={handleDelete} onDeleteImage={handleDeleteImage} />
                 </CardContent>
               </Card>

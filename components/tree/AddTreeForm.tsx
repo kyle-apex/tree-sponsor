@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { PartialTree } from 'interfaces';
 import SplitRow from 'components/layout/SplitRow';
 import LoadingButton from 'components/LoadingButton';
@@ -18,6 +18,8 @@ const steps = [{ label: 'Details' }, { label: 'Location' }];
 const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
   const [tree, setTree] = useState<PartialTree>({});
   const [isUpserting, setIsUpserting] = useState(false);
+  const isAwaitingUpload = useRef(false);
+  const [isCompleting, setIsCompleting] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [completed] = useState<{ [k: number]: boolean }>({});
   const [imageUuid, setImageUuid] = useState('');
@@ -43,10 +45,20 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
   };
 
   const saveStep = async (step: number, isCompleted?: boolean) => {
+    if (isCompleted) setIsCompleting(true);
+    if (isAwaitingUpload.current && isCompleted) {
+      setTimeout(() => {
+        saveStep(step, isCompleted);
+      }, 250);
+      return;
+    }
     setActiveStep(step);
     setIsUpserting(true);
+    if (!isCompleted) isAwaitingUpload.current = true;
     await upsertTree();
+    isAwaitingUpload.current = false;
     setIsUpserting(false);
+    if (isCompleted) setIsCompleting(false);
     if (onComplete && isCompleted) onComplete();
   };
 
@@ -117,7 +129,7 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
         </Box>
         <SplitRow>
           <Button
-            disabled={isUpserting}
+            disabled={isCompleting}
             color='inherit'
             onClick={() => {
               saveStep(activeStep - 1);
@@ -126,8 +138,8 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
             Back
           </Button>
           <LoadingButton
-            disabled={isUpserting}
-            isLoading={isUpserting}
+            disabled={isCompleting}
+            isLoading={isCompleting}
             variant='contained'
             color='primary'
             onClick={() => {
