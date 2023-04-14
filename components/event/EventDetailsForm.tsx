@@ -88,7 +88,6 @@ const EventDetailsForm = ({
           value={startDate}
           setValue={date => {
             // window['d2'] = date;
-            console.log('date', date);
             updateAttribute('startDate', date);
             setStartDate(date);
           }}

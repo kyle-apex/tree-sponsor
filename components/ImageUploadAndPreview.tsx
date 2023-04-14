@@ -110,7 +110,18 @@ const ImageUploadAndPreview = forwardRef(
           <>
             {!hideEditButton && <CornerEditIcon />}
 
-            <img src={imageUrl} className='full-width' alt='Preview'></img>
+            <img
+              src={imageUrl}
+              className='full-width'
+              alt='Preview'
+              onError={(e: any) => {
+                setTimeout(() => {
+                  if (e.target && e.target.src && e.target.src.startsWith('http')) {
+                    e.target.src = e.target.src.includes('?') ? imageUrl + '1' : imageUrl + '?t=' + new Date().getTime();
+                  }
+                }, 2000);
+              }}
+            ></img>
           </>
         )}
         <input
