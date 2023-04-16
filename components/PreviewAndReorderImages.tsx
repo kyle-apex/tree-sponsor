@@ -60,7 +60,7 @@ const PreviewAndReorderImages = ({
               >
                 <img
                   src={image?.url}
-                  className='full-width'
+                  className='full-width box-shadow'
                   style={{ aspectRatio: '1 / 1' }}
                   alt='Preview'
                   onClick={_e => {
@@ -108,7 +108,7 @@ const PreviewAndReorderImages = ({
         );
       })}
       <Grid item xs={6} sm={4} md={4}>
-        <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1 / 1', overflow: 'hidden' }}>
+        <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1 / 1', overflow: 'hidden' }} className='box-shadow'>
           <ImageUploadAndPreview
             imageUrl={newImageUrl}
             setImageUrl={(imageUrl: string) => {
