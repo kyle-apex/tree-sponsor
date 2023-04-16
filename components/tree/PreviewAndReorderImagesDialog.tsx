@@ -51,34 +51,35 @@ const PreviewAndReorderImagesDialog = ({
       </DialogTitle>
       <DialogContent className=''>
         {images?.length > 1 && (
-          <Box mb={3}>
-            {' '}
+          <Box mb={2} sx={{ whiteSpace: 'nowrap', textAlign: 'right' }}>
             <LoadingButton
               disabled={selectedIndex === null || selectedIndex == 0}
               color='inherit'
               variant='text'
+              size='small'
               isLoading={isMoving}
               onClick={() => {
                 onMakePrimaryImage(selectedIndex);
                 setSelectedIndex(null);
                 setIsMoving(true);
               }}
-              sx={{ width: '190px' }}
+              sx={{ width: '110px' }}
             >
-              Make Primary Picture
+              Make Primary
             </LoadingButton>
             <span style={{ color: 'rgba(0, 0, 0, 0.26)' }}>|</span>
             <LoadingButton
               color='inherit'
               variant='text'
+              size='small'
               onClick={() => {
                 setIsDeleteConfirmationOpen(true);
               }}
               disabled={selectedIndex === null}
               isLoading={isLoading}
-              sx={{ width: '130px' }}
+              sx={{ width: '66px' }}
             >
-              Delete Picture
+              Delete
             </LoadingButton>
             <DeleteConfirmationDialog
               open={isDeleteConfirmationOpen}

@@ -41,14 +41,12 @@ const PreviewAndReorderImages = ({
     <Grid container spacing={4}>
       {images.map((image, idx) => {
         return (
-          <Grid item xs={12} sm={6} md={4} key={image.uuid}>
+          <Grid item xs={6} sm={4} md={4} key={image.uuid}>
             <Box
               sx={{
                 position: 'relative',
-                width: '90px',
-                height: '90px',
-                marginLeft: 'auto',
-                marginRight: 'auto',
+                width: '100%',
+                aspectRatio: '1 / 1',
                 border: idx === selectedIndex ? 'solid 3px #139CF7' : 'none',
               }}
             >
@@ -60,15 +58,16 @@ const PreviewAndReorderImages = ({
                   height: '100%',
                 }}
               >
-                <Image
-                  width='100%'
-                  height='100%'
+                <img
                   src={image?.url}
+                  className='full-width'
+                  style={{ aspectRatio: '1 / 1' }}
+                  alt='Preview'
                   onClick={_e => {
                     if (idx !== selectedIndex) setSelectedIndex(idx);
                     else setSelectedIndex(null);
                   }}
-                ></Image>
+                ></img>
               </Box>
               <Box
                 sx={{
@@ -108,8 +107,8 @@ const PreviewAndReorderImages = ({
           </Grid>
         );
       })}
-      <Grid item xs={12} sm={6} md={4}>
-        <Box sx={{ position: 'relative', width: '90px', height: '90px', overflow: 'hidden' }}>
+      <Grid item xs={6} sm={4} md={4}>
+        <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1 / 1', overflow: 'hidden' }}>
           <ImageUploadAndPreview
             imageUrl={newImageUrl}
             setImageUrl={(imageUrl: string) => {
