@@ -42,12 +42,12 @@ const AccountTrees = () => {
 
   const { updateById } = useUpdateQueryById(apiKey, updateTree, false, 500);
 
-  const handleUpdateById = async (id: number, attributes: Record<string, unknown>) => {
+  const handleUpdateById = async (id: number, attributes: Record<string, unknown>, callback?: () => void) => {
     const pictureUrl: string = attributes.pictureUrl as string;
 
     if (pictureUrl && !pictureUrl.startsWith('https://')) {
       await updateById(id, attributes, refetchTrees);
-    } else await updateById(id, attributes);
+    } else await updateById(id, attributes, callback);
   };
 
   const handleDeleteImage = async (uuid: string) => {
@@ -124,7 +124,13 @@ const AccountTrees = () => {
             <Grid key={tree.id} item xs={12} sm={6} md={3}>
               <Card sx={{ '.MuiCardContent-root': { padding: 0, paddingBottom: 0 } }}>
                 <CardContent sx={{ pb: '0 !important' }}>
-                  <TreeReview tree={tree} onUpdate={handleUpdateById} onDelete={handleDelete} onDeleteImage={handleDeleteImage} />
+                  <TreeReview
+                    tree={tree}
+                    onUpdate={handleUpdateById}
+                    onDelete={handleDelete}
+                    onDeleteImage={handleDeleteImage}
+                    onRefetch={refetchTrees}
+                  />
                 </CardContent>
               </Card>
             </Grid>

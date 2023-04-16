@@ -60,5 +60,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else {
       return throwError(res, 'Access denied');
     }
+  } else if (req.method === 'PATCH') {
+    const newTreeImage = req.body as Partial<TreeImage>;
+    let isAuthorized = await isCurrentUserAuthorized('isAdmin', req);
+    const session = await getSession({ req });
+    const treeImage = await prisma.treeImage.findFirst({ where: { uuid }, include: { tree: true } });
+
+    if (!isAuthorized && session?.user?.id) {
+      if (!treeImage?.tree?.id) return;
+
+      const changeLog = await prisma.treeChangeLog.findFirst({
+        where: { tree: { id: treeImage.tree.id }, user: { id: session?.user?.id }, type: 'Create' },
+      });
+      if (changeLog) isAuthorized = true;
+    }
+
+    if (isAuthorized) {
+      await prisma.treeImage.update({ where: { uuid }, data: { ...newTreeImage } });
+
+      res.json({ count: 1 });
+    } else {
+      return throwError(res, 'Access denied');
+    }
   }
 }

@@ -107,6 +107,7 @@ const ReviewTreesPage = () => {
                       onDelete={handleDelete}
                       isAdmin={true}
                       onDeleteImage={handleDeleteImage}
+                      onRefetch={refetchTrees}
                     />
                   </CardContent>
                 </Card>
