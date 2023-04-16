@@ -64,7 +64,7 @@ const PreviewAndReorderImages = ({
                   width='100%'
                   height='100%'
                   src={image?.url}
-                  onClick={e => {
+                  onClick={_e => {
                     if (idx !== selectedIndex) setSelectedIndex(idx);
                     else setSelectedIndex(null);
                   }}
