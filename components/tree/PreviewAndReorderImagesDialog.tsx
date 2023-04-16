@@ -38,6 +38,7 @@ const PreviewAndReorderImagesDialog = ({
   useEffect(() => {
     setIsLoading(false);
     setIsMoving(false);
+    setSelectedIndex(null);
   }, [images]);
   return (
     <Dialog open={isOpen} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px', margin: '0px' } }} onClose={handleClose}>
