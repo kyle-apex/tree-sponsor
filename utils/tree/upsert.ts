@@ -26,7 +26,7 @@ export default async function upsertTree(tree: PartialTree, userId: number) {
   if (image) {
     const pictureUrl = image.url;
 
-    if (pictureUrl && !pictureUrl.includes('http')) {
+    if (pictureUrl && !pictureUrl.startsWith('http')) {
       if (!image.uuid || image.uuid === 'temp') image.uuid = uuidv4();
       const imagePath = getTreeImagePath(image.uuid);
       tree.pictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}/small`;

@@ -47,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const pictureUrl = tree?.pictureUrl;
 
-    if (pictureUrl && !pictureUrl.includes('http')) {
+    if (pictureUrl && !pictureUrl.startsWith('http')) {
       // find existing tree
       const existingTree = await prisma.tree.findFirst({ where: { id: id }, include: { images: { orderBy: { sequence: 'asc' } } } });
       //let image = existingTree?.images?.find(img => img.url == existingTree.pictureUrl) as Partial<TreeImage>;
