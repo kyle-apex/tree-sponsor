@@ -39,7 +39,7 @@ const PreviewAndReorderImages = ({
               <Box sx={{ position: 'absolute', top: '0px', width: '100%', height: '100%' }}>
                 <Image width='100%' height='100%' src={image?.url}></Image>
               </Box>
-              {images.length < 0 && (
+              {images.length > 1 && (
                 <Box
                   sx={{
                     position: 'absolute',
@@ -56,8 +56,9 @@ const PreviewAndReorderImages = ({
                     onClick={() => {
                       console.log('whatever');
                     }}
+                    sx={{ backgroundColor: theme => (idx == 0 ? theme.palette.primary.main : 'white') }}
                   >
-                    {idx == 0 && <StarIcon color='primary' sx={{ fontSize: '1.2rem' }}></StarIcon>}
+                    {idx == 0 && <StarIcon sx={{ fontSize: '1.2rem', color: 'white' }}></StarIcon>}
                     {idx > 0 && <StarBorderIcon sx={{ fontSize: '1.2rem' }}></StarBorderIcon>}
                   </IconButton>
                 </Box>
