@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const imageUrl = req.body.image;
 
-  if (imageUrl && !imageUrl.includes('http')) {
+  if (imageUrl && !imageUrl.startsWith('http')) {
     const fileContent = imageUrl.split(',')[1];
 
     req.body.image =

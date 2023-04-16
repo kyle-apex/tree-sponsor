@@ -133,7 +133,7 @@ const PreviewAndReorderImages = ({
             ></Box>
           )}
           {newImageUrl && (
-            <CircularProgress sx={{ position: 'absolute', left: '15px', top: '15px', zIndex: 10 }} size='60px'></CircularProgress>
+            <CircularProgress sx={{ position: 'absolute', left: '25%', top: '25px', zIndex: 10 }} size='50%'></CircularProgress>
           )}
         </Box>
       </Grid>
