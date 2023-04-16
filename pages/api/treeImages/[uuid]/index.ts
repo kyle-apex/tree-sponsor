@@ -29,7 +29,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const session = await getSession({ req });
 
     const treeImage = await prisma.treeImage.findFirst({ where: { uuid }, include: { tree: true } });
-    console.log('treeImage', treeImage);
 
     if (!isAuthorized && session?.user?.id) {
       if (!treeImage?.tree?.id) return;
@@ -37,7 +36,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const changeLog = await prisma.treeChangeLog.findFirst({
         where: { tree: { id: treeImage.tree.id }, user: { id: session?.user?.id }, type: 'Create' },
       });
-      console.log('changeLog', changeLog);
       if (changeLog) isAuthorized = true;
     }
 
@@ -51,7 +49,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (!existingImage) newPictureUrl = treeImages[0].url;
         else newPictureUrl = existingImage.url;
       }
-      console.log('newPictureUrl', newPictureUrl);
 
       if (treeImage.tree.pictureUrl != newPictureUrl)
         await prisma.tree.update({ where: { id: treeImage.tree.id }, data: { pictureUrl: newPictureUrl } });

@@ -40,7 +40,7 @@ const SpeciesSelector = ({
   };
 
   const { data, isFetching, refetch } = useQuery<PartialSpecies[]>(
-    ['speciesOptions', searchText || 'id:' + defaultValue],
+    ['speciesOptions', searchText || !defaultValue ? searchText : 'id:' + defaultValue],
     () => fetchSpecies(searchText, value),
     {
       keepPreviousData: true,
@@ -56,7 +56,6 @@ const SpeciesSelector = ({
     if (!defaultValue) queryClient.prefetchQuery(['speciesOptions', ''], () => fetchSpecies(''));
     else {
       let data = queryClient.getQueryData(['speciesOptions', 'id:' + defaultValue]) as PartialSpecies[];
-      console.log('getting query data for ', defaultValue, data);
       if (!data || data.length === 0) {
         await queryClient.prefetchQuery(['speciesOptions', 'id:' + defaultValue], () => fetchDefaultValue(defaultValue));
 
