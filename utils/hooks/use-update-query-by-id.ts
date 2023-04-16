@@ -54,7 +54,7 @@ export const useUpdateQueryById = <T extends { id?: string | number }>(
   );
 
   const updateById = (id: number, attributes: Record<string, unknown>, callback?: () => void) => {
-    if (debounceMilliseconds) {
+    if (debounceMilliseconds && !callback) {
       if (debounceHandle) clearTimeout(debounceHandle);
       debounceHandle = setTimeout(() => {
         mutate({ id: id, attributes: attributes, callback });

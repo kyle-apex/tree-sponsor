@@ -15,6 +15,7 @@ import DeleteIconButton from 'components/DeleteIconButton';
 import getImageDimensions from 'utils/aws/get-image-dimensions';
 import CornerEditIcon from './CornerEditIcon';
 import PreviewAndReorderImagesDialog from './PreviewAndReorderImagesDialog';
+import axios from 'axios';
 
 type Mode = 'Image' | 'Map';
 
@@ -24,16 +25,31 @@ const TreeReview = ({
   onDelete,
   onDeleteImage,
   isAdmin,
+  onRefetch,
 }: {
   tree: PartialTree;
-  onUpdate: (id: number, attributes: Record<string, unknown>) => void;
+  onUpdate: (id: number, attributes: Record<string, unknown>, callback?: () => void) => Promise<void>;
   onDelete?: (id: number) => void;
   onDeleteImage?: (uuid: string) => void;
   isAdmin?: boolean;
+  onRefetch?: () => void;
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [mode, setMode] = useState<Mode>('Image');
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
+
+  const handleOnMakePrimaryImage = async (index: number) => {
+    const removed = tree.images.splice(index, 1);
+    tree.images.unshift(removed[0]);
+    const promises: any[] = [];
+    tree.images.forEach((image, idx) => {
+      promises.push(axios.patch('/api/treeImages/' + image.uuid, { sequence: idx }));
+    });
+    await Promise.all(promises);
+    onUpdate(tree.id, { pictureUrl: tree.images[0].url }, () => {
+      if (onRefetch) onRefetch();
+    });
+  };
 
   //const { onUpdate } = useUpdateQueryById(apiKey, updateTree, false, 500);
   // TODO refactor into memoized component to avoid re-render all when updating
@@ -98,6 +114,7 @@ const TreeReview = ({
               onUpdate(tree.id, { pictureUrl: imageUrl });
             }}
             onDelete={onDeleteImage}
+            onMakePrimaryImage={handleOnMakePrimaryImage}
           ></PreviewAndReorderImagesDialog>
         </>
       )}

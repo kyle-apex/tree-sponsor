@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import ImageIcon from '@mui/icons-material/Image';
-import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import Box from '@mui/material/Box';
 import CornerEditIcon from './tree/CornerEditIcon';
@@ -37,6 +37,9 @@ const ImageUploadAndPreview = forwardRef(
         fileInputRef?.current?.click();
       },
     }));
+    useEffect(() => {
+      if (!imageUrl && fileInputRef?.current) fileInputRef.current.value = '';
+    }, [imageUrl]);
     const openFileBrowser = () => {
       fileInputRef?.current?.click();
     };
