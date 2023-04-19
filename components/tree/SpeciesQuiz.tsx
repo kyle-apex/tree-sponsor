@@ -51,7 +51,7 @@ const SpeciesQuiz = ({ correctSpecies }: { correctSpecies: PartialSpecies }) => 
     }, 100);
   };
   if (clickedSpeciesId) {
-    speciesOptions.sort((a, b) => {
+    speciesOptions.sort((a, _b) => {
       return a.id == correctSpecies.id ? 1 : -1;
     });
   }
