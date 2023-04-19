@@ -7,6 +7,8 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useGet } from 'utils/hooks/use-get';
 import Fade from '@mui/material/Fade';
 import Grow from '@mui/material/Grow';
+import SpeciesDetails from './SpeciesDetails';
+import Typography from '@mui/material/Typography';
 
 function getQuizOptions(species: PartialSpecies[], correctSpecies: PartialSpecies): PartialSpecies[] {
   const options: PartialSpecies[] = [];
@@ -44,9 +46,23 @@ const SpeciesQuiz = ({ correctSpecies }: { correctSpecies: PartialSpecies }) => 
     if (clickedSpeciesId === null) {
       setClickedSpeciesId(newlyClickedSpeciesId);
     }
+    setTimeout(() => {
+      document.getElementById('scroll-element').scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
+  if (clickedSpeciesId) {
+    speciesOptions.sort((a, b) => {
+      return a.id == correctSpecies.id ? 1 : -1;
+    });
+  }
   return (
     <>
+      <Box id='scroll-element' sx={{ mt: -6, mb: 8 }}></Box>
+      {!clickedSpeciesId && (
+        <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
+          Click below to guess a species:
+        </Typography>
+      )}
       {speciesOptions.map(species => {
         const color =
           clickedSpeciesId && (clickedSpeciesId == species.id || species.id == correctSpecies.id)
@@ -74,6 +90,8 @@ const SpeciesQuiz = ({ correctSpecies }: { correctSpecies: PartialSpecies }) => 
 
         const variant = clickedSpeciesId && (clickedSpeciesId == species.id || species.id == correctSpecies.id) ? 'contained' : 'outlined';
 
+        if (clickedSpeciesId && !(clickedSpeciesId == species.id || species.id == correctSpecies.id)) return null;
+
         return (
           <Box mb={2} key={species.id}>
             <Button
@@ -85,13 +103,22 @@ const SpeciesQuiz = ({ correctSpecies }: { correctSpecies: PartialSpecies }) => 
               onClick={() => {
                 handleClick(species.id);
               }}
+              sx={{ textTransform: 'none' }}
             >
               {icon}
-              {species.commonName}
+              {clickedSpeciesId &&
+                correctSpecies.id == species.id &&
+                ['a', 'e', 'i', 'o', 'u', 'y'].includes(species.commonName.charAt(0).toLowerCase()) && <span>It&apos;s an</span>}
+              {clickedSpeciesId &&
+                correctSpecies.id == species.id &&
+                !['a', 'e', 'i', 'o', 'u', 'y'].includes(species.commonName.charAt(0).toLowerCase()) && <span>It&apos;s a</span>}
+              <span style={{ textTransform: 'capitalize', marginLeft: '5px' }}>{species.commonName}</span>
+              {clickedSpeciesId && correctSpecies.id == species.id && '!'}
             </Button>
           </Box>
         );
       })}
+      {clickedSpeciesId && <SpeciesDetails species={correctSpecies}></SpeciesDetails>}
     </>
   );
 };
