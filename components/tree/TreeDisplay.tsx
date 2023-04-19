@@ -186,10 +186,9 @@ const TreeDisplay = ({
               <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
                 Tree ID Quiz
               </Typography>
-              <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
-                Click below to guess a species:
-              </Typography>
+
               <SpeciesQuiz correctSpecies={tree.species}></SpeciesQuiz>
+
               <Button fullWidth color='inherit' sx={{ mt: 2 }} onClick={handleClose}>
                 Close
               </Button>
