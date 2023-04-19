@@ -57,12 +57,12 @@ const SpeciesQuiz = ({ correctSpecies }: { correctSpecies: PartialSpecies }) => 
   }
   return (
     <>
-      <Box id='scroll-element' sx={{ mt: -6, mb: 8 }}></Box>
       {!clickedSpeciesId && (
         <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
           Click below to guess a species:
         </Typography>
       )}
+      <Box id='scroll-element' sx={{ mt: -6, mb: 8 }}></Box>
       {speciesOptions.map(species => {
         const color =
           clickedSpeciesId && (clickedSpeciesId == species.id || species.id == correctSpecies.id)
@@ -84,7 +84,7 @@ const SpeciesQuiz = ({ correctSpecies }: { correctSpecies: PartialSpecies }) => 
                 </Fade>
               </Grow>
             ) : (
-              <HighlightOffIcon sx={{ marginRight: 1 }} />
+              <HighlightOffIcon fontSize='small' sx={{ marginRight: '2px' }} />
             );
         }
 
