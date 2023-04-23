@@ -73,14 +73,15 @@ model User {
   reactions                Reaction[]
 
   commentReactions      CommentReaction[]
-  notifications         Notification[]    @relation("user")
-  notificationsAsSource Notification[]    @relation("sourceUser")
+  notifications         Notification[]        @relation("user")
+  notificationsAsSource Notification[]        @relation("sourceUser")
   treeChangeLogs        TreeChangeLog[]
   lastChangedByTrees    Tree[]
   Event                 Event[]
   Category              Category[]
   eventCheckIns         EventCheckIn[]
   treeCheckIns          TreeCheckIn[]
+  speciesQuizResponses  SpeciesQuizResponse[]
 
   @@map(name: "users")
 }
@@ -202,32 +203,33 @@ model Product {
 }
 
 model Tree {
-  id                       Int             @id @default(autoincrement())
+  id                       Int                   @id @default(autoincrement())
   name                     String?
-  createdDate              DateTime?       @default(now())
+  createdDate              DateTime?             @default(now())
   pictureUrl               String?
-  latitude                 Decimal?        @db.Decimal(8, 5)
-  longitude                Decimal?        @db.Decimal(9, 6)
-  streetViewPitch          String?         @default("")
-  streetViewHeading        String?         @default("")
-  streetViewLatitude       Decimal?        @db.Decimal(8, 5)
-  streetViewLongitude      Decimal?        @db.Decimal(9, 6)
-  diameter                 Decimal?        @db.Decimal(5, 2)
-  height                   Decimal?        @db.Decimal(6, 2)
-  reviewStatus             ReviewStatus?   @default(New)
+  latitude                 Decimal?              @db.Decimal(8, 5)
+  longitude                Decimal?              @db.Decimal(9, 6)
+  streetViewPitch          String?               @default("")
+  streetViewHeading        String?               @default("")
+  streetViewLatitude       Decimal?              @db.Decimal(8, 5)
+  streetViewLongitude      Decimal?              @db.Decimal(9, 6)
+  diameter                 Decimal?              @db.Decimal(5, 2)
+  height                   Decimal?              @db.Decimal(6, 2)
+  reviewStatus             ReviewStatus?         @default(New)
   sponsorships             Sponsorship[]
-  location                 Location?       @relation(fields: [locationId], references: [id])
+  location                 Location?             @relation(fields: [locationId], references: [id])
   locationId               Int?
-  species                  Species?        @relation(fields: [speciesId], references: [id])
+  species                  Species?              @relation(fields: [speciesId], references: [id])
   speciesId                Int?
   identificationConfidence Int?
   images                   TreeImage[]
   changeLogs               TreeChangeLog[]
   lastChangedByUserId      Int?
-  lastChangedByUser        User?           @relation(fields: [lastChangedByUserId], references: [id])
-  categories               Category[]      @relation("TreeToCategory")
-  events                   Event[]         @relation("TreeToEvent")
+  lastChangedByUser        User?                 @relation(fields: [lastChangedByUserId], references: [id])
+  categories               Category[]            @relation("TreeToCategory")
+  events                   Event[]               @relation("TreeToEvent")
   checkIns                 TreeCheckIn[]
+  speciesQuizResponses     SpeciesQuizResponse[]
 }
 
 model Category {
@@ -247,26 +249,27 @@ model Category {
 }
 
 model Event {
-  id              Int            @id @default(autoincrement())
-  name            String?
-  description     String?        @db.Text
-  checkInDetails  String?        @db.Text
-  pictureUrl      String?
-  startDate       DateTime?
-  endDate         DateTime?
-  activeStartDate DateTime?
-  activeEndDate   DateTime?
-  identifier      String?
-  path            String?        @db.VarChar(256)
-  location        Location?      @relation(fields: [locationId], references: [id])
-  locationId      Int?
-  categories      Category[]     @relation("CategoryToEvent")
-  user            User?          @relation(fields: [userId], references: [id])
-  userId          Int?
-  role            Role?          @relation(fields: [roleId], references: [id])
-  roleId          Int?
-  trees           Tree[]         @relation("TreeToEvent")
-  checkIns        EventCheckIn[]
+  id                  Int                   @id @default(autoincrement())
+  name                String?
+  description         String?               @db.Text
+  checkInDetails      String?               @db.Text
+  pictureUrl          String?
+  startDate           DateTime?
+  endDate             DateTime?
+  activeStartDate     DateTime?
+  activeEndDate       DateTime?
+  identifier          String?
+  path                String?               @db.VarChar(256)
+  location            Location?             @relation(fields: [locationId], references: [id])
+  locationId          Int?
+  categories          Category[]            @relation("CategoryToEvent")
+  user                User?                 @relation(fields: [userId], references: [id])
+  userId              Int?
+  role                Role?                 @relation(fields: [roleId], references: [id])
+  roleId              Int?
+  trees               Tree[]                @relation("TreeToEvent")
+  checkIns            EventCheckIn[]
+  SpeciesQuizResponse SpeciesQuizResponse[]
 }
 
 model TreeCheckIn {
@@ -335,6 +338,18 @@ model Species {
   isInTexas       Boolean? @default(false)
   searchPriority  Int?     @default(0)
   trees           Tree[]
+}
+
+model SpeciesQuizResponse {
+  id                 Int      @id @default(autoincrement())
+  isCorrect          Boolean? @default(false)
+  incorrectGuessName String?  @db.VarChar(128)
+  user               User?    @relation(fields: [userId], references: [id])
+  userId             Int?
+  tree               Tree?    @relation(fields: [treeId], references: [id])
+  treeId             Int?
+  eventId            Int?
+  event              Event?   @relation(fields: [eventId], references: [id])
 }
 
 model Location {

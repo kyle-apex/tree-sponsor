@@ -12,7 +12,17 @@ const useStyles = makeStyles(theme => ({
   content: {},
 }));
 
-const TreeDisplayDialog = ({ open, setOpen, tree }: { open: boolean; setOpen: (isOpen: boolean) => void; tree: PartialTree }) => {
+const TreeDisplayDialog = ({
+  open,
+  setOpen,
+  tree,
+  eventId,
+}: {
+  open: boolean;
+  setOpen: (isOpen: boolean) => void;
+  tree: PartialTree;
+  eventId?: number;
+}) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,7 +38,7 @@ const TreeDisplayDialog = ({ open, setOpen, tree }: { open: boolean; setOpen: (i
           <SponsorshipDisplayLoading />
         ) : (
           <>
-            <TreeDisplay title='Tree ID Quiz' tree={tree} handleClose={handleClose} hasFullHeightImage={true} />
+            <TreeDisplay title='Tree ID Quiz' tree={tree} handleClose={handleClose} eventId={eventId} hasFullHeightImage={true} />
           </>
         )}
       </DialogContent>

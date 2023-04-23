@@ -8,6 +8,7 @@ const MapMarker = ({
   latitude,
   longitude,
   isQuiz,
+  isQuizCorrect,
 }: {
   isSatelliteMode?: boolean;
   zoom: number;
@@ -15,11 +16,22 @@ const MapMarker = ({
   latitude: number;
   longitude: number;
   isQuiz?: boolean;
+  isQuizCorrect?: boolean;
 }) => {
   return (
     <Marker className='marker' latitude={latitude} longitude={longitude}>
       <img
-        src={isQuiz ? '/pin-quiz.svg' : isSatelliteMode ? '/pin-right-bright.svg' : '/pin-ring.svg'}
+        src={
+          isQuiz
+            ? isQuizCorrect === true
+              ? '/pin-quiz-correct.svg'
+              : isQuizCorrect === false
+              ? '/pin-quiz-incorrect.svg'
+              : '/pin-quiz.svg'
+            : isSatelliteMode
+            ? '/pin-right-bright.svg'
+            : '/pin-ring.svg'
+        }
         style={{
           width: (50 * zoom) / 10 + 'px',
           marginLeft: (-50 * zoom) / 20 + 'px',

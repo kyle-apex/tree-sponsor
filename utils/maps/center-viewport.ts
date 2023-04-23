@@ -3,7 +3,7 @@ import { Coordinate, Viewport } from 'interfaces';
 
 const centerViewport = (viewport: Viewport, coordinates: Coordinate[], width?: number, height?: number) => {
   let minLng, minLat, maxLng, maxLat;
-  for (const coordinate of coordinates) {
+  for (const coordinate of coordinates || []) {
     if (coordinate.latitude) {
       if (!minLat) minLat = coordinate.latitude;
       if (!maxLat) maxLat = coordinate.latitude;
