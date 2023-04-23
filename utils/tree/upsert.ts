@@ -41,7 +41,10 @@ export default async function upsertTree(tree: PartialTree, userId: number) {
   const species = tree.speciesId ? { connect: { id: speciesId } } : undefined;
   delete tree.speciesId;
 
-  const treeToUpdate: Omit<PartialTree, 'id' | 'locationId' | 'speciesId' | 'lastChangedByUserId' | 'species' | 'location'> = { ...tree };
+  const treeToUpdate: Omit<
+    PartialTree,
+    'id' | 'locationId' | 'speciesId' | 'lastChangedByUserId' | 'species' | 'location' | 'speciesQuizResponses'
+  > = { ...tree };
 
   //type upsertType = Prisma.TreeUpsertArgs | Prisma.TreeUpsertWithoutImagesInput;
 
