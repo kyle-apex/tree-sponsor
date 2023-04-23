@@ -1,5 +1,5 @@
 import MapGL, { GeolocateControl, NavigationControl, WebMercatorViewport } from 'react-map-gl';
-import { Coordinate, MapStyle, Viewport } from 'interfaces';
+import { QuizCoordinate, Coordinate, MapStyle, Viewport } from 'interfaces';
 import MapMarker from 'components/sponsor/MapMarker';
 import { useRef, useState, useEffect } from 'react';
 import { useTheme } from '@mui/styles';
@@ -18,7 +18,7 @@ const MapMarkerDisplay = ({
   isQuiz,
   isEdit,
 }: {
-  markers: Coordinate[];
+  markers: QuizCoordinate[];
   onClick?: (coordinate?: Coordinate) => void;
   defaultZoom?: number;
   height?: string;
@@ -41,7 +41,7 @@ const MapMarkerDisplay = ({
   useEffect(() => {
     const centeredViewport = centerViewport(viewport, markers, 350, 200);
     setViewport(centeredViewport);
-  }, []);
+  }, [markers]);
 
   return (
     <MapGL
@@ -66,6 +66,7 @@ const MapMarkerDisplay = ({
               }}
               isSatelliteMode={mapStyle == 'SATELLITE'}
               isQuiz={isQuiz}
+              isQuizCorrect={marker.isQuizCorrect}
             ></MapMarker>
           );
         }

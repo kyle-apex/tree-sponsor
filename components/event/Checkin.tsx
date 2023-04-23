@@ -31,6 +31,7 @@ import CheckinHistoryDialog from './CheckinHistoryDialog';
 import useHashToggle from 'utils/hooks/use-hash-toggle';
 import useWindowFocus from 'utils/hooks/use-window-focus';
 import EventNameDisplay from './EventNameDisplay';
+import TreeIdQuiz from './TreeIdQuiz';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
   // eslint-disable-next-line react/display-name
@@ -44,7 +45,6 @@ type MembershipStatus = {
   attendees?: PartialUser[];
   attendeesCount?: number;
   checkInCount?: number;
-  trees: PartialTree[];
   myCheckin?: PartialEventCheckIn;
   myCheckins?: PartialEventCheckIn[];
 };
@@ -106,15 +106,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
     setActiveTab(newValue);
   };
-
-  const handleTreeClick = useCallback(
-    (marker: Coordinate) => {
-      const tree = status.trees.find(tree => Number(tree.latitude) == marker.latitude && Number(tree.longitude) == marker.longitude);
-      setSelectedTree(tree);
-      setIsDialogOpen(true);
-    },
-    [status],
-  );
 
   const getMembershipStatus = async () => {
     setIsLoading(true);
@@ -394,20 +385,8 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
             Click tree map markers below to learn about trees around us and test your knowledge
           </Typography>
-          <Box mb={3}>
-            <MapMarkerDisplay
-              markers={status?.trees?.map(tree => {
-                return { latitude: Number(tree.latitude), longitude: Number(tree.longitude) };
-              })}
-              height='200px'
-              onClick={coordinate => {
-                handleTreeClick(coordinate);
-              }}
-              mapStyle='SATELLITE'
-              markerScale={0.5}
-              isQuiz={true}
-            ></MapMarkerDisplay>
-          </Box>
+          <TreeIdQuiz eventId={event.id}></TreeIdQuiz>
+
           <Attendees
             users={status.attendees}
             onDelete={userId => {
@@ -508,7 +487,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
         </>
       )}
 
-      <TreeDisplayDialog tree={selectedTree} open={isDialogOpen} setOpen={setIsDialogOpen}></TreeDisplayDialog>
+      <TreeDisplayDialog tree={selectedTree} open={isDialogOpen} setOpen={setIsDialogOpen} eventId={event.id}></TreeDisplayDialog>
       {!status && event.location && (
         <Box sx={{ display: 'none' }}>
           <MapMarkerDisplay

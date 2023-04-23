@@ -37,6 +37,7 @@ const TreeDisplay = ({
   handleClose,
   hasFullHeightImage,
   title,
+  eventId,
 }: {
   tree?: PartialTree;
   isEditMode?: boolean;
@@ -44,6 +45,7 @@ const TreeDisplay = ({
   handleClose?: React.MouseEventHandler<HTMLButtonElement>;
   hasFullHeightImage?: boolean;
   title?: string;
+  eventId?: number;
 }) => {
   const classes = useStyles();
 
@@ -187,7 +189,7 @@ const TreeDisplay = ({
                 Tree ID Quiz
               </Typography>
 
-              <SpeciesQuiz correctSpecies={tree.species}></SpeciesQuiz>
+              <SpeciesQuiz correctSpecies={tree.species} treeId={tree.id} eventId={eventId}></SpeciesQuiz>
 
               <Button fullWidth color='inherit' sx={{ mt: 2 }} onClick={handleClose}>
                 Close

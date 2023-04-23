@@ -149,20 +149,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    let trees: PartialTree[] = [];
-
-    if (event.location?.latitude) {
-      const whereFilter = getLocationFilterByDistance(Number(event.location.latitude), Number(event.location.longitude), 500);
-
-      trees = await prisma.tree.findMany({
-        where: whereFilter,
-        include: {
-          images: { orderBy: { sequence: 'asc' } },
-          species: { select: { id: true, commonName: true, height: true, growthRate: true, longevity: true, isInTexas: true } },
-        },
-      });
-    }
-
-    res.status(200).json({ subscription, checkInCount, attendees, trees, myCheckin, attendeesCount, myCheckins });
+    res.status(200).json({ subscription, checkInCount, attendees, myCheckin, attendeesCount, myCheckins });
   }
 }

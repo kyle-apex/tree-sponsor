@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import { PartialSpecies } from 'interfaces';
+import { PartialSpecies, PartialTree, PartialSpeciesQuizResponse } from 'interfaces';
 import { useEffect, useState } from 'react';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
@@ -9,6 +9,14 @@ import Fade from '@mui/material/Fade';
 import Grow from '@mui/material/Grow';
 import SpeciesDetails from './SpeciesDetails';
 import Typography from '@mui/material/Typography';
+import axios from 'axios';
+import { useContext } from 'react';
+import QuizContext from './QuizContext';
+import useLocalStorage from 'utils/hooks/use-local-storage';
+
+const saveResponse = async (speciesQuizResponse: PartialSpeciesQuizResponse & { email: string }) => {
+  await axios.post('/api/speciesQuizResponses', speciesQuizResponse);
+};
 
 function getQuizOptions(species: PartialSpecies[], correctSpecies: PartialSpecies): PartialSpecies[] {
   const options: PartialSpecies[] = [];
@@ -28,9 +36,12 @@ function getQuizOptions(species: PartialSpecies[], correctSpecies: PartialSpecie
   return options;
 }
 
-const SpeciesQuiz = ({ correctSpecies }: { correctSpecies: PartialSpecies }) => {
+const SpeciesQuiz = ({ correctSpecies, treeId, eventId }: { correctSpecies: PartialSpecies; treeId?: number; eventId?: number }) => {
   const [clickedSpeciesId, setClickedSpeciesId] = useState<number>(null);
   const [speciesOptions, setSpeciesOptions] = useState<PartialSpecies[]>([]);
+  const { updateTreeById, trees } = useContext(QuizContext);
+  const [email] = useLocalStorage('checkinEmail', '');
+
   const { data: prioritySpecies, isFetched } = useGet<PartialSpecies[]>(
     '/api/species/priority',
     'prioritySpecies',
@@ -42,13 +53,36 @@ const SpeciesQuiz = ({ correctSpecies }: { correctSpecies: PartialSpecies }) => 
     setSpeciesOptions(getQuizOptions(prioritySpecies, correctSpecies));
   }, [correctSpecies?.id, prioritySpecies]);
 
-  const handleClick = (newlyClickedSpeciesId: number) => {
+  useEffect(() => {
+    //console.log('treeId', treeId, trees);
+    if (treeId && trees?.length > 0) {
+      const tree = trees.find((tree: PartialTree) => tree.id == treeId);
+      if (tree.speciesQuizResponses?.length > 0 && !clickedSpeciesId) {
+        if (tree.speciesQuizResponses[0].isCorrect) setClickedSpeciesId(correctSpecies.id);
+        else {
+          // add the incorrect species to the list and select it
+          if (tree.speciesQuizResponses[0].incorrectGuessName)
+            setSpeciesOptions(options => [...options, { commonName: tree.speciesQuizResponses[0].incorrectGuessName, id: -1 }]);
+          setClickedSpeciesId(-1);
+        }
+      }
+    }
+  }, [trees, treeId]);
+
+  const handleClick = async (newlyClickedSpeciesId: number) => {
     if (clickedSpeciesId === null) {
       setClickedSpeciesId(newlyClickedSpeciesId);
+      setTimeout(() => {
+        document.getElementById('scroll-element').scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      const isCorrect = newlyClickedSpeciesId == correctSpecies.id;
+      let incorrectGuessName;
+      if (!isCorrect) incorrectGuessName = speciesOptions.find(species => species.id == newlyClickedSpeciesId)?.commonName;
+
+      const response = { treeId, eventId, isCorrect, incorrectGuessName, email };
+      await saveResponse(response);
+      updateTreeById(treeId, { newResponse: response });
     }
-    setTimeout(() => {
-      document.getElementById('scroll-element').scrollIntoView({ behavior: 'smooth' });
-    }, 100);
   };
   if (clickedSpeciesId) {
     speciesOptions.sort((a, _b) => {

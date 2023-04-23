@@ -18,6 +18,7 @@ import {
   Donation,
   EventCheckIn,
   TreeChangeLog,
+  SpeciesQuizResponse,
 } from '@prisma/client';
 import { ViewportProps } from 'react-map-gl';
 import { Stripe } from 'stripe';
@@ -42,6 +43,8 @@ export type Coordinate = {
   longitude?: number;
 };
 
+export type QuizCoordinate = Coordinate & { isQuizCorrect?: boolean };
+
 export type Attendee = {
   name?: string;
   email?: string;
@@ -62,8 +65,14 @@ export interface NextSession extends Record<string, unknown>, DefaultSession {}
 export type ReviewStatus = ReviewStatusPrisma | '';
 export type PartialSpecies = Partial<Species>;
 export type PartialTreeImage = Partial<TreeImage>;
+export type PartialSpeciesQuizResponse = Partial<SpeciesQuizResponse>;
 
-export type PartialTree = Partial<Tree> & { images?: PartialTreeImage[]; species?: PartialSpecies; location?: PartialLocation };
+export type PartialTree = Partial<Tree> & {
+  images?: PartialTreeImage[];
+  species?: PartialSpecies;
+  location?: PartialLocation;
+  speciesQuizResponses?: PartialSpeciesQuizResponse[];
+};
 export type PartialTreeChangeLog = Partial<TreeChangeLog> & { tree: PartialTree };
 
 export type PartialEvent = Partial<Event> & { categories?: PartialCategory[]; trees?: PartialTree[]; location?: PartialLocation };
