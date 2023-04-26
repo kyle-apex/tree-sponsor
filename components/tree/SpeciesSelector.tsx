@@ -61,13 +61,13 @@ const SpeciesSelector = ({
 
         data = queryClient.getQueryData(['speciesOptions', 'id:' + defaultValue]) as PartialSpecies[];
         if (data && data.length === 1) setValue(data[0]);
-      } else setValue(data[0]);
+      } else setValue(data.find(species => species.id == defaultValue));
     }
   };
 
   useEffect(() => {
-    prefetchData();
-  }, []);
+    if (typeof value === 'string' || defaultValue != value?.id) prefetchData();
+  }, [defaultValue]);
 
   return (
     <>

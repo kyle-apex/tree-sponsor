@@ -140,10 +140,15 @@ ADD
 CREATE TABLE `SpeciesQuizResponse` (
   `id` INTEGER NOT NULL AUTO_INCREMENT,
   `createdDate` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `isPrivate` BOOLEAN NULL DEFAULT false,
+  `isCorrect` BOOLEAN NULL DEFAULT false,
   `incorrectGuessName` VARCHAR(128) NULL,
   `eventId` INTEGER NULL,
   `userId` INTEGER NULL,
   `treeId` INTEGER NULL,
   PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE
+  `TreeImage`
+ADD
+  COLUMN `isLeaf` BOOLEAN NULL DEFAULT false;

@@ -405,6 +405,7 @@ model TreeImage {
   height        Int?
   url           String?
   isPrimary     Boolean?      @default(false)
+  isLeaf        Boolean?      @default(false)
   sequence      Int?          @default(0)
   createdDate   DateTime?     @default(now())
   reviewStatus  ReviewStatus? @default(New)

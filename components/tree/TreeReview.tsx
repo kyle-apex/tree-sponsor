@@ -51,6 +51,16 @@ const TreeReview = ({
     });
   };
 
+  const handleOnMakeLeaf = async (index: number) => {
+    const promises: any[] = [];
+    tree.images.forEach((image, idx) => {
+      const isLeaf = index == idx;
+      promises.push(axios.patch('/api/treeImages/' + image.uuid, { isLeaf }));
+    });
+    await Promise.all(promises);
+    if (onRefetch) onRefetch();
+  };
+
   //const { onUpdate } = useUpdateQueryById(apiKey, updateTree, false, 500);
   // TODO refactor into memoized component to avoid re-render all when updating
   return (
@@ -115,6 +125,7 @@ const TreeReview = ({
             }}
             onDelete={onDeleteImage}
             onMakePrimaryImage={handleOnMakePrimaryImage}
+            onMakeLeaf={handleOnMakeLeaf}
           ></PreviewAndReorderImagesDialog>
         </>
       )}

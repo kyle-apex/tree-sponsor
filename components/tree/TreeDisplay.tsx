@@ -87,6 +87,8 @@ const TreeDisplay = ({
 
   const image = tree?.images?.length > 0 ? tree.images[displayedImageIndex] : null;
 
+  const leafImage = tree?.images?.find(image => image.isLeaf);
+
   let displayName;
 
   if (tree?.species?.name) {
@@ -118,7 +120,7 @@ const TreeDisplay = ({
               paddingTop: `min(45vh,${imagePaddingTop})`,
               position: 'relative',
             }}
-            className={classes.media}
+            className={classes.media + ' box-shadow'}
             image={image.url + imageCacheKey}
             title={tree.name}
             onClick={() => {
@@ -139,9 +141,37 @@ const TreeDisplay = ({
               <ClearIcon></ClearIcon>
             </IconButton>
             {tree?.images?.length > 1 && (
-              <IconButton aria-label='share' sx={{ top: '50%', right: 5 }} className='hoverImageIconButton' onClick={nextImage}>
+              <IconButton
+                aria-label='share'
+                sx={{ top: '50%', right: 5, zIndex: 1001 }}
+                className='hoverImageIconButton'
+                onClick={nextImage}
+              >
                 <ChevronRight />
               </IconButton>
+            )}
+            {leafImage && (
+              <Box
+                sx={{
+                  border: 'solid 2px #f1f1f1',
+                  borderRadius: '50%',
+                  position: 'absolute',
+                  right: 5,
+                  top: 'calc(100% - 50px)',
+                  zIndex: 1000,
+                  width: '90px',
+                  aspectRatio: '1',
+                  overflow: 'hidden',
+                }}
+                className='box-shadow'
+              >
+                <img
+                  alt='Leaf'
+                  src={leafImage.url}
+                  style={{ transform: 'scale(2.5)', width: '80px', height: '80px' }}
+                  className='box-shadow'
+                ></img>
+              </Box>
             )}
             {tree?.images?.length > 1 && (
               <>

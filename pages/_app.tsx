@@ -13,6 +13,7 @@ import '../styles.css';
 import { Provider as NextAuthProvider } from 'next-auth/client';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import createEmotionCache from 'utils/create-emotion-cache';
+import IdentifyTreeProvider from 'components/tree/IdentifyTreeProvider';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -50,20 +51,22 @@ const MyApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: 
     <NextAuthProvider session={pageProps.session}>
       <QueryClientProvider client={queryClient}>
         <CacheProvider value={emotionCache}>
-          <Head>
-            <title>Thank-a-Tree | TreeFolksYP</title>
-            <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, maximum-scale=1' />
-            <meta property='og:type' content='website' />
-            <meta property='fb:app_id' content={process.env.NEXT_PUBLIC_FACEBOOK_ID} />
-            <link
-              href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css'
-              rel='stylesheet'
-            />{' '}
-          </Head>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Component {...pageProps} />
-          </ThemeProvider>
+          <IdentifyTreeProvider>
+            <Head>
+              <title>Thank-a-Tree | TreeFolksYP</title>
+              <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, maximum-scale=1' />
+              <meta property='og:type' content='website' />
+              <meta property='fb:app_id' content={process.env.NEXT_PUBLIC_FACEBOOK_ID} />
+              <link
+                href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css'
+                rel='stylesheet'
+              />{' '}
+            </Head>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <Component {...pageProps} />
+            </ThemeProvider>
+          </IdentifyTreeProvider>
         </CacheProvider>
       </QueryClientProvider>
     </NextAuthProvider>
