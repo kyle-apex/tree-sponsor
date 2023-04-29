@@ -227,11 +227,22 @@ const TreeDisplay = ({
           <PhotoViewDialog imageUrl={activePhotoUrl} open={isPhotoViewOpen} setOpen={setIsPhotoViewOpen}></PhotoViewDialog>
           {hasSpeciesQuiz && (
             <CardContent sx={{ flex: '1 1 100%', background: 'url(/background-lighter.svg)' }}>
-              <Typography variant='h6' color='secondary' sx={{ textAlign: isMobile ? 'left' : 'center' }} mt={isMobile ? -1 : 0} mb={2}>
+              <Typography
+                variant='h6'
+                color='secondary'
+                sx={{ textAlign: isMobile && leafImage ? 'left' : 'center' }}
+                mt={isMobile ? -1 : 0}
+                mb={2}
+              >
                 Tree ID Quiz
               </Typography>
 
-              <SpeciesQuiz correctSpecies={tree.species} treeId={tree.id} eventId={eventId}></SpeciesQuiz>
+              <SpeciesQuiz
+                correctSpecies={tree.species}
+                treeId={tree.id}
+                eventId={eventId}
+                subtitleSx={{ textAlign: isMobile && leafImage ? 'left' : 'center' }}
+              ></SpeciesQuiz>
 
               <Button fullWidth color='inherit' sx={{ mt: 2 }} onClick={handleClose}>
                 Close

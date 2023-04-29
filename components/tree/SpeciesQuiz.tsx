@@ -15,6 +15,7 @@ import QuizContext from './QuizContext';
 import useLocalStorage from 'utils/hooks/use-local-storage';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { SxProps, Theme } from '@mui/material/styles';
 
 const saveResponse = async (speciesQuizResponse: PartialSpeciesQuizResponse & { email: string }) => {
   await axios.post('/api/speciesQuizResponses', speciesQuizResponse);
@@ -38,7 +39,17 @@ function getQuizOptions(species: PartialSpecies[], correctSpecies: PartialSpecie
   return options;
 }
 
-const SpeciesQuiz = ({ correctSpecies, treeId, eventId }: { correctSpecies: PartialSpecies; treeId?: number; eventId?: number }) => {
+const SpeciesQuiz = ({
+  correctSpecies,
+  treeId,
+  eventId,
+  subtitleSx,
+}: {
+  correctSpecies: PartialSpecies;
+  treeId?: number;
+  eventId?: number;
+  subtitleSx?: SxProps<Theme>;
+}) => {
   const [clickedSpeciesId, setClickedSpeciesId] = useState<number>(null);
   const [speciesOptions, setSpeciesOptions] = useState<PartialSpecies[]>([]);
   const { updateTreeById, trees } = useContext(QuizContext);
@@ -98,11 +109,16 @@ const SpeciesQuiz = ({ correctSpecies, treeId, eventId }: { correctSpecies: Part
   return (
     <>
       {!clickedSpeciesId && (
-        <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: isMobile ? 'left' : 'center', color: 'gray' }}>
+        <Typography
+          variant='body2'
+          mt={-2}
+          mb={2}
+          sx={{ fontStyle: 'italic', textAlign: isMobile ? 'left' : 'center', color: 'gray', ...subtitleSx }}
+        >
           What species is this tree?
         </Typography>
       )}
-      <Box id='scroll-element' sx={{ mt: -6, mb: 8 }}></Box>
+      <Box id='scroll-element' sx={{ mt: !clickedSpeciesId ? -6 : -5, mb: 8 }}></Box>
       {speciesOptions.map(species => {
         const color =
           clickedSpeciesId && (clickedSpeciesId == species.id || species.id == correctSpecies.id)
