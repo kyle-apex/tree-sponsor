@@ -25,7 +25,8 @@ import useScrollTrigger from '@mui/material/useScrollTrigger';
 import axios from 'axios';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
 import formatDateString from 'utils/formatDateString';
-
+import AutorenewIcon from '@mui/icons-material/Autorenew';
+import LoupeIcon from '@mui/icons-material/Loupe';
 import dynamic from 'next/dynamic';
 import CheckinHistoryDialog from './CheckinHistoryDialog';
 import useHashToggle from 'utils/hooks/use-hash-toggle';
@@ -36,6 +37,9 @@ const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'
   ssr: false,
   // eslint-disable-next-line react/display-name
   loading: () => <Skeleton variant='rectangular' sx={{ width: '100%' }} height={200} />,
+});
+const IdentifyTreeFlowDialog = dynamic(() => import('components/tree/IdentifyTreeFlowDialog'), {
+  ssr: false,
 });
 
 type MembershipStatus = {
@@ -68,6 +72,8 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [discoveredFrom, setDiscoveredFrom] = useState('');
   const [isEmailOptIn, setIsEmailOptIn] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAddTreeDialogOpen, setIsAddTreeDialogOpen] = useState(false);
+  const [isQuizRefreshing, setIsQuizRefreshing] = useState(false);
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useHashToggle('history', false);
 
   const [selectedTree, setSelectedTree] = useState<PartialTree>(null);
@@ -385,7 +391,36 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
             Click tree map markers below to learn about trees around us and test your knowledge
           </Typography>
-          <TreeIdQuiz eventId={event.id}></TreeIdQuiz>
+          <Box sx={{ textAlign: 'right', mt: -1.5, mb: 0.2, fontSize: '80%' }}>
+            <SplitRow>
+              <a
+                onClick={() => {
+                  setIsQuizRefreshing(true);
+                }}
+                style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '4px', alignItems: 'center' }}
+              >
+                <AutorenewIcon sx={{ fontSize: 'inherit' }} /> Reload
+              </a>
+              <a
+                onClick={() => {
+                  setIsAddTreeDialogOpen(true);
+                }}
+                style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '3px', alignItems: 'center' }}
+              >
+                <LoupeIcon sx={{ fontSize: 'inherit' }}></LoupeIcon> Identify a tree
+              </a>
+            </SplitRow>
+          </Box>
+          <TreeIdQuiz eventId={event.id} isRefreshing={isQuizRefreshing} setIsRefreshing={setIsQuizRefreshing}></TreeIdQuiz>
+
+          <IdentifyTreeFlowDialog
+            open={isAddTreeDialogOpen}
+            setOpen={setIsAddTreeDialogOpen}
+            onComplete={() => {
+              console.log('completed');
+              setIsQuizRefreshing(true);
+            }}
+          ></IdentifyTreeFlowDialog>
 
           <Attendees
             users={status.attendees}
@@ -488,6 +523,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
 
       <TreeDisplayDialog tree={selectedTree} open={isDialogOpen} setOpen={setIsDialogOpen} eventId={event.id}></TreeDisplayDialog>
+
       {!status && event.location && (
         <Box sx={{ display: 'none' }}>
           <MapMarkerDisplay

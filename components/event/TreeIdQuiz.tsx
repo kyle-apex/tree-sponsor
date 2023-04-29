@@ -1,7 +1,7 @@
 import { useGet } from 'utils/hooks/use-get';
 import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
 import { Coordinate, PartialTree } from 'interfaces';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import MapMarkerDisplay from 'components/maps/MapMarkerDisplay';
 import Box from '@mui/material/Box';
 import TreeDisplayDialog from 'components/tree/TreeDisplayDialog';
@@ -12,7 +12,15 @@ const handleUpdate = async (id: number, attributes: any) => {
   console.log('id', id, attributes);
 };
 
-const TreeIdQuiz = ({ eventId }: { eventId?: number }) => {
+const TreeIdQuiz = ({
+  eventId,
+  isRefreshing,
+  setIsRefreshing,
+}: {
+  eventId?: number;
+  isRefreshing?: boolean;
+  setIsRefreshing?: (val: boolean) => void;
+}) => {
   const [email] = useLocalStorage('checkinEmail', '');
   const {
     data: trees,
@@ -31,6 +39,15 @@ const TreeIdQuiz = ({ eventId }: { eventId?: number }) => {
     },
     [trees],
   );
+
+  const refresh = useCallback(async () => {
+    await refetch();
+    setIsRefreshing(false);
+  }, []);
+
+  useEffect(() => {
+    if (isRefreshing) refresh();
+  }, [isRefreshing]);
 
   //const { remove } = useRemoveFromQuery(['attendees', { searchString }], handleDelete, true);
 
