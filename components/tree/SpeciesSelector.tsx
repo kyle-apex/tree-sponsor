@@ -8,14 +8,23 @@ import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useQuery, useQueryClient } from 'react-query';
 import { useDebouncedCallback } from 'use-debounce';
-import { CollectionsOutlined } from '@mui/icons-material';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
 
-async function fetchSpecies(searchText = '', currentValue?: PartialSpecies | string) {
+async function fetchSpecies(searchText = '', currentValue?: PartialSpecies | string, context?: any) {
   if (typeof currentValue !== 'string' && currentValue?.commonName === searchText) return [currentValue];
+
+  if (!searchText && context?.queryKey?.length > 1 && context.queryKey[1].includes('id'))
+    return await fetchDefaultValue(Number(context.queryKey[1].split(':')[1]));
   const { data } = await axios.get('/api/species/options?search=' + encodeURIComponent(searchText));
 
   return data;
 }
+
+const fetchDefaultValue = async (id: number) => {
+  const { data } = await axios.get('/api/species/' + id);
+  return [data];
+};
 
 const SpeciesSelector = ({
   defaultValue,
@@ -34,14 +43,9 @@ const SpeciesSelector = ({
     setSearchText(value);
   }, 200);
 
-  const fetchDefaultValue = async (id: number) => {
-    const { data } = await axios.get('/api/species/' + id);
-    return [data];
-  };
-
   const { data, isFetching, refetch } = useQuery<PartialSpecies[]>(
     ['speciesOptions', searchText || !defaultValue ? searchText : 'id:' + defaultValue],
-    () => fetchSpecies(searchText, value),
+    context => fetchSpecies(searchText, value, context),
     {
       keepPreviousData: true,
       initialData: [],
@@ -61,7 +65,15 @@ const SpeciesSelector = ({
 
         data = queryClient.getQueryData(['speciesOptions', 'id:' + defaultValue]) as PartialSpecies[];
         if (data && data.length === 1) setValue(data[0]);
-      } else setValue(data.find(species => species.id == defaultValue));
+      } else {
+        const existingSpecies = data.find(species => species.id == defaultValue);
+        if (!existingSpecies) {
+          await queryClient.prefetchQuery(['speciesOptions', 'id:' + defaultValue], () => fetchDefaultValue(defaultValue));
+          data = queryClient.getQueryData(['speciesOptions', 'id:' + defaultValue]) as PartialSpecies[];
+        }
+        const speciesValue = data.find(species => species.id == defaultValue);
+        setValue(speciesValue || null);
+      }
     }
   };
 
@@ -69,13 +81,17 @@ const SpeciesSelector = ({
     if (typeof value === 'string' || defaultValue != value?.id) prefetchData();
   }, [defaultValue]);
 
+  useEffect(() => {
+    if (!defaultValue) prefetchData();
+  }, []);
+
   return (
     <>
       <Autocomplete
         options={data}
         loading={isFetching}
         value={value}
-        isOptionEqualToValue={(option: PartialSpecies, value: PartialSpecies) => option.id === value.id}
+        isOptionEqualToValue={(option: PartialSpecies, value: PartialSpecies) => option?.id === value?.id}
         onInputChange={(_event, value) => {
           debouncedSetSearchText(value);
         }}

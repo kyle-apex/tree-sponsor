@@ -13,12 +13,12 @@ type FileBrowserHandle = {
   openFileBrowser: () => void;
 };
 
-function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: number) {
+function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: number, percentage?: number) {
   return centerCrop(
     makeAspectCrop(
       {
         unit: '%',
-        width: 70,
+        width: percentage || 70,
       },
       aspect,
       mediaWidth,
@@ -67,9 +67,17 @@ const ImageCropper = forwardRef(
         fileInputRef?.current?.click();
       },
     }));
+
+    useEffect(() => {
+      if (imageUrl && imageRef.current?.width) {
+        setCrop(centerAspectCrop(imageRef.current.width, imageRef.current.height, 1, 100));
+      }
+    }, []);
+
     useEffect(() => {
       if (!imageUrl && fileInputRef?.current) fileInputRef.current.value = '';
     }, [imageUrl]);
+
     const openFileBrowser = () => {
       fileInputRef?.current?.click();
     };
@@ -134,8 +142,10 @@ const ImageCropper = forwardRef(
               backgroundColor: '#f1f1f1',
               cursor: 'pointer',
               flexDirection: 'column',
+
               ...previewSx,
             }}
+            className='box-shadow'
             component='div'
             onClick={() => {
               if (!isCropping) openFileBrowser(); //fileInputRef?.current?.click();
@@ -144,7 +154,7 @@ const ImageCropper = forwardRef(
             {!imageUrl && (
               <>
                 <ImageIcon sx={{ color: 'lightgray', fontSize: size == 'small' ? '20px' : '50px' }}></ImageIcon>
-                {size !== 'small' && <Box sx={{ color: 'gray', marginLeft: '5px' }}>{addSubtitleText}</Box>}
+                {size !== 'small' && <Box sx={{ color: 'gray', paddingLeft: 1.5, paddingRight: 1.5 }}>{addSubtitleText}</Box>}
               </>
             )}
           </Box>
@@ -167,7 +177,6 @@ const ImageCropper = forwardRef(
               onComplete={c => {
                 setCompletedCrop(c);
                 if (c) onCrop(c);
-                console.log('crop completed');
               }}
               aspect={1}
             >

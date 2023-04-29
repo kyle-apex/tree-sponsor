@@ -5,6 +5,8 @@ import ListItemText from '@mui/material/ListItemText';
 import Image from 'next/image';
 import Typography from '@mui/material/Typography';
 import { PartialSpeciesSuggestion } from 'interfaces';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useTheme from '@mui/styles/useTheme';
 
 const SpeciesSuggestion = ({
   suggestion,
@@ -16,15 +18,22 @@ const SpeciesSuggestion = ({
   isSelected?: boolean;
 }) => {
   const probabilityString = Math.ceil(suggestion.probability * 100) + '%';
+
+  const theme = useTheme();
+  const isMobile = !useMediaQuery(theme.breakpoints.up(400));
+  const padding = isMobile ? 0 : 1;
+  const images = isMobile && suggestion?.similarImages?.length > 1 ? [suggestion?.similarImages[0]] : suggestion?.similarImages;
+
   return (
     <ListItemButton
+      sx={{ paddingLeft: padding, paddingRight: padding }}
       onClick={() => {
         if (onClick) onClick(suggestion.speciesId);
       }}
       selected={isSelected}
     >
       <ListItemAvatar>
-        {suggestion?.similarImages?.map(image => {
+        {images?.map(image => {
           return (
             <img
               style={{ marginRight: '5px', marginTop: '6px', marginBottom: '6px' }}

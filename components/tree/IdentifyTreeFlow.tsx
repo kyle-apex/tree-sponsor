@@ -24,7 +24,7 @@ import Typography from '@mui/material/Typography';
 const steps = [{ label: 'Identify' }, { label: 'Photograph' }, { label: 'Location' }];
 
 const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
-  const { leafImage, setLeafImage, tree, setTree } = useContext(IdentifyTreeContext);
+  const { leafImage, setLeafImage, tree, setTree, reset } = useContext(IdentifyTreeContext);
 
   const [isUpserting, setIsUpserting] = useState(false);
   const isAwaitingUpload = useRef(false);
@@ -46,11 +46,22 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
   const upsertTree = async () => {
     if (!tree) return;
     const { w, h } = await getImageDimensions(tree.pictureUrl);
-    tree.images = [{ url: tree.pictureUrl, width: w, height: h }];
-    const updatedTree = await axios.post('/api/trees', { ...tree });
-    if (updatedTree?.data?.id) handleChange('id', updatedTree.data.id);
-    if (updatedTree?.data?.pictureUrl) {
-      handleChange('pictureUrl', updatedTree.data.pictureUrl);
+    tree.images = [{ url: tree.pictureUrl, width: w, height: h }, leafImage];
+    const data = { ...tree };
+    // save space in the request by removing pictureUrl
+    delete data.pictureUrl;
+    const updatedTreeResult = await axios.post('/api/trees', { ...tree });
+    const updatedTree = updatedTreeResult.data;
+    if (updatedTree?.id) handleChange('id', updatedTree.id);
+    if (updatedTree?.pictureUrl) {
+      handleChange('pictureUrl', updatedTree.pictureUrl);
+    }
+    if (updatedTree?.images) {
+      setTree((current: PartialTree) => {
+        return { ...current, images: updatedTree.images };
+      });
+      const updatedLeafImage = updatedTree.images.find((img: PartialTreeImage) => img.isLeaf);
+      if (updatedLeafImage) setLeafImage(updatedLeafImage);
     }
   };
 
@@ -59,7 +70,6 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
   };
 
   const setCurrentCrop = (newCrop: Crop) => {
-    console.log('newCrop', newCrop);
     currentCrop.current = newCrop;
   };
 
@@ -77,7 +87,10 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
     await upsertTree();
     isAwaitingUpload.current = false;
     setIsUpserting(false);
-    if (isCompleted) setIsCompleting(false);
+    if (isCompleted) {
+      setIsCompleting(false);
+      reset();
+    }
     if (onComplete && isCompleted) onComplete();
   };
 
@@ -94,7 +107,7 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
       const scaleX = image.naturalWidth / image.width;
       const scaleY = image.naturalHeight / image.height;
       const ctx = canvas.getContext('2d');
-      const pixelRatio = window.devicePixelRatio;
+      const pixelRatio = 1; //window.devicePixelRatio;
       canvas.width = crop.width * pixelRatio * scaleX;
       canvas.height = crop.height * pixelRatio * scaleY;
 
@@ -115,10 +128,10 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
         );
       }
 
-      const base64Image = canvas.toDataURL('image/png'); // can be changed to jpeg/jpg etc
-      console.log('base64Image', base64Image);
+      const base64Image = canvas.toDataURL('image/jpeg', 1); // can be changed to jpeg/jpg etc
       setLeafImage((img: any) => {
-        return { ...img, url: base64Image };
+        const updatedImage = { ...img, url: base64Image, width: canvas.width, height: canvas.height };
+        return updatedImage;
       });
     }
 
@@ -130,7 +143,7 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
       <Stepper color='secondary' nonLinear sx={{ marginBottom: 3 }} activeStep={activeStep}>
         {steps.map((step, index) => (
           <Step color='secondary' key={step.label} completed={completed[index]}>
-            <StepButton color='secondary' onClick={handleStep(index)} disabled={index >= 1 && tree?.speciesId}>
+            <StepButton color='secondary' onClick={handleStep(index)} disabled={index >= 1 && !!tree?.speciesId}>
               {step.label}
             </StepButton>
           </Step>
@@ -148,6 +161,7 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
                 });
               }}
               imageRef={imageRef}
+              addSubtitleText='Click to add leaf picture'
               onCrop={newCrop => setCurrentCrop(newCrop)}
               previewSx={{ borderRadius: '50%', maxWidth: '100%', width: '200px', height: '200px', margin: '20px auto' }}
             ></ImageCropper>
@@ -155,7 +169,7 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
         )}
         {isCropped && (
           <>
-            <Typography>Identify from the dropdown:</Typography>
+            <Typography mb={2}>Identify from the dropdown:</Typography>
             <Box sx={{ flexDirection: 'row', gap: 2, alignItems: 'center', display: 'flex' }}>
               {leafImage?.url && (
                 <img
@@ -177,7 +191,6 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
             </Box>
             {leafImage?.url && (
               <>
-                <Typography mt={3}>Or by clicking a recommendation:</Typography>
                 <SuggestSpecies
                   imageContent={leafImage?.url}
                   speciesId={tree?.speciesId}
@@ -191,13 +204,14 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
             )}
           </>
         )}
-        <Box flexDirection='row' sx={{ justifyContent: 'space-between', display: 'flex' }}>
+        <Box flexDirection='row' sx={{ justifyContent: 'space-between', display: 'flex' }} mt={3}>
           {onComplete ? (
             <Button
               disabled={isUpserting}
               color='inherit'
               onClick={() => {
                 onComplete();
+                reset();
               }}
             >
               Cancel
@@ -257,7 +271,7 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
         </Box>
       </Box>
       <Box sx={{ display: activeStep === 1 ? 'block' : 'none' }}>
-        <Box>
+        <Box sx={{ mb: 3 }}>
           <ImageUploadAndPreview
             imageUrl={tree.pictureUrl}
             setImageUrl={(imageUrl: string) => {
@@ -265,6 +279,8 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
                 return { ...t, pictureUrl: imageUrl };
               });
             }}
+            addSubtitleText='Add a picture of the full tree'
+            previewHeight='250px'
           />
         </Box>
         <SplitRow>

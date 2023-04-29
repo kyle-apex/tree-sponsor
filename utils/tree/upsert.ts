@@ -19,24 +19,6 @@ export default async function upsertTree(tree: PartialTree, userId: number) {
 
   const lastChangedByUser = { connect: { id: userId } };
 
-  let image = (tree.images?.length > 0 && tree.images[0]) as TreeImage;
-
-  if (tree.pictureUrl && !image) image = { url: tree.pictureUrl, uuid: 'temp' };
-
-  if (image) {
-    const pictureUrl = image.url;
-
-    if (pictureUrl && !pictureUrl.startsWith('http')) {
-      if (!image.uuid || image.uuid === 'temp') image.uuid = uuidv4();
-      const imagePath = getTreeImagePath(image.uuid);
-      tree.pictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}/small`;
-      image.url = tree.pictureUrl;
-      uploadTreeImages(pictureUrl, image.uuid);
-    } else if (!image.uuid) {
-      image = null;
-    }
-  }
-
   const speciesId = tree.speciesId;
   const species = tree.speciesId ? { connect: { id: speciesId } } : undefined;
   delete tree.speciesId;
@@ -65,10 +47,15 @@ export default async function upsertTree(tree: PartialTree, userId: number) {
     },
   };
 
-  if (image) {
+  //const image = (tree.images?.length > 0 && tree.images[0]) as TreeImage;
+
+  if (tree.pictureUrl && !tree.images?.length) {
+    tree.images = [{ url: tree.pictureUrl, uuid: 'temp' }];
+  }
+
+  if (tree.images) {
     let newSequence = 0;
 
-    // get max sequence
     if (treeId) {
       const maxSequence = await prisma.treeImage.aggregate({
         _max: {
@@ -79,13 +66,63 @@ export default async function upsertTree(tree: PartialTree, userId: number) {
         },
       });
       if (maxSequence?._max?.sequence >= 0) newSequence = maxSequence?._max?.sequence + 1;
-      image.sequence = newSequence;
+      //image.sequence = newSequence;
     }
+    console.log('tree.images.length', tree.images.length);
 
-    upsertArgs.create.images = { create: { ...image } };
-    upsertArgs.update.images = { upsert: [{ create: { ...image }, update: image, where: { uuid: image.uuid } }] };
+    let imageCount = 0;
+
+    for (let i = 0; i < tree.images.length; i++) {
+      const image = tree.images[i];
+      const pictureUrl = image.url;
+
+      if (pictureUrl && !pictureUrl.startsWith('http')) {
+        if (!image.uuid || image.uuid === 'temp') image.uuid = uuidv4();
+        const imagePath = getTreeImagePath(image.uuid);
+        const newUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}/small`;
+        console.log('should be settin pic url', i);
+        if (imageCount === 0) {
+          tree.pictureUrl = newUrl;
+          upsertArgs.create.pictureUrl = newUrl;
+          upsertArgs.update.pictureUrl = newUrl;
+        }
+        image.url = newUrl;
+        uploadTreeImages(pictureUrl, image.uuid);
+        if (!treeId && image.sequence === undefined) {
+          image.sequence = newSequence + imageCount;
+        }
+      } else if (!image.uuid) {
+        tree.images.splice(i, 1);
+        i--;
+      }
+      imageCount++;
+    }
+    /*
+    const data: Prisma.Enumerable<Prisma.TreeImageCreateManyTreeInput> = tree.images as Prisma.TreeImageCreateManyTreeInput[];
+
+    upsertArgs.create.images = {
+      createMany: {
+        data,
+      },
+    };
+    tree.images.map(img => {
+          return { ...img };
+        }),
+    upsertArgs.update.images = { upsert: [{ create: { ...image }, update: image, where: { uuid: image.uuid } }] };*/
   }
 
-  const upsertedTree = await prisma.tree.upsert(upsertArgs);
+  console.log('upsertArgs', upsertArgs);
+  const upsertedTree = (await prisma.tree.upsert(upsertArgs)) as PartialTree;
+
+  if (tree.images) {
+    await Promise.all(
+      tree.images.map(image => {
+        image.treeId = upsertedTree.id;
+        return prisma.treeImage.upsert({ create: image as TreeImage, update: image, where: { uuid: image.uuid } });
+      }),
+    );
+    upsertedTree.images = tree.images;
+  }
+
   return upsertedTree;
 }

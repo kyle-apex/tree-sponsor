@@ -71,8 +71,9 @@ const PreviewAndReorderImagesDialog = ({
             >
               Make Default
             </LoadingButton>
+            <span style={{ color: 'rgba(0, 0, 0, 0.26)' }}>|</span>
             <LoadingButton
-              disabled={selectedIndex === null || selectedIndex == 0}
+              disabled={selectedIndex === null || selectedIndex == 0 || images[selectedIndex].isLeaf}
               color='inherit'
               variant='text'
               size='small'

@@ -80,13 +80,14 @@ export type PartialCategory = Partial<Category> & { events?: PartialEvent[]; tre
 export type PartialEventCheckIn = Partial<EventCheckIn> & { user?: PartialUser; event?: PartialEvent };
 export type PartialProfile = Partial<Profile>;
 export type PartialSpeciesSuggestion = {
-  id: number;
-  name: string;
-  genus: string;
-  species: string;
-  speciesId: number;
-  probability: number;
-  similarImages: string[];
+  id?: number;
+  name?: string;
+  commonName?: string;
+  genus?: string;
+  species?: string;
+  speciesId?: number;
+  probability?: number;
+  similarImages?: string[];
 };
 
 export type PartialDonation = Partial<Donation>;

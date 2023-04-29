@@ -165,12 +165,7 @@ const TreeDisplay = ({
                 }}
                 className='box-shadow'
               >
-                <img
-                  alt='Leaf'
-                  src={leafImage.url}
-                  style={{ transform: 'scale(2.5)', width: '80px', height: '80px' }}
-                  className='box-shadow'
-                ></img>
+                <img alt='Leaf' src={leafImage.url} style={{ width: '100%', height: '100%' }} className='box-shadow'></img>
               </Box>
             )}
             {tree?.images?.length > 1 && (

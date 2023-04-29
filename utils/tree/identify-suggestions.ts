@@ -1,6 +1,36 @@
 import { PartialSpeciesSuggestion } from 'interfaces';
+import capitalizeFirst from 'utils/format/capitalize-first';
+import getSpeciesForSpeciesSuggestion from './get-species-for-species-suggestion';
 
 export const identifySuggestions = async (imageContent: string): Promise<PartialSpeciesSuggestion[]> => {
+  const apiKey = process.env.PLANT_ID_KEY;
+  const plantIdUrl = process.env.PLANT_ID_URL || 'https://api.plant.id/v2/identify';
+
+  const data = {
+    api_key: apiKey,
+    images: [imageContent],
+    // modifiers docs: https://github.com/flowerchecker/Plant-id-API/wiki/Modifiers
+    modifiers: ['crops_simple', 'similar_images'],
+    plant_language: 'en',
+    // plant details docs: https://github.com/flowerchecker/Plant-id-API/wiki/Plant-details
+    plant_details: ['common_names'], //, 'url', 'name_authority', 'taxonomy', 'synonyms'
+    longitude: -97.7405213210974,
+    latitude: 30.27427678853506,
+  };
+  const t2 = new Date().getTime();
+
+  const response = await fetch(plantIdUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+  const result = await response.json();
+  console.log('id api time', new Date().getTime() - t2);
+
+  //TO DO - media queries for padding
+  /*
   const result: any = {
     id: 76980364,
     custom_id: null,
@@ -10,7 +40,7 @@ export const identifySuggestions = async (imageContent: string): Promise<Partial
       date: null,
       datetime: null,
     },
-    speciesId: 1414,
+
     uploaded_datetime: 1682289801.153236,
     finished_datetime: 1682289801.535504,
     images: [
@@ -24,6 +54,7 @@ export const identifySuggestions = async (imageContent: string): Promise<Partial
     suggestions: [
       {
         id: 427883438,
+        speciesId: 1414,
         plant_name: 'Cercis siliquastrum',
         plant_details: {
           language: 'en',
@@ -120,19 +151,32 @@ export const identifySuggestions = async (imageContent: string): Promise<Partial
     is_plant_probability: 0.9964666367999999,
     is_plant: true,
   };
+  
+  */
+  console.log('result', result);
 
   if (result?.suggestions) {
-    return result?.suggestions.map((suggestion: any) => {
+    const suggestions: PartialSpeciesSuggestion[] = result?.suggestions.map((suggestion: any) => {
+      console.log('suggestion', JSON.stringify(suggestion));
       return {
         id: suggestion.id,
-        name: suggestion.plant_name,
-        genus: suggestion.plant_details.structured_name.genus,
+        name: capitalizeFirst(suggestion.plant_name),
+        commonName: capitalizeFirst(
+          suggestion.plant_details?.common_names?.length > 0 ? suggestion.plant_details?.common_names[0] : suggestion.plant_name,
+        ),
+        genus: capitalizeFirst(suggestion.plant_details.structured_name.genus),
         species: suggestion.plant_details.structured_name.species,
         speciesId: suggestion.speciesId,
         probability: suggestion.probability,
         similarImages: suggestion.similar_images.map((image: any) => image.url_small),
-      };
+      } as PartialSpeciesSuggestion;
     });
+    for (const suggestion of suggestions) {
+      const species = await getSpeciesForSpeciesSuggestion(suggestion);
+      suggestion.speciesId = species.id;
+      suggestion.name = species.commonName;
+    }
+    return suggestions;
   }
 
   return [];
