@@ -13,6 +13,8 @@ import axios from 'axios';
 import { useContext } from 'react';
 import QuizContext from './QuizContext';
 import useLocalStorage from 'utils/hooks/use-local-storage';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const saveResponse = async (speciesQuizResponse: PartialSpeciesQuizResponse & { email: string }) => {
   await axios.post('/api/speciesQuizResponses', speciesQuizResponse);
@@ -41,6 +43,10 @@ const SpeciesQuiz = ({ correctSpecies, treeId, eventId }: { correctSpecies: Part
   const [speciesOptions, setSpeciesOptions] = useState<PartialSpecies[]>([]);
   const { updateTreeById, trees } = useContext(QuizContext);
   const [email] = useLocalStorage('checkinEmail', '');
+
+  const theme = useTheme();
+
+  const isMobile = !useMediaQuery(theme.breakpoints.up(500));
 
   const { data: prioritySpecies, isFetched } = useGet<PartialSpecies[]>(
     '/api/species/priority',
@@ -92,8 +98,8 @@ const SpeciesQuiz = ({ correctSpecies, treeId, eventId }: { correctSpecies: Part
   return (
     <>
       {!clickedSpeciesId && (
-        <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
-          Click below to guess a species:
+        <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: isMobile ? 'left' : 'center', color: 'gray' }}>
+          What species is this tree?
         </Typography>
       )}
       <Box id='scroll-element' sx={{ mt: -6, mb: 8 }}></Box>

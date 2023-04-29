@@ -22,6 +22,8 @@ import Button from '@mui/material/Button';
 import PhotoViewDialog from 'components/PhotoViewDialog';
 import { useSwipeable } from 'react-swipeable';
 import MobileStepper from '@mui/material/MobileStepper';
+import useTheme from '@mui/styles/useTheme';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 // TODO
 const useStyles = makeStyles(() => ({
@@ -70,6 +72,10 @@ const TreeDisplay = ({
       return idx;
     });
   };
+
+  const theme = useTheme();
+
+  const isMobile = !useMediaQuery(theme.breakpoints.up(500));
 
   const prevImage: React.MouseEventHandler<HTMLButtonElement> = e => {
     e?.stopPropagation();
@@ -157,9 +163,10 @@ const TreeDisplay = ({
                   borderRadius: '50%',
                   position: 'absolute',
                   right: 5,
-                  top: 'calc(100% - 50px)',
+                  top: 'calc(100% - 70px)',
                   zIndex: 1000,
-                  width: '90px',
+                  width: '120px',
+                  height: '120px',
                   aspectRatio: '1',
                   overflow: 'hidden',
                 }}
@@ -210,7 +217,7 @@ const TreeDisplay = ({
           <PhotoViewDialog imageUrl={image.url} open={isPhotoViewOpen} setOpen={setIsPhotoViewOpen}></PhotoViewDialog>
           {hasSpeciesQuiz && (
             <CardContent sx={{ flex: '1 1 100%', background: 'url(/background-lighter.svg)' }}>
-              <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
+              <Typography variant='h6' color='secondary' sx={{ textAlign: isMobile ? 'left' : 'center' }} mt={isMobile ? -1 : 0} mb={2}>
                 Tree ID Quiz
               </Typography>
 
