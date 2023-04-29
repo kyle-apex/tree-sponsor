@@ -164,10 +164,10 @@ const SpeciesQuiz = ({
               {icon}
               {clickedSpeciesId &&
                 correctSpecies.id == species.id &&
-                ['a', 'e', 'i', 'o', 'u', 'y'].includes(species.commonName.charAt(0).toLowerCase()) && <span>It&apos;s an</span>}
+                ['a', 'e', 'i', 'o', 'u'].includes(species.commonName.charAt(0).toLowerCase()) && <span>It&apos;s an</span>}
               {clickedSpeciesId &&
                 correctSpecies.id == species.id &&
-                !['a', 'e', 'i', 'o', 'u', 'y'].includes(species.commonName.charAt(0).toLowerCase()) && <span>It&apos;s a</span>}
+                !['a', 'e', 'i', 'o', 'u'].includes(species.commonName.charAt(0).toLowerCase()) && <span>It&apos;s a</span>}
               <span style={{ textTransform: 'capitalize', marginLeft: '5px' }}>{species.commonName}</span>
               {clickedSpeciesId && correctSpecies.id == species.id && '!'}
             </Button>
