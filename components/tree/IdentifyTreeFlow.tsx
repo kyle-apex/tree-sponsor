@@ -44,13 +44,15 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
   }, []);
 
   const upsertTree = async () => {
-    if (!tree) return;
+    if (!tree || !tree.pictureUrl) return;
     const { w, h } = await getImageDimensions(tree.pictureUrl);
-    tree.images = [{ url: tree.pictureUrl, width: w, height: h }, leafImage];
+    if (!tree.images?.length) tree.images = [{ url: tree.pictureUrl, width: w, height: h }, leafImage];
+    else tree.images = [{ ...tree.images[0], url: tree.pictureUrl, width: w, height: h }, leafImage];
+
     const data = { ...tree };
     // save space in the request by removing pictureUrl
     delete data.pictureUrl;
-    const updatedTreeResult = await axios.post('/api/trees', { ...tree });
+    const updatedTreeResult = await axios.post('/api/trees', { ...data });
     const updatedTree = updatedTreeResult.data;
     if (updatedTree?.id) handleChange('id', updatedTree.id);
     if (updatedTree?.pictureUrl) {
@@ -75,7 +77,7 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
 
   const saveStep = async (step: number, isCompleted?: boolean) => {
     if (isCompleted) setIsCompleting(true);
-    if (isAwaitingUpload.current && isCompleted) {
+    if (isAwaitingUpload.current) {
       setTimeout(() => {
         saveStep(step, isCompleted);
       }, 250);
@@ -83,7 +85,7 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
     }
     setActiveStep(step);
     setIsUpserting(true);
-    if (!isCompleted) isAwaitingUpload.current = true;
+    isAwaitingUpload.current = true;
     await upsertTree();
     isAwaitingUpload.current = false;
     setIsUpserting(false);

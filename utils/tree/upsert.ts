@@ -80,7 +80,6 @@ export default async function upsertTree(tree: PartialTree, userId: number) {
         if (!image.uuid || image.uuid === 'temp') image.uuid = uuidv4();
         const imagePath = getTreeImagePath(image.uuid);
         const newUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}/small`;
-        console.log('should be settin pic url', i);
         if (imageCount === 0) {
           tree.pictureUrl = newUrl;
           upsertArgs.create.pictureUrl = newUrl;

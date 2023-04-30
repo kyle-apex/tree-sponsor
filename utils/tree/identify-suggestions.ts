@@ -26,6 +26,7 @@ export const identifySuggestions = async (imageContent: string): Promise<Partial
     },
     body: JSON.stringify(data),
   });
+  console.log('response', response);
   const result = await response.json();
   console.log('id api time', new Date().getTime() - t2);
 
