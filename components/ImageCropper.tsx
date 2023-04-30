@@ -69,7 +69,7 @@ const ImageCropper = forwardRef(
     }));
 
     useEffect(() => {
-      if (imageUrl && imageRef.current?.width) {
+      if (imageUrl && imageRef.current?.width && !imageUrl.startsWith('http')) {
         setCrop(centerAspectCrop(imageRef.current.width, imageRef.current.height, 1, 100));
       }
     }, []);
@@ -131,7 +131,7 @@ const ImageCropper = forwardRef(
 
     return (
       <>
-        {!imageUrl && (
+        {(!imageUrl || imageUrl?.startsWith('http')) && (
           <Box
             sx={{
               display: 'flex',
@@ -157,6 +157,24 @@ const ImageCropper = forwardRef(
                 {size !== 'small' && <Box sx={{ color: 'gray', paddingLeft: 1.5, paddingRight: 1.5 }}>{addSubtitleText}</Box>}
               </>
             )}
+            {imageUrl?.startsWith('http') && (
+              <>
+                {!hideEditButton && <CornerEditIcon />}
+
+                <img
+                  src={imageUrl}
+                  className='full-width'
+                  alt='Preview'
+                  onError={(e: any) => {
+                    setTimeout(() => {
+                      if (e.target && e.target.src && e.target.src.startsWith('http')) {
+                        e.target.src = e.target.src.includes('?') ? imageUrl + '1' : imageUrl + '?t=' + new Date().getTime();
+                      }
+                    }, 2000);
+                  }}
+                ></img>
+              </>
+            )}
           </Box>
         )}
         <input
@@ -168,7 +186,7 @@ const ImageCropper = forwardRef(
           className='hide'
           onChange={onSelectFile}
         />
-        {imageUrl && (
+        {imageUrl && !imageUrl.startsWith('http') && (
           <>
             {!hideEditButton && false && <CornerEditIcon />}
             <ReactCrop

@@ -156,7 +156,7 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
       <Box sx={{ display: activeStep === 0 ? 'block' : 'none' }}>
         {!leafImage?.url && !isCropped && <Typography>Identify the tree by uploading a close up picture of a leaf:</Typography>}
         {!isCropped && (
-          <Box>
+          <Box sx={{ textAlign: 'center' }}>
             <ImageCropper
               imageUrl={leafImage?.url}
               setImageUrl={url => {
