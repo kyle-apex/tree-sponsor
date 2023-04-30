@@ -96,6 +96,7 @@ const LocationSelector = ({
           position='top-left'
           onViewportChange={handleViewportChange}
           proximity={SEARCH_LOCATION}
+          countries='us'
         />
         <Marker latitude={viewport.latitude} longitude={viewport.longitude} className={classes.markerContainer}>
           <RoomSharpIcon style={{ fontSize: 50 }} className={classes.marker}></RoomSharpIcon>
