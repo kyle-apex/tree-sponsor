@@ -7,6 +7,7 @@ module.exports = {
       'lh3.googleusercontent.com',
       'treefolks.org',
       'www.treefolks.org',
+      'plant-id.ams3.cdn.digitaloceanspaces.com',
     ],
   },
   swcMinify: false,

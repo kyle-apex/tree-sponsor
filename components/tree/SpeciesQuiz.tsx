@@ -13,6 +13,9 @@ import axios from 'axios';
 import { useContext } from 'react';
 import QuizContext from './QuizContext';
 import useLocalStorage from 'utils/hooks/use-local-storage';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { SxProps, Theme } from '@mui/material/styles';
 
 const saveResponse = async (speciesQuizResponse: PartialSpeciesQuizResponse & { email: string }) => {
   await axios.post('/api/speciesQuizResponses', speciesQuizResponse);
@@ -36,11 +39,25 @@ function getQuizOptions(species: PartialSpecies[], correctSpecies: PartialSpecie
   return options;
 }
 
-const SpeciesQuiz = ({ correctSpecies, treeId, eventId }: { correctSpecies: PartialSpecies; treeId?: number; eventId?: number }) => {
+const SpeciesQuiz = ({
+  correctSpecies,
+  treeId,
+  eventId,
+  subtitleSx,
+}: {
+  correctSpecies: PartialSpecies;
+  treeId?: number;
+  eventId?: number;
+  subtitleSx?: SxProps<Theme>;
+}) => {
   const [clickedSpeciesId, setClickedSpeciesId] = useState<number>(null);
   const [speciesOptions, setSpeciesOptions] = useState<PartialSpecies[]>([]);
   const { updateTreeById, trees } = useContext(QuizContext);
   const [email] = useLocalStorage('checkinEmail', '');
+
+  const theme = useTheme();
+
+  const isMobile = !useMediaQuery(theme.breakpoints.up(500));
 
   const { data: prioritySpecies, isFetched } = useGet<PartialSpecies[]>(
     '/api/species/priority',
@@ -92,11 +109,16 @@ const SpeciesQuiz = ({ correctSpecies, treeId, eventId }: { correctSpecies: Part
   return (
     <>
       {!clickedSpeciesId && (
-        <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
-          Click below to guess a species:
+        <Typography
+          variant='body2'
+          mt={-2}
+          mb={2}
+          sx={{ fontStyle: 'italic', textAlign: isMobile ? 'left' : 'center', color: 'gray', ...subtitleSx }}
+        >
+          What species is this tree?
         </Typography>
       )}
-      <Box id='scroll-element' sx={{ mt: -6, mb: 8 }}></Box>
+      <Box id='scroll-element' sx={{ mt: !clickedSpeciesId ? -6 : -5, mb: 8 }}></Box>
       {speciesOptions.map(species => {
         const color =
           clickedSpeciesId && (clickedSpeciesId == species.id || species.id == correctSpecies.id)
@@ -142,10 +164,10 @@ const SpeciesQuiz = ({ correctSpecies, treeId, eventId }: { correctSpecies: Part
               {icon}
               {clickedSpeciesId &&
                 correctSpecies.id == species.id &&
-                ['a', 'e', 'i', 'o', 'u', 'y'].includes(species.commonName.charAt(0).toLowerCase()) && <span>It&apos;s an</span>}
+                ['a', 'e', 'i', 'o', 'u'].includes(species.commonName.charAt(0).toLowerCase()) && <span>It&apos;s an</span>}
               {clickedSpeciesId &&
                 correctSpecies.id == species.id &&
-                !['a', 'e', 'i', 'o', 'u', 'y'].includes(species.commonName.charAt(0).toLowerCase()) && <span>It&apos;s a</span>}
+                !['a', 'e', 'i', 'o', 'u'].includes(species.commonName.charAt(0).toLowerCase()) && <span>It&apos;s a</span>}
               <span style={{ textTransform: 'capitalize', marginLeft: '5px' }}>{species.commonName}</span>
               {clickedSpeciesId && correctSpecies.id == species.id && '!'}
             </Button>

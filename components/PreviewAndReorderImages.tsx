@@ -15,6 +15,7 @@ import Checkbox from '@mui/material/Checkbox';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CircleIcon from '@mui/icons-material/Circle';
+import LeafImage from './index/icons/LeafImage';
 
 const PreviewAndReorderImages = ({
   images,
@@ -69,6 +70,19 @@ const PreviewAndReorderImages = ({
                   }}
                 ></img>
               </Box>
+              {image?.isLeaf && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '4px',
+                    left: '6px',
+                    opacity: 0.8,
+                  }}
+                >
+                  <LeafImage width={'25'} height={'25px'}></LeafImage>
+                </Box>
+              )}
+
               <Box
                 sx={{
                   position: 'absolute',

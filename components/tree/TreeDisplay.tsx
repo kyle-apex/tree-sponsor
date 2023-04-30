@@ -22,6 +22,8 @@ import Button from '@mui/material/Button';
 import PhotoViewDialog from 'components/PhotoViewDialog';
 import { useSwipeable } from 'react-swipeable';
 import MobileStepper from '@mui/material/MobileStepper';
+import useTheme from '@mui/styles/useTheme';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 // TODO
 const useStyles = makeStyles(() => ({
@@ -55,6 +57,7 @@ const TreeDisplay = ({
   const [imageCacheKey, setImageCacheKey] = useState('');
   const [displayedImageIndex, setDisplayedImageIndex] = useState(0);
   const [isPhotoViewOpen, setIsPhotoViewOpen] = useState(false);
+  const [activePhotoUrl, setActivePhotoUrl] = useState('');
 
   const handleDialogClose = (isOpen: SetStateAction<boolean>) => {
     setIsEditDialogOpen(isOpen);
@@ -71,6 +74,10 @@ const TreeDisplay = ({
     });
   };
 
+  const theme = useTheme();
+
+  const isMobile = !useMediaQuery(theme.breakpoints.up(500));
+
   const prevImage: React.MouseEventHandler<HTMLButtonElement> = e => {
     e?.stopPropagation();
     setDisplayedImageIndex(idx => {
@@ -86,6 +93,8 @@ const TreeDisplay = ({
   });
 
   const image = tree?.images?.length > 0 ? tree.images[displayedImageIndex] : null;
+
+  const leafImage = tree?.images?.find(image => image.isLeaf);
 
   let displayName;
 
@@ -117,17 +126,20 @@ const TreeDisplay = ({
             sx={{
               paddingTop: `min(45vh,${imagePaddingTop})`,
               position: 'relative',
+              cursor: 'pointer',
             }}
-            className={classes.media}
+            className={classes.media + ' box-shadow'}
             image={image.url + imageCacheKey}
             title={tree.name}
             onClick={() => {
+              setActivePhotoUrl(image.url);
               setIsPhotoViewOpen(true);
             }}
             {...swipeHandlers}
           >
             <IconButton
               onClick={() => {
+                setActivePhotoUrl(image.url);
                 setIsPhotoViewOpen(true);
               }}
               sx={{ left: 5, top: 5 }}
@@ -139,9 +151,39 @@ const TreeDisplay = ({
               <ClearIcon></ClearIcon>
             </IconButton>
             {tree?.images?.length > 1 && (
-              <IconButton aria-label='share' sx={{ top: '50%', right: 5 }} className='hoverImageIconButton' onClick={nextImage}>
+              <IconButton
+                aria-label='share'
+                sx={{ top: '50%', right: 5, zIndex: 1001 }}
+                className='hoverImageIconButton'
+                onClick={nextImage}
+              >
                 <ChevronRight />
               </IconButton>
+            )}
+            {leafImage && (
+              <Box
+                sx={{
+                  border: 'solid 2px #f1f1f1',
+                  borderRadius: '50%',
+                  position: 'absolute',
+                  right: 5,
+                  top: 'calc(100% - 70px)',
+                  zIndex: 1001,
+                  width: '120px',
+                  height: '120px',
+                  aspectRatio: '1',
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                }}
+                className='box-shadow'
+                onClick={e => {
+                  e.stopPropagation();
+                  setActivePhotoUrl(leafImage.url);
+                  setIsPhotoViewOpen(true);
+                }}
+              >
+                <img alt='Leaf' src={leafImage.url} style={{ width: '100%', height: '100%' }} className='box-shadow'></img>
+              </Box>
             )}
             {tree?.images?.length > 1 && (
               <>
@@ -182,14 +224,25 @@ const TreeDisplay = ({
               </>
             )}
           </CardMedia>
-          <PhotoViewDialog imageUrl={image.url} open={isPhotoViewOpen} setOpen={setIsPhotoViewOpen}></PhotoViewDialog>
+          <PhotoViewDialog imageUrl={activePhotoUrl} open={isPhotoViewOpen} setOpen={setIsPhotoViewOpen}></PhotoViewDialog>
           {hasSpeciesQuiz && (
             <CardContent sx={{ flex: '1 1 100%', background: 'url(/background-lighter.svg)' }}>
-              <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
+              <Typography
+                variant='h6'
+                color='secondary'
+                sx={{ textAlign: isMobile && leafImage ? 'left' : 'center' }}
+                mt={isMobile ? -1 : 0}
+                mb={2}
+              >
                 Tree ID Quiz
               </Typography>
 
-              <SpeciesQuiz correctSpecies={tree.species} treeId={tree.id} eventId={eventId}></SpeciesQuiz>
+              <SpeciesQuiz
+                correctSpecies={tree.species}
+                treeId={tree.id}
+                eventId={eventId}
+                subtitleSx={{ textAlign: isMobile && leafImage ? 'left' : 'center' }}
+              ></SpeciesQuiz>
 
               <Button fullWidth color='inherit' sx={{ mt: 2 }} onClick={handleClose}>
                 Close

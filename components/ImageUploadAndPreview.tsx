@@ -19,6 +19,7 @@ const ImageUploadAndPreview = forwardRef(
       hideEditButton,
       size = 'default',
       addSubtitleText = 'Click to Add Picture',
+      previewHeight,
     }: {
       imageUrl: string;
       setImageUrl: (val: string) => void; //React.Dispatch<React.SetStateAction<string>>;
@@ -27,6 +28,7 @@ const ImageUploadAndPreview = forwardRef(
       hideEditButton?: boolean;
       size?: 'small' | 'default';
       addSubtitleText?: string;
+      previewHeight?: string;
     },
     ref: React.Ref<FileBrowserHandle>,
   ) => {
@@ -91,13 +93,14 @@ const ImageUploadAndPreview = forwardRef(
         sx={{
           display: 'flex',
           width: '100%',
-          height: '100%',
+          height: !imageUrl && previewHeight ? previewHeight : '100%',
           justifyContent: 'center',
           alignItems: 'center',
           backgroundColor: '#f1f1f1',
           cursor: 'pointer',
           flexDirection: 'column',
         }}
+        className='box-shadow'
         component='div'
         onClick={() => {
           openFileBrowser(); //fileInputRef?.current?.click();

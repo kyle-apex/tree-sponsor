@@ -20,6 +20,7 @@ const PreviewAndReorderImagesDialog = ({
   onAdd,
   onDelete,
   onMakePrimaryImage,
+  onMakeLeaf,
 }: {
   images: PartialTreeImage[];
   isOpen: boolean;
@@ -27,6 +28,7 @@ const PreviewAndReorderImagesDialog = ({
   onAdd?: (imageUrl: string) => void;
   onDelete?: (uuid: string) => void;
   onMakePrimaryImage?: (index: number) => void;
+  onMakeLeaf?: (index: number) => void;
 }) => {
   const handleClose = () => {
     setIsOpen(false);
@@ -35,6 +37,7 @@ const PreviewAndReorderImagesDialog = ({
   const [selectedIndex, setSelectedIndex] = useState<number>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   useEffect(() => {
     setIsLoading(false);
     setIsMoving(false);
@@ -66,7 +69,23 @@ const PreviewAndReorderImagesDialog = ({
               }}
               sx={{ width: '110px' }}
             >
-              Make Primary
+              Make Default
+            </LoadingButton>
+            <span style={{ color: 'rgba(0, 0, 0, 0.26)' }}>|</span>
+            <LoadingButton
+              disabled={selectedIndex === null || selectedIndex == 0 || images[selectedIndex].isLeaf}
+              color='inherit'
+              variant='text'
+              size='small'
+              isLoading={isUpdating}
+              onClick={() => {
+                onMakeLeaf(selectedIndex);
+                setSelectedIndex(null);
+                setIsUpdating(true);
+              }}
+              sx={{ width: '110px' }}
+            >
+              Make Leaf
             </LoadingButton>
             <span style={{ color: 'rgba(0, 0, 0, 0.26)' }}>|</span>
             <LoadingButton

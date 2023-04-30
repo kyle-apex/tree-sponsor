@@ -19,6 +19,7 @@ import { useSession } from 'next-auth/client';
 import CheckinHistoryDialog from 'components/event/CheckinHistoryDialog';
 import useHash from 'utils/hooks/use-hash';
 import AccountTrees from 'components/account/trees';
+import IdentifyTreeFlow from 'components/tree/IdentifyTreeFlow';
 
 export const getServerSideProps = serverSideIsAuthenticated;
 

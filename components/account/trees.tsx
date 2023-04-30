@@ -16,6 +16,7 @@ import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
 import axios from 'axios';
 import SearchIcon from '@mui/icons-material/Search';
 import TablePagination from '@mui/material/TablePagination';
+import IdentifyTreeFlowDialog from 'components/tree/IdentifyTreeFlowDialog';
 
 async function fetchTrees() {
   const queryString = ''; //`?take=0`;
@@ -71,6 +72,7 @@ const AccountTrees = () => {
 
   return (
     <Box>
+      <IdentifyTreeFlowDialog setOpen={setIsDialogOpen} open={isDialogOpen} onComplete={refetchTrees}></IdentifyTreeFlowDialog>
       {trees?.length == 0 && (
         <Box sx={{ textAlign: 'center' }}>
           <Typography mb={3}>Take a picture of a tree, then click below to add your first tree identification:</Typography>
@@ -116,7 +118,7 @@ const AccountTrees = () => {
           </Box>
         </SplitRow>
       )}
-      <AddTreeDialog setIsOpen={setIsDialogOpen} isOpen={isDialogOpen} onComplete={refetchTrees}></AddTreeDialog>
+      {false && <AddTreeDialog setIsOpen={setIsDialogOpen} isOpen={isDialogOpen} onComplete={refetchTrees}></AddTreeDialog>}
 
       <Grid container spacing={4} mt={-1}>
         {trees?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(tree => {
