@@ -20,6 +20,7 @@ import SuggestSpecies from './SuggestSpecies';
 import { Crop } from 'react-image-crop';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import Typography from '@mui/material/Typography';
+import useLocalStorage from 'utils/hooks/use-local-storage';
 
 const steps = [{ label: 'Identify' }, { label: 'Photograph' }, { label: 'Location' }];
 
@@ -36,6 +37,7 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
   const [isCropped, setIsCropped] = useState(false);
   const [isSkipped, setIsSkipped] = useState(false);
   const imageRef = useRef<any>();
+  const [email] = useLocalStorage('checkinEmail', '');
 
   const handleChange = useCallback((propertyName: string, value: string | number) => {
     setTree((current: PartialTree) => {
@@ -52,7 +54,7 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
     const data = { ...tree };
     // save space in the request by removing pictureUrl
     delete data.pictureUrl;
-    const updatedTreeResult = await axios.post('/api/trees', { ...data });
+    const updatedTreeResult = await axios.post('/api/trees', { tree: { ...data }, email });
     const updatedTree = updatedTreeResult.data;
     if (updatedTree?.id) handleChange('id', updatedTree.id);
     if (updatedTree?.pictureUrl) {
