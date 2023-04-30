@@ -420,6 +420,8 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               console.log('completed');
               setIsQuizRefreshing(true);
             }}
+            latitude={event.location ? Number(event.location.latitude) : null}
+            longitude={event.location ? Number(event.location.longitude) : null}
           ></IdentifyTreeFlowDialog>
 
           <Attendees

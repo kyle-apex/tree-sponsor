@@ -24,7 +24,7 @@ import useLocalStorage from 'utils/hooks/use-local-storage';
 
 const steps = [{ label: 'Identify' }, { label: 'Photograph' }, { label: 'Location' }];
 
-const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
+const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: () => void; longitude?: number; latitude?: number }) => {
   const { leafImage, setLeafImage, tree, setTree, reset } = useContext(IdentifyTreeContext);
 
   const [isUpserting, setIsUpserting] = useState(false);
@@ -315,8 +315,8 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
               handleChange('latitude', latitude);
               handleChange('longitude', longitude);
             }}
-            latitude={tree?.latitude ? Number(tree?.latitude) : null}
-            longitude={tree?.longitude ? Number(tree?.longitude) : null}
+            latitude={tree?.latitude ? Number(tree?.latitude) : latitude || null}
+            longitude={tree?.longitude ? Number(tree?.longitude) : longitude || null}
             zoomToLocation={!tree?.latitude}
             mapStyle='SATELLITE'
           ></LocationSelector>
@@ -332,7 +332,7 @@ const IdentifyTreeFlow = ({ onComplete }: { onComplete?: () => void }) => {
             Back
           </Button>
           <LoadingButton
-            disabled={isCompleting}
+            disabled={isCompleting || !tree.pictureUrl}
             isLoading={isCompleting}
             variant='contained'
             color='primary'
