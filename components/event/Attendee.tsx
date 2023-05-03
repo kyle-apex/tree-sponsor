@@ -15,6 +15,7 @@ import { useState } from 'react';
 import useLocalStorage from 'utils/hooks/use-local-storage';
 import AttendeeSettingsDialog from './AttendeeSettingsDialog';
 import useHashToggle from 'utils/hooks/use-hash-toggle';
+import { SxProps, Theme } from '@mui/material/styles';
 
 const userNameDisplay = ({ user }: { user: PartialUser }) => (
   <Typography
@@ -45,13 +46,17 @@ const Attendee = ({
   onSetIsPrivate,
   isPrivate,
   onRefresh,
+  hideContactPageIcon,
+  sx,
 }: {
   user: PartialUser;
-  onDelete: () => void;
+  onDelete?: () => void;
   isEditMode?: boolean;
   onSetIsPrivate?: () => void;
   isPrivate?: boolean;
   onRefresh?: () => void;
+  hideContactPageIcon?: boolean;
+  sx?: SxProps<Theme>;
 }) => {
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
   const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useHashToggle('settings', false);
@@ -69,7 +74,7 @@ const Attendee = ({
   const roleDisplay = getRoleDisplay(user);
 
   return (
-    <Box flexDirection='row' sx={{ display: 'flex' }} gap={2} mb={2}>
+    <Box flexDirection='row' sx={{ display: 'flex', gap: 2, ...sx }}>
       <Box
         sx={{ display: 'flex', alignItems: 'center' }}
         onClick={() => {
@@ -136,7 +141,7 @@ const Attendee = ({
 
           {(hasContact || user.image) && (
             <>
-              {hasContact && (
+              {hasContact && !hideContactPageIcon && (
                 <IconButton
                   onClick={() => {
                     setIsContactDialogOpen(true);

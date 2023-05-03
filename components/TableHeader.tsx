@@ -1,3 +1,4 @@
+import { SxProps, Theme } from '@mui/material/styles';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -20,6 +21,7 @@ export type HeaderCellOptions = {
   numeric?: boolean;
   disablePadding?: boolean;
   label?: string;
+  sx?: SxProps<Theme>;
 };
 
 export function TableHeader({
@@ -52,6 +54,7 @@ export function TableHeader({
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
+            sx={headCell.sx}
           >
             {onRequestSort && (
               <TableSortLabel

@@ -11,7 +11,8 @@ import { Donation } from '@prisma/client';
 import { TableHeader } from 'components/TableHeader';
 import { StyledTableRow } from 'components/StyledTableRow';
 import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { LeaderRow, PartialUser } from 'interfaces';
+import Attendee from 'components/event/Attendee';
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -22,34 +23,41 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const headerCells = [
-  { id: 'label', numeric: false, disablePadding: false, label: 'Label' },
-  { id: 'source', numeric: false, disablePadding: false, label: 'Source' },
-  { id: 'date', numeric: false, disablePadding: false, label: 'Date' },
-  { id: 'amount', numeric: true, disablePadding: false, label: 'Amount' },
-  { id: 'delete', numeric: false, disablePadding: false },
-];
 /*
 async function handleRoleChange(userId: number, attributes: Record<string, unknown>) {
   await axios.patch('/api/users/' + userId + '/toggleRole', attributes);
 }*/
 
-export default function DonationsTable({
-  donations,
+export default function LeaderTable({
+  leaders,
+  title,
+  unit,
   isFetching,
-  onDelete,
 }: {
-  donations: Donation[];
-  isFetching: boolean;
-  onDelete: (donationId: number) => void;
+  leaders: LeaderRow[];
+  title?: string;
+  unit?: string;
+  isFetching?: boolean;
 }) {
   const classes = useStyles();
 
+  const headerCells = [
+    { id: 'position', numeric: false, disablePadding: true, label: '', sx: { width: '40px' } },
+    { id: 'user', numeric: false, disablePadding: false, label: title || 'Top Tree Identifiers' },
+    {
+      id: 'count',
+      numeric: true,
+      disablePadding: false,
+      label: unit || 'Trees',
+      sx: { width: '80px', textAlign: 'right', paddingLeft: 0 },
+    },
+  ];
+
   return (
     <TableContainer className={classes.tableContainer}>
-      <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
+      <Table className={classes.table} aria-labelledby='tableTitle' size='small' aria-label='enhanced table'>
         <TableHeader classes={classes} headCells={headerCells} />
-        {donations && (
+        {leaders && (
           <TableBody>
             {isFetching && (
               <TableRow>
@@ -58,22 +66,17 @@ export default function DonationsTable({
                 </TableCell>
               </TableRow>
             )}
-            {donations.map((donation: Donation) => {
+            {leaders.map((row: LeaderRow) => {
               return (
-                <StyledTableRow tabIndex={-1} key={donation.id + donation.label}>
-                  <TableCell scope='row'>{donation.label}</TableCell>
-                  <TableCell scope='row'>{donation.source}</TableCell>
-                  <TableCell scope='row'>{donation.date?.toLocaleDateString()}</TableCell>
-                  <TableCell align='right'>${donation?.amount?.toNumber()}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      onClick={() => {
-                        onDelete(donation.id);
-                      }}
-                      size='large'
-                    >
-                      <DeleteIcon></DeleteIcon>
-                    </IconButton>
+                <StyledTableRow tabIndex={-1} key={row?.position}>
+                  <TableCell scope='row' sx={{ paddingRight: 0 }}>
+                    {row.position}.
+                  </TableCell>
+                  <TableCell scope='row'>
+                    <Attendee hideContactPageIcon={true} user={row.user}></Attendee>
+                  </TableCell>
+                  <TableCell scope='row' sx={{ textAlign: 'right' }}>
+                    {row.count}
                   </TableCell>
                 </StyledTableRow>
               );
