@@ -76,7 +76,8 @@ model User {
   notifications         Notification[]        @relation("user")
   notificationsAsSource Notification[]        @relation("sourceUser")
   treeChangeLogs        TreeChangeLog[]
-  lastChangedByTrees    Tree[]
+  lastChangedByTrees    Tree[]                @relation("lastChangedByUser")
+  createdTrees          Tree[]                @relation("createdByUser")
   Event                 Event[]
   Category              Category[]
   eventCheckIns         EventCheckIn[]
@@ -224,8 +225,10 @@ model Tree {
   identificationConfidence Int?
   images                   TreeImage[]
   changeLogs               TreeChangeLog[]
+  createdByUserId          Int?
+  createdByUser            User?                 @relation("createdByUser", fields: [createdByUserId], references: [id])
   lastChangedByUserId      Int?
-  lastChangedByUser        User?                 @relation(fields: [lastChangedByUserId], references: [id])
+  lastChangedByUser        User?                 @relation("lastChangedByUser", fields: [lastChangedByUserId], references: [id])
   categories               Category[]            @relation("TreeToCategory")
   events                   Event[]               @relation("TreeToEvent")
   checkIns                 TreeCheckIn[]

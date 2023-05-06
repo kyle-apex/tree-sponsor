@@ -64,7 +64,7 @@ const Attendee = ({
 
   const onSettingsDialogClose = (val: boolean) => {
     setIsSettingsDialogOpen(val);
-    onRefresh();
+    if (onRefresh) onRefresh();
   };
 
   // TODO: Remove This
