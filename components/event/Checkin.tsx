@@ -416,7 +416,13 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             </SplitRow>
             <BecomeAMemberDialog open={isMembershipDialogOpen} setOpen={setIsMembershipDialogOpen}></BecomeAMemberDialog>
           </Box>
-          <TreeIdQuiz eventId={event.id} isRefreshing={isQuizRefreshing} setIsRefreshing={setIsQuizRefreshing}></TreeIdQuiz>
+          <TreeIdQuiz
+            eventId={event.id}
+            isRefreshing={isQuizRefreshing}
+            defaultLatitude={Number(event.location?.latitude)}
+            defaultLongitude={Number(event.location?.longitude)}
+            setIsRefreshing={setIsQuizRefreshing}
+          ></TreeIdQuiz>
           <Box sx={{ textAlign: 'right', mt: -2.8, mb: 1, fontSize: '80%' }}>
             <Link href='/leaders'>
               <a

@@ -16,10 +16,14 @@ const TreeIdQuiz = ({
   eventId,
   isRefreshing,
   setIsRefreshing,
+  defaultLatitude,
+  defaultLongitude,
 }: {
   eventId?: number;
   isRefreshing?: boolean;
   setIsRefreshing?: (val: boolean) => void;
+  defaultLatitude?: number;
+  defaultLongitude?: number;
 }) => {
   const [email] = useLocalStorage('checkinEmail', '');
   const {

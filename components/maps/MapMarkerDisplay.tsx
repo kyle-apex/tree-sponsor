@@ -17,6 +17,8 @@ const MapMarkerDisplay = ({
   markerScale = 1,
   isQuiz,
   isEdit,
+  defaultLatitude,
+  defaultLongitude,
 }: {
   markers: QuizCoordinate[];
   onClick?: (coordinate?: Coordinate) => void;
@@ -26,6 +28,8 @@ const MapMarkerDisplay = ({
   markerScale: number;
   isQuiz?: boolean;
   isEdit?: boolean;
+  defaultLatitude?: number;
+  defaultLongitude?: number;
 }) => {
   const mapRef = useRef();
   const theme = useTheme();
@@ -34,8 +38,8 @@ const MapMarkerDisplay = ({
   const [viewport, setViewport] = useState<Viewport>({
     width: '100%',
     height: height || '100%',
-    latitude: 30.2594625,
-    longitude: -97.7505386,
+    latitude: defaultLatitude || 30.2594625,
+    longitude: defaultLongitude || -97.7505386,
     zoom: defaultZoom || 10.7,
   });
   useEffect(() => {
