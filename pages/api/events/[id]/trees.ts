@@ -29,6 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         species: { select: { id: true, commonName: true, height: true, growthRate: true, longevity: true, isInTexas: true } },
         speciesQuizResponses: { where: { userId: user?.id } },
       };
+      whereFilter.speciesId = { not: null };
 
       if (!user?.id) delete includeFilter.speciesQuizResponses;
 
