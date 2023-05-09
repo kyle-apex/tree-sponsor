@@ -79,6 +79,7 @@ const TreeIdQuiz = ({
             isQuiz={true}
             defaultLatitude={defaultLatitude}
             defaultLongitude={defaultLongitude}
+            defaultZoom={17}
           ></MapMarkerDisplay>
         )}
       </Box>
