@@ -344,15 +344,16 @@ model Species {
 }
 
 model SpeciesQuizResponse {
-  id                 Int      @id @default(autoincrement())
-  isCorrect          Boolean? @default(false)
-  incorrectGuessName String?  @db.VarChar(128)
-  user               User?    @relation(fields: [userId], references: [id])
+  id                 Int       @id @default(autoincrement())
+  isCorrect          Boolean?  @default(false)
+  incorrectGuessName String?   @db.VarChar(128)
+  createdDate        DateTime? @default(now())
+  user               User?     @relation(fields: [userId], references: [id])
   userId             Int?
-  tree               Tree?    @relation(fields: [treeId], references: [id])
+  tree               Tree?     @relation(fields: [treeId], references: [id])
   treeId             Int?
   eventId            Int?
-  event              Event?   @relation(fields: [eventId], references: [id])
+  event              Event?    @relation(fields: [eventId], references: [id])
 }
 
 model Location {

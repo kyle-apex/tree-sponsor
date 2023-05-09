@@ -55,7 +55,7 @@ export default function LeaderTable({
 
   return (
     <TableContainer className={classes.tableContainer}>
-      <Table className={classes.table} aria-labelledby='tableTitle' size='small' aria-label='enhanced table'>
+      <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
         <TableHeader classes={classes} headCells={headerCells} />
         {leaders && (
           <TableBody>

@@ -3,15 +3,13 @@ import { LeaderRow } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getUserDisplaySelect } from 'prisma/common';
 import { getYearDateRange } from 'utils/get-year-date-range';
+import getYearStartDate from 'utils/get-year-start-date';
 import { prisma, Prisma } from 'utils/prisma/init';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const currentYear = new Date().getFullYear();
   const year = req.query.year ? Number(req.query.year) : currentYear;
-  const yearStart = new Date();
-  yearStart.setFullYear(year);
-  yearStart.setMonth(0);
-  yearStart.setDate(0);
+  const yearStart = getYearStartDate(year);
 
   const { startDate, endDate } = getYearDateRange(year);
   console.log('startDate', startDate, endDate);
@@ -25,25 +23,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   //  whereFilter = { createdByUserId: { not: null } };
   console.log('where', whereFilter);
 
-  const otherTrees = await prisma.user.findMany({
-    select: {
-      id: true,
-      name: true,
-      image: true,
-      displayName: true,
-      profilePath: true,
-      email: true,
-      roles: {},
-      profile: { select: { instagramHandle: true, linkedInLink: true, twitterHandle: true, organization: true, bio: true } },
-      /*_count: {
-        select: {
-          createdTrees: {
-            where: whereFilter,
-          },
-        },
-      },*/
+  const responses = await prisma.speciesQuizResponse.groupBy({
+    by: ['treeId'],
+    _count: true,
+    having: {
+      treeId: { _count: { gt: 1 } },
     },
   });
+
+  if (responses?.length > 0) {
+    whereFilter.id = { in: responses.map(response => response.treeId) };
+  } else whereFilter.id = { in: [] };
 
   const groupedTrees = await prisma.tree.groupBy({
     by: ['createdByUserId'],

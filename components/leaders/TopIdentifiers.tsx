@@ -9,8 +9,8 @@ import { useGet } from 'utils/hooks/use-get';
 
 const TopIdentifiers = () => {
   //const [leaders, setLeaders] = useState<LeaderRow[]>();
-  const user: PartialUser = { name: 'Kyle', profile: { organization: 'American Airlines', instagramHandle: '@hoskinskyle' } };
-  const user2: PartialUser = { name: 'Dr. Miller', profile: { organization: 'The Vets?', instagramHandle: '@hoskinskyle' } };
+  //const user: PartialUser = { name: 'Kyle', profile: { organization: 'American Airlines', instagramHandle: '@hoskinskyle' } };
+  //const user2: PartialUser = { name: 'Dr. Miller', profile: { organization: 'The Vets?', instagramHandle: '@hoskinskyle' } };
 
   const { data: leaders, isFetching } = useGet<LeaderRow[]>('/api/leaders/top-identifiers', 'top-identifiers');
 

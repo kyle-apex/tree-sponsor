@@ -112,32 +112,33 @@ const Attendee = ({
             )}
           </Box>
           <Box sx={{ flex: '1 1 auto' }}></Box>
-          {(email?.toLowerCase() == user.email?.toLowerCase() || email?.toLowerCase() == `"${user.email?.toLowerCase()}"`) && (
-            <>
-              {isPrivate && (
-                <Tooltip title='Hidden from other attendees'>
-                  <VisibilityOffIcon color='secondary'></VisibilityOffIcon>
-                </Tooltip>
-              )}
-              {(user.displayName || user.name) && (
-                <IconButton
-                  onClick={() => {
-                    setIsSettingsDialogOpen(true);
-                  }}
-                  sx={{ ml: 1, padding: 0 }}
-                >
-                  <SettingsIcon color='secondary'></SettingsIcon>
-                </IconButton>
-              )}
-              <AttendeeSettingsDialog
-                onSetIsPrivate={onSetIsPrivate}
-                user={user}
-                isOpen={isSettingsDialogOpen}
-                setIsOpen={onSettingsDialogClose}
-                isPrivate={isPrivate}
-              ></AttendeeSettingsDialog>
-            </>
-          )}
+          {(email?.toLowerCase() == user.email?.toLowerCase() || email?.toLowerCase() == `"${user.email?.toLowerCase()}"`) &&
+            !hideContactPageIcon && (
+              <>
+                {isPrivate && (
+                  <Tooltip title='Hidden from other attendees'>
+                    <VisibilityOffIcon color='secondary'></VisibilityOffIcon>
+                  </Tooltip>
+                )}
+                {(user.displayName || user.name) && (
+                  <IconButton
+                    onClick={() => {
+                      setIsSettingsDialogOpen(true);
+                    }}
+                    sx={{ ml: 1, padding: 0 }}
+                  >
+                    <SettingsIcon color='secondary'></SettingsIcon>
+                  </IconButton>
+                )}
+                <AttendeeSettingsDialog
+                  onSetIsPrivate={onSetIsPrivate}
+                  user={user}
+                  isOpen={isSettingsDialogOpen}
+                  setIsOpen={onSettingsDialogClose}
+                  isPrivate={isPrivate}
+                ></AttendeeSettingsDialog>
+              </>
+            )}
 
           {(hasContact || user.image) && (
             <>
