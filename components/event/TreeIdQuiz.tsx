@@ -77,6 +77,8 @@ const TreeIdQuiz = ({
             mapStyle='SATELLITE'
             markerScale={0.5}
             isQuiz={true}
+            defaultLatitude={defaultLatitude}
+            defaultLongitude={defaultLongitude}
           ></MapMarkerDisplay>
         )}
       </Box>
