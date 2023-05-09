@@ -33,6 +33,7 @@ import useHashToggle from 'utils/hooks/use-hash-toggle';
 import useWindowFocus from 'utils/hooks/use-window-focus';
 import EventNameDisplay from './EventNameDisplay';
 import TreeIdQuiz from './TreeIdQuiz';
+import BecomeAMemberDialog from './BecomeAMemberDialog';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
   // eslint-disable-next-line react/display-name
@@ -75,6 +76,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [isAddTreeDialogOpen, setIsAddTreeDialogOpen] = useState(false);
   const [isQuizRefreshing, setIsQuizRefreshing] = useState(false);
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useHashToggle('history', false);
+  const [isMembershipDialogOpen, setIsMembershipDialogOpen] = useState(false);
 
   const [selectedTree, setSelectedTree] = useState<PartialTree>(null);
   const [isPrivate, setIsPrivate] = useState(false);
@@ -403,13 +405,16 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               </a>
               <a
                 onClick={() => {
-                  setIsAddTreeDialogOpen(true);
+                  if (status?.isFound === false) {
+                    setIsMembershipDialogOpen(true);
+                  } else setIsAddTreeDialogOpen(true);
                 }}
                 style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '3px', alignItems: 'center' }}
               >
                 <LoupeIcon sx={{ fontSize: 'inherit' }}></LoupeIcon> Identify a tree
               </a>
             </SplitRow>
+            <BecomeAMemberDialog open={isMembershipDialogOpen} setOpen={setIsMembershipDialogOpen}></BecomeAMemberDialog>
           </Box>
           <TreeIdQuiz eventId={event.id} isRefreshing={isQuizRefreshing} setIsRefreshing={setIsQuizRefreshing}></TreeIdQuiz>
           <Box sx={{ textAlign: 'right', mt: -2.8, mb: 1, fontSize: '80%' }}>
