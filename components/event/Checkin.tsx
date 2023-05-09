@@ -412,7 +412,22 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             </SplitRow>
           </Box>
           <TreeIdQuiz eventId={event.id} isRefreshing={isQuizRefreshing} setIsRefreshing={setIsQuizRefreshing}></TreeIdQuiz>
-
+          <Box sx={{ textAlign: 'right', mt: -2.8, mb: 1, fontSize: '80%' }}>
+            <Link href='/leaders'>
+              <a
+                style={{
+                  textDecoration: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  gap: '3px',
+                  alignItems: 'center',
+                  justifyContent: 'end',
+                }}
+              >
+                <LoupeIcon sx={{ fontSize: 'inherit' }}></LoupeIcon> Tree ID leaderboard
+              </a>
+            </Link>
+          </Box>
           <IdentifyTreeFlowDialog
             open={isAddTreeDialogOpen}
             setOpen={setIsAddTreeDialogOpen}

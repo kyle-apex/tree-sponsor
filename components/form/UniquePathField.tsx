@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useState, useEffect } from 'react';
 import parsedGet from 'utils/api/parsed-get';
@@ -8,12 +9,14 @@ const UniquePathField = ({
   validatorPath,
   label,
   onChange,
+  disabled,
 }: {
   initialValue: string;
   isFetched?: boolean;
   validatorPath: string;
   label: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }) => {
   const [state, setState] = useState({
     value: '',
@@ -48,21 +51,22 @@ const UniquePathField = ({
   };
 
   return (
-    <>
+    <Box mb={3}>
       <TextField
         value={state.value}
         onChange={handleChange}
         label={label || 'path'}
         size='small'
         inputProps={{ pattern: '[a-z0-9-]' }}
-        sx={{ marginBottom: 3 }}
         error={state.isDuplicate || state.hasPatternError}
         spellCheck='false'
         id='profile-path-field'
+        fullWidth={true}
+        disabled={disabled}
       ></TextField>
       {state.hasPatternError && <ErrorText>{label} must only contain lower case letters, numbers, and &quot;-&quot;</ErrorText>}
       {state.isDuplicate && <ErrorText>{label} is already in use</ErrorText>}
-    </>
+    </Box>
   );
 };
 export default UniquePathField;

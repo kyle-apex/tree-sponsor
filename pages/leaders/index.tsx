@@ -11,7 +11,7 @@ const LeadersPage = () => {
   return (
     <Layout title='Leaders'>
       <Container maxWidth='lg' sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-        <Typography variant='h1'>Leader Boards</Typography>
+        <Typography variant='h1'>Leaderboards</Typography>
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
             {false && <Typography variant='h2'>Top Tree Identifiers</Typography>}
