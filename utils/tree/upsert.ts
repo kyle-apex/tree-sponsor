@@ -18,6 +18,7 @@ export default async function upsertTree(tree: PartialTree, userId: number) {
   delete tree.id;
 
   const lastChangedByUser = { connect: { id: userId } };
+  const createdByUser = { connect: { id: userId } };
 
   const speciesId = tree.speciesId;
   const species = tree.speciesId ? { connect: { id: speciesId } } : undefined;
@@ -25,7 +26,7 @@ export default async function upsertTree(tree: PartialTree, userId: number) {
 
   const treeToUpdate: Omit<
     PartialTree,
-    'id' | 'locationId' | 'speciesId' | 'lastChangedByUserId' | 'species' | 'location' | 'speciesQuizResponses'
+    'id' | 'locationId' | 'speciesId' | 'lastChangedByUserId' | 'species' | 'location' | 'speciesQuizResponses' | 'createdByUserId'
   > = { ...tree };
 
   //type upsertType = Prisma.TreeUpsertArgs | Prisma.TreeUpsertWithoutImagesInput;
@@ -35,6 +36,7 @@ export default async function upsertTree(tree: PartialTree, userId: number) {
     create: {
       ...treeToUpdate,
       lastChangedByUser,
+      createdByUser,
       species,
       changeLogs: { create: { user: { connect: { id: userId } } } },
       images: {},
