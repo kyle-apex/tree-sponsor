@@ -1,3 +1,5 @@
+import { prisma } from 'utils/prisma/init';
+
 export async function updateSpeciesPriority() {
   await prisma.$executeRaw`UPDATE Species s
 
