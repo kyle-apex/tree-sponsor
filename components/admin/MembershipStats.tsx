@@ -35,7 +35,7 @@ const MembershipStats = () => {
 
   const endOfYearTime = getYearStartDate(new Date().getFullYear() + 1).getTime();
 
-  const increasePerDay = (stats?.newActive || 0 - stats?.newInactive || 0) / 30;
+  const increasePerDay = ((stats?.newActive || 0) - (stats?.newInactive || 0)) / 30;
   const daysLeftInYear = (endOfYearTime - new Date().getTime()) / 1000 / 60 / 60 / 24;
   const projectedMembers = stats ? stats.active + Math.ceil(daysLeftInYear * increasePerDay) : 0;
 
