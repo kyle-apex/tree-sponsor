@@ -34,6 +34,7 @@ import useWindowFocus from 'utils/hooks/use-window-focus';
 import EventNameDisplay from './EventNameDisplay';
 import TreeIdQuiz from './TreeIdQuiz';
 import BecomeAMemberDialog from './BecomeAMemberDialog';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
   // eslint-disable-next-line react/display-name
@@ -435,7 +436,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                   justifyContent: 'end',
                 }}
               >
-                <LoupeIcon sx={{ fontSize: 'inherit' }}></LoupeIcon> Tree ID leaderboard
+                <LeaderboardIcon sx={{ fontSize: 'inherit' }}></LeaderboardIcon> Tree ID leaderboard
               </a>
             </Link>
           </Box>

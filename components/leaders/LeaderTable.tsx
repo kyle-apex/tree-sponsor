@@ -42,14 +42,14 @@ export default function LeaderTable({
   const classes = useStyles();
 
   const headerCells = [
-    { id: 'position', numeric: false, disablePadding: true, label: '', sx: { width: '40px' } },
+    { id: 'position', numeric: false, disablePadding: true, label: '', sx: { width: '32px' } },
     { id: 'user', numeric: false, disablePadding: false, label: title || 'Top Tree Identifiers' },
     {
       id: 'count',
       numeric: true,
       disablePadding: false,
       label: unit || 'Trees',
-      sx: { width: '80px', textAlign: 'right', paddingLeft: 0 },
+      sx: { width: '64px', textAlign: 'right', paddingLeft: 0 },
     },
   ];
 
@@ -69,13 +69,13 @@ export default function LeaderTable({
             {leaders.map((row: LeaderRow) => {
               return (
                 <StyledTableRow tabIndex={-1} key={row?.position}>
-                  <TableCell scope='row' sx={{ paddingRight: 0 }}>
+                  <TableCell scope='row' sx={{ pr: 0, pl: 1 }}>
                     {row.position}.
                   </TableCell>
-                  <TableCell scope='row'>
+                  <TableCell scope='row' sx={{ pl: 0, pr: 0 }}>
                     <Attendee hideContactPageIcon={true} user={row.user}></Attendee>
                   </TableCell>
-                  <TableCell scope='row' sx={{ textAlign: 'right' }}>
+                  <TableCell scope='row' sx={{ textAlign: 'right', pl: 0 }}>
                     {row.count}
                   </TableCell>
                 </StyledTableRow>

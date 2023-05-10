@@ -10,7 +10,7 @@ const TopQuizResponders = () => {
 
   return (
     <>
-      <LeaderTable title='Tree ID Quiz Leaderboard' unit='# Correct' leaders={leaders} isFetching={isFetching}></LeaderTable>
+      <LeaderTable title='Tree ID Quiz Leaderboard' unit='Correct' leaders={leaders} isFetching={isFetching}></LeaderTable>
     </>
   );
 };

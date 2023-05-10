@@ -10,7 +10,7 @@ import { Typography } from '@mui/material';
 const LeadersPage = () => {
   return (
     <Layout title='Leaders'>
-      <Container maxWidth='lg' sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Container maxWidth='lg' sx={{ width: '100%', display: 'flex', flexDirection: 'column', pl: 0, pr: 0 }}>
         <Typography variant='h1'>Leaderboards</Typography>
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
