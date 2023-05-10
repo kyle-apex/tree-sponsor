@@ -54,6 +54,7 @@ const Attendees = ({
               isPrivate={isPrivate}
               user={user}
               onRefresh={onRefresh}
+              sx={{ mb: 2 }}
             />
           );
       })}

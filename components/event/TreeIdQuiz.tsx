@@ -16,10 +16,14 @@ const TreeIdQuiz = ({
   eventId,
   isRefreshing,
   setIsRefreshing,
+  defaultLatitude,
+  defaultLongitude,
 }: {
   eventId?: number;
   isRefreshing?: boolean;
   setIsRefreshing?: (val: boolean) => void;
+  defaultLatitude?: number;
+  defaultLongitude?: number;
 }) => {
   const [email] = useLocalStorage('checkinEmail', '');
   const {
@@ -73,6 +77,9 @@ const TreeIdQuiz = ({
             mapStyle='SATELLITE'
             markerScale={0.5}
             isQuiz={true}
+            defaultLatitude={defaultLatitude}
+            defaultLongitude={defaultLongitude}
+            defaultZoom={17}
           ></MapMarkerDisplay>
         )}
       </Box>

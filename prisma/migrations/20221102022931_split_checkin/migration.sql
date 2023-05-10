@@ -152,3 +152,9 @@ ALTER TABLE
   `TreeImage`
 ADD
   COLUMN `isLeaf` BOOLEAN NULL DEFAULT false;
+
+-- AlterTable
+ALTER TABLE
+  `Tree`
+ADD
+  COLUMN `createdByUserId` INTEGER NULL;

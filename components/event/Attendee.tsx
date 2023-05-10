@@ -15,6 +15,7 @@ import { useState } from 'react';
 import useLocalStorage from 'utils/hooks/use-local-storage';
 import AttendeeSettingsDialog from './AttendeeSettingsDialog';
 import useHashToggle from 'utils/hooks/use-hash-toggle';
+import { SxProps, Theme } from '@mui/material/styles';
 
 const userNameDisplay = ({ user }: { user: PartialUser }) => (
   <Typography
@@ -45,13 +46,17 @@ const Attendee = ({
   onSetIsPrivate,
   isPrivate,
   onRefresh,
+  hideContactPageIcon,
+  sx,
 }: {
   user: PartialUser;
-  onDelete: () => void;
+  onDelete?: () => void;
   isEditMode?: boolean;
   onSetIsPrivate?: () => void;
   isPrivate?: boolean;
   onRefresh?: () => void;
+  hideContactPageIcon?: boolean;
+  sx?: SxProps<Theme>;
 }) => {
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
   const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useHashToggle('settings', false);
@@ -59,7 +64,7 @@ const Attendee = ({
 
   const onSettingsDialogClose = (val: boolean) => {
     setIsSettingsDialogOpen(val);
-    onRefresh();
+    if (onRefresh) onRefresh();
   };
 
   // TODO: Remove This
@@ -69,7 +74,7 @@ const Attendee = ({
   const roleDisplay = getRoleDisplay(user);
 
   return (
-    <Box flexDirection='row' sx={{ display: 'flex' }} gap={2} mb={2}>
+    <Box flexDirection='row' sx={{ display: 'flex', gap: 2, ...sx }}>
       <Box
         sx={{ display: 'flex', alignItems: 'center' }}
         onClick={() => {
@@ -107,36 +112,37 @@ const Attendee = ({
             )}
           </Box>
           <Box sx={{ flex: '1 1 auto' }}></Box>
-          {(email?.toLowerCase() == user.email?.toLowerCase() || email?.toLowerCase() == `"${user.email?.toLowerCase()}"`) && (
-            <>
-              {isPrivate && (
-                <Tooltip title='Hidden from other attendees'>
-                  <VisibilityOffIcon color='secondary'></VisibilityOffIcon>
-                </Tooltip>
-              )}
-              {(user.displayName || user.name) && (
-                <IconButton
-                  onClick={() => {
-                    setIsSettingsDialogOpen(true);
-                  }}
-                  sx={{ ml: 1, padding: 0 }}
-                >
-                  <SettingsIcon color='secondary'></SettingsIcon>
-                </IconButton>
-              )}
-              <AttendeeSettingsDialog
-                onSetIsPrivate={onSetIsPrivate}
-                user={user}
-                isOpen={isSettingsDialogOpen}
-                setIsOpen={onSettingsDialogClose}
-                isPrivate={isPrivate}
-              ></AttendeeSettingsDialog>
-            </>
-          )}
+          {(email?.toLowerCase() == user.email?.toLowerCase() || email?.toLowerCase() == `"${user.email?.toLowerCase()}"`) &&
+            !hideContactPageIcon && (
+              <>
+                {isPrivate && (
+                  <Tooltip title='Hidden from other attendees'>
+                    <VisibilityOffIcon color='secondary'></VisibilityOffIcon>
+                  </Tooltip>
+                )}
+                {(user.displayName || user.name) && (
+                  <IconButton
+                    onClick={() => {
+                      setIsSettingsDialogOpen(true);
+                    }}
+                    sx={{ ml: 1, padding: 0 }}
+                  >
+                    <SettingsIcon color='secondary'></SettingsIcon>
+                  </IconButton>
+                )}
+                <AttendeeSettingsDialog
+                  onSetIsPrivate={onSetIsPrivate}
+                  user={user}
+                  isOpen={isSettingsDialogOpen}
+                  setIsOpen={onSettingsDialogClose}
+                  isPrivate={isPrivate}
+                ></AttendeeSettingsDialog>
+              </>
+            )}
 
           {(hasContact || user.image) && (
             <>
-              {hasContact && (
+              {hasContact && !hideContactPageIcon && (
                 <IconButton
                   onClick={() => {
                     setIsContactDialogOpen(true);

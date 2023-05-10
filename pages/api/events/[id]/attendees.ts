@@ -1,5 +1,6 @@
 import { PartialEventCheckIn, PartialTree, PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getUserDisplaySelect } from 'prisma/common';
 import throwError from 'utils/api/throw-error';
 import addSubscriber from 'utils/mailchimp/add-subscriber';
 import addTagToMembers from 'utils/mailchimp/add-tag-to-members';
@@ -30,23 +31,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!userId) return res.status(200).json({});
 
   if (req.method === 'GET') {
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
     const checkins = await prisma.eventCheckIn.findMany({
       where: { eventId },
       include: {
         user: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-            displayName: true,
-            profilePath: true,
-            email: true,
-            roles: {},
-            profile: { select: { instagramHandle: true, linkedInLink: true, twitterHandle: true, organization: true, bio: true } },
-            subscriptions: { where: { lastPaymentDate: { gt: oneYearAgo } }, select: { lastPaymentDate: true } },
-          },
+          select: getUserDisplaySelect(),
         },
       },
     });

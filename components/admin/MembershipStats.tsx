@@ -6,6 +6,7 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import MembershipAttritionChart from './MembershipAttritionChart';
 import MembershipChart from './MembershipChart';
 import StatisticIconDisplay from './StatisticIconDisplay';
+import getYearStartDate from 'utils/get-year-start-date';
 
 const lastMonth = new Date();
 lastMonth.setDate(lastMonth.getDate() - 30);
@@ -32,6 +33,12 @@ const MembershipStats = () => {
     getStats();
   }, [startDate]);
 
+  const endOfYearTime = getYearStartDate(new Date().getFullYear() + 1).getTime();
+
+  const increasePerDay = (stats?.newActive || 0 - stats?.newInactive || 0) / 30;
+  const daysLeftInYear = (endOfYearTime - new Date().getTime()) / 1000 / 60 / 60 / 24;
+  const projectedMembers = stats ? stats.active + Math.ceil(daysLeftInYear * increasePerDay) : 0;
+
   return (
     <>
       <Grid container spacing={4}>
@@ -42,6 +49,7 @@ const MembershipStats = () => {
             label='Active Members'
             count={stats?.active}
             isLoading={isLoading}
+            description={'End of Year Pace: ' + projectedMembers}
           ></StatisticIconDisplay>
         </Grid>
         <Grid item xs={4} sx={{ textAlign: 'center' }}>

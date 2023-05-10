@@ -114,24 +114,31 @@ const EventDetailsForm = ({
         ></DateTimeField>
       </SplitRow>
 
+      {false && (
+        <Box sx={{ marginTop: 3, marginBottom: 3, minHeight: '110px', display: 'block' }}>
+          <TextEditor
+            label='Description'
+            placeholder='Enter a description of your event'
+            value={event?.description}
+            onChange={val => updateAttribute('description', val)}
+          />
+        </Box>
+      )}
+      {false && (
+        <Box sx={{ mt: 3 }}>
+          <UniquePathField
+            label='Event Link Path'
+            initialValue={path}
+            validatorPath='/events/is-duplicate-path?path='
+            onChange={newValue => {
+              updateAttribute('path', newValue);
+              setPath(newValue);
+            }}
+            disabled={!name}
+          ></UniquePathField>
+        </Box>
+      )}
       <Box sx={{ marginTop: 3, marginBottom: 3, minHeight: '110px', display: 'block' }}>
-        <TextEditor
-          label='Description'
-          placeholder='Enter a description of your event'
-          value={event?.description}
-          onChange={val => updateAttribute('description', val)}
-        />
-      </Box>
-      <UniquePathField
-        label='Event Link Path'
-        initialValue={path}
-        validatorPath='/events/is-duplicate-path?path='
-        onChange={newValue => {
-          updateAttribute('path', newValue);
-          setPath(newValue);
-        }}
-      ></UniquePathField>
-      <Box sx={{ marginTop: 2, marginBottom: 3, minHeight: '110px', display: 'block' }}>
         <TextEditor
           label='Check-in Details'
           placeholder='Enter details to appear on the check-in page'
@@ -155,35 +162,40 @@ const EventDetailsForm = ({
         }}
         label='Location Name'
         size='small'
-        sx={{ marginBottom: 2, marginTop: 4 }}
+        sx={{ marginBottom: 0, marginTop: 4 }}
         id='name-field'
       ></TextField>
-      <Box sx={{ marginTop: 2, marginBottom: -2 }}>
-        <Checkbox checked={hasActiveDates} onChange={toggleHasActiveDates}></Checkbox> This event has a Tree ID/Thank-a-Tree Time Range that
-        is different than the event time range
-      </Box>
-      <Collapse in={hasActiveDates}>
-        <h6>Tree ID/Thank-a-Tree Time Range (Optional)</h6>
-        <SplitRow gap={2}>
-          <DateTimeField
-            value={activeStartDate}
-            setValue={date => {
-              updateAttribute('activeStartDate', date);
-              setActiveStartDate(date);
-            }}
-            label='Active Start Time'
-          ></DateTimeField>
-          <DateTimeField
-            value={activeEndDate}
-            setValue={date => {
-              updateAttribute('activeEndDate', date);
-              setActiveEndDate(date);
-            }}
-            minDateTime={event?.activeStartDate}
-            label='Active End Time'
-          ></DateTimeField>
-        </SplitRow>
-      </Collapse>
+      {false && (
+        <>
+          <Box sx={{ marginTop: 2, marginBottom: -2 }}>
+            <Checkbox checked={hasActiveDates} onChange={toggleHasActiveDates}></Checkbox> This event has a Tree ID/Thank-a-Tree Time Range
+            that is different than the event time range
+          </Box>
+
+          <Collapse in={hasActiveDates}>
+            <h6>Tree ID/Thank-a-Tree Time Range (Optional)</h6>
+            <SplitRow gap={2}>
+              <DateTimeField
+                value={activeStartDate}
+                setValue={date => {
+                  updateAttribute('activeStartDate', date);
+                  setActiveStartDate(date);
+                }}
+                label='Active Start Time'
+              ></DateTimeField>
+              <DateTimeField
+                value={activeEndDate}
+                setValue={date => {
+                  updateAttribute('activeEndDate', date);
+                  setActiveEndDate(date);
+                }}
+                minDateTime={event?.activeStartDate}
+                label='Active End Time'
+              ></DateTimeField>
+            </SplitRow>
+          </Collapse>
+        </>
+      )}
       <CategoryMultiSelect
         selectedCategories={event?.categories}
         setSelectedCategories={categories => updateAttribute('categories', categories)}

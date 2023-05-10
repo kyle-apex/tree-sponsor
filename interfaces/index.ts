@@ -124,3 +124,10 @@ export type TitleSection = { title: string; description: string };
 export type MuiColor = OverridableStringUnion<
   'inherit' | 'action' | 'disabled' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
 >;
+
+export type LeaderRow = {
+  position?: number;
+  user?: PartialUser;
+  count?: number;
+  display?: React.ReactNode;
+};

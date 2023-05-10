@@ -34,6 +34,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       if (event?.location?.name) data.location = { create: { ...event.location } };
 
+      const existingPath = await prisma.event.findFirst({ where: { path: data.path } });
+      if (existingPath) data.path = data.path += `-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
+
       upsertedEvent = await prisma.event.create({ data: data });
     } else {
       delete req.body.location;
