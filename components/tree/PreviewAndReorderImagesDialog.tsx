@@ -81,7 +81,7 @@ const PreviewAndReorderImagesDialog = ({
               onClick={() => {
                 onMakeLeaf(selectedIndex);
                 setSelectedIndex(null);
-                setIsUpdating(true);
+                //setIsUpdating(true);
               }}
               sx={{ width: '110px' }}
             >
