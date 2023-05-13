@@ -50,8 +50,10 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
   const upsertTree = async () => {
     if (!tree || !tree.pictureUrl) return;
     const { w, h } = await getImageDimensions(tree.pictureUrl);
-    if (!tree.images?.length) tree.images = [{ url: tree.pictureUrl, width: w, height: h }, leafImage];
-    else tree.images = [{ ...tree.images[0], url: tree.pictureUrl, width: w, height: h }, leafImage];
+    if (!tree.images?.length) tree.images = [{ url: tree.pictureUrl, width: w, height: h }];
+    else tree.images = [{ ...tree.images[0], url: tree.pictureUrl, width: w, height: h }];
+
+    if (leafImage) tree.images.push(leafImage);
 
     const data = { ...tree };
     // save space in the request by removing pictureUrl

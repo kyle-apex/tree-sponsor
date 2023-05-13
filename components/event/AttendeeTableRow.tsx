@@ -7,7 +7,7 @@ import SaveIcon from '@mui/icons-material/Save';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useRef, useState } from 'react';
-import { TextField } from '@mui/material';
+import TextField from '@mui/material/TextField';
 
 const AttendeeTableRow = ({
   attendee,

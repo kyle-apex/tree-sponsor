@@ -5,7 +5,7 @@ import React from 'react';
 import Grid from '@mui/material/Grid';
 import TopIdentifiers from 'components/leaders/TopIdentifiers';
 import TopQuizResponders from 'components/leaders/TopQuizResponders';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
 const LeadersPage = () => {
   return (
