@@ -11,16 +11,7 @@ import getTagId from 'utils/mailchimp/get-tag-id';
 import { getLocationFilterByDistance } from 'utils/prisma/get-location-filter-by-distance';
 import { prisma, Prisma } from 'utils/prisma/init';
 import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
-
-const roleHeirarchy = ['Member', 'Core Team', 'Staff', 'Exec Team', 'Organizer'];
-function getRoleHeirarchyIndex(roles: any[]) {
-  let index = -1;
-  roles.forEach(role => {
-    const roleIndex = roleHeirarchy.indexOf(role.name);
-    if (roleIndex > index) index = roleIndex;
-  });
-  return index;
-}
+import { sortUsersByRole } from 'utils/user/sort-users-by-role';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const eventId = Number(req.query.id);
@@ -127,21 +118,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (user?.id != userId) delete user.email;
         return user;
       });
-    attendees.sort((a, b) => {
-      /*const isAOrganizer = !!event.organizers?.find(organizer => organizer.id == a.id);
-      const isBOrganizer = !!event.organizers?.find(organizer => organizer.id == b.id);
-      if (isAOrganizer && !isBOrganizer) return -1;
-      if (!isAOrganizer && isBOrganizer) return 1;*/
 
-      if (getRoleHeirarchyIndex(a.roles) > getRoleHeirarchyIndex(b.roles)) return -1;
-      else if (getRoleHeirarchyIndex(b.roles) > getRoleHeirarchyIndex(a.roles)) return 1;
-      if (a.roles?.length > b.roles?.length) return -1;
-      if (b.roles?.length > a.roles?.length) return 1;
-      if (a.subscriptions?.length > b.subscriptions?.length) return -1;
-      if (b.subscriptions?.length > a.subscriptions?.length) return 1;
-      return a.name < b.name ? -1 : 1;
-    });
-    //console.log('attendees', attendees);
+    sortUsersByRole(attendees);
 
     if (user) {
       subscription = await prisma.subscriptionWithDetails.findFirst({
