@@ -6,11 +6,13 @@ const SplitRow = ({
   alignItems = 'inherit',
   gap,
   mobileFlexDirection = 'row',
+  mb,
 }: {
   children: ReactNode[];
   alignItems?: string;
   gap?: number;
   mobileFlexDirection?: string;
+  mb?: number;
 }) => {
   return (
     <Box
@@ -18,7 +20,7 @@ const SplitRow = ({
       alignItems={alignItems}
       gap={gap}
       className='full-width'
-      sx={{ flexDirection: { xs: mobileFlexDirection, sm: mobileFlexDirection, md: 'row' } }}
+      sx={{ flexDirection: { xs: mobileFlexDirection, sm: mobileFlexDirection, md: 'row' }, mb }}
     >
       <Box flex='auto' display='flex' justifyContent='start'>
         {children[0]}

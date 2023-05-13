@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useContext } from 'react';
-import { PartialTree, PartialTreeImage } from 'interfaces';
+import { PartialSpecies, PartialTree, PartialTreeImage } from 'interfaces';
 import SplitRow from 'components/layout/SplitRow';
 import LoadingButton from 'components/LoadingButton';
 import Button from '@mui/material/Button';
@@ -21,6 +21,8 @@ import { Crop } from 'react-image-crop';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import Typography from '@mui/material/Typography';
 import useLocalStorage from 'utils/hooks/use-local-storage';
+import Selector from 'components/Selector';
+import UserSelector from 'components/UserSelector';
 
 const steps = [{ label: 'Identify' }, { label: 'Photograph' }, { label: 'Location' }];
 

@@ -1,5 +1,5 @@
 // TODO - Form Validation, Category Multi-select
-import { PartialEvent } from 'interfaces';
+import { PartialEvent, PartialUser } from 'interfaces';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import dynamic from 'next/dynamic';
@@ -14,6 +14,7 @@ import React, { useState } from 'react';
 import LocationSelector from 'components/LocationSelector';
 import { paramCase } from 'change-case';
 import { useDebouncedCallback } from 'use-debounce';
+import UserMultiSelect from './UserMultiSelect';
 
 const TextEditor = dynamic(() => import('components/TextEditor'), {
   ssr: false,
@@ -162,7 +163,7 @@ const EventDetailsForm = ({
         }}
         label='Location Name'
         size='small'
-        sx={{ marginBottom: 0, marginTop: 4 }}
+        sx={{ marginBottom: 3, marginTop: 4 }}
         id='name-field'
       ></TextField>
       {false && (
@@ -200,6 +201,14 @@ const EventDetailsForm = ({
         selectedCategories={event?.categories}
         setSelectedCategories={categories => updateAttribute('categories', categories)}
       ></CategoryMultiSelect>
+      <UserMultiSelect
+        label='Add an Organizer'
+        users={event.organizers}
+        deleteDialogPropertyName='organizer'
+        onUpdated={(users: PartialUser[]) => {
+          updateAttribute('organizers', users);
+        }}
+      ></UserMultiSelect>
     </>
   );
 };

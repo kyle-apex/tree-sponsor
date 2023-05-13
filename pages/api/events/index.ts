@@ -1,5 +1,5 @@
 import { create } from 'domain';
-import { PartialEvent } from 'interfaces';
+import { PartialEvent, PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { getSession } from 'utils/auth/get-session';
@@ -36,13 +36,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const existingPath = await prisma.event.findFirst({ where: { path: data.path } });
       if (existingPath) data.path = data.path += `-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
-
+      //Prisma.UserCreateNestedManyWithoutOrganizedEventsInput;
+      if (event.organizers)
+        data.organizers = {
+          connect: event.organizers.map((user: PartialUser) => {
+            return { id: user?.id };
+          }),
+        };
       upsertedEvent = await prisma.event.create({ data: data });
     } else {
       delete req.body.location;
       const data = { ...req.body } as Prisma.EventUncheckedUpdateInput;
       delete data.categories;
-      //data.user = { connect: { id: session.user.id } };
+
+      if (event.organizers)
+        data.organizers = {
+          set: event.organizers.map((user: PartialUser) => {
+            return { id: user?.id };
+          }),
+        };
+      else data.organizers = { set: [] };
 
       if (event?.location?.id) {
         await prisma.location.update({ data: { ...event.location }, where: { id: event.location.id } });
