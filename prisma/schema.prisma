@@ -83,6 +83,7 @@ model User {
   eventCheckIns         EventCheckIn[]
   treeCheckIns          TreeCheckIn[]
   speciesQuizResponses  SpeciesQuizResponse[]
+  organizedEvents       Event[]               @relation("OrganizerToEvent")
 
   @@map(name: "users")
 }
@@ -268,6 +269,7 @@ model Event {
   categories          Category[]            @relation("CategoryToEvent")
   user                User?                 @relation(fields: [userId], references: [id])
   userId              Int?
+  organizers          User[]                @relation("OrganizerToEvent")
   role                Role?                 @relation(fields: [roleId], references: [id])
   roleId              Int?
   trees               Tree[]                @relation("TreeToEvent")

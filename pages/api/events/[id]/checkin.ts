@@ -1,3 +1,4 @@
+import RoleTable from 'components/admin/RoleTable';
 import { PartialEventCheckIn, PartialTree, PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getUserDisplaySelect } from 'prisma/common';
@@ -11,7 +12,7 @@ import { getLocationFilterByDistance } from 'utils/prisma/get-location-filter-by
 import { prisma, Prisma } from 'utils/prisma/init';
 import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
 
-const roleHeirarchy = ['Member', 'Core Team', 'Staff', 'Exec Team'];
+const roleHeirarchy = ['Member', 'Core Team', 'Staff', 'Exec Team', 'Organizer'];
 function getRoleHeirarchyIndex(roles: any[]) {
   let index = -1;
   roles.forEach(role => {
@@ -29,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const discoveredFrom = String(req.query.discoveredFrom);
   const emailOptIn = req.query.emailOptIn === 'true';
 
-  const event = await prisma.event.findFirst({ where: { id: eventId }, include: { location: {} } });
+  const event = await prisma.event.findFirst({ where: { id: eventId }, include: { location: {}, organizers: {} } });
 
   if (req.method === 'GET') {
     let subscription;
@@ -96,14 +97,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     //console.log('newCheckin', newCheckin);
 
-    const checkins = await prisma.eventCheckIn.findMany({
+    const checkins = (await prisma.eventCheckIn.findMany({
       where: { eventId },
       include: {
         user: {
           select: getUserDisplaySelect(),
         },
       },
-    });
+    })) as PartialEventCheckIn[];
     //console.log('checkins', checkins);
     const checkInCount = checkins.length;
     let myCheckin;
@@ -118,14 +119,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return checkin.user;
       })
       .map(checkIn => {
-        if (checkIn.user?.id != userId) delete checkIn.user.email;
-        return checkIn.user;
+        const user = checkIn.user;
+        if (user && !!event.organizers?.find(organizer => organizer.id == user.id)) {
+          if (!user.roles) user.roles = [];
+          user.roles.push({ name: 'Organizer' });
+        }
+        if (user?.id != userId) delete user.email;
+        return user;
       });
     attendees.sort((a, b) => {
+      /*const isAOrganizer = !!event.organizers?.find(organizer => organizer.id == a.id);
+      const isBOrganizer = !!event.organizers?.find(organizer => organizer.id == b.id);
+      if (isAOrganizer && !isBOrganizer) return -1;
+      if (!isAOrganizer && isBOrganizer) return 1;*/
+
+      if (getRoleHeirarchyIndex(a.roles) > getRoleHeirarchyIndex(b.roles)) return -1;
+      else if (getRoleHeirarchyIndex(b.roles) > getRoleHeirarchyIndex(a.roles)) return 1;
       if (a.roles?.length > b.roles?.length) return -1;
       if (b.roles?.length > a.roles?.length) return 1;
-      else if (a.roles?.length == 1 && b.roles?.length == 1 && getRoleHeirarchyIndex(a.roles) > getRoleHeirarchyIndex(b.roles)) return -1;
-      else if (a.roles?.length == 1 && b.roles?.length == 1 && getRoleHeirarchyIndex(b.roles) > getRoleHeirarchyIndex(a.roles)) return 1;
       if (a.subscriptions?.length > b.subscriptions?.length) return -1;
       if (b.subscriptions?.length > a.subscriptions?.length) return 1;
       return a.name < b.name ? -1 : 1;

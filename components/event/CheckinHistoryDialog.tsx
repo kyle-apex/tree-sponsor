@@ -1,4 +1,4 @@
-import { DialogTitle, Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
@@ -6,6 +6,7 @@ import Divider from '@mui/material/Divider';
 import { PartialEventCheckIn } from 'interfaces';
 import { signOut, useSession, signIn } from 'next-auth/client';
 import CheckinHistory from './CheckinHistory';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const CheckinHistoryDialog = ({
   isOpen,

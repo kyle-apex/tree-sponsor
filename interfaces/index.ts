@@ -75,7 +75,12 @@ export type PartialTree = Partial<Tree> & {
 };
 export type PartialTreeChangeLog = Partial<TreeChangeLog> & { tree: PartialTree };
 
-export type PartialEvent = Partial<Event> & { categories?: PartialCategory[]; trees?: PartialTree[]; location?: PartialLocation };
+export type PartialEvent = Partial<Event> & {
+  categories?: PartialCategory[];
+  trees?: PartialTree[];
+  location?: PartialLocation;
+  organizers?: PartialUser[];
+};
 export type PartialCategory = Partial<Category> & { events?: PartialEvent[]; trees?: PartialTree[] };
 export type PartialEventCheckIn = Partial<EventCheckIn> & { user?: PartialUser; event?: PartialEvent };
 export type PartialProfile = Partial<Profile>;
