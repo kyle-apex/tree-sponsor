@@ -4,6 +4,8 @@ import { FieldSize, PartialUser } from 'interfaces';
 import Selector from 'components/Selector';
 import { Theme } from '@mui/material/styles';
 import { SxProps } from '@mui/system/styleFunctionSx';
+import { UserAvatar } from './sponsor';
+import Box from '@mui/material/Box';
 
 const UserSelector = ({
   defaultValue,
@@ -38,12 +40,15 @@ const UserSelector = ({
       }
       optionDisplay={option => {
         return (
-          <>
-            <Typography variant='body1'>{option.displayName || option.name || option.email}</Typography>
-            <Typography variant='subtitle2' sx={{ fontStyle: 'italic' }} color='gray'>
-              {option.email}
-            </Typography>
-          </>
+          <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', paddingRight: 1, paddingLeft: 1, ...sx }} gap={2}>
+            <UserAvatar name={option?.displayName || option?.name} image={option?.image} size={36} />
+            <Box>
+              <Typography variant='body1'>{option.displayName || option.name || option.email}</Typography>
+              <Typography variant='subtitle2' sx={{ fontStyle: 'italic' }} color='gray'>
+                {option.email}
+              </Typography>
+            </Box>
+          </Box>
         );
       }}
       sx={sx}

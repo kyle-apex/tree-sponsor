@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     const query: Prisma.UserFindManyArgs = {
       orderBy: [{ displayName: 'desc' }, { name: 'desc' }],
-      select: { displayName: true, name: true, id: true, email: true, roles: {} },
+      select: { displayName: true, name: true, id: true, email: true, image: true, roles: {} },
       take: 150,
     };
 
