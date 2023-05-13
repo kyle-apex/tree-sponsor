@@ -26,7 +26,9 @@ const UserMultiSelect = ({
   const [isLoading, setIsLoading] = useState(false);
   const handleSelection = async (user: PartialUser) => {
     setIsLoading(true);
-    const newList = [...userList, user];
+    let newList;
+    if (!userList) newList = [user];
+    else newList = [...userList, user];
     setUserList(newList);
     if (onUpdated) onUpdated(newList);
     if (onAdd) await onAdd(user.id);

@@ -3,6 +3,8 @@ import { prisma } from 'utils/prisma/init';
 import { Prisma } from '@prisma/client';
 import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
 import throwError from 'utils/api/throw-error';
+import { PartialUser } from 'interfaces';
+import { sortUsersByRole } from 'utils/user/sort-users-by-role';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const isAuthorized = await isCurrentUserAuthorized('isAdmin', req);
@@ -13,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     const query: Prisma.UserFindManyArgs = {
       orderBy: [{ displayName: 'desc' }, { name: 'desc' }],
-      select: { displayName: true, name: true, id: true, email: true },
+      select: { displayName: true, name: true, id: true, email: true, image: true, roles: {} },
       take: 150,
     };
 
@@ -27,7 +29,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       };
     }
 
-    const options = await prisma.user.findMany(query);
+    const options = (await prisma.user.findMany(query)) as PartialUser[];
+
+    sortUsersByRole(options);
 
     res.status(200).json(options);
   }
