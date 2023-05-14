@@ -100,7 +100,6 @@ const ImageUploadAndPreview = forwardRef(
           cursor: 'pointer',
           flexDirection: 'column',
         }}
-        className='box-shadow'
         component='div'
         onClick={() => {
           openFileBrowser(); //fileInputRef?.current?.click();

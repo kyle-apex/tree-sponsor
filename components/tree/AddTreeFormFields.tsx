@@ -17,6 +17,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Box from '@mui/material/Box';
 
 const AddTreeFormFields = ({
   tree,
@@ -38,6 +39,7 @@ const AddTreeFormFields = ({
         }}
         component='div'
         title='Click to Update Image'
+        className='box-shadow'
       >
         <ImageUploadAndPreview
           imageUrl={tree.pictureUrl}
