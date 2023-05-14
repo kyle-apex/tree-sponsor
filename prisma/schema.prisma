@@ -236,7 +236,7 @@ model Tree {
   events                   Event[]               @relation("TreeToEvent")
   checkIns                 TreeCheckIn[]
   speciesQuizResponses     SpeciesQuizResponse[]
-  groups                   TreeToGroup[]
+  groupLinks               TreeToGroup[]
 }
 
 model TreeGroup {
@@ -248,21 +248,22 @@ model TreeGroup {
   path            String?       @db.VarChar(256)
   createdByUser   User?         @relation(fields: [createdByUserId], references: [id])
   createdByUserId Int?
-  trees           TreeToGroup[]
+  treeLinks       TreeToGroup[]
 }
 
 model TreeToGroup {
-  id              Int        @id @default(autoincrement())
   name            String?
   description     String?    @db.Text
   sequence        Int?       @default(0)
   createdDate     DateTime?  @default(now())
-  treeId          Int?
+  treeId          Int
   tree            Tree?      @relation(fields: [treeId], references: [id])
-  groupId         Int?
+  groupId         Int
   group           TreeGroup? @relation(fields: [groupId], references: [id])
   createdByUser   User?      @relation(fields: [createdByUserId], references: [id])
   createdByUserId Int?
+
+  @@id([treeId, groupId])
 }
 
 model Category {
