@@ -255,6 +255,7 @@ model TreeToGroup {
   id              Int        @id @default(autoincrement())
   name            String?
   description     String?    @db.Text
+  sequence        Int?       @default(0)
   createdDate     DateTime?  @default(now())
   treeId          Int?
   tree            Tree?      @relation(fields: [treeId], references: [id])
