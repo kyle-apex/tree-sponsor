@@ -147,9 +147,11 @@ const TreeDisplay = ({
             >
               <FullscreenIcon></FullscreenIcon>
             </IconButton>
-            <IconButton onClick={handleClose} sx={{ right: 5, top: 5 }} className='hoverImageIconButton'>
-              <ClearIcon></ClearIcon>
-            </IconButton>
+            {handleClose && (
+              <IconButton onClick={handleClose} sx={{ right: 5, top: 5 }} className='hoverImageIconButton'>
+                <ClearIcon></ClearIcon>
+              </IconButton>
+            )}
             {tree?.images?.length > 1 && (
               <IconButton
                 aria-label='share'
@@ -244,9 +246,11 @@ const TreeDisplay = ({
                 subtitleSx={{ textAlign: isMobile && leafImage ? 'left' : 'center' }}
               ></SpeciesQuiz>
 
-              <Button fullWidth color='inherit' sx={{ mt: 2 }} onClick={handleClose}>
-                Close
-              </Button>
+              {handleClose && (
+                <Button fullWidth color='inherit' sx={{ mt: 2 }} onClick={handleClose}>
+                  Close
+                </Button>
+              )}
             </CardContent>
           )}
 
