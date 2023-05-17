@@ -19,6 +19,7 @@ import {
   EventCheckIn,
   TreeChangeLog,
   SpeciesQuizResponse,
+  TreeGroup,
 } from '@prisma/client';
 import { ViewportProps } from 'react-map-gl';
 import { Stripe } from 'stripe';
