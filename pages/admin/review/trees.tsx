@@ -19,19 +19,23 @@ import AddTreeDialog from 'components/tree/AddTreeDialog';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import TablePagination from '@mui/material/TablePagination';
+import SplitRow from 'components/layout/SplitRow';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'isTreeReviewer');
 };
 
 async function fetchTrees(reviewStatusFilter = '') {
-  const queryString = reviewStatusFilter ? '?take=32&reviewStatus=' + encodeURIComponent(reviewStatusFilter) : '';
+  const queryString = reviewStatusFilter ? '?reviewStatus=' + encodeURIComponent(reviewStatusFilter) : '';
   return parsedGet<PartialTree[]>('/api/trees' + queryString);
 }
 
 const ReviewTreesPage = () => {
   const [reviewStatus, setReviewStatus] = useState<ReviewStatus>('New');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(8);
 
   const apiKey = ['review-trees', reviewStatus];
 
@@ -65,6 +69,14 @@ const ReviewTreesPage = () => {
     await axios.delete('/api/trees/' + treeId);
     refetchTrees();
   }
+  const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: { target: { value: string } }) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   // TODO refactor into memoized component to avoid re-render all when updating
   return (
     <>
@@ -95,8 +107,23 @@ const ReviewTreesPage = () => {
           label='Filter by Status'
           mb={2}
         ></ReviewStatusSelect>
+        <SplitRow alignItems='center' mobileFlexDirection='column'>
+          <></>
+          <Box>
+            <TablePagination
+              rowsPerPageOptions={[8, 16, 32]}
+              component='div'
+              count={trees?.length || 0}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              labelRowsPerPage='Trees per page:'
+            />
+          </Box>
+        </SplitRow>
         <Grid container spacing={4}>
-          {trees?.map(tree => {
+          {trees?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(tree => {
             return (
               <Grid key={tree.id} item xs={12} sm={6} md={3}>
                 <Card sx={{ '.MuiCardContent-root': { padding: 0, paddingBottom: 0 } }}>

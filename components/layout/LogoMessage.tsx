@@ -1,16 +1,20 @@
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Image from 'next/image';
+import { useState } from 'react';
 
 const LogoMessage = ({
   children,
   hideLogo,
   justifyContent = 'center',
+  isCheckin,
 }: {
   children: React.ReactNode;
   hideLogo?: boolean;
   justifyContent?: string;
+  isCheckin?: boolean;
 }) => {
+  const [isQrMode, setIsQrMode] = useState(false);
   return (
     <Container
       maxWidth='xs'
@@ -39,9 +43,24 @@ const LogoMessage = ({
           }}
         >
           {!hideLogo && (
-            <Box className='center' m={3}>
-              <Image src='/logo.png' alt='TreeFolks Young Professionals Logo' width={100} height={100} />
-            </Box>
+            <>
+              <Box
+                className='center'
+                m={3}
+                onClick={() => {
+                  if (isCheckin) setIsQrMode((current: boolean) => !current);
+                }}
+              >
+                {isQrMode ? (
+                  <Image src='/qr-checkin.png' alt='TreeFolks Young Professionals Logo' width={100} height={100} />
+                ) : (
+                  <Image src='/logo.png' alt='TreeFolks Young Professionals Logo' width={100} height={100} />
+                )}
+                <Box sx={{ textAlign: 'center', fontSize: '10px', color: '#4B7769', marginTop: '-4px' }}>
+                  {isQrMode ? 'Scan to Share' : 'Tap for QR Code'}
+                </Box>
+              </Box>
+            </>
           )}
           {children}
         </Box>

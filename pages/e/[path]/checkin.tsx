@@ -14,7 +14,7 @@ const CheckinPage = ({ event }: { event: PartialEvent }) => {
 
   return (
     <Layout title='Event Checkin' header='TreeFolksYP' ogImage='https://tfyp-images.s3.amazonaws.com/Event+Check-in.png'>
-      <LogoMessage justifyContent='start'>
+      <LogoMessage isCheckin={true} justifyContent='start'>
         <Checkin event={parsedEvent} />
       </LogoMessage>
     </Layout>

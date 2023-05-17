@@ -279,7 +279,7 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
         </Box>
       </Box>
       <Box sx={{ display: activeStep === 1 ? 'block' : 'none' }}>
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 3 }} className='box-shadow'>
           <ImageUploadAndPreview
             imageUrl={tree.pictureUrl}
             setImageUrl={(imageUrl: string) => {

@@ -84,6 +84,8 @@ model User {
   treeCheckIns          TreeCheckIn[]
   speciesQuizResponses  SpeciesQuizResponse[]
   organizedEvents       Event[]               @relation("OrganizerToEvent")
+  groups                TreeGroup[]
+  treeToGroupLinks      TreeToGroup[]
 
   @@map(name: "users")
 }
@@ -234,6 +236,34 @@ model Tree {
   events                   Event[]               @relation("TreeToEvent")
   checkIns                 TreeCheckIn[]
   speciesQuizResponses     SpeciesQuizResponse[]
+  groupLinks               TreeToGroup[]
+}
+
+model TreeGroup {
+  id              Int           @id @default(autoincrement())
+  name            String?
+  description     String?       @db.Text
+  createdDate     DateTime?     @default(now())
+  pictureUrl      String?
+  path            String?       @db.VarChar(256)
+  createdByUser   User?         @relation(fields: [createdByUserId], references: [id])
+  createdByUserId Int?
+  treeLinks       TreeToGroup[]
+}
+
+model TreeToGroup {
+  name            String?
+  description     String?    @db.Text
+  sequence        Int?       @default(0)
+  createdDate     DateTime?  @default(now())
+  treeId          Int
+  tree            Tree?      @relation(fields: [treeId], references: [id])
+  groupId         Int
+  group           TreeGroup? @relation(fields: [groupId], references: [id])
+  createdByUser   User?      @relation(fields: [createdByUserId], references: [id])
+  createdByUserId Int?
+
+  @@id([treeId, groupId])
 }
 
 model Category {
