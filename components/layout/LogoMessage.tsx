@@ -15,6 +15,7 @@ const LogoMessage = ({
   isCheckin?: boolean;
 }) => {
   const [isQrMode, setIsQrMode] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   return (
     <Container
       maxWidth='xs'
@@ -52,13 +53,27 @@ const LogoMessage = ({
                 }}
               >
                 {isQrMode ? (
-                  <Image src='/qr-checkin.png' alt='TreeFolks Young Professionals Logo' width={100} height={100} />
+                  <Image
+                    src='/qr-checkin.png'
+                    alt='TreeFolks Young Professionals Logo'
+                    onLoadingComplete={() => setIsLoaded(true)}
+                    width={100}
+                    height={100}
+                  />
                 ) : (
-                  <Image src='/logo.png' alt='TreeFolks Young Professionals Logo' width={100} height={100} />
+                  <Image
+                    src='/logo.png'
+                    onLoadingComplete={() => setIsLoaded(true)}
+                    alt='TreeFolks Young Professionals Logo'
+                    width={100}
+                    height={100}
+                  />
                 )}
-                <Box sx={{ textAlign: 'center', fontSize: '10px', color: '#4B7769', marginTop: '-4px' }}>
-                  {isQrMode ? 'Scan to Share' : 'Tap for QR Code'}
-                </Box>
+                {isLoaded && (
+                  <Box sx={{ textAlign: 'center', fontSize: '10px', color: '#4B7769', marginTop: '-4px' }}>
+                    {isQrMode ? 'Scan to Share' : 'Tap for QR Code'}
+                  </Box>
+                )}
               </Box>
             </>
           )}
