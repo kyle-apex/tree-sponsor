@@ -26,9 +26,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       isCorrect: true,
       ...whereFilter,
     },
+    orderBy: {
+      _count: {
+        id: 'desc',
+      },
+    },
   });
 
-  console.log('responses', responses);
+  //console.log('responses', responses);
 
   const userIds = responses.map(response => response.userId);
 
@@ -38,15 +43,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       id: { in: userIds },
     },
   });
-  console.log('users', users, userIds, users);
+  //console.log('users', users, userIds, users);
 
-  const leaders: LeaderRow[] = responses?.map((response, idx) => {
-    const row: LeaderRow = { position: idx + 1 };
-    row.count = response._count;
-    row.user = users.find(user => user.id == response.userId);
-    return row;
-  });
-  console.log('leaders', leaders);
+  const leaders: LeaderRow[] = responses
+    ?.map((response, idx) => {
+      const row: LeaderRow = { position: idx + 1 };
+      row.count = response._count;
+      row.user = users.find(user => user.id == response.userId);
+      return row;
+    })
+    .filter(leader => !!leader.user);
+
+  //console.log('leaders', leaders);
 
   res.status(200).json(leaders);
 }

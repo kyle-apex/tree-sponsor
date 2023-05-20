@@ -43,7 +43,7 @@ const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: str
         {isSignedIn && (
           <div className='center'>
             <h2>Thanks for your donation!</h2>
-            <p>You can manage your thank-a-tree tokens in your account:</p>
+            <p>View your membership benefits in your account:</p>
             <Link href='/account'>
               <Button fullWidth variant='outlined' color='primary'>
                 View My Account
