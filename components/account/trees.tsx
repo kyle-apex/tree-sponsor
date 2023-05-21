@@ -23,14 +23,12 @@ async function fetchTrees() {
   return parsedGet<PartialTree[]>('/api/me/trees' + queryString);
 }
 
-const apiKey = ['my-trees'];
+const apiKey = ['my-trees', 'review'];
 
 const AccountTrees = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(8);
-
-  const apiKey = ['my-trees'];
 
   const { data: trees, refetch: refetchTrees } = useQuery<PartialTree[]>(apiKey, () => fetchTrees(), {
     keepPreviousData: true,
