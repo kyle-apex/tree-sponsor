@@ -69,7 +69,7 @@ const LogoMessage = ({
                     height={100}
                   />
                 )}
-                {isLoaded && (
+                {isLoaded && isCheckin && (
                   <Box sx={{ textAlign: 'center', fontSize: '10px', color: '#4B7769', marginTop: '-4px' }}>
                     {isQrMode ? 'Scan to Share' : 'Tap for QR Code'}
                   </Box>
