@@ -117,7 +117,7 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
         clearTimeout(saveDelayTimeout);
       };
     }
-  }, [saveDelayArgs, tree]);
+  }, [saveDelayArgs, tree, leafImage]);
 
   const doCrop = async () => {
     // create a canvas element to draw the cropped image
