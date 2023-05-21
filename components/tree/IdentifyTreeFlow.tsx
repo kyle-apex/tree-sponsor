@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useContext } from 'react';
+import React, { useState, useCallback, useRef, useContext, useEffect } from 'react';
 import { PartialSpecies, PartialTree, PartialTreeImage } from 'interfaces';
 import SplitRow from 'components/layout/SplitRow';
 import LoadingButton from 'components/LoadingButton';
@@ -40,6 +40,8 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
   const [isSkipped, setIsSkipped] = useState(false);
   const imageRef = useRef<any>();
   const [email] = useLocalStorage('checkinEmail', '');
+  // Helps delay saving tree while image upload is in progress
+  const [saveDelayArgs, setSaveDelayArgs] = useState<Partial<{ step: number; isCompleted: boolean }>>();
 
   const handleChange = useCallback((propertyName: string, value: string | number) => {
     setTree((current: PartialTree) => {
@@ -84,9 +86,8 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
   const saveStep = async (step: number, isCompleted?: boolean) => {
     if (isCompleted) setIsCompleting(true);
     if (isAwaitingUpload.current) {
-      setTimeout(() => {
-        saveStep(step, isCompleted);
-      }, 250);
+      // Delay saving tree while image upload is in progress
+      setSaveDelayArgs({ step, isCompleted });
       return;
     }
     setActiveStep(step);
@@ -101,6 +102,22 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
     }
     if (onComplete && isCompleted) onComplete();
   };
+
+  // Delay saving tree while image upload is in progress
+  useEffect(() => {
+    if (saveDelayArgs) {
+      const saveDelayTimeout = setTimeout(() => {
+        const step = saveDelayArgs.step;
+        const isCompleted = saveDelayArgs.isCompleted;
+        setSaveDelayArgs(null);
+        saveStep(step, isCompleted);
+      }, 400);
+
+      return () => {
+        clearTimeout(saveDelayTimeout);
+      };
+    }
+  }, [saveDelayArgs, tree]);
 
   const doCrop = async () => {
     // create a canvas element to draw the cropped image

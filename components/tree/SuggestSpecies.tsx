@@ -19,10 +19,8 @@ const SuggestSpecies = ({
   const [suggestions, setSuggestions] = useState<any[]>();
   const [isLoading, setIsLoading] = useState(false);
   const getIdentitySuggestions = async (imageContent: string) => {
-    console.log('imageContent', imageContent);
     setIsLoading(true);
     const { data: results } = await axios.post('/api/species/suggest', { imageContent });
-    console.log('results', results);
     setSuggestions(results);
     setIsLoading(false);
   };

@@ -50,7 +50,8 @@ const LoadingButton = ({
       onClick={onClick}
       startIcon={!isLoading ? startIcon : null}
     >
-      {!isLoading ? children : <CircularProgress size={24} color={color} />}
+      {children}
+      {isLoading && <CircularProgress size={24} color={color} sx={{ position: 'absolute' }} />}
     </Button>
   );
 };

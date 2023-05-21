@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { PartialTree } from 'interfaces';
 import SplitRow from 'components/layout/SplitRow';
 import LoadingButton from 'components/LoadingButton';
@@ -22,7 +22,8 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
   const [isCompleting, setIsCompleting] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [completed] = useState<{ [k: number]: boolean }>({});
-  const [imageUuid, setImageUuid] = useState('');
+  // Helps delay saving tree while image upload is in progress
+  const [saveDelayArgs, setSaveDelayArgs] = useState<Partial<{ step: number; isCompleted: boolean }>>();
 
   const handleChange = useCallback((propertyName: string, value: string | number) => {
     setTree(current => {
@@ -47,9 +48,8 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
   const saveStep = async (step: number, isCompleted?: boolean) => {
     if (isCompleted) setIsCompleting(true);
     if (isAwaitingUpload.current && isCompleted) {
-      setTimeout(() => {
-        saveStep(step, isCompleted);
-      }, 250);
+      // Delay saving tree while image upload is in progress
+      setSaveDelayArgs({ step, isCompleted });
       return;
     }
     setActiveStep(step);
@@ -61,6 +61,22 @@ const AddTreeForm = ({ onComplete }: { onComplete: () => void }) => {
     if (isCompleted) setIsCompleting(false);
     if (onComplete && isCompleted) onComplete();
   };
+
+  // Delay saving tree while image upload is in progress
+  useEffect(() => {
+    if (saveDelayArgs) {
+      const saveDelayTimeout = setTimeout(() => {
+        const step = saveDelayArgs.step;
+        const isCompleted = saveDelayArgs.isCompleted;
+        setSaveDelayArgs(null);
+        saveStep(step, isCompleted);
+      }, 400);
+
+      return () => {
+        clearTimeout(saveDelayTimeout);
+      };
+    }
+  }, [saveDelayArgs, tree]);
 
   return (
     <>
