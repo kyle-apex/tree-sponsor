@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const whereFilter = getLocationFilterByDistance(Number(event.location.latitude), Number(event.location.longitude), 500);
       const includeFilter: Prisma.TreeInclude = {
         images: { orderBy: { sequence: 'asc' } },
-        species: { select: { id: true, commonName: true, height: true, growthRate: true, longevity: true, isInTexas: true } },
+        species: { select: { id: true, commonName: true, height: true, growthRate: true, longevity: true, isNative: true } },
         speciesQuizResponses: { where: { userId: user?.id } },
       };
       whereFilter.speciesId = { not: null };
