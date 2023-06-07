@@ -44,13 +44,13 @@ const SpeciesDetails = ({ species }: { species: PartialSpecies }) => {
               <TableCell>Growth Rate</TableCell>
               <TableCell align='right'>{species.growthRate}</TableCell>
             </TableRow>
-            {species.isInTexas && (
+            {species.isNative && (
               <TableRow sx={{ '&:last-child td': { border: 0 } }}>
                 <TableCell sx={{ width: '10px', padding: '16px 0px' }} component='td' scope='row'>
                   <PlaceIcon></PlaceIcon>
                 </TableCell>
                 <TableCell>Native to Texas</TableCell>
-                <TableCell align='right'>{species.isInTexas ? 'Yes' : 'No'}</TableCell>
+                <TableCell align='right'>{species.isNative ? 'Yes' : 'No'}</TableCell>
               </TableRow>
             )}
           </TableBody>
