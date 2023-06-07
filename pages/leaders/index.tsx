@@ -14,13 +14,13 @@ const LeadersPage = () => {
         <Typography variant='h1'>Leaderboards</Typography>
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
+            {false && <Typography variant='h2'>Tree ID Quiz Leaderboard</Typography>}
+            <TopQuizResponders></TopQuizResponders>
+          </Grid>
+          <Grid item xs={12} md={6}>
             {false && <Typography variant='h2'>Top Tree Identifiers</Typography>}
 
             <TopIdentifiers></TopIdentifiers>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            {false && <Typography variant='h2'>Tree ID Quiz Leaderboard</Typography>}
-            <TopQuizResponders></TopQuizResponders>
           </Grid>
         </Grid>
       </Container>
@@ -29,3 +29,4 @@ const LeadersPage = () => {
 };
 
 export default LeadersPage;
+``;
