@@ -17,6 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (event.location?.latitude) {
       trees = await listTreesForCoordinate(Number(event.location.latitude), Number(event.location.longitude), 500, user?.id);
     }
+
     res.status(200).json(trees);
   }
 }
