@@ -85,7 +85,7 @@ const MapMarkerDisplay = ({
           trackUserLocation={false}
           // eslint-disable-next-line @typescript-eslint/no-empty-function
 
-          onGeolocate={(e: any) => {
+          onGeolocate={(_e: any) => {
             //console.log('on geolocate', e);
             //if (zoomToLocation || geolocatedRef.current) {
             /*setViewport({

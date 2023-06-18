@@ -30,6 +30,7 @@ const IdentifyTreeFlowDialog = dynamic(() => import('components/tree/IdentifyTre
 });
 
 const MapPage = ({ event }: { event?: PartialEvent }) => {
+  console.log('e', event);
   const [session] = useSession();
 
   const [email, setEmail] = useLocalStorage('checkinEmail', '');
