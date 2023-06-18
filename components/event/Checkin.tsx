@@ -35,6 +35,7 @@ import EventNameDisplay from './EventNameDisplay';
 import TreeIdQuiz from './TreeIdQuiz';
 import BecomeAMemberDialog from './BecomeAMemberDialog';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+//import TreeIdLeaderPosition from './TreeIdLeaderPosition';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
   // eslint-disable-next-line react/display-name
@@ -424,7 +425,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             defaultLongitude={Number(event.location?.longitude)}
             setIsRefreshing={setIsQuizRefreshing}
           ></TreeIdQuiz>
-          <Box sx={{ textAlign: 'right', mt: -2.8, mb: 1, fontSize: '80%' }}>
+          <Box sx={{ textAlign: 'right', mt: 0.2, mb: 1, fontSize: '80%' }}>
             <Link href='/leaders'>
               <a
                 style={{
@@ -450,7 +451,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             latitude={event.location ? Number(event.location.latitude) : null}
             longitude={event.location ? Number(event.location.longitude) : null}
           ></IdentifyTreeFlowDialog>
-
           <Attendees
             users={status.attendees}
             onDelete={userId => {
