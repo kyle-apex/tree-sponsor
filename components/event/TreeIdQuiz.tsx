@@ -78,7 +78,17 @@ const TreeIdQuiz = ({
 
   //const { remove } = useRemoveFromQuery(['attendees', { searchString }], handleDelete, true);
 
-  const { updateById: updateTreeById } = useUpdateQueryById(['trees', { email, eventId }], handleUpdate, true);
+  const { updateById: updateTreeById } = useUpdateQueryById(
+    [
+      'trees',
+      {
+        latitude,
+        longitude,
+      },
+    ],
+    handleUpdate,
+    true,
+  );
   return (
     <QuizContext.Provider value={{ updateTreeById, trees }}>
       <Box>
