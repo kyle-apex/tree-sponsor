@@ -16,6 +16,7 @@ import useLocalStorage from 'utils/hooks/use-local-storage';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { SxProps, Theme } from '@mui/material/styles';
+import TreeIdHelpDialog from 'components/event/TreeIdHelpDialog';
 
 const saveResponse = async (speciesQuizResponse: PartialSpeciesQuizResponse & { email: string }) => {
   await axios.post('/api/speciesQuizResponses', speciesQuizResponse);
@@ -54,6 +55,7 @@ const SpeciesQuiz = ({
   const [speciesOptions, setSpeciesOptions] = useState<PartialSpecies[]>([]);
   const { updateTreeById, trees } = useContext(QuizContext);
   const [email] = useLocalStorage('checkinEmail', '');
+  const [isHintDialogOpen, setIsHintDialogOpen] = useState(false);
 
   const theme = useTheme();
 
@@ -119,6 +121,7 @@ const SpeciesQuiz = ({
         </Typography>
       )}
       <Box id='scroll-element' sx={{ mt: !clickedSpeciesId ? -6 : -5, mb: 8 }}></Box>
+
       {speciesOptions.map(species => {
         const color =
           clickedSpeciesId && (clickedSpeciesId == species.id || species.id == correctSpecies.id)
@@ -175,6 +178,22 @@ const SpeciesQuiz = ({
         );
       })}
       {clickedSpeciesId && <SpeciesDetails species={correctSpecies}></SpeciesDetails>}
+      {!clickedSpeciesId && (
+        <Box sx={{ fontSize: '0.875rem', textAlign: 'center' }}>
+          <Typography variant='h6' color='secondary' mb={0.5} mt={1}>
+            Want a hint?
+          </Typography>
+          <a
+            onClick={() => {
+              setIsHintDialogOpen(true);
+            }}
+            style={{ cursor: 'pointer', marginBottom: 1 }}
+          >
+            Click here to take a leaf picture for species suggestions
+          </a>
+          <TreeIdHelpDialog isOpen={isHintDialogOpen} setIsOpen={setIsHintDialogOpen}></TreeIdHelpDialog>
+        </Box>
+      )}
     </>
   );
 };

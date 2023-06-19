@@ -14,7 +14,7 @@ import LocationSelector from 'components/LocationSelector';
 import getImageDimensions from 'utils/aws/get-image-dimensions';
 import { IdentifyTreeContext } from './IdentifyTreeProvider';
 import UploadLeaf from './UploadLeaf';
-import ImageCropper from 'components/ImageCropper';
+import ImageCropper, { FileBrowserHandle } from 'components/ImageCropper';
 import SpeciesSelector from './SpeciesSelector';
 import SuggestSpecies from './SuggestSpecies';
 import { Crop } from 'react-image-crop';
@@ -36,6 +36,7 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
   const [completed] = useState<{ [k: number]: boolean }>({});
   const [imageUuid, setImageUuid] = useState('');
   const currentCrop = useRef<Crop>();
+  const imageCropperRef = useRef<FileBrowserHandle>();
   const [isCropped, setIsCropped] = useState(false);
   const [isSkipped, setIsSkipped] = useState(false);
   const imageRef = useRef<any>();
@@ -120,45 +121,12 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
   }, [saveDelayArgs, tree, leafImage]);
 
   const doCrop = async () => {
-    // create a canvas element to draw the cropped image
-    const canvas = document.createElement('canvas');
-
-    // get the image element
-    const image = imageRef.current;
-    const crop = currentCrop.current;
-
-    // draw the image on the canvas
-    if (image) {
-      const scaleX = image.naturalWidth / image.width;
-      const scaleY = image.naturalHeight / image.height;
-      const ctx = canvas.getContext('2d');
-      const pixelRatio = 1; //window.devicePixelRatio;
-      canvas.width = crop.width * pixelRatio * scaleX;
-      canvas.height = crop.height * pixelRatio * scaleY;
-
-      if (ctx) {
-        ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-        ctx.imageSmoothingQuality = 'high';
-
-        ctx.drawImage(
-          image,
-          crop.x * scaleX,
-          crop.y * scaleY,
-          crop.width * scaleX,
-          crop.height * scaleY,
-          0,
-          0,
-          crop.width * scaleX,
-          crop.height * scaleY,
-        );
-      }
-
-      const base64Image = canvas.toDataURL('image/jpeg', 1); // can be changed to jpeg/jpg etc
+    const { base64Image, width, height } = imageCropperRef?.current?.doCrop();
+    if (base64Image)
       setLeafImage((img: any) => {
-        const updatedImage = { ...img, url: base64Image, width: canvas.width, height: canvas.height };
+        const updatedImage = { ...img, url: base64Image, width, height };
         return updatedImage;
       });
-    }
 
     setIsCropped(true);
   };
@@ -185,6 +153,7 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
                   return { ...image, url };
                 });
               }}
+              ref={imageCropperRef}
               imageRef={imageRef}
               addSubtitleText='Click to add leaf picture'
               onCrop={newCrop => setCurrentCrop(newCrop)}
