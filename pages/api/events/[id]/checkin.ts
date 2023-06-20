@@ -115,6 +115,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           if (!user.roles) user.roles = [];
           user.roles.push({ name: 'Organizer' });
         }
+        if (user.email?.endsWith('@treefolks.org')) user.roles.push({ name: 'Staff' });
         if (user?.id != userId) delete user.email;
         return user;
       });
