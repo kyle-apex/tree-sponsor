@@ -33,7 +33,8 @@ const AttendeeContactDialog = ({
   const [croppedImage, setCroppedImage] = useState('');
 
   const doCrop = async () => {
-    const { base64Image, width, height } = imageCropperRef?.current?.doCrop();
+    console.log('treeId', treeId);
+    const { base64Image } = imageCropperRef?.current?.doCrop();
     setCroppedImage(base64Image);
   };
 
