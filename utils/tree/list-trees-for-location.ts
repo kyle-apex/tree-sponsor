@@ -1,6 +1,6 @@
 import { PartialTree } from 'interfaces';
 import { getLocationFilterByDistance } from 'utils/prisma/get-location-filter-by-distance';
-import { Prisma } from 'utils/prisma/init';
+import { Prisma, prisma } from 'utils/prisma/init';
 
 export default async function listTreesForCoordinate(
   latitude: number,

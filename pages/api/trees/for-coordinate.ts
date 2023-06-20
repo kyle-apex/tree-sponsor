@@ -2,6 +2,7 @@ import { PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'utils/auth/get-session';
 import listTreesForCoordinate from 'utils/tree/list-trees-for-location';
+import { prisma } from 'utils/prisma/init';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });
