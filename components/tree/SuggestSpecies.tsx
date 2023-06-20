@@ -11,10 +11,12 @@ const SuggestSpecies = ({
   imageContent,
   speciesId,
   onSelect,
+  maxSuggestions = 10,
 }: {
   imageContent?: string;
   speciesId?: number;
   onSelect?: (speciesId: number) => void;
+  maxSuggestions?: number;
 }) => {
   const [suggestions, setSuggestions] = useState<any[]>();
   const [isLoading, setIsLoading] = useState(false);
@@ -35,12 +37,14 @@ const SuggestSpecies = ({
   // back/next button
   return (
     <>
-      <Typography mt={3}>
-        {isLoading ? 'Or by clicking a recommendation: (this may take 10-15 seconds)' : 'Or by clicking a recommendation:'}
-      </Typography>
+      {onSelect && (
+        <Typography mt={3}>
+          {isLoading ? 'Or by clicking a recommendation: (this may take 10-15 seconds)' : 'Or by clicking a recommendation:'}
+        </Typography>
+      )}
       <List>
         {!isLoading &&
-          suggestions?.map(suggestion => {
+          suggestions?.slice(0, maxSuggestions).map(suggestion => {
             return (
               <SpeciesSuggestion
                 key={suggestion?.id}

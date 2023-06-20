@@ -9,8 +9,10 @@ import ReactCrop, { centerCrop, makeAspectCrop, Crop, PixelCrop } from 'react-im
 import 'react-image-crop/dist/ReactCrop.css';
 import { SxProps, Theme } from '@mui/material/styles';
 
-type FileBrowserHandle = {
+type CropResult = { base64Image: string; height: number; width: number };
+export type FileBrowserHandle = {
   openFileBrowser: () => void;
+  doCrop: () => CropResult;
 };
 
 function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: number, percentage?: number) {
@@ -65,6 +67,44 @@ const ImageCropper = forwardRef(
     useImperativeHandle(ref, () => ({
       openFileBrowser() {
         fileInputRef?.current?.click();
+      },
+      doCrop(): CropResult {
+        // create a canvas element to draw the cropped image
+        const canvas = document.createElement('canvas');
+
+        // get the image element
+        const image = imageRef.current;
+        const currentCrop = completedCrop;
+
+        // draw the image on the canvas
+        if (image) {
+          const scaleX = image.naturalWidth / image.width;
+          const scaleY = image.naturalHeight / image.height;
+          const ctx = canvas.getContext('2d');
+          const pixelRatio = 1; //window.devicePixelRatio;
+          canvas.width = currentCrop.width * pixelRatio * scaleX;
+          canvas.height = currentCrop.height * pixelRatio * scaleY;
+
+          if (ctx) {
+            ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+            ctx.imageSmoothingQuality = 'high';
+
+            ctx.drawImage(
+              image,
+              currentCrop.x * scaleX,
+              currentCrop.y * scaleY,
+              currentCrop.width * scaleX,
+              currentCrop.height * scaleY,
+              0,
+              0,
+              currentCrop.width * scaleX,
+              currentCrop.height * scaleY,
+            );
+          }
+
+          const base64Image = canvas.toDataURL('image/jpeg', 1); // can be changed to jpeg/jpg etc
+          return { base64Image, width: canvas.width, height: canvas.height };
+        }
       },
     }));
 
@@ -194,7 +234,7 @@ const ImageCropper = forwardRef(
               onChange={(_, percentCrop) => setCrop(percentCrop)}
               onComplete={c => {
                 setCompletedCrop(c);
-                if (c) onCrop(c);
+                if (c && onCrop) onCrop(c);
               }}
               aspect={1}
             >

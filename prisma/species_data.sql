@@ -1,5 +1,9 @@
 --https://www.fs.fed.us/nrs/pubs/rb/rb_nrs100.pdf
 --i-tree export
+--https://aggie-hort.tamu.edu/ornamentals/natives/INDEXSCIENTIFIC.HTM
+--let nativeTreeNames = [], treeSQL = '';
+--document.querySelectorAll('a').forEach(a => {if (a.innerText.includes(' ')) nativeTreeNames.push(a.innerText)});
+-- for (let name of nativeTreeNames) treeSQL += `UPDATE species SET isNative=1 WHERE name='${name}';`;
 
 INSERT INTO Species (name,commonName,alternateNaming,genus,species,speciesCode,growthForm,percentLeafType,leafType,growthRate,longevity,height,familyName,orderName,className,isInTexas,searchPriority) VALUES ("Abarema cochliocarpos","Abarema cochliocarpos","","Abarema","cochliocarpos","ABCO1","Shrub or small tree","Hardwood","Evergreen","","",30,"Fabaceae","Fabales","Rosidae",false,0);
 INSERT INTO Species (name,commonName,alternateNaming,genus,species,speciesCode,growthForm,percentLeafType,leafType,growthRate,longevity,height,familyName,orderName,className,isInTexas,searchPriority) VALUES ("Abarema glauca","Abarema glauca","","Abarema","glauca","ABGL","Tree","Hardwood","Evergreen","","",10,"Fabaceae","Fabales","Rosidae",false,0);
