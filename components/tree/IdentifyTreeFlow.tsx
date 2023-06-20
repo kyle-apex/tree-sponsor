@@ -155,7 +155,7 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
               }}
               ref={imageCropperRef}
               imageRef={imageRef}
-              addSubtitleText='Click to add leaf picture'
+              addSubtitleText='Tap to add leaf picture'
               onCrop={newCrop => setCurrentCrop(newCrop)}
               previewSx={{ borderRadius: '50%', maxWidth: '100%', width: '200px', height: '200px', margin: '20px auto' }}
             ></ImageCropper>

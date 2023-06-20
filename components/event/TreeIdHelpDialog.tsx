@@ -48,7 +48,7 @@ const AttendeeContactDialog = ({
               setImageUrl={setImageUrl}
               ref={imageCropperRef}
               imageRef={imageRef}
-              addSubtitleText='Click to add a picture of a leaf or two for identification suggestions'
+              addSubtitleText='Tap to add a picture of a leaf or two for identification suggestions'
               previewSx={{ borderRadius: '50%', maxWidth: '100%', width: '200px', height: '200px', margin: '20px auto' }}
             ></ImageCropper>
           )}

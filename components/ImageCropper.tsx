@@ -40,7 +40,7 @@ const ImageCropper = forwardRef(
       maxWidth,
       hideEditButton,
       size = 'default',
-      addSubtitleText = 'Click to Add Picture',
+      addSubtitleText = 'Tap to Add Picture',
       previewSx = {},
       onCrop,
       imageRef,

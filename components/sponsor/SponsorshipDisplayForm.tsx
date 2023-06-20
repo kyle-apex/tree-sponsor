@@ -70,7 +70,7 @@ const SponsorshipDisplayForm = ({
             minHeight: '200px',
           }}
           component='div'
-          title='Click to Update Image'
+          title='Tap to Update Image'
         >
           <ImageUploadAndPreview imageUrl={imageUrl} setImageUrl={setImageUrl} />
         </CardMedia>
