@@ -407,13 +407,13 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               </a>
               <a
                 onClick={() => {
-                  if (status?.isFound === false) {
+                  if (!hasActiveMembership) {
                     setIsMembershipDialogOpen(true);
                   } else setIsAddTreeDialogOpen(true);
                 }}
                 style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '3px', alignItems: 'center' }}
               >
-                <LoupeIcon sx={{ fontSize: 'inherit' }}></LoupeIcon> Identify a tree
+                <LoupeIcon sx={{ fontSize: 'inherit' }}></LoupeIcon> Add a tree
               </a>
             </SplitRow>
             <BecomeAMemberDialog open={isMembershipDialogOpen} setOpen={setIsMembershipDialogOpen}></BecomeAMemberDialog>
