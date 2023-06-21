@@ -49,6 +49,7 @@ const currentAttendeeStyles = {
   borderRadius: '5px',
   pl: 1,
   pr: 1,
+  backgroundColor: '#f7f7f7',
 };
 
 const Attendee = ({
@@ -84,17 +85,13 @@ const Attendee = ({
   const hasContact = user.profile?.instagramHandle || user.profile?.twitterHandle || user.profile?.linkedInLink || user.profile?.bio;
 
   const roleDisplay = getRoleDisplay(user);
-  const isCurrentNonMemberUser =
-    (email?.toLowerCase() == user.email?.toLowerCase() || email?.toLowerCase() == `"${user.email?.toLowerCase()}"`) &&
-    !hideContactPageIcon &&
-    !roleDisplay;
+  const isCurrentUser =
+    (email?.toLowerCase() == user.email?.toLowerCase() || email?.toLowerCase() == `"${user.email?.toLowerCase()}"`) && !hideContactPageIcon;
 
-  const stylesSx = isCurrentNonMemberUser
-    ? { display: 'flex', gap: 2, ...sx, ...currentAttendeeStyles }
-    : { display: 'flex', gap: 2, ...sx };
+  const stylesSx = isCurrentUser ? { ...sx, ...currentAttendeeStyles } : { ...sx };
 
   return (
-    <Box flexDirection='column' sx={stylesSx} className={isCurrentNonMemberUser ? 'box-shadow' : ''}>
+    <Box flexDirection='column' sx={stylesSx} className={isCurrentUser ? 'box-shadow' : ''}>
       <Box flexDirection='row' sx={{ display: 'flex', gap: 2 }}>
         <Box
           sx={{ display: 'flex', alignItems: 'center' }}
@@ -179,8 +176,8 @@ const Attendee = ({
           </Box>
         </Box>
       </Box>
-      {isCurrentNonMemberUser && (
-        <Box>
+      {isCurrentUser && !roleDisplay && (
+        <Box mt={1.25} sx={{ lineHeight: 1 }}>
           <Link href='/membership'>
             <a style={{ textDecoration: 'none', cursor: 'pointer', fontSize: '80%' }}>
               Become a supporter with an annual $20 TreeFolks donation!
