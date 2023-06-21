@@ -76,7 +76,10 @@ const SignupPage = ({
         <Typography color='secondary' variant='h1' sx={{ fontSize: '2rem' }}>
           Become a Supporter
         </Typography>
-        <p>Thank you for your committment to the urban forest! Please select a supporting membership level below:</p>
+        <p>
+          Thank you for your committment to the urban forest and TreeFolks&#39; mission of planting, caring for, and giving away free trees!
+        </p>
+        <p>Please select a supporting membership donation level below:</p>
         <Tabs
           sx={{
             width: '100%',
