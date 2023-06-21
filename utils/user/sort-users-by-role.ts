@@ -1,6 +1,6 @@
 import { PartialUser } from 'interfaces';
 
-const roleHeirarchy = ['Member', 'Staff', 'Core Team', 'Exec Team', 'Organizer'];
+const roleHeirarchy = ['Supporter', 'Staff', 'Core Team', 'Exec Team', 'Organizer'];
 export function getRoleHeirarchyIndex(roles: any[]) {
   let index = -1;
   roles.forEach(role => {

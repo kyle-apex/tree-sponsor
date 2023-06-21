@@ -25,10 +25,10 @@ const BecomeAMemberDialog = ({ open, setOpen }: { open: boolean; setOpen: (isOpe
       </DialogTitle>
       <DialogContent>
         <Typography variant='body2' component='p' mt={2} mb={2}>
-          Adding tree identifications is limitted to TreeFolks Young Professionals members.
+          Adding tree identifications is limitted to TreeFolks Young Professionals supporting members.
         </Typography>
         <Typography variant='body2' component='p' mb={3}>
-          Join today with an annual donation to TreeFolks starting at $20/yr:
+          Become a supporting member today with an annual donation to TreeFolks starting at $20/yr:
         </Typography>
         <Link href='/membership'>
           <Button color='primary' variant='contained' fullWidth sx={{ mb: 2 }}>
