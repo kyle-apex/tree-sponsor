@@ -38,7 +38,17 @@ const getRoleDisplay = (user: PartialUser): string => {
   else if (hasRole(user, 'Organizer')) return 'Organizer';
   else if (hasRole(user, 'Exec Team')) return 'Exec Team';
   else if (hasRole(user, 'Core Team')) return 'Core Team';
-  else if (user.subscriptions?.length > 0) return 'Member';
+  else if (user.subscriptions?.length > 0) return 'Supporter';
+};
+
+const currentAttendeeStyles = {
+  ml: -1,
+  mr: -1,
+  padding: 1,
+  border: 'solid 1px var(--outline-color)',
+  borderRadius: '5px',
+  pl: 1,
+  pr: 1,
 };
 
 const Attendee = ({
@@ -74,91 +84,110 @@ const Attendee = ({
   const hasContact = user.profile?.instagramHandle || user.profile?.twitterHandle || user.profile?.linkedInLink || user.profile?.bio;
 
   const roleDisplay = getRoleDisplay(user);
+  const isCurrentNonMemberUser =
+    (email?.toLowerCase() == user.email?.toLowerCase() || email?.toLowerCase() == `"${user.email?.toLowerCase()}"`) &&
+    !hideContactPageIcon &&
+    !roleDisplay;
+
+  const stylesSx = isCurrentNonMemberUser
+    ? { display: 'flex', gap: 2, ...sx, ...currentAttendeeStyles }
+    : { display: 'flex', gap: 2, ...sx };
 
   return (
-    <Box flexDirection='row' sx={{ display: 'flex', gap: 2, ...sx }}>
-      <Box
-        sx={{ display: 'flex', alignItems: 'center' }}
-        onClick={() => {
-          setIsContactDialogOpen(true);
-        }}
-      >
-        <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
-      </Box>
-      <Box className='full-width'>
-        <Box flexDirection='row' gap={1} sx={{ display: 'flex', marginBottom: 0.5, width: '100%', alignItems: 'center', height: '100%' }}>
-          <Box>
-            <Box flexDirection='row' gap={1} sx={{ display: 'flex', width: '100%', alignItems: 'center', height: '100%' }}>
-              {!user.profilePath && userNameDisplay({ user })}
-              {roleDisplay && (
-                <Typography variant='subtitle2' color='gray' sx={{ fontSize: '.8rem' }}>
-                  {roleDisplay}
+    <Box flexDirection='column' sx={stylesSx} className={isCurrentNonMemberUser ? 'box-shadow' : ''}>
+      <Box flexDirection='row' sx={{ display: 'flex', gap: 2 }}>
+        <Box
+          sx={{ display: 'flex', alignItems: 'center' }}
+          onClick={() => {
+            setIsContactDialogOpen(true);
+          }}
+        >
+          <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
+        </Box>
+        <Box className='full-width'>
+          <Box flexDirection='row' gap={1} sx={{ display: 'flex', marginBottom: 0.5, width: '100%', alignItems: 'center', height: '100%' }}>
+            <Box>
+              <Box flexDirection='row' gap={1} sx={{ display: 'flex', width: '100%', alignItems: 'center', height: '100%' }}>
+                {!user.profilePath && userNameDisplay({ user })}
+                {roleDisplay && (
+                  <Typography variant='subtitle2' color='gray' sx={{ fontSize: '.8rem' }}>
+                    {roleDisplay}
+                  </Typography>
+                )}
+
+                {isEditMode && (
+                  <RestrictSection accessType='isAdmin'>
+                    <DeleteIconButton
+                      onDelete={onDelete}
+                      tooltip='Remove Checkin'
+                      title='Remove Checkin'
+                      itemType='checkin'
+                    ></DeleteIconButton>
+                  </RestrictSection>
+                )}
+              </Box>
+              {user.profile?.organization && (
+                <Typography variant='subtitle2' color='gray' sx={{ fontStyle: 'italic', fontSize: '.7rem' }}>
+                  {user.profile.organization}
                 </Typography>
               )}
-
-              {isEditMode && (
-                <RestrictSection accessType='isAdmin'>
-                  <DeleteIconButton
-                    onDelete={onDelete}
-                    tooltip='Remove Checkin'
-                    title='Remove Checkin'
-                    itemType='checkin'
-                  ></DeleteIconButton>
-                </RestrictSection>
-              )}
             </Box>
-            {user.profile?.organization && (
-              <Typography variant='subtitle2' color='gray' sx={{ fontStyle: 'italic', fontSize: '.7rem' }}>
-                {user.profile.organization}
-              </Typography>
-            )}
-          </Box>
-          <Box sx={{ flex: '1 1 auto' }}></Box>
-          {(email?.toLowerCase() == user.email?.toLowerCase() || email?.toLowerCase() == `"${user.email?.toLowerCase()}"`) &&
-            !hideContactPageIcon && (
+            <Box sx={{ flex: '1 1 auto' }}></Box>
+            {(email?.toLowerCase() == user.email?.toLowerCase() || email?.toLowerCase() == `"${user.email?.toLowerCase()}"`) &&
+              !hideContactPageIcon && (
+                <>
+                  {isPrivate && (
+                    <Tooltip title='Hidden from other attendees'>
+                      <VisibilityOffIcon color='secondary'></VisibilityOffIcon>
+                    </Tooltip>
+                  )}
+                  {(user.displayName || user.name) && (
+                    <IconButton
+                      onClick={() => {
+                        setIsSettingsDialogOpen(true);
+                      }}
+                      sx={{ ml: 1, padding: 0 }}
+                    >
+                      <SettingsIcon color='secondary'></SettingsIcon>
+                    </IconButton>
+                  )}
+                  <AttendeeSettingsDialog
+                    onSetIsPrivate={onSetIsPrivate}
+                    user={user}
+                    isOpen={isSettingsDialogOpen}
+                    setIsOpen={onSettingsDialogClose}
+                    isPrivate={isPrivate}
+                  ></AttendeeSettingsDialog>
+                </>
+              )}
+
+            {(hasContact || user.image) && (
               <>
-                {isPrivate && (
-                  <Tooltip title='Hidden from other attendees'>
-                    <VisibilityOffIcon color='secondary'></VisibilityOffIcon>
-                  </Tooltip>
-                )}
-                {(user.displayName || user.name) && (
+                {hasContact && !hideContactPageIcon && (
                   <IconButton
                     onClick={() => {
-                      setIsSettingsDialogOpen(true);
+                      setIsContactDialogOpen(true);
                     }}
                     sx={{ ml: 1, padding: 0 }}
                   >
-                    <SettingsIcon color='secondary'></SettingsIcon>
+                    <ContactPageIcon color='secondary'></ContactPageIcon>
                   </IconButton>
                 )}
-                <AttendeeSettingsDialog
-                  onSetIsPrivate={onSetIsPrivate}
-                  user={user}
-                  isOpen={isSettingsDialogOpen}
-                  setIsOpen={onSettingsDialogClose}
-                  isPrivate={isPrivate}
-                ></AttendeeSettingsDialog>
+                <AttendeeContactDialog user={user} isOpen={isContactDialogOpen} setIsOpen={setIsContactDialogOpen}></AttendeeContactDialog>
               </>
             )}
-
-          {(hasContact || user.image) && (
-            <>
-              {hasContact && !hideContactPageIcon && (
-                <IconButton
-                  onClick={() => {
-                    setIsContactDialogOpen(true);
-                  }}
-                  sx={{ ml: 1, padding: 0 }}
-                >
-                  <ContactPageIcon color='secondary'></ContactPageIcon>
-                </IconButton>
-              )}
-              <AttendeeContactDialog user={user} isOpen={isContactDialogOpen} setIsOpen={setIsContactDialogOpen}></AttendeeContactDialog>
-            </>
-          )}
+          </Box>
         </Box>
       </Box>
+      {isCurrentNonMemberUser && (
+        <Box>
+          <Link href='/membership'>
+            <a style={{ textDecoration: 'none', cursor: 'pointer', fontSize: '80%' }}>
+              Become a supporter with an annual $20 TreeFolks donation!
+            </a>
+          </Link>
+        </Box>
+      )}
     </Box>
   );
 };

@@ -322,7 +322,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       {status?.isFound === false && activeTab == 1 && (
         <>
           <Typography variant='body2' component='p' mb={2}>
-            Membership status for <b>{status.email}</b> was not found.
+            Supporting membership status for <b>{status.email}</b> was not found.
           </Typography>
           <Typography variant='body2' component='p' mb={3}>
             Click the &quot;Try Another Search&quot; button below to try another e-mail address.
@@ -339,7 +339,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             below!
           </Typography>
           <Typography variant='body2' component='p' mb={3}>
-            Don&apos;t forget to say &quot;Hey&quot; to a Core Team Member to learn more about the organization.
+            Don&apos;t forget to say &quot;Hey&quot; to a Core Team Member to learn more about TreeFolks.
           </Typography>
         </>
       )}
@@ -349,7 +349,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           {hasActiveMembership && (
             <>
               <Typography variant='body2' component='p' mb={2}>
-                🌳 &nbsp;Thanks for continuing to support the urban forest with your membership donation to TreeFolks!
+                🌳 &nbsp;Thanks for continuing to support the urban forest with your supporting membership donation to TreeFolks!
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
                 🥳 &nbsp;{getDonationDateMessage(status.subscription)}
@@ -378,7 +378,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 Thank you for your support.
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
-                Unfortunately <b>your membership is no longer active</b>.
+                Unfortunately <b>your supporting membership is no longer active</b>.
               </Typography>
               <Typography variant='body2' component='p' mb={2}>
                 Your most recent membership donation was {formatDateString(status.subscription.lastPaymentDate)}.
@@ -533,15 +533,16 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       {status?.isFound === false && activeTab != 1 && (
         <>
+          <hr style={{ width: '100%', marginTop: '10px', marginBottom: '20px' }} />
           <Typography variant='body2' component='p' mt={2} mb={2}>
             TreeFolks Young Professionals is the most fun way to support Central Texas&apos; urban forest.
           </Typography>
           <Typography variant='body2' component='p' mb={3}>
-            Join today by starting an annual donation to TreeFolks starting at $20/yr:
+            Become a supporter with an annual donation to TreeFolks starting at $20/yr:
           </Typography>
           <Link href='/membership'>
             <Button color='primary' variant='contained' sx={{ mb: 2 }}>
-              Become a Member
+              Become a Supporter
             </Button>
           </Link>
 
