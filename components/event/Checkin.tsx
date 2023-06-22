@@ -424,7 +424,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             defaultLatitude={Number(event.location?.latitude)}
             defaultLongitude={Number(event.location?.longitude)}
             setIsRefreshing={setIsQuizRefreshing}
-            mapHeight='200px'
+            mapHeight='250px'
           ></TreeIdQuiz>
           <Box sx={{ textAlign: 'right', mt: 0.2, mb: 1, fontSize: '80%' }}>
             <Link href='/leaders'>
