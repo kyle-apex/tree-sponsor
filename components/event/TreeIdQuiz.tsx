@@ -85,6 +85,7 @@ const TreeIdQuiz = ({
       {
         latitude,
         longitude,
+        email,
       },
     ],
     handleUpdate,
