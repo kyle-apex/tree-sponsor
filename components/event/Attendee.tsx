@@ -177,11 +177,11 @@ const Attendee = ({
         </Box>
       </Box>
       {isCurrentUser && !roleDisplay && (
-        <Box mt={1.25} sx={{ lineHeight: 1 }}>
+        <Box mt={1.25} sx={{ lineHeight: 1, fontSize: '80%' }}>
           <Link href='/membership'>
-            <a style={{ textDecoration: 'none', cursor: 'pointer', fontSize: '80%' }}>
-              Become a supporter with an annual $20 TreeFolks donation!
-            </a>
+            <Box>
+              <a style={{ cursor: 'pointer', textDecoration: 'underline' }}>Become a supporter</a> with an annual $20 TreeFolks donation!
+            </Box>
           </Link>
         </Box>
       )}
