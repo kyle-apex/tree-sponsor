@@ -32,7 +32,7 @@ const BecomeAMemberDialog = ({ open, setOpen }: { open: boolean; setOpen: (isOpe
         </Typography>
         <Link href='/membership'>
           <Button color='primary' variant='contained' fullWidth sx={{ mb: 2 }}>
-            Become a Member
+            Become a Supporter
           </Button>
         </Link>
         <Button fullWidth color='inherit' onClick={handleClose}>

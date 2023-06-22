@@ -55,7 +55,12 @@ const MapMarkerDisplay = ({
   useEffect(() => {
     if (!showLocation) {
       //console.log('showLocation center', showLocation);
-      const centeredViewport = centerViewport(viewport as Viewport, markers, 350, 200);
+      const centeredViewport = centerViewport(
+        viewport as Viewport,
+        markers,
+        350,
+        height ? Number(height.replace('px', '').replace('%', '')) : 200,
+      );
       setViewport(centeredViewport);
     }
   }, [markers, showLocation]);
