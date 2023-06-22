@@ -44,6 +44,7 @@ const TreeIdQuiz = ({
   } = useGet<PartialTree[]>(`/api/trees/for-coordinate`, 'trees', {
     latitude,
     longitude,
+    email,
   });
   const [selectedTree, setSelectedTree] = useState<PartialTree>();
   const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
