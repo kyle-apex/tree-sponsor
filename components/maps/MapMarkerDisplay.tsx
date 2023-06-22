@@ -1,4 +1,4 @@
-import MapGL, { GeolocateControl, NavigationControl, WebMercatorViewport } from 'react-map-gl';
+import MapGL, { GeolocateControl, MapRef, NavigationControl, WebMercatorViewport } from 'react-map-gl';
 import { QuizCoordinate, Coordinate, MapStyle, Viewport } from 'interfaces';
 import MapMarker from 'components/sponsor/MapMarker';
 import { useRef, useState, useEffect } from 'react';
@@ -41,7 +41,7 @@ const MapMarkerDisplay = ({
   showLocation?: boolean;
   onViewportChange?: (viewport: Partial<Viewport>) => void;
 }) => {
-  const mapRef = useRef();
+  const mapRef = useRef<MapRef>();
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -58,7 +58,7 @@ const MapMarkerDisplay = ({
       const centeredViewport = centerViewport(
         viewport as Viewport,
         markers,
-        mapRef?.current?.getMap()?._containerWidth || 350,
+        mapRef?.current ? mapRef?.current?.getMap()?._containerWidth || 350 : 350,
         height ? Number(height.replace('px', '').replace('%', '')) : 200,
       );
       setViewport(centeredViewport);
