@@ -58,7 +58,7 @@ const MapMarkerDisplay = ({
       const centeredViewport = centerViewport(
         viewport as Viewport,
         markers,
-        350,
+        mapRef?.current?.getMap()?._containerWidth || 350,
         height ? Number(height.replace('px', '').replace('%', '')) : 200,
       );
       setViewport(centeredViewport);
