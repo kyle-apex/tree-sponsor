@@ -10,6 +10,10 @@ const ports = {
   https: 3443,
 };
 // eslint-disable-next-line no-undef
+if (process.env.GITPOD_WORKSPACE_URL) {
+  process.env.URL = process.env.GITPOD_WORKSPACE_URL;
+  process.env.NEXTAUTH_URL = process.env.GITPOD_WORKSPACE_URL;
+}
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
 const port = 3443;
