@@ -8,6 +8,7 @@ export default async function initDemoData(userId: number) {
     data: {
       name: 'Summer Solstice Demo',
       startDate: new Date(),
+      path: 'summer-solstice-demo',
       location: { create: { name: 'Better Half', latitude: 30.27114, longitude: -97.758657 } },
       user: { connect: { id: userId } },
     },
