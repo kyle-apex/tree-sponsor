@@ -390,7 +390,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       {status && !(status.isFound === false && activeTab == 1) && (
         <>
           <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={3} mt={1}>
-            Tree ID Quiz
+            Tree ID Guessing Game
           </Typography>
           <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
             Click tree map markers below to learn about trees around us and test your knowledge
