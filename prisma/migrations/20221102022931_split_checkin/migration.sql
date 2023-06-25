@@ -87,7 +87,7 @@ ADD
   CONSTRAINT `_TreeToEvent_B_fkey` FOREIGN KEY (`B`) REFERENCES `Tree`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE
-  `EventCheckin`
+  `EventCheckIn`
 ADD
   COLUMN `emailOptIn` BOOLEAN NULL DEFAULT false;
 
@@ -103,30 +103,30 @@ ADD
 
 -- AlterTable
 ALTER TABLE
-  `profile`
+  `Profile`
 ADD
   COLUMN `instagramHandle` VARCHAR(50);
 
 -- AlterTable
 ALTER TABLE
-  `profile`
+  `Profile`
 ADD
   COLUMN `twitterHandle` VARCHAR(50);
 
 -- AlterTable
 ALTER TABLE
-  `profile`
+  `Profile`
 ADD
   COLUMN `linkedInLink` VARCHAR(50);
 
 ALTER TABLE
-  `EventCheckin`
+  `EventCheckIn`
 ADD
   COLUMN `isPrivate` BOOLEAN NULL DEFAULT false;
 
 -- AlterTable
 ALTER TABLE
-  `profile`
+  `Profile`
 ADD
   COLUMN `organization` VARCHAR(75);
 
