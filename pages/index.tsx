@@ -214,9 +214,9 @@ export async function getStaticProps() {
   });
   return {
     props: {
-      stripePriceIdLow: process.env.STRIPE_PRICE_ID_LOW,
-      stripePriceIdMedium: process.env.STRIPE_PRICE_ID_MEDIUM,
-      stripePriceIdHigh: process.env.STRIPE_PRICE_ID_HIGH,
+      stripePriceIdLow: process.env.STRIPE_PRICE_ID_LOW || '',
+      stripePriceIdMedium: process.env.STRIPE_PRICE_ID_MEDIUM || '',
+      stripePriceIdHigh: process.env.STRIPE_PRICE_ID_HIGH || '',
       treeBenefits,
       users,
     },
