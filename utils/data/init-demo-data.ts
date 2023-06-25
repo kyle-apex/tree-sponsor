@@ -40,6 +40,15 @@ export default async function initDemoData(userId: number) {
       createdByUserId: userId,
     },
   });
+  const tree4 = await prisma.tree.create({
+    data: {
+      pictureUrl: 'https://sponsortrees.s3.amazonaws.com/tree-images/ea0dd8a8-1d1a-40e0-bf44-0da762c17201/small',
+      latitude: 30.27132,
+      longitude: -97.758689,
+      speciesId: 6635,
+      createdByUserId: userId,
+    },
+  });
 
   await prisma.treeImage.createMany({
     data: [
@@ -94,6 +103,15 @@ export default async function initDemoData(userId: number) {
         height: 375,
         treeId: tree3.id,
         url: 'https://sponsortrees.s3.amazonaws.com/tree-images/bae023bc-a37f-4fae-bf6d-cab81dd3ada0/small',
+        sequence: 0,
+        isLeaf: false,
+      },
+      {
+        uuid: 'ea0dd8a8-1d1a-40e0-bf44-0da762c17201',
+        width: 500,
+        height: 494,
+        treeId: tree4.id,
+        url: 'https://sponsortrees.s3.amazonaws.com/tree-images/ea0dd8a8-1d1a-40e0-bf44-0da762c17201/small',
         sequence: 0,
         isLeaf: false,
       },
