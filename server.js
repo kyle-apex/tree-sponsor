@@ -3,6 +3,7 @@ const express = require('express');
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
+const axios = require('axios');
 
 const ports = {
   http: 3080,
@@ -29,6 +30,7 @@ app.prepare().then(() => {
   http.createServer(server).listen(ports.http);
   https.createServer(options, server).listen(ports.https);
   console.log('Running https at', 'https://localhost:3443');
+  axios.get('https://localhost:3443/api/init-data');
 });
 
 var forceSsl = function (req, res, next) {
