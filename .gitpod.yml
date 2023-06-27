@@ -11,6 +11,12 @@ tasks:
 ports:
   - name: http
     port: 3080
-  - name: https
+    onOpen: ignore
+  - name: Application
     port: 3443
     protocol: https
+    onOpen: open-preview
+    visibility: public
+  - name: MYSQL
+    port: 3306
+    onOpen: ignore
