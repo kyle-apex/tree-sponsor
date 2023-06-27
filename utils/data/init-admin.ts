@@ -20,7 +20,9 @@ export default async function initAdmin(): Promise<any> {
         isTreeReviewer: true,
       },
     });
-
+  let coreTeamRole = await prisma.role.findFirst({ where: { name: "Core Team" } });
+  if (!coreTeamRole)
+    coreTeamRole = await prisma.role.create({ data: { name: "Core Team", isAdmin: true } })
   const owners = await Promise.all(
     ownerEmails.map((email: string) => {
       console.log('Set email to admin:', email);
@@ -32,13 +34,13 @@ export default async function initAdmin(): Promise<any> {
 
         update: {
           roles: {
-            connect: { id: ownerRole.id },
+            connect: [{ id: ownerRole.id }, { id: coreTeamRole.id }],
           },
         },
         create: {
           email: email,
           roles: {
-            connect: { id: ownerRole.id },
+            connect: [{ id: ownerRole.id }, { id: coreTeamRole.id }],
           },
         },
       });
