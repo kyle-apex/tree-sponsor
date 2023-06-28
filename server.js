@@ -11,8 +11,9 @@ const ports = {
 };
 // eslint-disable-next-line no-undef
 if (process.env.GITPOD_WORKSPACE_URL) {
-  process.env.URL = process.env.GITPOD_WORKSPACE_URL;
-  process.env.NEXTAUTH_URL = process.env.GITPOD_WORKSPACE_URL;
+  const urlWithPort = process.env.GITPOD_WORKSPACE_URL.replace('https://','https://'+ports.https+'-')
+  process.env.URL = urlWithPort;
+  process.env.NEXTAUTH_URL = urlWithPort;
 }
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
