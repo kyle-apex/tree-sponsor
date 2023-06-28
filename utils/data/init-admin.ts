@@ -41,7 +41,7 @@ export default async function initAdmin(): Promise<any> {
           email: email,
           image: '/logo-old.png',
           name: process.env.GITPOD_GIT_USER_NAME || 'Application Contributor',
-          profile: { create: { bio: 'I help contribute to the TreeFolksYP web application!' } },
+          profile: { create: { bio: 'I help contribute to the TreeFolksYP web application because trees are awesome!' } },
           roles: {
             connect: [{ id: ownerRole.id }, { id: coreTeamRole.id }],
           },
