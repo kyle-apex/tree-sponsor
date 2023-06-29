@@ -6,7 +6,7 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import Link from 'next/link';
 
 import { PartialUser } from 'interfaces';
-type U = PartialUser & { count: number };
+type U = PartialUser & { count: number; rank?: number };
 const TreeIdLeaderPosition = () => {
   const leaders: U[] = [
     { name: 'Cory', count: 0 },
