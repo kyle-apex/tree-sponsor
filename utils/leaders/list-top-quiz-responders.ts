@@ -43,10 +43,16 @@ export const listTopQuizResponders = async (yearFilter?: string | number): Promi
   });
   //console.log('users', users, userIds, users);
 
+  let previousCount = 0;
+  let position = 1;
+
   const leaders: LeaderRow[] = responses
-    ?.map((response, idx) => {
-      const row: LeaderRow = { position: idx + 1 };
+    ?.map(response => {
+      if (previousCount && previousCount != response._count) position++;
+      previousCount = response._count;
+      const row: LeaderRow = { position };
       row.count = response._count;
+
       row.user = users.find(user => user.id == response.userId);
       return row;
     })

@@ -5,14 +5,29 @@ import UserAvatar from 'components/sponsor/UserAvatar';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import Link from 'next/link';
 
-import { PartialUser } from 'interfaces';
+import { LeaderRow, PartialUser } from 'interfaces';
+import { useGet } from 'utils/hooks/use-get';
 type U = PartialUser & { count: number; rank?: number };
-const TreeIdLeaderPosition = () => {
-  const leaders: U[] = [
+const TreeIdLeaderPosition = ({ email }: { email: string }) => {
+  const {
+    data: leaders,
+    isFetching,
+    refetch,
+    isFetched,
+  } = useGet<LeaderRow[]>(
+    `/api/leaders/user-quiz-ranking`,
+    'leaderPosition',
+    {
+      email,
+    },
+    { refetchOnMount: true, refetchOnWindowFocus: true },
+  );
+  //const [leaders, setLeaders]
+  /*const leaders: U[] = [
     { name: 'Cory', count: 0 },
     { name: 'Kyle', count: 1 },
     { name: 'Sean', count: 2 },
-  ];
+  ];*/
   return (
     <Box
       sx={{
@@ -43,7 +58,8 @@ const TreeIdLeaderPosition = () => {
         </Link>
       </Box>
       <Box sx={{ position: 'absolute', right: '5px', top: '1px', fontSize: '80%' }}>Correct Guesses</Box>
-      {leaders.map((user, idx) => {
+      {leaders?.map((leader, idx) => {
+        const user = leader.user;
         return (
           <Box
             sx={{
@@ -59,7 +75,9 @@ const TreeIdLeaderPosition = () => {
             }}
             key={user.name}
           >
-            <Typography sx={{ fontWeight: 600, flex: '1 0 34px', textAlign: 'center', marginRight: 0.5 }}>{idx + 1}</Typography>
+            <Typography sx={{ fontWeight: 600, flex: '1 0 34px', textAlign: 'center', marginRight: 0.5 }}>
+              {idx === 0 || leader.position != leaders[idx - 1].position ? leader.position : ''}
+            </Typography>
             <Box sx={{ ml: idx == 1 ? '-2px' : 0, mt: idx == 1 ? '-2px' : 0 }}>
               <UserAvatar
                 sx={{ border: idx == 1 ? 'solid 1px white' : null }}
@@ -69,13 +87,10 @@ const TreeIdLeaderPosition = () => {
               />
             </Box>
 
-            <Typography variant='subtitle2' sx={{ marginLeft: idx == 1 ? 1 : '10px' }}>
-              {user.name}
+            <Typography variant='subtitle2' sx={{ marginLeft: idx == 1 ? 1 : '10px', flex: '1 1 100%' }}>
+              {user.displayName || user.name}
             </Typography>
-            <Typography variant='subtitle2' color='GrayText' sx={{ fontSize: '.8rem', marginLeft: 1 }}>
-              Member
-            </Typography>
-            <Box sx={{ flex: '1 1 100%' }}></Box>
+
             <Typography
               variant='subtitle2'
               sx={{
@@ -91,7 +106,7 @@ const TreeIdLeaderPosition = () => {
               }}
               className='box-shadow'
             >
-              {user.count}
+              {leader.count}
             </Typography>
           </Box>
         );

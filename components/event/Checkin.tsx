@@ -35,6 +35,9 @@ import EventNameDisplay from './EventNameDisplay';
 import TreeIdQuiz from './TreeIdQuiz';
 import BecomeAMemberDialog from './BecomeAMemberDialog';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import PinIcon from '@mui/icons-material/LocationOn';
+
+import TreeIdLeaderPosition from './TreeIdLeaderPosition';
 //import TreeIdLeaderPosition from './TreeIdLeaderPosition';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
@@ -426,22 +429,30 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             setIsRefreshing={setIsQuizRefreshing}
             mapHeight='250px'
           ></TreeIdQuiz>
-          <Box sx={{ textAlign: 'right', mt: 0.2, mb: 1, fontSize: '80%' }}>
-            <Link href='/leaders'>
-              <a
-                style={{
-                  textDecoration: 'none',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  gap: '3px',
-                  alignItems: 'center',
-                  justifyContent: 'end',
-                }}
-              >
-                <LeaderboardIcon sx={{ fontSize: 'inherit' }}></LeaderboardIcon> Tree ID leaderboard
-              </a>
-            </Link>
+          <Box sx={{ mt: -3, fontSize: '80%' }}>
+            <Box
+              style={{
+                textDecoration: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                gap: '3px',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                padding: '3px 5px',
+                backgroundColor: '#6E4854',
+                borderRadius: '8px',
+                borderBottomRightRadius: 0,
+                borderTopLeftRadius: 0,
+                width: '110px',
+                textAlign: 'center',
+              }}
+            >
+              <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a Pin!
+            </Box>
           </Box>
+
+          <TreeIdLeaderPosition email={email}></TreeIdLeaderPosition>
           <IdentifyTreeFlowDialog
             open={isAddTreeDialogOpen}
             setOpen={setIsAddTreeDialogOpen}
