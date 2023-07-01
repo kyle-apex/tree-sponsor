@@ -17,11 +17,13 @@ const TreeDisplayDialog = ({
   setOpen,
   tree,
   eventId,
+  onClose,
 }: {
   open: boolean;
   setOpen: (isOpen: boolean) => void;
   tree: PartialTree;
   eventId?: number;
+  onClose?: () => void;
 }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
@@ -29,6 +31,7 @@ const TreeDisplayDialog = ({
   const handleClose: React.MouseEventHandler<HTMLButtonElement> = e => {
     e.stopPropagation();
     setOpen(false);
+    if (onClose) onClose();
   };
 
   return (

@@ -15,7 +15,16 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
-import { PartialEvent, PartialUser, PartialTree, Coordinate, PartialSpecies, PartialEventCheckIn, PartialSubscription } from 'interfaces';
+import {
+  PartialEvent,
+  PartialUser,
+  PartialTree,
+  Coordinate,
+  PartialSpecies,
+  PartialEventCheckIn,
+  PartialSubscription,
+  LeaderRow,
+} from 'interfaces';
 import Attendees from './Attendees';
 import TreeDisplayDialog from 'components/tree/TreeDisplayDialog';
 import { useGet } from 'utils/hooks/use-get';
@@ -170,6 +179,15 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     await axios.patch('/api/me/checkin/' + status.myCheckin.id, { isPrivate: newIsPrivate });
     getMembershipStatus();
   };
+
+  const { data: leaders, refetch: refetchLeaders } = useGet<LeaderRow[]>(
+    `/api/leaders/user-quiz-ranking`,
+    'leaderPosition',
+    {
+      email,
+    },
+    { refetchOnMount: true, refetchOnWindowFocus: true },
+  );
 
   return (
     <>
@@ -428,6 +446,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             defaultLongitude={Number(event.location?.longitude)}
             setIsRefreshing={setIsQuizRefreshing}
             mapHeight='250px'
+            onCloseDialog={refetchLeaders}
           ></TreeIdQuiz>
           <Box sx={{ mt: -3, fontSize: '80%' }}>
             <Box
@@ -452,7 +471,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             </Box>
           </Box>
 
-          <TreeIdLeaderPosition email={email}></TreeIdLeaderPosition>
+          <TreeIdLeaderPosition leaders={leaders}></TreeIdLeaderPosition>
           <IdentifyTreeFlowDialog
             open={isAddTreeDialogOpen}
             setOpen={setIsAddTreeDialogOpen}

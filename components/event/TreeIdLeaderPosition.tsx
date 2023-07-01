@@ -5,29 +5,9 @@ import UserAvatar from 'components/sponsor/UserAvatar';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import Link from 'next/link';
 
-import { LeaderRow, PartialUser } from 'interfaces';
-import { useGet } from 'utils/hooks/use-get';
-type U = PartialUser & { count: number; rank?: number };
-const TreeIdLeaderPosition = ({ email }: { email: string }) => {
-  const {
-    data: leaders,
-    isFetching,
-    refetch,
-    isFetched,
-  } = useGet<LeaderRow[]>(
-    `/api/leaders/user-quiz-ranking`,
-    'leaderPosition',
-    {
-      email,
-    },
-    { refetchOnMount: true, refetchOnWindowFocus: true },
-  );
-  //const [leaders, setLeaders]
-  /*const leaders: U[] = [
-    { name: 'Cory', count: 0 },
-    { name: 'Kyle', count: 1 },
-    { name: 'Sean', count: 2 },
-  ];*/
+import { LeaderRow } from 'interfaces';
+
+const TreeIdLeaderPosition = ({ leaders }: { leaders: LeaderRow[] }) => {
   return (
     <Box
       sx={{

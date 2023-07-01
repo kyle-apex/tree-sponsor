@@ -35,8 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       addLeader(leaders[2]);
     }
   } else if (currentIndex == leaders.length - 1) {
-    if (leaders.length > 2) addLeader(leaders[currentIndex - 2]);
-    else if (leaders.length == 2) {
+    if (leaders.length >= 2) {
       addLeader(leaders[currentIndex - 1]);
       lastPositionUserCount = 1;
     } else if (leaders.length == 1) lastPositionUserCount = 2;
