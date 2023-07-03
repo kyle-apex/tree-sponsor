@@ -1,7 +1,7 @@
 import { LeaderRow, PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { listTopQuizResponders } from 'utils/leaders/list-top-quiz-responders';
-type U = PartialUser & { count: number; rank: number };
+import { prisma } from 'utils/prisma/init';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const email = req.query.email as string;
