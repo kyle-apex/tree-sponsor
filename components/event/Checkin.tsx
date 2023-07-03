@@ -448,7 +448,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             mapHeight='250px'
             onCloseDialog={refetchLeaders}
           ></TreeIdQuiz>
-          <Box sx={{ mt: -3, fontSize: '80%' }}>
+          <Box sx={{ mt: -3, fontSize: '80%', zIndex: 1000 }}>
             <Box
               style={{
                 textDecoration: 'none',
@@ -457,9 +457,9 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 gap: '3px',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'white',
+                color: '#486e62',
                 padding: '3px 5px',
-                backgroundColor: '#6E4854',
+                backgroundColor: '#FFCC37',
                 borderRadius: '8px',
                 borderBottomRightRadius: 0,
                 borderTopLeftRadius: 0,
