@@ -455,7 +455,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               mapHeight='250px'
               onCloseDialog={refetchLeaders}
             ></TreeIdQuiz>
-            <Box sx={{ mt: -3, fontSize: '80%', zIndex: 1000 }}>
+            <Box sx={{ mt: -3.2, fontSize: '85%', zIndex: 1000, position: 'relative' }}>
               <Box
                 style={{
                   textDecoration: 'none',
@@ -470,11 +470,12 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                   borderRadius: '8px',
                   borderBottomRightRadius: 0,
                   borderTopLeftRadius: 0,
-                  width: '110px',
+                  borderBottomLeftRadius: 0,
+                  width: '155px',
                   textAlign: 'center',
                 }}
               >
-                <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a Pin!
+                <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a Pin to Begin!
               </Box>
             </Box>
 
