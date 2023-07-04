@@ -12,7 +12,7 @@ const TreeIdLeaderPosition = ({ leaders }: { leaders: LeaderRow[] }) => {
     <Box
       sx={{
         pl: 1,
-        height: '118px',
+        height: '140px',
         position: 'relative',
         borderRadius: '5px',
         mt: 1,
@@ -46,7 +46,7 @@ const TreeIdLeaderPosition = ({ leaders }: { leaders: LeaderRow[] }) => {
               flexDirection: 'row',
               alignItems: 'center',
               position: 'absolute',
-              top: 24 + idx * 28 + 'px',
+              top: 36 + idx * 28 + 'px',
               zIndex: idx == 1 ? 23 : 1,
               fontWeight: idx == 1 ? 600 : 400,
               width: '100%',
