@@ -355,12 +355,9 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       {status?.isFound === false && activeTab == 0 && (
         <>
-          <Typography variant='body2' component='p' mb={2}>
-            Thanks for joining for today&apos;s event. Grab a name tag (if available), meet a new friend, and test your tree knowledge
-            below!
-          </Typography>
           <Typography variant='body2' component='p' mb={3}>
-            Don&apos;t forget to say &quot;Hey&quot; to a Core Team Member to learn more about TreeFolks.
+            Thanks for joining for today&apos;s event. Grab a name tag (if available), meet a new friend, and learn about the trees around
+            us:
           </Typography>
         </>
       )}
