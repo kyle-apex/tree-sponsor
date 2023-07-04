@@ -246,6 +246,7 @@ const TreeDisplay = ({
                 treeId={tree.id}
                 eventId={eventId}
                 subtitleSx={{ textAlign: isMobile && leafImage ? 'left' : 'center' }}
+                hasLeaf={!!leafImage}
               ></SpeciesQuiz>
 
               {handleClose && (

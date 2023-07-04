@@ -46,11 +46,13 @@ const SpeciesQuiz = ({
   treeId,
   eventId,
   subtitleSx,
+  hasLeaf,
 }: {
   correctSpecies: PartialSpecies;
   treeId?: number;
   eventId?: number;
   subtitleSx?: SxProps<Theme>;
+  hasLeaf?: boolean;
 }) => {
   const [clickedSpeciesId, setClickedSpeciesId] = useState<number>(null);
   const [speciesOptions, setSpeciesOptions] = useState<PartialSpecies[]>([]);
@@ -62,7 +64,7 @@ const SpeciesQuiz = ({
 
   const isMobile = !useMediaQuery(theme.breakpoints.up(500));
 
-  const isSmall = !useMediaQuery(theme.breakpoints.up(340)); // && subtitleSx['textAlign'] == 'left';
+  const isSmall = !useMediaQuery(theme.breakpoints.up(340)) && hasLeaf;
 
   const { data: prioritySpecies, isFetched } = useGet<PartialSpecies[]>(
     '/api/species/priority',
