@@ -17,6 +17,7 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { SxProps, Theme } from '@mui/material/styles';
 import TreeIdHelpDialog from 'components/event/TreeIdHelpDialog';
+import LeaderboardIcon from '@mui/icons-material/QuestionMark';
 
 const saveResponse = async (speciesQuizResponse: PartialSpeciesQuizResponse & { email: string }) => {
   await axios.post('/api/speciesQuizResponses', speciesQuizResponse);
@@ -60,6 +61,8 @@ const SpeciesQuiz = ({
   const theme = useTheme();
 
   const isMobile = !useMediaQuery(theme.breakpoints.up(500));
+
+  const isSmall = !useMediaQuery(theme.breakpoints.up(340)); // && subtitleSx['textAlign'] == 'left';
 
   const { data: prioritySpecies, isFetched } = useGet<PartialSpecies[]>(
     '/api/species/priority',
@@ -114,10 +117,9 @@ const SpeciesQuiz = ({
         <Typography
           mb={2}
           variant='body1'
-          sx={{ fontStyle: 'italic', textAlign: isMobile ? 'left' : 'center', ...subtitleSx }}
-          color='secondary'
+          sx={{ fontStyle: 'italic', textAlign: isMobile ? 'left' : 'center', color: 'gray', ...subtitleSx }}
         >
-          Name that tree species!
+          Name that tree{!isSmall ? ' species' : ''}!
         </Typography>
       )}
       <Box id='scroll-element' sx={{ mt: !clickedSpeciesId ? -6 : -5, mb: 8 }}></Box>
@@ -128,7 +130,7 @@ const SpeciesQuiz = ({
             ? species.id == clickedSpeciesId && species.id != correctSpecies.id
               ? 'error'
               : 'primary'
-            : 'inherit';
+            : 'secondary';
 
         let icon;
         const isIncorrect = species.id == clickedSpeciesId && species.id != correctSpecies.id;
@@ -156,13 +158,16 @@ const SpeciesQuiz = ({
             <Button
               fullWidth={true}
               variant={variant}
-              className={isIncorrect ? 'shake' : isCorrect ? 'grow' : ''}
+              className={isIncorrect ? 'shake box-shadow' : isCorrect ? 'grow box-shadow' : 'box-shadow'}
               color={color}
-              disabled={clickedSpeciesId && color == 'inherit'}
+              disabled={clickedSpeciesId && color == 'secondary'}
               onClick={() => {
                 handleClick(species.id);
               }}
-              sx={{ textTransform: 'none' }}
+              sx={{
+                textTransform: 'none',
+                background: color == 'secondary' ? 'linear-gradient(to top, #6e48544f, #6e48541f), url(/background-lighter.svg)' : '',
+              }}
             >
               {icon}
               {clickedSpeciesId &&
@@ -179,17 +184,15 @@ const SpeciesQuiz = ({
       })}
       {clickedSpeciesId && <SpeciesDetails species={correctSpecies}></SpeciesDetails>}
       {!clickedSpeciesId && (
-        <Box sx={{ fontSize: '0.875rem', textAlign: 'center' }}>
-          <Typography variant='h6' color='secondary' mb={0.5} mt={1}>
-            Want a hint?
-          </Typography>
+        <Box sx={{ fontSize: '0.875rem', textAlign: 'center', pt: 1, pb: 1, pl: 2.5, pr: 2 }} className='primary-info'>
           <a
             onClick={() => {
               setIsHintDialogOpen(true);
             }}
-            style={{ cursor: 'pointer', marginBottom: 1 }}
+            style={{ cursor: 'pointer', marginBottom: 1, display: 'flex', gap: '16px', alignItems: 'center', justifyContent: 'end' }}
           >
-            Click here to take a leaf picture for species suggestions
+            <LeaderboardIcon></LeaderboardIcon>{' '}
+            <Box sx={{ textAlign: 'left' }}>Want a hint? Click here to take a picture of a leaf for species suggestions</Box>
           </a>
           <TreeIdHelpDialog isOpen={isHintDialogOpen} setIsOpen={setIsHintDialogOpen}></TreeIdHelpDialog>
         </Box>
