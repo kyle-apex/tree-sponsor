@@ -410,78 +410,86 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       {status && !(status.isFound === false && activeTab == 1) && (
         <>
-          <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={3} mt={1}>
-            Tree ID Guessing Game
-          </Typography>
-          <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
-            Click tree map markers below to learn about trees around us and test your knowledge
-          </Typography>
-          <Box sx={{ textAlign: 'right', mt: -1.5, mb: 0.2, fontSize: '80%' }}>
-            <SplitRow>
-              <a
-                onClick={() => {
-                  setIsQuizRefreshing(true);
-                }}
-                style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '4px', alignItems: 'center' }}
-              >
-                <AutorenewIcon sx={{ fontSize: 'inherit' }} /> Reload
-              </a>
-              <a
-                onClick={() => {
-                  if (!hasActiveMembership) {
-                    setIsMembershipDialogOpen(true);
-                  } else setIsAddTreeDialogOpen(true);
-                }}
-                style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '3px', alignItems: 'center' }}
-              >
-                <LoupeIcon sx={{ fontSize: 'inherit' }}></LoupeIcon> Add a tree
-              </a>
-            </SplitRow>
-            <BecomeAMemberDialog open={isMembershipDialogOpen} setOpen={setIsMembershipDialogOpen}></BecomeAMemberDialog>
-          </Box>
-          <TreeIdQuiz
-            eventId={event.id}
-            isRefreshing={isQuizRefreshing}
-            defaultLatitude={Number(event.location?.latitude)}
-            defaultLongitude={Number(event.location?.longitude)}
-            setIsRefreshing={setIsQuizRefreshing}
-            mapHeight='250px'
-            onCloseDialog={refetchLeaders}
-          ></TreeIdQuiz>
-          <Box sx={{ mt: -3, fontSize: '80%', zIndex: 1000 }}>
-            <Box
-              style={{
-                textDecoration: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                gap: '3px',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#486e62',
-                padding: '3px 5px',
-                backgroundColor: '#FFCC37',
-                borderRadius: '8px',
-                borderBottomRightRadius: 0,
-                borderTopLeftRadius: 0,
-                width: '110px',
-                textAlign: 'center',
-              }}
-            >
-              <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a Pin!
-            </Box>
-          </Box>
-
-          <TreeIdLeaderPosition leaders={leaders}></TreeIdLeaderPosition>
-          <IdentifyTreeFlowDialog
-            open={isAddTreeDialogOpen}
-            setOpen={setIsAddTreeDialogOpen}
-            onComplete={() => {
-              console.log('completed');
-              setIsQuizRefreshing(true);
+          <Box
+            sx={{
+              background: 'linear-gradient(to top, #486e624f, #486e6233), url(/background-lighter.svg)',
+              border: 'solid 1px #486E62',
+              borderRadius: '5px',
             }}
-            latitude={event.location ? Number(event.location.latitude) : null}
-            longitude={event.location ? Number(event.location.longitude) : null}
-          ></IdentifyTreeFlowDialog>
+            className='box-shadow checkin-tree-quiz'
+            mb={3}
+          >
+            <Typography variant='h6' color='primary' sx={{ textAlign: 'center' }} mb={2} mt={1}>
+              Tree ID Guessing Game
+            </Typography>
+
+            <Box sx={{ textAlign: 'right', mt: -1.5, mb: 0.2, fontSize: '80%', pl: 0.5, pr: 0.5 }}>
+              <SplitRow>
+                <a
+                  onClick={() => {
+                    setIsQuizRefreshing(true);
+                  }}
+                  style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '4px', alignItems: 'center', color: '#6e4854' }}
+                >
+                  <AutorenewIcon sx={{ fontSize: 'inherit' }} /> <Box sx={{ textDecoration: 'underline' }}>Reload</Box>
+                </a>
+                <a
+                  onClick={() => {
+                    if (!hasActiveMembership) {
+                      setIsMembershipDialogOpen(true);
+                    } else setIsAddTreeDialogOpen(true);
+                  }}
+                  style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '3px', alignItems: 'center', color: '#6e4854' }}
+                >
+                  <LoupeIcon sx={{ fontSize: 'inherit' }}></LoupeIcon> <Box sx={{ textDecoration: 'underline' }}>Add a tree</Box>
+                </a>
+              </SplitRow>
+              <BecomeAMemberDialog open={isMembershipDialogOpen} setOpen={setIsMembershipDialogOpen}></BecomeAMemberDialog>
+            </Box>
+            <TreeIdQuiz
+              eventId={event.id}
+              isRefreshing={isQuizRefreshing}
+              defaultLatitude={Number(event.location?.latitude)}
+              defaultLongitude={Number(event.location?.longitude)}
+              setIsRefreshing={setIsQuizRefreshing}
+              mapHeight='250px'
+              onCloseDialog={refetchLeaders}
+            ></TreeIdQuiz>
+            <Box sx={{ mt: -3, fontSize: '80%', zIndex: 1000 }}>
+              <Box
+                style={{
+                  textDecoration: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  gap: '3px',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#486e62',
+                  padding: '3px 5px',
+                  backgroundColor: '#FFCC37',
+                  borderRadius: '8px',
+                  borderBottomRightRadius: 0,
+                  borderTopLeftRadius: 0,
+                  width: '110px',
+                  textAlign: 'center',
+                }}
+              >
+                <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a Pin!
+              </Box>
+            </Box>
+
+            <TreeIdLeaderPosition leaders={leaders}></TreeIdLeaderPosition>
+            <IdentifyTreeFlowDialog
+              open={isAddTreeDialogOpen}
+              setOpen={setIsAddTreeDialogOpen}
+              onComplete={() => {
+                console.log('completed');
+                setIsQuizRefreshing(true);
+              }}
+              latitude={event.location ? Number(event.location.latitude) : null}
+              longitude={event.location ? Number(event.location.longitude) : null}
+            ></IdentifyTreeFlowDialog>
+          </Box>
           <Attendees
             users={status.attendees}
             onDelete={userId => {

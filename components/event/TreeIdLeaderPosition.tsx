@@ -11,15 +11,13 @@ const TreeIdLeaderPosition = ({ leaders }: { leaders: LeaderRow[] }) => {
   return (
     <Box
       sx={{
-        background: 'linear-gradient(to top, #486e624f, #486e6233), url(/background-lighter.svg)',
         pl: 1,
         height: '118px',
         position: 'relative',
         borderRadius: '5px',
-        mt: 2,
-        mb: 2,
+        mt: 1,
+        mb: 0,
       }}
-      className='box-shadow'
     >
       <Box sx={{ position: 'absolute', left: '5px', top: '1px', fontSize: '80%' }}>
         <Link href='/leaders'>
@@ -31,13 +29,14 @@ const TreeIdLeaderPosition = ({ leaders }: { leaders: LeaderRow[] }) => {
               gap: '3px',
               alignItems: 'center',
               justifyContent: 'end',
+              color: '#6e4854',
             }}
           >
             <LeaderboardIcon sx={{ fontSize: 'inherit' }}></LeaderboardIcon> View full leaderboard
           </a>
         </Link>
       </Box>
-      <Box sx={{ position: 'absolute', right: '5px', top: '1px', fontSize: '80%' }}>Correct Guesses</Box>
+      <Box sx={{ position: 'absolute', right: '5px', top: '1px', fontSize: '80%', color: '#6e4854' }}>Correct Guesses</Box>
       {leaders?.map((leader, idx) => {
         const user = leader.user;
         return (

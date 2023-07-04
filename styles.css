@@ -10,6 +10,9 @@ a {
 .index-map {
   border-radius: 8px;
 }
+.checkin-tree-quiz .index-map {
+  border-radius: 0;
+}
 .full-width {
   width: 100%;
 }

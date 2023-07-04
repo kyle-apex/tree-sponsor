@@ -112,12 +112,12 @@ const SpeciesQuiz = ({
     <>
       {!clickedSpeciesId && (
         <Typography
-          variant='body2'
-          mt={-2}
           mb={2}
-          sx={{ fontStyle: 'italic', textAlign: isMobile ? 'left' : 'center', color: 'gray', ...subtitleSx }}
+          variant='body1'
+          sx={{ fontStyle: 'italic', textAlign: isMobile ? 'left' : 'center', ...subtitleSx }}
+          color='secondary'
         >
-          What species is this tree?
+          Name that tree species!
         </Typography>
       )}
       <Box id='scroll-element' sx={{ mt: !clickedSpeciesId ? -6 : -5, mb: 8 }}></Box>
