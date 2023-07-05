@@ -48,12 +48,14 @@ const SpeciesQuiz = ({
   eventId,
   subtitleSx,
   hasLeaf,
+  onClose,
 }: {
   correctSpecies: PartialSpecies;
   treeId?: number;
   eventId?: number;
   subtitleSx?: SxProps<Theme>;
   hasLeaf?: boolean;
+  onClose?: () => void;
 }) => {
   const [clickedSpeciesId, setClickedSpeciesId] = useState<number>(null);
   const [speciesOptions, setSpeciesOptions] = useState<PartialSpecies[]>([]);
@@ -125,7 +127,7 @@ const SpeciesQuiz = ({
           Name that tree{!isSmall ? ' species' : ''}!
         </Typography>
       ) : (
-        <Button variant='outlined' size='small' color='inherit' sx={{ width: '120px' }}>
+        <Button variant='outlined' size='small' color='inherit' sx={{ width: '120px' }} onClick={onClose}>
           Next tree <ChevronRightIcon fontSize='small' sx={{ ml: 0.5 }}></ChevronRightIcon>
         </Button>
       )}
