@@ -17,7 +17,8 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { SxProps, Theme } from '@mui/material/styles';
 import TreeIdHelpDialog from 'components/event/TreeIdHelpDialog';
-import LeaderboardIcon from '@mui/icons-material/QuestionMark';
+import HintIcon from '@mui/icons-material/QuestionMark';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 const saveResponse = async (speciesQuizResponse: PartialSpeciesQuizResponse & { email: string }) => {
   await axios.post('/api/speciesQuizResponses', speciesQuizResponse);
@@ -115,7 +116,7 @@ const SpeciesQuiz = ({
   }
   return (
     <>
-      {!clickedSpeciesId && (
+      {!clickedSpeciesId ? (
         <Typography
           mb={2}
           variant='body1'
@@ -123,8 +124,12 @@ const SpeciesQuiz = ({
         >
           Name that tree{!isSmall ? ' species' : ''}!
         </Typography>
+      ) : (
+        <Button variant='outlined' size='small' color='inherit' sx={{ width: '120px' }}>
+          Next tree <ChevronRightIcon fontSize='small' sx={{ ml: 0.5 }}></ChevronRightIcon>
+        </Button>
       )}
-      <Box id='scroll-element' sx={{ mt: !clickedSpeciesId ? -6 : -5, mb: 8 }}></Box>
+      <Box id='scroll-element' sx={{ mt: !clickedSpeciesId ? -6 : -6, mb: 8 }}></Box>
 
       {speciesOptions.map(species => {
         const color =
@@ -193,7 +198,7 @@ const SpeciesQuiz = ({
             }}
             style={{ cursor: 'pointer', marginBottom: 1, display: 'flex', gap: '16px', alignItems: 'center', justifyContent: 'end' }}
           >
-            <LeaderboardIcon></LeaderboardIcon>{' '}
+            <HintIcon></HintIcon>{' '}
             <Box sx={{ textAlign: 'left' }}>Want a hint? Click here to take a picture of a leaf for species suggestions</Box>
           </a>
           <TreeIdHelpDialog isOpen={isHintDialogOpen} setIsOpen={setIsHintDialogOpen}></TreeIdHelpDialog>
