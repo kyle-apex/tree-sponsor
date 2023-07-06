@@ -103,6 +103,8 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [isShowAllAttendees, setIsShowAllAttendees] = useState(false);
 
+  const [isFirstQuiz, setIsFirstQuiz] = useState(true);
+
   const { data: prioritySpecies, isFetched } = useGet<PartialSpecies>(
     '/api/species/priority',
     'prioritySpecies',
@@ -188,6 +190,11 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     },
     { refetchOnMount: true, refetchOnWindowFocus: true },
   );
+
+  const onQuizDialogClose = () => {
+    refetchLeaders();
+    setIsFirstQuiz(false);
+  };
 
   return (
     <>
@@ -450,30 +457,32 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               defaultLongitude={Number(event.location?.longitude)}
               setIsRefreshing={setIsQuizRefreshing}
               mapHeight='250px'
-              onCloseDialog={refetchLeaders}
+              onCloseDialog={onQuizDialogClose}
             ></TreeIdQuiz>
-            <Box sx={{ mt: -3.8, fontSize: '85%', zIndex: 1000, position: 'relative' }}>
-              <Box
-                style={{
-                  textDecoration: 'none',
-                  display: 'flex',
-                  gap: '3px',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#486e62',
-                  padding: '3px 5px',
-                  backgroundColor: '#FFCC37',
-                  borderRadius: '16px',
-                  width: '150px',
-                  textAlign: 'center',
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
-                }}
-                className='box-shadow'
-              >
-                <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a pin to begin
+            {isFirstQuiz && (
+              <Box sx={{ mt: -4, fontSize: '95%', zIndex: 1000, position: 'relative' }}>
+                <Box
+                  style={{
+                    textDecoration: 'none',
+                    display: 'flex',
+                    gap: '3px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#486e62',
+                    padding: '3px 5px',
+                    backgroundColor: '#FFCC37',
+                    borderRadius: '16px',
+                    width: '160px',
+                    textAlign: 'center',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                  }}
+                  className='box-shadow'
+                >
+                  <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a pin to begin
+                </Box>
               </Box>
-            </Box>
+            )}
 
             <TreeIdLeaderPosition leaders={leaders}></TreeIdLeaderPosition>
             <IdentifyTreeFlowDialog
