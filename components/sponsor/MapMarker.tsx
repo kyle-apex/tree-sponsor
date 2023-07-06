@@ -19,7 +19,12 @@ const MapMarker = ({
   isQuizCorrect?: boolean;
 }) => {
   return (
-    <Marker className='marker' latitude={latitude} longitude={longitude}>
+    <Marker
+      className='marker'
+      latitude={latitude}
+      longitude={longitude}
+      style={{ zIndex: isQuizCorrect === true || isQuizCorrect === false ? 0 : 1 }}
+    >
       <img
         src={
           isQuiz

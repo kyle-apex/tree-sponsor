@@ -3,8 +3,21 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Box from '@mui/system/Box';
 import CircularProgress from '@mui/material/CircularProgress';
+import { SxProps, Theme } from '@mui/material/styles';
 
-const UserAvatar = ({ image, name, size = 40, link }: { image: string; name: string; size?: number; link?: string }): JSX.Element => {
+const UserAvatar = ({
+  image,
+  name,
+  size = 40,
+  link,
+  sx,
+}: {
+  image: string;
+  name: string;
+  size?: number;
+  link?: string;
+  sx?: SxProps<Theme>;
+}): JSX.Element => {
   const [abbreviation, setAbbreviation] = useState('AN');
   const router = useRouter();
   const [isNavigating, setIsNavigating] = useState(false);
@@ -43,6 +56,7 @@ const UserAvatar = ({ image, name, size = 40, link }: { image: string; name: str
         lineHeight: (size / 40) * 1.25,
         boxShadow: 'inset 0 0px 0px 1px hsl(0deg 0% 0% / 20%), 0px 0px 2px grey',
         cursor: link ? 'pointer' : '',
+        ...sx,
       }}
       onClick={handleClick}
     >

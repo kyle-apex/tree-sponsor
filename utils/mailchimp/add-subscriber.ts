@@ -9,7 +9,7 @@ const addSubscriber = async (email: string, data?: Record<string, string>, updat
   if (!email || !process.env.MAILCHIMP_LIST_ID) {
     const msg = `Ignoring adding subscriber, missing params ${!email ? 'email' : 'API Key or List ID'}`;
     console.warn(msg);
-    throw msg;
+    return;
   }
 
   try {

@@ -121,20 +121,6 @@ const SignupForm = ({
               <CheckCircleIcon color='primary'></CheckCircleIcon>
             </TableCell>
           </TableRow>
-          <TableRow>
-            <TableCell>Tokens of Appre-tree-ation</TableCell>
-            <TableCell>
-              <Chip
-                label={memberships[activeMembershipIndex].trees}
-                sx={{
-                  '& img': { marginLeft: '10px !important', marginRight: '-4px !important', height: '18px' },
-                  '& .MuiChip-label': { fontWeight: 600 },
-                }}
-                icon={<img src='/tree-small.svg' alt='tree icon' />}
-                color='primary'
-              ></Chip>
-            </TableCell>
-          </TableRow>
         </TableBody>
       </Table>
       <Box sx={{ marginTop: 2 }}>

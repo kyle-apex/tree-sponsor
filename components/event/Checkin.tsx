@@ -15,7 +15,16 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
-import { PartialEvent, PartialUser, PartialTree, Coordinate, PartialSpecies, PartialEventCheckIn, PartialSubscription } from 'interfaces';
+import {
+  PartialEvent,
+  PartialUser,
+  PartialTree,
+  Coordinate,
+  PartialSpecies,
+  PartialEventCheckIn,
+  PartialSubscription,
+  LeaderRow,
+} from 'interfaces';
 import Attendees from './Attendees';
 import TreeDisplayDialog from 'components/tree/TreeDisplayDialog';
 import { useGet } from 'utils/hooks/use-get';
@@ -35,6 +44,9 @@ import EventNameDisplay from './EventNameDisplay';
 import TreeIdQuiz from './TreeIdQuiz';
 import BecomeAMemberDialog from './BecomeAMemberDialog';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import PinIcon from '@mui/icons-material/LocationOn';
+
+import TreeIdLeaderPosition from './TreeIdLeaderPosition';
 //import TreeIdLeaderPosition from './TreeIdLeaderPosition';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
@@ -90,6 +102,8 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
   const [activeTab, setActiveTab] = useState(0);
   const [isShowAllAttendees, setIsShowAllAttendees] = useState(false);
+
+  const [isFirstQuiz, setIsFirstQuiz] = useState(true);
 
   const { data: prioritySpecies, isFetched } = useGet<PartialSpecies>(
     '/api/species/priority',
@@ -166,6 +180,20 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     setIsPrivate(newIsPrivate);
     await axios.patch('/api/me/checkin/' + status.myCheckin.id, { isPrivate: newIsPrivate });
     getMembershipStatus();
+  };
+
+  const { data: leaders, refetch: refetchLeaders } = useGet<LeaderRow[]>(
+    `/api/leaders/user-quiz-ranking`,
+    'leaderPosition',
+    {
+      email,
+    },
+    { refetchOnMount: true, refetchOnWindowFocus: true },
+  );
+
+  const onQuizDialogClose = () => {
+    refetchLeaders();
+    setIsFirstQuiz(false);
   };
 
   return (
@@ -334,12 +362,9 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       {status?.isFound === false && activeTab == 0 && (
         <>
-          <Typography variant='body2' component='p' mb={2}>
-            Thanks for joining for today&apos;s event. Grab a name tag (if available), meet a new friend, and test your tree knowledge
-            below!
-          </Typography>
           <Typography variant='body2' component='p' mb={3}>
-            Don&apos;t forget to say &quot;Hey&quot; to a Core Team Member to learn more about TreeFolks.
+            Thanks for joining for today&apos;s event. Grab a name tag (if available), meet a new friend, and learn about the trees around
+            us:
           </Typography>
         </>
       )}
@@ -389,69 +414,88 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       {status && !(status.isFound === false && activeTab == 1) && (
         <>
-          <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={3} mt={1}>
-            Tree ID Quiz
-          </Typography>
-          <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
-            Click tree map markers below to learn about trees around us and test your knowledge
-          </Typography>
-          <Box sx={{ textAlign: 'right', mt: -1.5, mb: 0.2, fontSize: '80%' }}>
-            <SplitRow>
-              <a
-                onClick={() => {
-                  setIsQuizRefreshing(true);
-                }}
-                style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '4px', alignItems: 'center' }}
-              >
-                <AutorenewIcon sx={{ fontSize: 'inherit' }} /> Reload
-              </a>
-              <a
-                onClick={() => {
-                  if (!hasActiveMembership) {
-                    setIsMembershipDialogOpen(true);
-                  } else setIsAddTreeDialogOpen(true);
-                }}
-                style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '3px', alignItems: 'center' }}
-              >
-                <LoupeIcon sx={{ fontSize: 'inherit' }}></LoupeIcon> Add a tree
-              </a>
-            </SplitRow>
-            <BecomeAMemberDialog open={isMembershipDialogOpen} setOpen={setIsMembershipDialogOpen}></BecomeAMemberDialog>
-          </Box>
-          <TreeIdQuiz
-            eventId={event.id}
-            isRefreshing={isQuizRefreshing}
-            defaultLatitude={Number(event.location?.latitude)}
-            defaultLongitude={Number(event.location?.longitude)}
-            setIsRefreshing={setIsQuizRefreshing}
-            mapHeight='250px'
-          ></TreeIdQuiz>
-          <Box sx={{ textAlign: 'right', mt: 0.2, mb: 1, fontSize: '80%' }}>
-            <Link href='/leaders'>
-              <a
-                style={{
-                  textDecoration: 'none',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  gap: '3px',
-                  alignItems: 'center',
-                  justifyContent: 'end',
-                }}
-              >
-                <LeaderboardIcon sx={{ fontSize: 'inherit' }}></LeaderboardIcon> Tree ID leaderboard
-              </a>
-            </Link>
-          </Box>
-          <IdentifyTreeFlowDialog
-            open={isAddTreeDialogOpen}
-            setOpen={setIsAddTreeDialogOpen}
-            onComplete={() => {
-              console.log('completed');
-              setIsQuizRefreshing(true);
+          <Box
+            sx={{
+              background: 'linear-gradient(to top, #486e624f, #486e6233), url(/background-lighter.svg)',
+              border: 'solid 1px #486E62',
+              borderRadius: '5px',
             }}
-            latitude={event.location ? Number(event.location.latitude) : null}
-            longitude={event.location ? Number(event.location.longitude) : null}
-          ></IdentifyTreeFlowDialog>
+            className='box-shadow checkin-tree-quiz'
+            mb={3}
+          >
+            <Typography variant='h6' color='primary' sx={{ textAlign: 'center' }} mb={2} mt={1}>
+              Tree ID Guessing Game
+            </Typography>
+
+            <Box sx={{ textAlign: 'right', mt: -1.5, mb: 0.2, fontSize: '80%', pl: 0.5, pr: 0.5 }}>
+              <SplitRow>
+                <a
+                  onClick={() => {
+                    setIsQuizRefreshing(true);
+                  }}
+                  style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '4px', alignItems: 'center', color: '#6e4854' }}
+                >
+                  <AutorenewIcon sx={{ fontSize: 'inherit' }} /> <Box sx={{ textDecoration: 'underline' }}>Reload</Box>
+                </a>
+                <a
+                  onClick={() => {
+                    if (!hasActiveMembership) {
+                      setIsMembershipDialogOpen(true);
+                    } else setIsAddTreeDialogOpen(true);
+                  }}
+                  style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '3px', alignItems: 'center', color: '#6e4854' }}
+                >
+                  <LoupeIcon sx={{ fontSize: 'inherit' }}></LoupeIcon> <Box sx={{ textDecoration: 'underline' }}>Add a tree</Box>
+                </a>
+              </SplitRow>
+              <BecomeAMemberDialog open={isMembershipDialogOpen} setOpen={setIsMembershipDialogOpen}></BecomeAMemberDialog>
+            </Box>
+            <TreeIdQuiz
+              eventId={event.id}
+              isRefreshing={isQuizRefreshing}
+              defaultLatitude={Number(event.location?.latitude)}
+              defaultLongitude={Number(event.location?.longitude)}
+              setIsRefreshing={setIsQuizRefreshing}
+              mapHeight='250px'
+              onCloseDialog={onQuizDialogClose}
+            ></TreeIdQuiz>
+            {isFirstQuiz && (
+              <Box sx={{ mt: -4, fontSize: '95%', zIndex: 1000, position: 'relative' }}>
+                <Box
+                  style={{
+                    textDecoration: 'none',
+                    display: 'flex',
+                    gap: '3px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#486e62',
+                    padding: '3px 5px',
+                    backgroundColor: '#FFCC37',
+                    borderRadius: '16px',
+                    width: '160px',
+                    textAlign: 'center',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                  }}
+                  className='box-shadow'
+                >
+                  <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a pin to begin
+                </Box>
+              </Box>
+            )}
+
+            <TreeIdLeaderPosition leaders={leaders}></TreeIdLeaderPosition>
+            <IdentifyTreeFlowDialog
+              open={isAddTreeDialogOpen}
+              setOpen={setIsAddTreeDialogOpen}
+              onComplete={() => {
+                console.log('completed');
+                setIsQuizRefreshing(true);
+              }}
+              latitude={event.location ? Number(event.location.latitude) : null}
+              longitude={event.location ? Number(event.location.longitude) : null}
+            ></IdentifyTreeFlowDialog>
+          </Box>
           <Attendees
             users={status.attendees}
             onDelete={userId => {

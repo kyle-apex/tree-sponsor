@@ -21,6 +21,7 @@ const TreeIdQuiz = ({
   defaultLongitude,
   mapHeight = '200px',
   showLocation,
+  onCloseDialog,
 }: {
   eventId?: number;
   isRefreshing?: boolean;
@@ -29,6 +30,7 @@ const TreeIdQuiz = ({
   defaultLongitude?: number;
   mapHeight?: string;
   showLocation?: boolean;
+  onCloseDialog?: () => void;
 }) => {
   const [email] = useLocalStorage('checkinEmail', '');
   const currentMapCoordinateRef = useRef<Coordinate>(null);
@@ -94,7 +96,15 @@ const TreeIdQuiz = ({
   return (
     <QuizContext.Provider value={{ updateTreeById, trees }}>
       <Box>
-        <TreeDisplayDialog tree={selectedTree} open={isQuizDialogOpen} setOpen={setIsQuizDialogOpen} eventId={eventId}></TreeDisplayDialog>
+        <TreeDisplayDialog
+          tree={selectedTree}
+          open={isQuizDialogOpen}
+          setOpen={setIsQuizDialogOpen}
+          eventId={eventId}
+          onClose={() => {
+            if (onCloseDialog) onCloseDialog();
+          }}
+        ></TreeDisplayDialog>
         {isFetched && (
           <MapMarkerDisplay
             markers={trees?.map(tree => {

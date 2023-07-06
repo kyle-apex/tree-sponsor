@@ -103,7 +103,7 @@ const TreeDisplay = ({
   } else {
     displayName = tree.name;
   }
-  const imagePaddingTop = hasFullHeightImage ? (image.height ? (image.height / image.width) * 100 + '%' : '90%') : '90%';
+  const imagePaddingTop = hasFullHeightImage ? (image?.height ? (image.height / image.width) * 100 + '%' : '90%') : '90%';
   const hasSpeciesQuiz = !!tree.species;
   return (
     <>
@@ -129,7 +129,7 @@ const TreeDisplay = ({
               cursor: 'pointer',
             }}
             className={classes.media + ' box-shadow'}
-            image={image.url + imageCacheKey}
+            image={image?.url + imageCacheKey}
             title={tree.name}
             onClick={() => {
               setActivePhotoUrl(image.url);
@@ -139,7 +139,7 @@ const TreeDisplay = ({
           >
             <IconButton
               onClick={() => {
-                setActivePhotoUrl(image.url);
+                setActivePhotoUrl(image?.url);
                 setIsPhotoViewOpen(true);
               }}
               sx={{ left: 5, top: 5 }}
@@ -229,21 +229,25 @@ const TreeDisplay = ({
           <PhotoViewDialog imageUrl={activePhotoUrl} open={isPhotoViewOpen} setOpen={setIsPhotoViewOpen}></PhotoViewDialog>
           {hasSpeciesQuiz && (
             <CardContent sx={{ flex: '1 1 100%', background: 'url(/background-lighter.svg)' }}>
-              <Typography
-                variant='h6'
-                color='secondary'
-                sx={{ textAlign: isMobile && leafImage ? 'left' : 'center' }}
-                mt={isMobile ? -1 : 0}
-                mb={2}
-              >
-                Tree ID Quiz
-              </Typography>
+              {false && (
+                <Typography
+                  variant='h6'
+                  color='secondary'
+                  sx={{ textAlign: isMobile && leafImage ? 'left' : 'center' }}
+                  mt={isMobile ? -1 : 0}
+                  mb={2}
+                >
+                  Tree ID Quiz
+                </Typography>
+              )}
 
               <SpeciesQuiz
                 correctSpecies={tree.species}
                 treeId={tree.id}
                 eventId={eventId}
                 subtitleSx={{ textAlign: isMobile && leafImage ? 'left' : 'center' }}
+                hasLeaf={!!leafImage}
+                onClose={handleClose}
               ></SpeciesQuiz>
 
               {handleClose && (
