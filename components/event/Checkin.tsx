@@ -362,7 +362,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       )}
       {status?.isFound === false && activeTab == 0 && (
         <>
-          <Typography variant='body2' component='p' mb={3}>
+          <Typography variant='body2' component='p' mb={4}>
             Thanks for joining for today&apos;s event. Grab a name tag (if available), meet a new friend, and learn about the trees around
             us:
           </Typography>
@@ -379,7 +379,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               <Typography variant='body2' component='p' mb={2}>
                 🥳 &nbsp;{getDonationDateMessage(status.subscription)}
               </Typography>
-              <Typography variant='body2' component='p' mb={2}>
+              <Typography variant='body2' component='p' mb={status.myCheckin?.user?.roles?.find(role => role.name === 'Core Team') ? 2 : 4}>
                 👥 &nbsp;Keep up with special events and opportunities in our
                 <a href={process.env.BAND_URL || 'https://band.us/n/a4ae81veK4TfW'} target='_blank' rel='noreferrer' style={{}}>
                   <span style={{ marginLeft: '4px' }}>members only BAND App community</span>
@@ -387,7 +387,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 .
               </Typography>
               {status.myCheckin?.user?.roles?.find(role => role.name === 'Core Team') && (
-                <Typography variant='body2' component='p' mb={2}>
+                <Typography variant='body2' component='p' mb={4}>
                   🗓 &nbsp;Help plan/organize in the
                   <a href={process.env.BAND_CORE_TEAM_URL || 'https://band.us/n/aaa18bv1q2U44'} target='_blank' rel='noreferrer' style={{}}>
                     <span style={{ marginLeft: '4px' }}>Core Team BAND</span>
@@ -405,7 +405,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               <Typography variant='body2' component='p' mb={2}>
                 Unfortunately <b>your supporting membership is no longer active</b>.
               </Typography>
-              <Typography variant='body2' component='p' mb={2}>
+              <Typography variant='body2' component='p' mb={3}>
                 Your most recent membership donation was {formatDateString(status.subscription.lastPaymentDate)}.
               </Typography>
             </>
