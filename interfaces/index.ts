@@ -140,4 +140,5 @@ export type LeaderRow = {
   count?: number;
   display?: React.ReactNode;
   isCurrentUser?: boolean;
+  isMember?: boolean;
 };
