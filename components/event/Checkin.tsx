@@ -360,7 +360,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           </Button>
         </>
       )}
-      {status?.isFound === false && activeTab == 0 && (
+      {status?.isFound === false && (activeTab == 0 || status.myCheckin?.user?.name) && (
         <>
           <Typography variant='body2' component='p' mb={4}>
             Thanks for joining for today&apos;s event. Grab a name tag (if available), meet a new friend, and learn about the trees around
