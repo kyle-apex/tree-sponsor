@@ -18,7 +18,7 @@ const TreeIdLeaderPosition = ({ leaders }: { leaders: LeaderRow[] }) => {
         pt: 1,
       }}
     >
-      <SplitRow mb={2}>
+      <SplitRow mb={1.5}>
         <Box sx={{ fontSize: '80%', pl: 0.5 }}>
           <Link href='/leaders'>
             <a
@@ -50,13 +50,13 @@ const TreeIdLeaderPosition = ({ leaders }: { leaders: LeaderRow[] }) => {
                 alignItems: 'center',
                 pr: leader.isCurrentUser ? 2 : 2,
                 backgroundColor: leader.isCurrentUser ? '#ffffff7d' : '',
-                pt: leader.isCurrentUser ? '3px' : 0,
-                pb: leader.isCurrentUser ? '3px' : 0,
-                mb: '6px',
+                pt: '3px',
+                pb: '3px',
+                mb: '3px',
               }}
               key={user.name}
             >
-              <Typography sx={{ fontWeight: 600, flex: '1 0 26px', textAlign: 'center', marginRight: 0.5 }}>
+              <Typography sx={{ fontWeight: 600, flex: '1 0 34px', textAlign: 'center', marginRight: 0.5 }}>
                 {idx === 0 || leader.position != leaders[idx - 1].position ? leader.position : ''}
               </Typography>
               <Box>
