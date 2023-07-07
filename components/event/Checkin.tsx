@@ -173,7 +173,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
   const hasActiveMembership = status?.subscription?.lastPaymentDate > lastYear;
 
-  const userName = status?.subscription?.userName?.split(' ')[0] || '';
+  const userName = status?.subscription?.userName?.split(' ')[0] || status?.myCheckin?.user?.name?.split(' ')[0] || '';
 
   const updateIsPrivate = async () => {
     const newIsPrivate = !isPrivate;
@@ -232,7 +232,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 className='transparent'
                 label={
                   <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
-                    <div>Member</div>
+                    <div>Supporter</div>
                   </Box>
                 }
               />
@@ -347,7 +347,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
         </>
       )}
 
-      {status?.isFound === false && activeTab == 1 && (
+      {status?.isFound === false && activeTab == 1 && !status.myCheckin?.user?.name && (
         <>
           <Typography variant='body2' component='p' mb={2}>
             Supporting membership status for <b>{status.email}</b> was not found.
@@ -406,13 +406,19 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 Unfortunately <b>your supporting membership is no longer active</b>.
               </Typography>
               <Typography variant='body2' component='p' mb={3}>
-                Your most recent membership donation was {formatDateString(status.subscription.lastPaymentDate)}.
+                Your most recent membership donation was {formatDateString(status.subscription.lastPaymentDate)}.{' '}
+                <Link href='/membership'>
+                  <a style={{ cursor: 'pointer', textDecoration: 'underline' }}>
+                    Click here to start a new supporting membership donation to TreeFolks!
+                  </a>
+                </Link>
+                {'.'}
               </Typography>
             </>
           )}
         </>
       )}
-      {status && !(status.isFound === false && activeTab == 1) && (
+      {status && !(status.isFound === false && !status.myCheckin?.user?.name && activeTab == 1) && (
         <>
           <Box
             sx={{
