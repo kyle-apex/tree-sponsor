@@ -66,11 +66,11 @@ export default function LeaderTable({
                 </TableCell>
               </TableRow>
             )}
-            {leaders.map((row: LeaderRow) => {
+            {leaders.map((row: LeaderRow, idx: number) => {
               return (
                 <StyledTableRow tabIndex={-1} key={row?.position}>
                   <TableCell scope='row' sx={{ pr: 0, pl: 1 }}>
-                    {row.position}.
+                    {(idx == 0 || leaders[idx - 1].position != row.position) && <span>{row.position}.</span>}
                   </TableCell>
                   <TableCell scope='row' sx={{ pl: 0, pr: 0 }}>
                     <Attendee hideContactPageIcon={true} user={row.user}></Attendee>
