@@ -12,16 +12,14 @@ const TreeIdLeaderPosition = ({ leaders }: { leaders: LeaderRow[] }) => {
   return (
     <Box
       sx={{
-        pl: 1,
         position: 'relative',
         borderRadius: '5px',
         mt: 1,
-        mb: 0,
         pt: 1,
       }}
     >
       <SplitRow mb={2}>
-        <Box sx={{ fontSize: '80%' }}>
+        <Box sx={{ fontSize: '80%', pl: 0.5 }}>
           <Link href='/leaders'>
             <a
               style={{
@@ -40,7 +38,7 @@ const TreeIdLeaderPosition = ({ leaders }: { leaders: LeaderRow[] }) => {
         </Box>
         <Box sx={{ mr: '5px', fontSize: '80%', color: '#6e4854' }}>Correct Guesses</Box>
       </SplitRow>
-      <Box pb={1.5}>
+      <Box mb={2}>
         {leaders?.map((leader, idx) => {
           const user = leader.user;
           return (
@@ -52,8 +50,6 @@ const TreeIdLeaderPosition = ({ leaders }: { leaders: LeaderRow[] }) => {
                 alignItems: 'center',
                 pr: leader.isCurrentUser ? 2 : 2,
                 backgroundColor: leader.isCurrentUser ? '#ffffff7d' : '',
-                ml: leader.isCurrentUser ? -1 : 0,
-                pl: leader.isCurrentUser ? 1 : 0,
                 pt: leader.isCurrentUser ? '3px' : 0,
                 pb: leader.isCurrentUser ? '3px' : 0,
                 mb: '6px',
@@ -75,7 +71,6 @@ const TreeIdLeaderPosition = ({ leaders }: { leaders: LeaderRow[] }) => {
                 variant='subtitle2'
                 sx={{
                   textAlign: 'center',
-                  /*backgroundColor: '#486E62',*/
                   background: 'linear-gradient(to top, #486e62, #486e62cc),url(/background-lighter.svg)',
                   color: 'white',
                   padding: '2px 10px',
