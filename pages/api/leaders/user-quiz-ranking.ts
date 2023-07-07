@@ -20,6 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const user = await prisma.user.findFirst({ where: { email } });
     currentLeader = { user, count: 0, position: lastPosition };
   }
+  currentLeader.isCurrentUser = true;
 
   const currentIndex = leaders.indexOf(currentLeader);
   let lastPositionUserCount = 0;
