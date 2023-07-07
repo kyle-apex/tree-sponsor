@@ -57,6 +57,6 @@ export const listTopQuizResponders = async (yearFilter?: string | number): Promi
       return row;
     })
     .filter(leader => !!leader.user);
-  console.log('leaders', leaders);
+
   return leaders;
 };

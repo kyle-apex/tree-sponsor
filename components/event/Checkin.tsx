@@ -582,7 +582,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           </Button>
         </>
       )}
-      {status?.isFound === false && activeTab != 1 && (
+      {status?.isFound === false && (activeTab != 1 || status.myCheckin?.user?.name) && (
         <>
           <hr style={{ width: '100%', marginTop: '10px', marginBottom: '20px' }} />
           <Typography variant='body2' component='p' mt={2} mb={2}>
@@ -616,7 +616,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           ></MapMarkerDisplay>
         </Box>
       )}
-      {status && !(status.isFound === false && activeTab == 1) && (
+      {status && !(status.isFound === false && activeTab == 1 && !status.myCheckin?.user?.name) && (
         <a
           href='https://www.instagram.com/treefolks_yp/'
           target='_instagram'

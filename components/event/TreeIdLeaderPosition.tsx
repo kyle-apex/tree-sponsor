@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import UserAvatar from 'components/sponsor/UserAvatar';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import SupporterIcon from '@mui/icons-material/VerifiedSharp';
 import Link from 'next/link';
 
 import { LeaderRow } from 'interfaces';
@@ -63,8 +64,11 @@ const TreeIdLeaderPosition = ({ leaders }: { leaders: LeaderRow[] }) => {
                 <UserAvatar image={user.image} name={user.displayName || user.name} size={idx == 1 ? 26 : 26} />
               </Box>
 
-              <Typography variant='subtitle2' sx={{ ml: 1, flex: '1 1 100%' }}>
-                {user.displayName || user.name}
+              <Typography
+                variant='subtitle2'
+                sx={{ ml: 1, flex: '1 1 100%', display: 'flex', alignContent: 'center', alignItems: 'center', gap: '5px', pr: 0.5 }}
+              >
+                {user.displayName || user.name} {leader.isMember && <SupporterIcon fontSize='small' color='primary'></SupporterIcon>}
               </Typography>
 
               <Typography
