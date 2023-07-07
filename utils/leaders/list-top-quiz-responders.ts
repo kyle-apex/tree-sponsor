@@ -47,8 +47,8 @@ export const listTopQuizResponders = async (yearFilter?: string | number): Promi
   let position = 1;
 
   const leaders: LeaderRow[] = responses
-    ?.map(response => {
-      if (previousCount && previousCount != response._count) position++;
+    ?.map((response, idx) => {
+      if (previousCount && previousCount != response._count) position = idx + 1;
       previousCount = response._count;
       const row: LeaderRow = { position };
       row.count = response._count;
@@ -57,5 +57,6 @@ export const listTopQuizResponders = async (yearFilter?: string | number): Promi
       return row;
     })
     .filter(leader => !!leader.user);
+  console.log('leaders', leaders);
   return leaders;
 };

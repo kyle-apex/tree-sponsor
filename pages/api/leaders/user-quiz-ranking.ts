@@ -14,12 +14,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     results.push(leader); //{ ...leader.user, count: leader.count, rank: leader.position });
   }
 
-  const lastPosition = leaders.length > 0 ? leaders[leaders.length - 1].position + 1 : 1;
+  const lastPosition = leaders.length > 0 ? leaders.length + 1 : 1;
 
   if (!currentLeader) {
     const user = await prisma.user.findFirst({ where: { email } });
     currentLeader = { user, count: 0, position: lastPosition };
   }
+  currentLeader.isCurrentUser = true;
 
   const currentIndex = leaders.indexOf(currentLeader);
   let lastPositionUserCount = 0;

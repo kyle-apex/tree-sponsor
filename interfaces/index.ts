@@ -139,4 +139,5 @@ export type LeaderRow = {
   user?: PartialUser;
   count?: number;
   display?: React.ReactNode;
+  isCurrentUser?: boolean;
 };
