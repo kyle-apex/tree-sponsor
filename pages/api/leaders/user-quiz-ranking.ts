@@ -60,17 +60,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (lastPositionUserCount > 0) {
     const excludedUserIds: number[] = leaders.map(leader => leader.user?.id);
     excludedUserIds.push(currentLeader.user.id);
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
     const lastPositionUsers = await prisma.eventCheckIn.findMany({
       take: lastPositionUserCount,
       orderBy: { createdDate: 'desc' },
       distinct: 'userId',
       where: { isPrivate: false, userId: { notIn: excludedUserIds } },
-      select: { user: { select: { name: true, displayName: true, image: true } }, userId: true },
+      select: {
+        user: {
+          select: {
+            name: true,
+            displayName: true,
+            image: true,
+            subscriptions: { where: { lastPaymentDate: { gt: oneYearAgo } }, select: { lastPaymentDate: true } },
+          },
+        },
+        userId: true,
+      },
     });
     lastPositionUsers.forEach(userCheckin => {
       addLeader({ count: 0, user: userCheckin.user, position: lastPosition });
     });
   }
+
+  results?.forEach(result => {
+    result.isMember = result.user?.subscriptions?.length > 0;
+    delete result.user?.subscriptions;
+  });
 
   res.status(200).json(results);
 }
