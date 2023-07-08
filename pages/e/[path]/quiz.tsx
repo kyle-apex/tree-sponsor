@@ -1,26 +1,20 @@
-import Checkin from 'components/event/Checkin';
 import Layout from 'components/layout/Layout';
 import LogoMessage from 'components/layout/LogoMessage';
 import { PartialEvent } from 'interfaces';
 import { GetServerSidePropsContext } from 'next';
 import { prisma } from 'utils/prisma/init';
 
-import { useEffect } from 'react';
 import formatServerProps from 'utils/api/format-server-props';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
+import PriorEventQuiz from 'components/event/PriorEventQuiz';
 
 const CheckinPage = ({ event }: { event: PartialEvent }) => {
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
 
   return (
-    <Layout
-      title='Event Checkin'
-      header='TreeFolksYP'
-      ogImage='https://tfyp-images.s3.amazonaws.com/Event+Check-in.png'
-      description={'TreeFolks Young Professionals welcomes you to our ' + event.name}
-    >
-      <LogoMessage isCheckin={true} justifyContent='start'>
-        <Checkin event={parsedEvent} />
+    <Layout title='Event Tree ID' header='TreeFolksYP'>
+      <LogoMessage justifyContent='start'>
+        <PriorEventQuiz event={parsedEvent} />
       </LogoMessage>
     </Layout>
   );

@@ -294,6 +294,7 @@ model Event {
   activeEndDate       DateTime?
   identifier          String?
   path                String?               @db.VarChar(256)
+  isPrivate           Boolean?              @default(false)
   location            Location?             @relation(fields: [locationId], references: [id])
   locationId          Int?
   categories          Category[]            @relation("CategoryToEvent")
