@@ -15,6 +15,7 @@ import TreeIdLeaderPosition from './TreeIdLeaderPosition';
 import Button from '@mui/material/Button';
 import parsedGet from 'utils/api/parsed-get';
 import CheckinForm, { CheckinFormHandle } from './CheckinForm';
+import PriorEventList from './PriorEventList';
 
 const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', '');
@@ -191,6 +192,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
 
         <TreeIdLeaderPosition isLoading={isFetching} leaders={leaders}></TreeIdLeaderPosition>
       </Box>
+      {isLoggedIn && <PriorEventList currentEventId={event.id}></PriorEventList>}
       {isLoggedIn && (
         <Button onClick={logout} sx={{ mt: 1 }} variant='outlined' color='secondary'>
           Log out
