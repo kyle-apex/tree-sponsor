@@ -8,8 +8,9 @@ import Link from 'next/link';
 
 import { LeaderRow } from 'interfaces';
 import SplitRow from 'components/layout/SplitRow';
+import Skeleton from '@mui/material/Skeleton';
 
-const TreeIdLeaderPosition = ({ leaders }: { leaders: LeaderRow[] }) => {
+const TreeIdLeaderPosition = ({ leaders, isLoading }: { leaders: LeaderRow[]; isLoading?: boolean }) => {
   return (
     <Box
       sx={{
@@ -40,56 +41,64 @@ const TreeIdLeaderPosition = ({ leaders }: { leaders: LeaderRow[] }) => {
         <Box sx={{ mr: '5px', fontSize: '80%', color: '#6e4854' }}>Correct Guesses</Box>
       </SplitRow>
       <Box mb={2}>
-        {leaders?.map((leader, idx) => {
-          const user = leader.user;
-          return (
-            <Box
-              className={leader.isCurrentUser ? 'box-shadow' : ''}
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                pr: leader.isCurrentUser ? 2 : 2,
-                backgroundColor: leader.isCurrentUser ? '#ffffff7d' : '',
-                pt: '3px',
-                pb: '3px',
-                mb: '3px',
-              }}
-              key={user.name}
-            >
-              <Typography sx={{ fontWeight: 600, flex: '1 0 34px', textAlign: 'center', marginRight: 0.5 }}>
-                {idx === 0 || leader.position != leaders[idx - 1].position ? leader.position : ''}
-              </Typography>
-              <Box>
-                <UserAvatar image={user.image} name={user.displayName || user.name} size={idx == 1 ? 26 : 26} />
-              </Box>
-
-              <Typography
-                variant='subtitle2'
-                sx={{ ml: 1, flex: '1 1 100%', display: 'flex', alignContent: 'center', alignItems: 'center', gap: '5px', pr: 0.5 }}
-              >
-                {user.displayName || user.name} {leader.isMember && <SupporterIcon fontSize='small' color='primary'></SupporterIcon>}
-              </Typography>
-
-              <Typography
-                variant='subtitle2'
+        {(!leaders?.length || isLoading) && (
+          <Box pr={2} pl={2}>
+            <Skeleton variant='rectangular' sx={{ width: '100%', marginBottom: 1.5 }} height={26} />
+            <Skeleton variant='rectangular' sx={{ width: '100%', marginBottom: 1.5 }} height={26} />
+            <Skeleton variant='rectangular' sx={{ width: '100%', marginBottom: 1.5 }} height={26} />
+          </Box>
+        )}
+        {!isLoading &&
+          leaders?.map((leader, idx) => {
+            const user = leader.user;
+            return (
+              <Box
+                className={leader.isCurrentUser ? 'box-shadow' : ''}
                 sx={{
-                  textAlign: 'center',
-                  background: 'linear-gradient(to top, #486e62, #486e62cc),url(/background-lighter.svg)',
-                  color: 'white',
-                  padding: '2px 10px',
-                  borderRadius: '20px',
-                  flex: '1 0 44px',
-                  fontWeight: 'bold',
-                  fontSize: '.75rem',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  pr: leader.isCurrentUser ? 2 : 2,
+                  backgroundColor: leader.isCurrentUser ? '#ffffff7d' : '',
+                  pt: '3px',
+                  pb: '3px',
+                  mb: '3px',
                 }}
-                className='box-shadow'
+                key={user.name}
               >
-                {leader.count}
-              </Typography>
-            </Box>
-          );
-        })}
+                <Typography sx={{ fontWeight: 600, flex: '1 0 34px', textAlign: 'center', marginRight: 0.5 }}>
+                  {idx === 0 || leader.position != leaders[idx - 1].position ? leader.position : ''}
+                </Typography>
+                <Box>
+                  <UserAvatar image={user.image} name={user.displayName || user.name} size={idx == 1 ? 26 : 26} />
+                </Box>
+
+                <Typography
+                  variant='subtitle2'
+                  sx={{ ml: 1, flex: '1 1 100%', display: 'flex', alignContent: 'center', alignItems: 'center', gap: '5px', pr: 0.5 }}
+                >
+                  {user.displayName || user.name} {leader.isMember && <SupporterIcon fontSize='small' color='primary'></SupporterIcon>}
+                </Typography>
+
+                <Typography
+                  variant='subtitle2'
+                  sx={{
+                    textAlign: 'center',
+                    background: 'linear-gradient(to top, #486e62, #486e62cc),url(/background-lighter.svg)',
+                    color: 'white',
+                    padding: '2px 10px',
+                    borderRadius: '20px',
+                    flex: '1 0 44px',
+                    fontWeight: 'bold',
+                    fontSize: '.75rem',
+                  }}
+                  className='box-shadow'
+                >
+                  {leader.count}
+                </Typography>
+              </Box>
+            );
+          })}
       </Box>
     </Box>
   );

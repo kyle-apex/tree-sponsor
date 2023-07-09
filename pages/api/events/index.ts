@@ -3,6 +3,7 @@ import { PartialEvent, PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { getSession } from 'utils/auth/get-session';
+import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
 import { Prisma, prisma } from 'utils/prisma/init';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -14,6 +15,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.query.isPastEvent === 'true') filter.where = { startDate: { lt: new Date() } };
     if (req.query.isPastEvent === 'false') filter.where = { startDate: { gt: new Date() } };
+
+    const isAdmin = await isCurrentUserAuthorized('isAdmin', req);
+    if (!isAdmin) filter.where.isPrivate = false;
 
     const events = await prisma.event.findMany(filter);
     res.status(200).json(events);
