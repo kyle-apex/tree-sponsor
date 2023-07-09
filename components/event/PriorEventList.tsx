@@ -16,6 +16,7 @@ const highlightSx = {
   paddingTop: 1,
   marginTop: '-9px',
   marginBottom: '-1px',
+  textDecoration: 'none',
 };
 
 const PriorEventList = ({ currentEventId }: { currentEventId?: number }) => {
@@ -44,7 +45,7 @@ const PriorEventList = ({ currentEventId }: { currentEventId?: number }) => {
           return (
             <>
               {idx > 0 && <Divider sx={{ mb: 1 }}></Divider>}
-              <Link href={`/e/${event?.path}/quiz`} key={event?.id}>
+              <a href={`/e/${event?.path}/quiz`} key={event?.id} style={{ textDecoration: 'none' }}>
                 <Box sx={event.id == currentEventId ? highlightSx : { cursor: 'pointer' }}>
                   <Typography variant='subtitle2' color='secondary' sx={{ lineHeight: 'normal' }}>
                     {event.name} Recap
@@ -54,7 +55,7 @@ const PriorEventList = ({ currentEventId }: { currentEventId?: number }) => {
                     {event?.location?.name && ' - ' + event.location.name}
                   </Typography>
                 </Box>
-              </Link>
+              </a>
             </>
           );
         })}
