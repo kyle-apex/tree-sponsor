@@ -56,6 +56,8 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
     'leaderPosition',
     {
       email: storedEmail,
+      eventId: null,
+      showAll: false,
     },
     { refetchOnMount: true, refetchOnWindowFocus: true },
   );
