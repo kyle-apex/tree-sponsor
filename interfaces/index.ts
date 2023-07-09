@@ -20,7 +20,9 @@ import {
   TreeChangeLog,
   SpeciesQuizResponse,
   TreeGroup,
+  SubscriptionWithDetails,
 } from '@prisma/client';
+
 import { ViewportProps } from 'react-map-gl';
 import { Stripe } from 'stripe';
 import { OverridableStringUnion } from '@mui/types';
@@ -141,4 +143,23 @@ export type LeaderRow = {
   display?: React.ReactNode;
   isCurrentUser?: boolean;
   isMember?: boolean;
+};
+
+export type MembershipStatus = {
+  subscription?: SubscriptionWithDetails;
+  isFound?: boolean;
+  email?: string;
+  attendees?: PartialUser[];
+  attendeesCount?: number;
+  checkInCount?: number;
+  myCheckin?: PartialEventCheckIn;
+  myCheckins?: PartialEventCheckIn[];
+};
+
+export type CheckinFields = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  discoveredFrom?: string;
+  isEmailOptIn?: boolean;
 };

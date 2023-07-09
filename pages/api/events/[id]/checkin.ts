@@ -3,6 +3,7 @@ import { PartialEventCheckIn, PartialTree, PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getUserDisplaySelect } from 'prisma/common';
 import throwError from 'utils/api/throw-error';
+import findOrCreateCheckinUser from 'utils/events/find-or-create-checkin-user';
 import addSubscriber from 'utils/mailchimp/add-subscriber';
 import addTagToMembers from 'utils/mailchimp/add-tag-to-members';
 import addTagToMembersByName from 'utils/mailchimp/add-tag-to-members-by-name';
@@ -25,19 +26,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     let subscription;
-    let user = (await prisma.user.findFirst({ where: { email }, include: { profile: {} } })) as PartialUser;
-
-    if (user && !user.profile) {
-      user.profile = await prisma.profile.create({ data: { userId: user.id } });
-    }
-
-    if (user && !user.name && firstName) {
-      user.name = `${firstName} ${lastName}`.trim();
-      await prisma.user.update({ where: { email }, data: { name: user.name } });
-    }
-    if (!user && firstName) {
-      user = await prisma.user.create({ data: { email, name: `${firstName} ${lastName}`.trim(), profile: {} } });
-    }
+    const user = await findOrCreateCheckinUser({
+      email,
+      firstName,
+      lastName,
+    });
 
     const myCheckins = await prisma.eventCheckIn.findMany({
       where: { eventId: { not: eventId }, email: email },

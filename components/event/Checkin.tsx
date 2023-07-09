@@ -1,9 +1,8 @@
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import LoadingButton from '../LoadingButton';
 import parsedGet from 'utils/api/parsed-get';
-import { SubscriptionWithDetails } from '@prisma/client';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
 import SplitRow from 'components/layout/SplitRow';
@@ -24,6 +23,8 @@ import {
   PartialEventCheckIn,
   PartialSubscription,
   LeaderRow,
+  MembershipStatus,
+  CheckinFields,
 } from 'interfaces';
 import Attendees from './Attendees';
 import TreeDisplayDialog from 'components/tree/TreeDisplayDialog';
@@ -47,6 +48,7 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import PinIcon from '@mui/icons-material/LocationOn';
 
 import TreeIdLeaderPosition from './TreeIdLeaderPosition';
+import CheckinForm, { CheckinFormHandle } from './CheckinForm';
 //import TreeIdLeaderPosition from './TreeIdLeaderPosition';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
@@ -56,17 +58,6 @@ const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'
 const IdentifyTreeFlowDialog = dynamic(() => import('components/tree/IdentifyTreeFlowDialog'), {
   ssr: false,
 });
-
-type MembershipStatus = {
-  subscription?: SubscriptionWithDetails;
-  isFound?: boolean;
-  email?: string;
-  attendees?: PartialUser[];
-  attendeesCount?: number;
-  checkInCount?: number;
-  myCheckin?: PartialEventCheckIn;
-  myCheckins?: PartialEventCheckIn[];
-};
 
 const getDonationDateMessage = (subscription: PartialSubscription): string => {
   const anniversary = new Date(subscription.lastPaymentDate);
@@ -82,10 +73,6 @@ const attendeesDisplayLimit = 50;
 
 const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [email, setEmail] = useLocalStorage('checkinEmail', '');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [discoveredFrom, setDiscoveredFrom] = useState('');
-  const [isEmailOptIn, setIsEmailOptIn] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddTreeDialogOpen, setIsAddTreeDialogOpen] = useState(false);
   const [isQuizRefreshing, setIsQuizRefreshing] = useState(false);
@@ -105,6 +92,9 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
   const [isFirstQuiz, setIsFirstQuiz] = useState(true);
 
+  const checkinFormRef = useRef<CheckinFormHandle>();
+
+  // Preload species to immediately have quiz options
   const { data: prioritySpecies, isFetched } = useGet<PartialSpecies>(
     '/api/species/priority',
     'prioritySpecies',
@@ -116,6 +106,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     if (status?.attendees?.length > 0) {
       const result = (await parsedGet(`/api/events/${event.id}/attendees?email=${encodeURIComponent(email)}`)) as PartialUser[];
       setStatus(current => {
+        if (!current) return current;
         return { ...current, ...result };
       });
     }
@@ -127,17 +118,15 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     getMembershipStatus();
   }, [event?.id]);
 
-  const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
-    setActiveTab(newValue);
-  };
-
-  const getMembershipStatus = async () => {
+  const getMembershipStatus = async (fields?: CheckinFields) => {
     setIsLoading(true);
-    const result = (await parsedGet(
-      `/api/events/${event.id}/checkin?email=${encodeURIComponent(email)}&firstName=${encodeURIComponent(
-        firstName,
-      )}&lastName=${encodeURIComponent(lastName)}&discoveredFrom=${encodeURIComponent(discoveredFrom)}&emailOptIn=${isEmailOptIn}`,
-    )) as MembershipStatus;
+    if (fields?.email) setEmail(fields.email);
+    const url = `/api/events/${event.id}/checkin?email=${encodeURIComponent(fields?.email || email)}&firstName=${encodeURIComponent(
+      fields?.firstName || '',
+    )}&lastName=${encodeURIComponent(fields?.lastName || '')}&discoveredFrom=${encodeURIComponent(
+      fields?.discoveredFrom || '',
+    )}&emailOptIn=${fields?.isEmailOptIn || ''}`;
+    const result = (await parsedGet(url)) as MembershipStatus;
 
     let status;
     if (result?.subscription) status = { ...result, isFound: true };
@@ -153,19 +142,12 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     getMembershipStatus();
   };
 
-  const setCheckinIsPrivate = async (isPrivate: boolean) => {
-    if (!status.myCheckin?.userId) return;
-    await axios.delete(`/api/events/update-checkin?userId=${status.myCheckin?.userId}&eventId=${event.id}&isPrivate=${isPrivate}`);
-    getMembershipStatus();
-  };
-
   const reset = async () => {
     setStatus(null);
     setEmail('');
-    setFirstName('');
-    setLastName('');
-    setDiscoveredFrom('');
+    setActiveTab(0);
     setIsLoadingExistingUser(null);
+    checkinFormRef?.current?.reset();
   };
 
   const lastYear = new Date();
@@ -182,7 +164,11 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     getMembershipStatus();
   };
 
-  const { data: leaders, refetch: refetchLeaders } = useGet<LeaderRow[]>(
+  const {
+    data: leaders,
+    refetch: refetchLeaders,
+    isFetching: isFetchingLeaders,
+  } = useGet<LeaderRow[]>(
     `/api/leaders/user-quiz-ranking`,
     'leaderPosition',
     {
@@ -225,111 +211,13 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           <Typography variant='subtitle2' mb={2}>
             Welcome! Please check in below to learn more about this event and the trees around you.
           </Typography>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }} mb={4}>
-            <Tabs value={activeTab} onChange={handleTabChange} variant='fullWidth' aria-label='basic tabs example'>
-              <Tab label='New/Guest' className='transparent' />
-              <Tab
-                className='transparent'
-                label={
-                  <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
-                    <div>Supporter</div>
-                  </Box>
-                }
-              />
-            </Tabs>
-          </Box>
-          {activeTab == 0 && (
-            <SplitRow gap={1}>
-              <TextField
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                label='First Name'
-                value={firstName}
-                onChange={e => setFirstName(e.target.value)}
-                size='small'
-                sx={{ mb: 3 }}
-                required
-              ></TextField>
-              <TextField
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                label='Last Name'
-                value={lastName}
-                onChange={e => setLastName(e.target.value)}
-                size='small'
-                sx={{ mb: 3 }}
-                required
-              ></TextField>
-            </SplitRow>
-          )}
-
-          <TextField
-            InputLabelProps={{
-              shrink: true,
-            }}
-            inputProps={{ autoCapitalize: 'none', autoCorrect: 'off' }}
-            label='Email Address'
-            placeholder='me@example.com'
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            size='small'
-            fullWidth
-            required
-            sx={{ mb: 3 }}
-          ></TextField>
-          {activeTab == 0 && (
-            <Box>
-              <TextField
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                label="How'd you learn about this event?"
-                value={discoveredFrom}
-                onChange={e => setDiscoveredFrom(e.target.value)}
-                size='small'
-                fullWidth
-                sx={{ mb: 2 }}
-              ></TextField>
-              <FormGroup sx={{ marginBottom: 2 }}>
-                <FormControlLabel
-                  sx={{
-                    '.MuiSvgIcon-root': { color: 'rgba(0, 0, 0, 0.4)' },
-                    '& .MuiFormControlLabel-label': {
-                      fontSize: '.75rem',
-                      color: 'var(--secondary-text-color)',
-                      fontStyle: 'italic',
-                    },
-                    marginRight: '0px',
-                  }}
-                  control={
-                    <Checkbox
-                      checked={isEmailOptIn}
-                      onChange={e => {
-                        setIsEmailOptIn(e.target.checked);
-                      }}
-                      color='default'
-                      size='small'
-                    />
-                  }
-                  label={`Learn about future events via our monthly email`}
-                />
-              </FormGroup>{' '}
-            </Box>
-          )}
-          <LoadingButton
+          <CheckinForm
+            onSubmit={getMembershipStatus}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
             isLoading={isLoading}
-            disabled={!email || (activeTab == 0 && (!firstName || !lastName))}
-            color='primary'
-            onClick={getMembershipStatus}
-            sx={{
-              '& .Mui-disabled': { backgroundColor: 'rgba(72, 110, 98, .6)', display: 'none' },
-            }}
-            className='disabled-primary-button'
-          >
-            Check-in
-          </LoadingButton>
+            ref={checkinFormRef}
+          ></CheckinForm>
         </>
       )}
 
@@ -490,7 +378,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               </Box>
             )}
 
-            <TreeIdLeaderPosition leaders={leaders}></TreeIdLeaderPosition>
+            <TreeIdLeaderPosition leaders={leaders} isLoading={isFetchingLeaders}></TreeIdLeaderPosition>
             <IdentifyTreeFlowDialog
               open={isAddTreeDialogOpen}
               setOpen={setIsAddTreeDialogOpen}
