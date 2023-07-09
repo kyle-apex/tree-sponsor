@@ -48,7 +48,7 @@ const PriorEventList = ({ currentEventId }: { currentEventId?: number }) => {
               <a href={`/e/${event?.path}/quiz`} key={event?.id} style={{ textDecoration: 'none' }}>
                 <Box sx={event.id == currentEventId ? highlightSx : { cursor: 'pointer' }}>
                   <Typography variant='subtitle2' color='secondary' sx={{ lineHeight: 'normal' }}>
-                    {event.name} Recap
+                    {event.name}
                   </Typography>
                   <Typography variant='subtitle2' sx={{ fontSize: '.8rem' }} color='gray' mb={1}>
                     {formatDateString(event?.startDate)}
