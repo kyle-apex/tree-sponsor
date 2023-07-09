@@ -1,4 +1,5 @@
 import { CheckinFields, PartialUser } from 'interfaces';
+import { prisma } from 'utils/prisma/init';
 
 const findOrCreateCheckinUser = async (fields: CheckinFields) => {
   if (!fields) return;
