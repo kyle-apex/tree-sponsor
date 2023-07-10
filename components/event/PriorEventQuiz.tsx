@@ -24,6 +24,8 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   const [activeTab, setActiveTab] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isUserNotFound, setIsUserNotFound] = useState(false);
+  const [showAllLeaders, setShowAllLeaders] = useState(false);
+  const [leaderBoardMode, setLeaderBoardMode] = useState('');
 
   const [isFirstQuiz, setIsFirstQuiz] = useState(true);
   const [isQuizRefreshing, setIsQuizRefreshing] = useState(false);
@@ -38,7 +40,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
       fields?.discoveredFrom || '',
     )}&emailOptIn=${fields?.isEmailOptIn || ''}`;
     const results = (await parsedGet(url)) as MembershipStatus;
-    console.log('results', results);
+
     if (results?.email) {
       setStoredEmail(results.email);
     }
@@ -56,6 +58,8 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
     'leaderPosition',
     {
       email: storedEmail,
+      eventId: leaderBoardMode != 'all' ? event.id : null,
+      showAll: showAllLeaders,
     },
     { refetchOnMount: true, refetchOnWindowFocus: true },
   );
@@ -190,7 +194,14 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
           </Box>
         )}
 
-        <TreeIdLeaderPosition isLoading={isFetching} leaders={leaders}></TreeIdLeaderPosition>
+        <TreeIdLeaderPosition
+          isLoading={isFetching}
+          leaders={leaders}
+          setShowAll={setShowAllLeaders}
+          showAll={showAllLeaders}
+          leaderBoardMode={leaderBoardMode}
+          setLeaderBoardMode={setLeaderBoardMode}
+        ></TreeIdLeaderPosition>
       </Box>
       {isLoggedIn && <PriorEventList currentEventId={event.id}></PriorEventList>}
       {isLoggedIn && (

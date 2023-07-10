@@ -4,7 +4,7 @@ import { getYearDateRange } from 'utils/get-year-date-range';
 import getYearStartDate from 'utils/get-year-start-date';
 import { prisma, Prisma } from 'utils/prisma/init';
 
-export const listTopQuizResponders = async (yearFilter?: string | number): Promise<LeaderRow[]> => {
+export const listTopQuizResponders = async (yearFilter?: string | number, eventId?: number): Promise<LeaderRow[]> => {
   const currentYear = new Date().getFullYear();
   const year = yearFilter ? Number(yearFilter) : currentYear;
   const yearStart = getYearStartDate(year);
@@ -16,6 +16,8 @@ export const listTopQuizResponders = async (yearFilter?: string | number): Promi
   if (endDate) {
     whereFilter = { createdDate: { gt: startDate, lt: endDate } };
   }
+
+  if (eventId) whereFilter.eventId = eventId;
 
   const responses = await prisma.speciesQuizResponse.groupBy({
     by: ['userId'],

@@ -4,13 +4,35 @@ import Typography from '@mui/material/Typography';
 import UserAvatar from 'components/sponsor/UserAvatar';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import SupporterIcon from '@mui/icons-material/VerifiedSharp';
+import ChevronUpIcon from '@mui/icons-material/ExpandLess';
+import ChevronDownIcon from '@mui/icons-material/ExpandMore';
+
 import Link from 'next/link';
 
 import { LeaderRow } from 'interfaces';
 import SplitRow from 'components/layout/SplitRow';
 import Skeleton from '@mui/material/Skeleton';
+import { Dispatch, SetStateAction } from 'react';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
 
-const TreeIdLeaderPosition = ({ leaders, isLoading }: { leaders: LeaderRow[]; isLoading?: boolean }) => {
+const TreeIdLeaderPosition = ({
+  leaders,
+  isLoading,
+  showAll,
+  setShowAll,
+  leaderBoardMode,
+  setLeaderBoardMode,
+}: {
+  leaders: LeaderRow[];
+  isLoading?: boolean;
+  showAll?: boolean;
+  setShowAll?: Dispatch<SetStateAction<boolean>>;
+  leaderBoardMode?: string;
+  setLeaderBoardMode?: Dispatch<SetStateAction<string>>;
+}) => {
+  const hasFullLeaderBoardToggle = leaders?.length >= 3 && (leaders[2].position > 3 || leaders[2].count > 0 || leaders[0].position !== 0);
+  //if (leaders?.length == 3 && leaders[2].position > 3)
   return (
     <Box
       sx={{
@@ -22,21 +44,40 @@ const TreeIdLeaderPosition = ({ leaders, isLoading }: { leaders: LeaderRow[]; is
     >
       <SplitRow mb={1.5}>
         <Box sx={{ fontSize: '80%', pl: 0.5 }}>
-          <Link href='/leaders'>
-            <a
-              style={{
-                textDecoration: 'underline',
-                cursor: 'pointer',
-                display: 'flex',
-                gap: '3px',
-                alignItems: 'center',
-                justifyContent: 'end',
-                color: '#6e4854',
-              }}
-            >
-              <LeaderboardIcon sx={{ fontSize: 'inherit' }}></LeaderboardIcon> View full leaderboard
-            </a>
-          </Link>
+          {false && (
+            <Link href='/leaders'>
+              <a
+                style={{
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  gap: '3px',
+                  alignItems: 'center',
+                  justifyContent: 'end',
+                  color: '#6e4854',
+                }}
+              >
+                <LeaderboardIcon sx={{ fontSize: 'inherit' }}></LeaderboardIcon> View full leaderboard
+              </a>
+            </Link>
+          )}
+          <ToggleButtonGroup
+            size='small'
+            value={leaderBoardMode}
+            exclusive
+            onChange={(_e, mode) => setLeaderBoardMode(mode)}
+            aria-label='Current/All Leaderboard Mode'
+            fullWidth
+            color='secondary'
+            sx={{ marginBottom: -0.2 }}
+          >
+            <ToggleButton value='' aria-label='Current' sx={{ fontSize: '10px', lineHeight: 1, whiteSpace: 'nowrap' }}>
+              Current Event
+            </ToggleButton>
+            <ToggleButton value='all' aria-label='All Time' sx={{ fontSize: '10px', lineHeight: 1, whiteSpace: 'nowrap' }}>
+              All Time
+            </ToggleButton>
+          </ToggleButtonGroup>
         </Box>
         <Box sx={{ mr: '5px', fontSize: '80%', color: '#6e4854' }}>Correct Guesses</Box>
       </SplitRow>
@@ -100,6 +141,38 @@ const TreeIdLeaderPosition = ({ leaders, isLoading }: { leaders: LeaderRow[]; is
             );
           })}
       </Box>
+      {hasFullLeaderBoardToggle && (
+        <Box mt={-1} mb={0.25}>
+          <a
+            style={{
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              display: 'flex',
+              gap: '3px',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#6e4854',
+              fontSize: '80%',
+            }}
+            onClick={() => {
+              setShowAll((current: boolean) => !current);
+            }}
+          >
+            {!showAll ? (
+              <>
+                {' '}
+                <ChevronDownIcon sx={{ fontSize: 'inherit' }}></ChevronDownIcon> Show Full Leaderboard{' '}
+                <ChevronDownIcon sx={{ fontSize: 'inherit' }}></ChevronDownIcon>
+              </>
+            ) : (
+              <>
+                <ChevronUpIcon sx={{ fontSize: 'inherit' }}></ChevronUpIcon> Hide Full Leaderboard{' '}
+                <ChevronUpIcon sx={{ fontSize: 'inherit' }}></ChevronUpIcon>
+              </>
+            )}
+          </a>
+        </Box>
+      )}
     </Box>
   );
 };

@@ -78,6 +78,8 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [isQuizRefreshing, setIsQuizRefreshing] = useState(false);
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useHashToggle('history', false);
   const [isMembershipDialogOpen, setIsMembershipDialogOpen] = useState(false);
+  const [showAllLeaders, setShowAllLeaders] = useState(false);
+  const [leaderBoardMode, setLeaderBoardMode] = useState('');
 
   const [selectedTree, setSelectedTree] = useState<PartialTree>(null);
   const [isPrivate, setIsPrivate] = useState(false);
@@ -378,7 +380,14 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               </Box>
             )}
 
-            <TreeIdLeaderPosition leaders={leaders} isLoading={isFetchingLeaders}></TreeIdLeaderPosition>
+            <TreeIdLeaderPosition
+              leaders={leaders}
+              isLoading={isFetchingLeaders}
+              setShowAll={setShowAllLeaders}
+              showAll={showAllLeaders}
+              leaderBoardMode={leaderBoardMode}
+              setLeaderBoardMode={setLeaderBoardMode}
+            ></TreeIdLeaderPosition>
             <IdentifyTreeFlowDialog
               open={isAddTreeDialogOpen}
               setOpen={setIsAddTreeDialogOpen}
