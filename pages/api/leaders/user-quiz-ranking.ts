@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   currentLeader.isCurrentUser = true;
 
-  if (!showAll) {
+  if (!showAll || leaders?.length == 0) {
     const currentIndex = leaders.indexOf(currentLeader);
     let lastPositionUserCount = 0;
 
