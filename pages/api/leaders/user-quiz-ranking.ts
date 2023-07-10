@@ -23,8 +23,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const lastPosition = leaders.length > 0 ? leaders.length + 1 : 1;
 
   if (!currentLeader) {
-    const user = await prisma.user.findFirst({ where: { email } });
-    currentLeader = { user, count: 0, position: lastPosition };
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    const user = await prisma.user.findFirst({
+      where: { email },
+      select: {
+        id: true,
+        name: true,
+        image: true,
+        displayName: true,
+        profilePath: true,
+        email: true,
+        subscriptions: { where: { lastPaymentDate: { gt: oneYearAgo } }, select: { lastPaymentDate: true } },
+      },
+    });
+    currentLeader = { user, count: 0, position: lastPosition, isMember: user?.subscriptions?.length > 0 };
   }
   currentLeader.isCurrentUser = true;
 
