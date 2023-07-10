@@ -92,8 +92,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } else {
     leaders.forEach(leader => {
-      addLeader({ user: leader.user, count: leader.count, position: leader.position });
+      addLeader({
+        user: leader.user,
+        count: leader.count,
+        position: leader.position,
+        isCurrentUser: !!(leader.user?.email == currentLeader?.user?.email && currentLeader?.user?.email),
+      });
     });
+    if (!leaders?.find(leader => leader.isCurrentUser)) addLeader(currentLeader);
   }
 
   results?.forEach(result => {
