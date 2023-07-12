@@ -28,3 +28,9 @@ ALTER TABLE
     `TreeToGroup`
 ADD
     CONSTRAINT `TreeToGroup_groupId_fkey` FOREIGN KEY (`groupId`) REFERENCES `TreeGroup`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AlterTable
+ALTER TABLE
+    `Event`
+ADD
+    COLUMN `isPrivate` BOOLEAN NULL DEFAULT false;

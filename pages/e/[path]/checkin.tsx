@@ -40,14 +40,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     });
     formatServerProps(event);
-    console.log('checkin results', event);
-    /*const results = {
-      data: {
-        name: 'Some Event',
-        startDate: eval(JSON.stringify(new Date())),
-        categories: [{ name: 'Tree of the Year', trees: { name: 'Some Other Tree' } }],
-      },
-    };*/
+
     return { props: { event } };
   } catch (err) {
     console.log('err', err);

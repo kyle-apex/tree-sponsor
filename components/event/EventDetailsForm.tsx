@@ -139,13 +139,17 @@ const EventDetailsForm = ({
           ></UniquePathField>
         </Box>
       )}
-      <Box sx={{ marginTop: 3, marginBottom: 3, minHeight: '110px', display: 'block' }}>
+      <Box sx={{ marginTop: 3, marginBottom: 2, minHeight: '110px', display: 'block' }}>
         <TextEditor
           label='Check-in Details'
           placeholder='Enter details to appear on the check-in page'
           value={event?.checkInDetails}
           onChange={val => updateAttribute('checkInDetails', val)}
         />
+      </Box>
+      <Box sx={{ marginBottom: 3 }}>
+        <Checkbox defaultChecked={event?.isPrivate} onChange={e => updateAttribute('isPrivate', e.target.checked)}></Checkbox> Hide event
+        from public view (test or private event)
       </Box>
       <LocationSelector
         onViewportChange={({ latitude, longitude }) => {

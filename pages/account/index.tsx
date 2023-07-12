@@ -33,6 +33,8 @@ const AccountPage = () => {
   const session = nextSession as Session;
   const user = session?.user;
 
+  if (user?.email) localStorage.setItem('checkinEmail', JSON.stringify(user.email));
+
   const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: string) => {
     setActiveTab(newValue);
   };

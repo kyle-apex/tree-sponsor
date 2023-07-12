@@ -1,9 +1,8 @@
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import LoadingButton from '../LoadingButton';
 import parsedGet from 'utils/api/parsed-get';
-import { SubscriptionWithDetails } from '@prisma/client';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
 import SplitRow from 'components/layout/SplitRow';
@@ -15,7 +14,18 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
-import { PartialEvent, PartialUser, PartialTree, Coordinate, PartialSpecies, PartialEventCheckIn, PartialSubscription } from 'interfaces';
+import {
+  PartialEvent,
+  PartialUser,
+  PartialTree,
+  Coordinate,
+  PartialSpecies,
+  PartialEventCheckIn,
+  PartialSubscription,
+  LeaderRow,
+  MembershipStatus,
+  CheckinFields,
+} from 'interfaces';
 import Attendees from './Attendees';
 import TreeDisplayDialog from 'components/tree/TreeDisplayDialog';
 import { useGet } from 'utils/hooks/use-get';
@@ -35,6 +45,10 @@ import EventNameDisplay from './EventNameDisplay';
 import TreeIdQuiz from './TreeIdQuiz';
 import BecomeAMemberDialog from './BecomeAMemberDialog';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import PinIcon from '@mui/icons-material/LocationOn';
+
+import TreeIdLeaderPosition from './TreeIdLeaderPosition';
+import CheckinForm, { CheckinFormHandle } from './CheckinForm';
 //import TreeIdLeaderPosition from './TreeIdLeaderPosition';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
@@ -44,17 +58,6 @@ const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'
 const IdentifyTreeFlowDialog = dynamic(() => import('components/tree/IdentifyTreeFlowDialog'), {
   ssr: false,
 });
-
-type MembershipStatus = {
-  subscription?: SubscriptionWithDetails;
-  isFound?: boolean;
-  email?: string;
-  attendees?: PartialUser[];
-  attendeesCount?: number;
-  checkInCount?: number;
-  myCheckin?: PartialEventCheckIn;
-  myCheckins?: PartialEventCheckIn[];
-};
 
 const getDonationDateMessage = (subscription: PartialSubscription): string => {
   const anniversary = new Date(subscription.lastPaymentDate);
@@ -70,15 +73,13 @@ const attendeesDisplayLimit = 50;
 
 const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [email, setEmail] = useLocalStorage('checkinEmail', '');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [discoveredFrom, setDiscoveredFrom] = useState('');
-  const [isEmailOptIn, setIsEmailOptIn] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddTreeDialogOpen, setIsAddTreeDialogOpen] = useState(false);
   const [isQuizRefreshing, setIsQuizRefreshing] = useState(false);
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useHashToggle('history', false);
   const [isMembershipDialogOpen, setIsMembershipDialogOpen] = useState(false);
+  const [showAllLeaders, setShowAllLeaders] = useState(false);
+  const [leaderBoardMode, setLeaderBoardMode] = useState('');
 
   const [selectedTree, setSelectedTree] = useState<PartialTree>(null);
   const [isPrivate, setIsPrivate] = useState(false);
@@ -91,6 +92,11 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [isShowAllAttendees, setIsShowAllAttendees] = useState(false);
 
+  const [isFirstQuiz, setIsFirstQuiz] = useState(true);
+
+  const checkinFormRef = useRef<CheckinFormHandle>();
+
+  // Preload species to immediately have quiz options
   const { data: prioritySpecies, isFetched } = useGet<PartialSpecies>(
     '/api/species/priority',
     'prioritySpecies',
@@ -102,6 +108,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     if (status?.attendees?.length > 0) {
       const result = (await parsedGet(`/api/events/${event.id}/attendees?email=${encodeURIComponent(email)}`)) as PartialUser[];
       setStatus(current => {
+        if (!current) return current;
         return { ...current, ...result };
       });
     }
@@ -113,17 +120,15 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     getMembershipStatus();
   }, [event?.id]);
 
-  const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number) => {
-    setActiveTab(newValue);
-  };
-
-  const getMembershipStatus = async () => {
+  const getMembershipStatus = async (fields?: CheckinFields) => {
     setIsLoading(true);
-    const result = (await parsedGet(
-      `/api/events/${event.id}/checkin?email=${encodeURIComponent(email)}&firstName=${encodeURIComponent(
-        firstName,
-      )}&lastName=${encodeURIComponent(lastName)}&discoveredFrom=${encodeURIComponent(discoveredFrom)}&emailOptIn=${isEmailOptIn}`,
-    )) as MembershipStatus;
+    if (fields?.email) setEmail(fields.email);
+    const url = `/api/events/${event.id}/checkin?email=${encodeURIComponent(fields?.email || email)}&firstName=${encodeURIComponent(
+      fields?.firstName || '',
+    )}&lastName=${encodeURIComponent(fields?.lastName || '')}&discoveredFrom=${encodeURIComponent(
+      fields?.discoveredFrom || '',
+    )}&emailOptIn=${fields?.isEmailOptIn || ''}`;
+    const result = (await parsedGet(url)) as MembershipStatus;
 
     let status;
     if (result?.subscription) status = { ...result, isFound: true };
@@ -139,19 +144,12 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     getMembershipStatus();
   };
 
-  const setCheckinIsPrivate = async (isPrivate: boolean) => {
-    if (!status.myCheckin?.userId) return;
-    await axios.delete(`/api/events/update-checkin?userId=${status.myCheckin?.userId}&eventId=${event.id}&isPrivate=${isPrivate}`);
-    getMembershipStatus();
-  };
-
   const reset = async () => {
     setStatus(null);
     setEmail('');
-    setFirstName('');
-    setLastName('');
-    setDiscoveredFrom('');
+    setActiveTab(0);
     setIsLoadingExistingUser(null);
+    checkinFormRef?.current?.reset();
   };
 
   const lastYear = new Date();
@@ -159,13 +157,31 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
   const hasActiveMembership = status?.subscription?.lastPaymentDate > lastYear;
 
-  const userName = status?.subscription?.userName?.split(' ')[0] || '';
+  const userName = status?.subscription?.userName?.split(' ')[0] || status?.myCheckin?.user?.name?.split(' ')[0] || '';
 
   const updateIsPrivate = async () => {
     const newIsPrivate = !isPrivate;
     setIsPrivate(newIsPrivate);
     await axios.patch('/api/me/checkin/' + status.myCheckin.id, { isPrivate: newIsPrivate });
     getMembershipStatus();
+  };
+
+  const {
+    data: leaders,
+    refetch: refetchLeaders,
+    isFetching: isFetchingLeaders,
+  } = useGet<LeaderRow[]>(
+    `/api/leaders/user-quiz-ranking`,
+    'leaderPosition',
+    {
+      email,
+    },
+    { refetchOnMount: true, refetchOnWindowFocus: true },
+  );
+
+  const onQuizDialogClose = () => {
+    refetchLeaders();
+    setIsFirstQuiz(false);
   };
 
   return (
@@ -197,111 +213,13 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           <Typography variant='subtitle2' mb={2}>
             Welcome! Please check in below to learn more about this event and the trees around you.
           </Typography>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }} mb={4}>
-            <Tabs value={activeTab} onChange={handleTabChange} variant='fullWidth' aria-label='basic tabs example'>
-              <Tab label='New/Guest' className='transparent' />
-              <Tab
-                className='transparent'
-                label={
-                  <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
-                    <div>Member</div>
-                  </Box>
-                }
-              />
-            </Tabs>
-          </Box>
-          {activeTab == 0 && (
-            <SplitRow gap={1}>
-              <TextField
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                label='First Name'
-                value={firstName}
-                onChange={e => setFirstName(e.target.value)}
-                size='small'
-                sx={{ mb: 3 }}
-                required
-              ></TextField>
-              <TextField
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                label='Last Name'
-                value={lastName}
-                onChange={e => setLastName(e.target.value)}
-                size='small'
-                sx={{ mb: 3 }}
-                required
-              ></TextField>
-            </SplitRow>
-          )}
-
-          <TextField
-            InputLabelProps={{
-              shrink: true,
-            }}
-            inputProps={{ autoCapitalize: 'none', autoCorrect: 'off' }}
-            label='Email Address'
-            placeholder='me@example.com'
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            size='small'
-            fullWidth
-            required
-            sx={{ mb: 3 }}
-          ></TextField>
-          {activeTab == 0 && (
-            <Box>
-              <TextField
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                label="How'd you learn about this event?"
-                value={discoveredFrom}
-                onChange={e => setDiscoveredFrom(e.target.value)}
-                size='small'
-                fullWidth
-                sx={{ mb: 2 }}
-              ></TextField>
-              <FormGroup sx={{ marginBottom: 2 }}>
-                <FormControlLabel
-                  sx={{
-                    '.MuiSvgIcon-root': { color: 'rgba(0, 0, 0, 0.4)' },
-                    '& .MuiFormControlLabel-label': {
-                      fontSize: '.75rem',
-                      color: 'var(--secondary-text-color)',
-                      fontStyle: 'italic',
-                    },
-                    marginRight: '0px',
-                  }}
-                  control={
-                    <Checkbox
-                      checked={isEmailOptIn}
-                      onChange={e => {
-                        setIsEmailOptIn(e.target.checked);
-                      }}
-                      color='default'
-                      size='small'
-                    />
-                  }
-                  label={`Learn about future events via our monthly email`}
-                />
-              </FormGroup>{' '}
-            </Box>
-          )}
-          <LoadingButton
+          <CheckinForm
+            onSubmit={getMembershipStatus}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
             isLoading={isLoading}
-            disabled={!email || (activeTab == 0 && (!firstName || !lastName))}
-            color='primary'
-            onClick={getMembershipStatus}
-            sx={{
-              '& .Mui-disabled': { backgroundColor: 'rgba(72, 110, 98, .6)', display: 'none' },
-            }}
-            className='disabled-primary-button'
-          >
-            Check-in
-          </LoadingButton>
+            ref={checkinFormRef}
+          ></CheckinForm>
         </>
       )}
 
@@ -319,7 +237,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
         </>
       )}
 
-      {status?.isFound === false && activeTab == 1 && (
+      {status?.isFound === false && activeTab == 1 && !status.myCheckin?.user?.name && (
         <>
           <Typography variant='body2' component='p' mb={2}>
             Supporting membership status for <b>{status.email}</b> was not found.
@@ -332,14 +250,11 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           </Button>
         </>
       )}
-      {status?.isFound === false && activeTab == 0 && (
+      {status?.isFound === false && (activeTab == 0 || status.myCheckin?.user?.name) && (
         <>
-          <Typography variant='body2' component='p' mb={2}>
-            Thanks for joining for today&apos;s event. Grab a name tag (if available), meet a new friend, and test your tree knowledge
-            below!
-          </Typography>
-          <Typography variant='body2' component='p' mb={3}>
-            Don&apos;t forget to say &quot;Hey&quot; to a Core Team Member to learn more about TreeFolks.
+          <Typography variant='body2' component='p' mb={4}>
+            Thanks for joining for today&apos;s event. Grab a name tag (if available), meet a new friend, and learn about the trees around
+            us:
           </Typography>
         </>
       )}
@@ -354,7 +269,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               <Typography variant='body2' component='p' mb={2}>
                 🥳 &nbsp;{getDonationDateMessage(status.subscription)}
               </Typography>
-              <Typography variant='body2' component='p' mb={2}>
+              <Typography variant='body2' component='p' mb={status.myCheckin?.user?.roles?.find(role => role.name === 'Core Team') ? 2 : 4}>
                 👥 &nbsp;Keep up with special events and opportunities in our
                 <a href={process.env.BAND_URL || 'https://band.us/n/a4ae81veK4TfW'} target='_blank' rel='noreferrer' style={{}}>
                   <span style={{ marginLeft: '4px' }}>members only BAND App community</span>
@@ -362,7 +277,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 .
               </Typography>
               {status.myCheckin?.user?.roles?.find(role => role.name === 'Core Team') && (
-                <Typography variant='body2' component='p' mb={2}>
+                <Typography variant='body2' component='p' mb={4}>
                   🗓 &nbsp;Help plan/organize in the
                   <a href={process.env.BAND_CORE_TEAM_URL || 'https://band.us/n/aaa18bv1q2U44'} target='_blank' rel='noreferrer' style={{}}>
                     <span style={{ marginLeft: '4px' }}>Core Team BAND</span>
@@ -380,78 +295,110 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               <Typography variant='body2' component='p' mb={2}>
                 Unfortunately <b>your supporting membership is no longer active</b>.
               </Typography>
-              <Typography variant='body2' component='p' mb={2}>
-                Your most recent membership donation was {formatDateString(status.subscription.lastPaymentDate)}.
+              <Typography variant='body2' component='p' mb={3}>
+                Your most recent membership donation was {formatDateString(status.subscription.lastPaymentDate)}.{' '}
+                <Link href='/membership'>
+                  <a style={{ cursor: 'pointer', textDecoration: 'underline' }}>
+                    Click here to start a new supporting membership donation to TreeFolks!
+                  </a>
+                </Link>
+                {'.'}
               </Typography>
             </>
           )}
         </>
       )}
-      {status && !(status.isFound === false && activeTab == 1) && (
+      {status && !(status.isFound === false && !status.myCheckin?.user?.name && activeTab == 1) && (
         <>
-          <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={3} mt={1}>
-            Tree ID Quiz
-          </Typography>
-          <Typography variant='body2' mt={-2} mb={2} sx={{ fontStyle: 'italic', textAlign: 'center', color: 'gray' }}>
-            Click tree map markers below to learn about trees around us and test your knowledge
-          </Typography>
-          <Box sx={{ textAlign: 'right', mt: -1.5, mb: 0.2, fontSize: '80%' }}>
-            <SplitRow>
-              <a
-                onClick={() => {
-                  setIsQuizRefreshing(true);
-                }}
-                style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '4px', alignItems: 'center' }}
-              >
-                <AutorenewIcon sx={{ fontSize: 'inherit' }} /> Reload
-              </a>
-              <a
-                onClick={() => {
-                  if (!hasActiveMembership) {
-                    setIsMembershipDialogOpen(true);
-                  } else setIsAddTreeDialogOpen(true);
-                }}
-                style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '3px', alignItems: 'center' }}
-              >
-                <LoupeIcon sx={{ fontSize: 'inherit' }}></LoupeIcon> Add a tree
-              </a>
-            </SplitRow>
-            <BecomeAMemberDialog open={isMembershipDialogOpen} setOpen={setIsMembershipDialogOpen}></BecomeAMemberDialog>
-          </Box>
-          <TreeIdQuiz
-            eventId={event.id}
-            isRefreshing={isQuizRefreshing}
-            defaultLatitude={Number(event.location?.latitude)}
-            defaultLongitude={Number(event.location?.longitude)}
-            setIsRefreshing={setIsQuizRefreshing}
-            mapHeight='250px'
-          ></TreeIdQuiz>
-          <Box sx={{ textAlign: 'right', mt: 0.2, mb: 1, fontSize: '80%' }}>
-            <Link href='/leaders'>
-              <a
-                style={{
-                  textDecoration: 'none',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  gap: '3px',
-                  alignItems: 'center',
-                  justifyContent: 'end',
-                }}
-              >
-                <LeaderboardIcon sx={{ fontSize: 'inherit' }}></LeaderboardIcon> Tree ID leaderboard
-              </a>
-            </Link>
-          </Box>
-          <IdentifyTreeFlowDialog
-            open={isAddTreeDialogOpen}
-            setOpen={setIsAddTreeDialogOpen}
-            onComplete={() => {
-              console.log('completed');
-              setIsQuizRefreshing(true);
+          <Box
+            sx={{
+              background: 'linear-gradient(to top, #486e624f, #486e6233), url(/background-lighter.svg)',
+              border: 'solid 1px #486E62',
+              borderRadius: '5px',
             }}
-            latitude={event.location ? Number(event.location.latitude) : null}
-            longitude={event.location ? Number(event.location.longitude) : null}
-          ></IdentifyTreeFlowDialog>
+            className='box-shadow checkin-tree-quiz'
+            mb={3}
+          >
+            <Typography variant='h6' color='primary' sx={{ textAlign: 'center' }} mb={2} mt={1}>
+              Tree ID Guessing Game
+            </Typography>
+
+            <Box sx={{ textAlign: 'right', mt: -1.5, mb: 0.2, fontSize: '80%', pl: 0.5, pr: 0.5 }}>
+              <SplitRow>
+                <a
+                  onClick={() => {
+                    setIsQuizRefreshing(true);
+                  }}
+                  style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '4px', alignItems: 'center', color: '#6e4854' }}
+                >
+                  <AutorenewIcon sx={{ fontSize: 'inherit' }} /> <Box sx={{ textDecoration: 'underline' }}>Reload</Box>
+                </a>
+                <a
+                  onClick={() => {
+                    if (!hasActiveMembership) {
+                      setIsMembershipDialogOpen(true);
+                    } else setIsAddTreeDialogOpen(true);
+                  }}
+                  style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '3px', alignItems: 'center', color: '#6e4854' }}
+                >
+                  <LoupeIcon sx={{ fontSize: 'inherit' }}></LoupeIcon> <Box sx={{ textDecoration: 'underline' }}>Add a tree</Box>
+                </a>
+              </SplitRow>
+              <BecomeAMemberDialog open={isMembershipDialogOpen} setOpen={setIsMembershipDialogOpen}></BecomeAMemberDialog>
+            </Box>
+            <TreeIdQuiz
+              eventId={event.id}
+              isRefreshing={isQuizRefreshing}
+              defaultLatitude={Number(event.location?.latitude)}
+              defaultLongitude={Number(event.location?.longitude)}
+              setIsRefreshing={setIsQuizRefreshing}
+              mapHeight='250px'
+              onCloseDialog={onQuizDialogClose}
+            ></TreeIdQuiz>
+            {isFirstQuiz && (
+              <Box sx={{ mt: -4, fontSize: '95%', zIndex: 1000, position: 'relative' }}>
+                <Box
+                  style={{
+                    textDecoration: 'none',
+                    display: 'flex',
+                    gap: '3px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#486e62',
+                    padding: '3px 5px',
+                    backgroundColor: '#FFCC37',
+                    borderRadius: '16px',
+                    width: '160px',
+                    textAlign: 'center',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                  }}
+                  className='box-shadow'
+                >
+                  <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a pin to begin
+                </Box>
+              </Box>
+            )}
+
+            <TreeIdLeaderPosition
+              leaders={leaders}
+              isLoading={isFetchingLeaders}
+              setShowAll={setShowAllLeaders}
+              showAll={showAllLeaders}
+              leaderBoardMode={leaderBoardMode}
+              setLeaderBoardMode={setLeaderBoardMode}
+            ></TreeIdLeaderPosition>
+            <IdentifyTreeFlowDialog
+              open={isAddTreeDialogOpen}
+              setOpen={setIsAddTreeDialogOpen}
+              onComplete={() => {
+                console.log('completed');
+                setIsQuizRefreshing(true);
+              }}
+              latitude={event.location ? Number(event.location.latitude) : null}
+              longitude={event.location ? Number(event.location.longitude) : null}
+            ></IdentifyTreeFlowDialog>
+          </Box>
           <Attendees
             users={status.attendees}
             onDelete={userId => {
@@ -532,7 +479,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           </Button>
         </>
       )}
-      {status?.isFound === false && activeTab != 1 && (
+      {status?.isFound === false && (activeTab != 1 || status.myCheckin?.user?.name) && (
         <>
           <hr style={{ width: '100%', marginTop: '10px', marginBottom: '20px' }} />
           <Typography variant='body2' component='p' mt={2} mb={2}>
@@ -566,7 +513,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           ></MapMarkerDisplay>
         </Box>
       )}
-      {status && !(status.isFound === false && activeTab == 1) && (
+      {status && !(status.isFound === false && activeTab == 1 && !status.myCheckin?.user?.name) && (
         <a
           href='https://www.instagram.com/treefolks_yp/'
           target='_instagram'

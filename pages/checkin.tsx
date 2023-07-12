@@ -18,6 +18,7 @@ export async function getServerSideProps() {
   const event = await prisma.event.findFirst({
     where: {
       startDate: { lt: tomorrow },
+      isPrivate: { not: true },
     },
     orderBy: { startDate: 'desc' },
   });
