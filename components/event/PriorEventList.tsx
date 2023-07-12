@@ -13,8 +13,6 @@ const highlightSx = {
   paddingLeft: '20px',
   marginRight: '-20px',
   backgroundColor: 'lightgray',
-  paddingTop: 1,
-  marginTop: '-9px',
   marginBottom: '-1px',
   textDecoration: 'none',
 };
@@ -43,10 +41,10 @@ const PriorEventList = ({ currentEventId }: { currentEventId?: number }) => {
       {!isFetching &&
         events?.map((event, idx) => {
           return (
-            <>
+            <Box key={event?.id} sx={event.id == currentEventId ? highlightSx : { cursor: 'pointer' }}>
               {idx > 0 && <Divider sx={{ mb: 1 }}></Divider>}
-              <a href={`/e/${event?.path}/quiz`} key={event?.id} style={{ textDecoration: 'none' }}>
-                <Box sx={event.id == currentEventId ? highlightSx : { cursor: 'pointer' }}>
+              <a href={`/e/${event?.path}/quiz`} style={{ textDecoration: 'none' }}>
+                <Box>
                   <Typography variant='subtitle2' color='secondary' sx={{ lineHeight: 'normal' }}>
                     {event.name}
                   </Typography>
@@ -56,7 +54,7 @@ const PriorEventList = ({ currentEventId }: { currentEventId?: number }) => {
                   </Typography>
                 </Box>
               </a>
-            </>
+            </Box>
           );
         })}
     </>
