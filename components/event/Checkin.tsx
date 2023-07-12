@@ -78,8 +78,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [isQuizRefreshing, setIsQuizRefreshing] = useState(false);
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useHashToggle('history', false);
   const [isMembershipDialogOpen, setIsMembershipDialogOpen] = useState(false);
-  const [showAllLeaders, setShowAllLeaders] = useState(false);
-  const [leaderBoardMode, setLeaderBoardMode] = useState('');
 
   const [selectedTree, setSelectedTree] = useState<PartialTree>(null);
   const [isPrivate, setIsPrivate] = useState(false);
@@ -93,6 +91,8 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [isShowAllAttendees, setIsShowAllAttendees] = useState(false);
 
   const [isFirstQuiz, setIsFirstQuiz] = useState(true);
+  const [showAllLeaders, setShowAllLeaders] = useState(false);
+  const [leaderBoardMode, setLeaderBoardMode] = useState('');
 
   const checkinFormRef = useRef<CheckinFormHandle>();
 
@@ -175,6 +175,8 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     'leaderPosition',
     {
       email,
+      eventId: leaderBoardMode != 'all' ? event.id : null,
+      showAll: showAllLeaders,
     },
     { refetchOnMount: true, refetchOnWindowFocus: true },
   );
@@ -379,15 +381,15 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 </Box>
               </Box>
             )}
-
             <TreeIdLeaderPosition
-              leaders={leaders}
               isLoading={isFetchingLeaders}
+              leaders={leaders}
               setShowAll={setShowAllLeaders}
               showAll={showAllLeaders}
               leaderBoardMode={leaderBoardMode}
               setLeaderBoardMode={setLeaderBoardMode}
             ></TreeIdLeaderPosition>
+
             <IdentifyTreeFlowDialog
               open={isAddTreeDialogOpen}
               setOpen={setIsAddTreeDialogOpen}
