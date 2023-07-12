@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   };
 
   stats.activeDonations = subscriptionWithDetails.reduce((previous, current) => {
-    if (current.lastPaymentDate.getFullYear() == year || endDate) stats.currentYearMemberDonations += current.amount;
+    if (current.lastPaymentDate?.getFullYear() == year || endDate) stats.currentYearMemberDonations += current.amount;
 
     const total = previous + current.amount;
     return total;
