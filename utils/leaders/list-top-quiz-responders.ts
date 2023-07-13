@@ -3,6 +3,7 @@ import { getUserDisplaySelect } from 'prisma/common';
 import { getYearDateRange } from 'utils/get-year-date-range';
 import getYearStartDate from 'utils/get-year-start-date';
 import { prisma, Prisma } from 'utils/prisma/init';
+import listTreesForEvent from 'utils/tree/list-trees-for-event';
 
 export const listTopQuizResponders = async (yearFilter?: string | number, eventId?: number): Promise<LeaderRow[]> => {
   const currentYear = new Date().getFullYear();
@@ -17,7 +18,10 @@ export const listTopQuizResponders = async (yearFilter?: string | number, eventI
     whereFilter = { createdDate: { gt: startDate, lt: endDate } };
   }
 
-  if (eventId) whereFilter.eventId = eventId;
+  if (eventId) {
+    const trees = await listTreesForEvent(eventId);
+    if (trees?.length > 0) whereFilter.treeId = { in: trees.map(tree => tree.id) };
+  }
 
   const responses = await prisma.speciesQuizResponse.groupBy({
     by: ['userId'],
