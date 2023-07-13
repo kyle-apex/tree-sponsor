@@ -72,7 +72,7 @@ const TreeIdLeaderPosition = ({
             sx={{ marginBottom: -0.2 }}
           >
             <ToggleButton value='' aria-label='Current' sx={{ fontSize: '10px', lineHeight: 1, whiteSpace: 'nowrap' }}>
-              Current Event
+              Current Map
             </ToggleButton>
             <ToggleButton value='all' aria-label='All Time' sx={{ fontSize: '10px', lineHeight: 1, whiteSpace: 'nowrap' }}>
               All Time
