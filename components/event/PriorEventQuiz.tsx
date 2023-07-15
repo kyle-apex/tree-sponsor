@@ -16,6 +16,7 @@ import Button from '@mui/material/Button';
 import parsedGet from 'utils/api/parsed-get';
 import CheckinForm, { CheckinFormHandle } from './CheckinForm';
 import PriorEventList from './PriorEventList';
+import InstagramEmbed from 'react-instagram-embed';
 
 const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', '');
@@ -111,6 +112,17 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
             )}
           </>
         )}
+      </Box>
+      <Box mb={3}>
+        <InstagramEmbed
+          url='https://www.instagram.com/p/Cuf1w9lNduQ'
+          clientAccessToken={process.env.NEXT_PUBLIC_FACEBOOK_ID + '|' + process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_TOKEN}
+          maxWidth={500}
+          hideCaption={false}
+          containerTagName='div'
+          protocol=''
+          injectScript
+        />
       </Box>
       <Box
         sx={{
