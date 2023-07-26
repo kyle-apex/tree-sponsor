@@ -17,6 +17,7 @@ import { GetSessionOptions } from 'next-auth/client';
 import restrictPageAccess from 'utils/auth/restrict-page-access';
 import AdminLayout from 'components/layout/AdminLayout';
 import EventDetailsForm from 'components/event/EventDetailsForm';
+import parsedGet from 'utils/api/parsed-get';
 
 const EditEventPage = ({ path }: { path: string }) => {
   const router = useRouter();
@@ -26,7 +27,7 @@ const EditEventPage = ({ path }: { path: string }) => {
 
   const readEvent = async (path: string): Promise<PartialEvent> => {
     setIsLoading(true);
-    const event = (await axios.get(`/api/events/by-path?path=${path}`)).data as PartialEvent;
+    const event = (await parsedGet(`/api/events/by-path?path=${path}`)) as PartialEvent;
 
     eventRef.current = event;
     setIsLoading(false);

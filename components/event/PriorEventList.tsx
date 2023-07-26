@@ -17,7 +17,7 @@ const highlightSx = {
   textDecoration: 'none',
 };
 
-const PriorEventList = ({ currentEventId }: { currentEventId?: number }) => {
+const PriorEventList = ({ currentEventId, hasTreeQuizByDefault }: { currentEventId?: number; hasTreeQuizByDefault?: boolean }) => {
   const { data, isFetched, isFetching } = useGet<PartialEvent[]>(
     '/api/events',
     'priorEventsPublic',
@@ -26,6 +26,7 @@ const PriorEventList = ({ currentEventId }: { currentEventId?: number }) => {
   );
   const events = data ? [...data] : data;
   if (events?.indexOf(events?.find(e => e.id == currentEventId)) === 0) events.splice(0, 1);
+  const urlSuffix = hasTreeQuizByDefault ? '#trees' : '';
   return (
     <>
       <Typography variant='subtitle1' color='secondary' sx={{ lineHeight: 'normal', textAlign: 'center', mb: 4, mt: 2 }}>
@@ -43,7 +44,7 @@ const PriorEventList = ({ currentEventId }: { currentEventId?: number }) => {
           return (
             <Box key={event?.id} sx={event.id == currentEventId ? highlightSx : { cursor: 'pointer' }}>
               {idx > 0 && <Divider sx={{ mb: 1 }}></Divider>}
-              <a href={`/e/${event?.path}/quiz`} style={{ textDecoration: 'none' }}>
+              <a href={`/e/${event?.path}/quiz${urlSuffix}`} style={{ textDecoration: 'none' }}>
                 <Box>
                   <Typography variant='subtitle2' color='secondary' sx={{ lineHeight: 'normal' }}>
                     {event.name}
