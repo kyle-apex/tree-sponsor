@@ -230,7 +230,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
           />
           <Button
             sx={{ cursor: 'pointer', mt: 2, mb: -1 }}
-            variant='outlined'
+            variant='contained'
             color='primary'
             onClick={() => {
               setActiveTab('trees');
@@ -238,7 +238,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
             }}
             fullWidth
           >
-            🌳&nbsp;&nbsp;Learn about this event&apos;s trees
+            Identify this event&apos;s trees
           </Button>
         </Box>
       )}
