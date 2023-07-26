@@ -34,3 +34,9 @@ ALTER TABLE
     `Event`
 ADD
     COLUMN `isPrivate` BOOLEAN NULL DEFAULT false;
+
+-- AlterTable
+ALTER TABLE
+    `Event`
+ADD
+    COLUMN `instagramPostId` VARCHAR(64) NULL;

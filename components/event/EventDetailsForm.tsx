@@ -27,6 +27,8 @@ const TextEditor = dynamic(() => import('components/TextEditor'), {
   ),
 });
 
+const now = new Date();
+
 const EventDetailsForm = ({
   event,
   updateAttribute,
@@ -37,6 +39,8 @@ const EventDetailsForm = ({
   const [hasActiveDates, setHasActiveDates] = useState(false);
   const [startDate, setStartDate] = useState(event.startDate);
   const [name, setName] = useState(event.name || '');
+  const [instagramPostId, setInstagramPostId] = useState(event.instagramPostId || '');
+
   const [path, setPath] = useState(event.path || '');
   const [locationName, setLocationName] = useState(event.location?.name || '');
   const [latitude, setLatitude] = useState(event.location?.latitude || 0);
@@ -51,7 +55,6 @@ const EventDetailsForm = ({
   const [endDate, setEndDate] = useState(event.endDate);
   const [activeStartDate, setActiveStartDate] = useState(event.activeStartDate);
   const [activeEndDate, setActiveEndDate] = useState(event.activeEndDate);
-
   const toggleHasActiveDates = () => {
     if (hasActiveDates) {
       event.activeStartDate = null;
@@ -62,7 +65,6 @@ const EventDetailsForm = ({
     }
     setHasActiveDates(s => !s);
   };
-
   return (
     <>
       <TextField
@@ -84,6 +86,22 @@ const EventDetailsForm = ({
         sx={{ marginBottom: 3 }}
         id='name-field'
       ></TextField>
+      {now > event?.startDate && event?.id && (
+        <TextField
+          value={instagramPostId}
+          onChange={e => {
+            const newPostId = e.target.value;
+            updateAttribute('instagramPostId', newPostId);
+            setInstagramPostId(newPostId);
+          }}
+          label='Instagram Post Id'
+          size='small'
+          sx={{ marginBottom: 3 }}
+          id='name-field'
+          helperText='(ex: CvDTcUFuMO9 is the post id from instagram.com/p/CvDTcUFuMO9/)'
+        ></TextField>
+      )}
+
       <SplitRow gap={2}>
         <DateTimeField
           value={startDate}

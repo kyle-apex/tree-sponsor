@@ -19,6 +19,17 @@ a {
 .checkin-tree-quiz .index-map {
   border-radius: 0;
 }
+.checkin-floating-tabs {
+  position: fixed;
+  top: 0;
+  /*width: calc(100% - 74px);
+  max-width: 390px;*/
+  left: 50%;
+  transform: translate(-50%);
+}
+.instagram-media-rendered {
+  min-width: 250px !important;
+}
 .full-width {
   width: 100%;
 }

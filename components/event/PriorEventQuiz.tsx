@@ -1,7 +1,5 @@
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import SplitRow from 'components/layout/SplitRow';
 import { LeaderRow, MembershipStatus, PartialEvent, CheckinFields } from 'interfaces';
 import { useEffect, useRef, useState } from 'react';
 import formatDateString from 'utils/formatDateString';
@@ -17,19 +15,27 @@ import parsedGet from 'utils/api/parsed-get';
 import CheckinForm, { CheckinFormHandle } from './CheckinForm';
 import PriorEventList from './PriorEventList';
 import InstagramEmbed from 'react-instagram-embed';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import useHash from 'utils/hooks/use-hash';
+import Skeleton from '@mui/material/Skeleton';
 
 const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', '');
-  const [email, setEmail] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [activeTab, setActiveTab] = useState(1);
+  const [activeCheckinTab, setActiveCheckinTab] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isUserNotFound, setIsUserNotFound] = useState(false);
   const [showAllLeaders, setShowAllLeaders] = useState(false);
   const [leaderBoardMode, setLeaderBoardMode] = useState('');
+  const [hasFloatingTabs, setHasFloatingTabs] = useState(false);
+  const [floatingTabsWidth, setFloatingTabsWidth] = useState(300);
+  const [isLoadingInstagram, setIsLoadingInstagram] = useState(false);
+  const tabsRef = useRef<HTMLElement>();
 
   const [isFirstQuiz, setIsFirstQuiz] = useState(true);
   const [isQuizRefreshing, setIsQuizRefreshing] = useState(false);
+  const [activeTab, setActiveTab] = useHash(event.instagramPostId ? 'overview' : 'trees', ['overview', 'trees']);
 
   const checkinFormRef = useRef<CheckinFormHandle>();
 
@@ -77,9 +83,32 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   };
 
   useEffect(() => {
-    console.log('effect', storedEmail);
     if (storedEmail) setIsLoggedIn(true);
   }, [storedEmail]);
+
+  const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: string) => {
+    console.log('newValue', newValue);
+    setActiveTab(newValue);
+    tabsRef?.current.scrollIntoView();
+  };
+
+  useEffect(() => {
+    if (!event.instagramPostId) return;
+
+    const handleScroll = (_event: any) => {
+      const tabsRect = tabsRef?.current?.getBoundingClientRect();
+      const bodyRect = document.body.getBoundingClientRect();
+      setFloatingTabsWidth(tabsRect.width);
+      const scrollTop = tabsRect.top + bodyRect.top * -1;
+      setHasFloatingTabs(bodyRect.top * -1 > scrollTop);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [event.instagramPostId]);
 
   return (
     <>
@@ -97,15 +126,15 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
             <Box>
               <CheckinForm
                 onSubmit={attemptSignIn}
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
+                activeTab={activeCheckinTab}
+                setActiveTab={setActiveCheckinTab}
                 isLoading={isLoading}
                 ref={checkinFormRef}
                 newUserLabel='New User'
                 existingUserLabel='Existing'
               ></CheckinForm>
             </Box>
-            {isUserNotFound && activeTab === 1 && (
+            {isUserNotFound && activeCheckinTab === 1 && (
               <Typography variant='body2' sx={{ mt: 1, textAlign: 'left' }}>
                 E-mail address not found. Please try again or click &quot;New User&quot; to check-in for the first time.
               </Typography>
@@ -113,109 +142,187 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
           </>
         )}
       </Box>
-      <Box mb={3}>
-        <InstagramEmbed
-          url='https://www.instagram.com/p/Cuf1w9lNduQ'
-          clientAccessToken={process.env.NEXT_PUBLIC_FACEBOOK_ID + '|' + process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_TOKEN}
-          maxWidth={500}
-          hideCaption={false}
-          containerTagName='div'
-          protocol=''
-          injectScript
-        />
-      </Box>
-      <Box
-        sx={{
-          background: 'linear-gradient(to top, #486e624f, #486e6233), url(/background-lighter.svg)',
-          border: 'solid 1px #486E62',
-          borderRadius: '5px',
-          position: 'relative',
-        }}
-        className='box-shadow checkin-tree-quiz'
-        mb={3}
-        mt={isLoggedIn ? 0 : 3}
-      >
-        {!isLoggedIn && (
-          <Box
-            sx={{
-              zIndex: 6000,
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              height: '100%',
-              width: '100%',
-              backgroundColor: '#808080e8',
-              color: 'white',
-              display: 'flex',
-            }}
-          >
-            <Box sx={{ margin: 'auto', width: '80%', justifySelf: 'center', fontSize: '20px' }}>
-              Enter your email address above to record your results
-            </Box>
+      {event.instagramPostId && (
+        <>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }} mb={2} ref={tabsRef}>
+            <Tabs className='account-tabs' value={activeTab} onChange={handleTabChange} variant='fullWidth' aria-label='basic tabs example'>
+              <Tab
+                value='overview'
+                sx={{ borderTopLeftRadius: '5px' }}
+                label={
+                  <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <div>📸&nbsp;&nbsp;Overview</div>
+                  </Box>
+                }
+              />
+              <Tab
+                value='trees'
+                label={
+                  <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <div>🌳&nbsp;&nbsp;Trees</div>
+                  </Box>
+                }
+                sx={{ borderTopRightRadius: '5px' }}
+              />
+            </Tabs>
           </Box>
-        )}
-        <Typography variant='h6' color='primary' sx={{ textAlign: 'center' }} mb={2} mt={1}>
-          Tree ID Guessing Game
-        </Typography>
-
-        {isLoggedIn && (
-          <Box sx={{ textAlign: 'right', mt: -1.5, mb: 0.2, fontSize: '80%', pl: 0.5, pr: 0.5 }}>
-            <a
-              onClick={() => {
-                setIsQuizRefreshing(true);
-              }}
-              style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '4px', alignItems: 'center', color: '#6e4854' }}
-            >
-              <AutorenewIcon sx={{ fontSize: 'inherit' }} /> <Box sx={{ textDecoration: 'underline' }}>Reload</Box>
-            </a>
-          </Box>
-        )}
-        <Box>
-          <TreeIdQuiz
-            eventId={event.id}
-            isRefreshing={isQuizRefreshing}
-            defaultLatitude={Number(event.location?.latitude)}
-            defaultLongitude={Number(event.location?.longitude)}
-            setIsRefreshing={setIsQuizRefreshing}
-            mapHeight='250px'
-            onCloseDialog={onQuizDialogClose}
-          ></TreeIdQuiz>
-        </Box>
-        {isFirstQuiz && (
-          <Box sx={{ mt: -4, fontSize: '95%', zIndex: 1000, position: 'relative' }}>
+          {hasFloatingTabs && (
             <Box
-              style={{
-                textDecoration: 'none',
-                display: 'flex',
-                gap: '3px',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#486e62',
-                padding: '3px 5px',
-                backgroundColor: '#FFCC37',
-                borderRadius: '16px',
-                width: '160px',
-                textAlign: 'center',
-                marginLeft: 'auto',
-                marginRight: 'auto',
-              }}
-              className='box-shadow'
+              sx={{ borderBottom: 1, borderColor: 'divider', zIndex: 7000, width: floatingTabsWidth + 'px' }}
+              mb={2}
+              className={'checkin-floating-tabs'}
             >
-              <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a pin to begin
+              <Tabs
+                className='account-tabs'
+                value={activeTab}
+                onChange={handleTabChange}
+                variant='fullWidth'
+                aria-label='basic tabs example'
+              >
+                <Tab
+                  value='overview'
+                  label={
+                    <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <div>📸&nbsp;&nbsp;Overview</div>
+                    </Box>
+                  }
+                />
+                <Tab
+                  value='trees'
+                  label={
+                    <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <div>🌳&nbsp;&nbsp;Trees</div>
+                    </Box>
+                  }
+                />
+              </Tabs>
             </Box>
-          </Box>
-        )}
+          )}
+        </>
+      )}
+      {activeTab == 'overview' && event.instagramPostId && (
+        <Box mb={3}>
+          {isLoadingInstagram && (
+            <Skeleton variant='rectangular' sx={{ width: '100%', marginBottom: 3, borderRadius: '3px' }} height={300} />
+          )}
 
-        <TreeIdLeaderPosition
-          isLoading={isFetching}
-          leaders={leaders}
-          setShowAll={setShowAllLeaders}
-          showAll={showAllLeaders}
-          leaderBoardMode={leaderBoardMode}
-          setLeaderBoardMode={setLeaderBoardMode}
-        ></TreeIdLeaderPosition>
-      </Box>
-      {isLoggedIn && <PriorEventList currentEventId={event.id}></PriorEventList>}
+          <InstagramEmbed
+            url={'https://www.instagram.com/p/' + event.instagramPostId}
+            clientAccessToken={process.env.NEXT_PUBLIC_FACEBOOK_ID + '|' + process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_TOKEN}
+            maxWidth={500}
+            hideCaption={false}
+            containerTagName='div'
+            protocol=''
+            injectScript
+            onLoading={() => {
+              setIsLoadingInstagram(true);
+            }}
+            onSuccess={() => {
+              console.log('scu');
+              setIsLoadingInstagram(false);
+            }}
+            onAfterRender={() => {
+              setIsLoadingInstagram(false);
+            }}
+            onFailure={() => {
+              setIsLoadingInstagram(false);
+            }}
+          />
+        </Box>
+      )}
+      {activeTab == 'trees' && (
+        <Box
+          sx={{
+            background: 'linear-gradient(to top, #486e624f, #486e6233), url(/background-lighter.svg)',
+            border: 'solid 1px #486E62',
+            position: 'relative',
+          }}
+          className='box-shadow checkin-tree-quiz'
+          mb={3}
+          mt={isLoggedIn ? 0 : 3}
+        >
+          {!isLoggedIn && (
+            <Box
+              sx={{
+                zIndex: 6000,
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                height: '100%',
+                width: '100%',
+                backgroundColor: '#808080e8',
+                color: 'white',
+                display: 'flex',
+              }}
+            >
+              <Box sx={{ margin: 'auto', width: '80%', justifySelf: 'center', fontSize: '20px' }}>
+                Enter your email address above to record your results
+              </Box>
+            </Box>
+          )}
+          <Typography variant='h6' color='primary' sx={{ textAlign: 'center' }} mb={2} mt={1}>
+            Tree ID Guessing Game
+          </Typography>
+
+          {isLoggedIn && (
+            <Box sx={{ textAlign: 'right', mt: -1.5, mb: 0.2, fontSize: '80%', pl: 0.5, pr: 0.5 }}>
+              <a
+                onClick={() => {
+                  setIsQuizRefreshing(true);
+                }}
+                style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '4px', alignItems: 'center', color: '#6e4854' }}
+              >
+                <AutorenewIcon sx={{ fontSize: 'inherit' }} /> <Box sx={{ textDecoration: 'underline' }}>Reload</Box>
+              </a>
+            </Box>
+          )}
+          <Box>
+            <TreeIdQuiz
+              eventId={event.id}
+              isRefreshing={isQuizRefreshing}
+              defaultLatitude={Number(event.location?.latitude)}
+              defaultLongitude={Number(event.location?.longitude)}
+              setIsRefreshing={setIsQuizRefreshing}
+              mapHeight='250px'
+              onCloseDialog={onQuizDialogClose}
+            ></TreeIdQuiz>
+          </Box>
+          {isFirstQuiz && (
+            <Box sx={{ mt: -4, fontSize: '95%', zIndex: 1000, position: 'relative' }}>
+              <Box
+                style={{
+                  textDecoration: 'none',
+                  display: 'flex',
+                  gap: '3px',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#486e62',
+                  padding: '3px 5px',
+                  backgroundColor: '#FFCC37',
+                  borderRadius: '16px',
+                  width: '160px',
+                  textAlign: 'center',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                }}
+                className='box-shadow'
+              >
+                <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a pin to begin
+              </Box>
+            </Box>
+          )}
+
+          <TreeIdLeaderPosition
+            isLoading={isFetching}
+            leaders={leaders}
+            setShowAll={setShowAllLeaders}
+            showAll={showAllLeaders}
+            leaderBoardMode={leaderBoardMode}
+            setLeaderBoardMode={setLeaderBoardMode}
+          ></TreeIdLeaderPosition>
+        </Box>
+      )}
+      {isLoggedIn && <PriorEventList currentEventId={event.id} hasTreeQuizByDefault={activeTab != 'overview'}></PriorEventList>}
       {isLoggedIn && (
         <Button onClick={logout} sx={{ mt: 1 }} variant='outlined' color='secondary'>
           Log out
