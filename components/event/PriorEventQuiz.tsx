@@ -19,6 +19,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import useHash from 'utils/hooks/use-hash';
 import Skeleton from '@mui/material/Skeleton';
+import SearchIcon from '@mui/icons-material/Search';
 
 const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', '');
@@ -228,8 +229,15 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
               setIsLoadingInstagram(false);
             }}
           />
+          <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2} mt={3}>
+            Tree ID Guessing Game
+          </Typography>
+          <Typography variant='body2' mb={2}>
+            We map the trees at our events to help learn about our surroundings.{' '}
+          </Typography>
+          <Typography variant='body2'>Try the Tree ID Guessing Game to test your knowledge or learn something new:</Typography>
           <Button
-            sx={{ cursor: 'pointer', mt: 2, mb: -1 }}
+            sx={{ cursor: 'pointer', mt: 2 }}
             variant='contained'
             color='primary'
             onClick={() => {
@@ -238,7 +246,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
             }}
             fullWidth
           >
-            Identify this event&apos;s trees
+            <SearchIcon sx={{ fontSize: '16px', mr: 0.75 }}></SearchIcon>Identify this event&apos;s trees
           </Button>
         </Box>
       )}
