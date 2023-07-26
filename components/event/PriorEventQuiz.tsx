@@ -228,6 +228,18 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
               setIsLoadingInstagram(false);
             }}
           />
+          <Button
+            sx={{ cursor: 'pointer', mt: 2, mb: -1 }}
+            variant='outlined'
+            color='primary'
+            onClick={() => {
+              setActiveTab('trees');
+              tabsRef?.current.scrollIntoView();
+            }}
+            fullWidth
+          >
+            🌳&nbsp;&nbsp;Learn about this event&apos;s trees
+          </Button>
         </Box>
       )}
       {activeTab == 'trees' && (
