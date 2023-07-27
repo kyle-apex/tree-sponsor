@@ -30,6 +30,11 @@ a {
 .instagram-media-rendered {
   min-width: 250px !important;
 }
+.superscript{
+  font-size: 50%; 
+  font-weight: 400; 
+  display: inline;
+}
 .full-width {
   width: 100%;
 }

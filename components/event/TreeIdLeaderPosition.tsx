@@ -112,7 +112,7 @@ const TreeIdLeaderPosition = ({
                     {idx === 0 || leader.position != leaders[idx - 1].position ? leader.position : ''}
                   </Typography>
                   {(idx === 0 || leader.position != leaders[idx - 1].position) && (
-                    <sup style={{ fontSize: '50%', fontWeight: 400, display: 'inline' }}>
+                    <sup className='superscript'>
                       {String(leader.position).endsWith('1')
                         ? 'st'
                         : String(leader.position).endsWith('2')
