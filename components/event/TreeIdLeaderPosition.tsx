@@ -107,9 +107,22 @@ const TreeIdLeaderPosition = ({
                 }}
                 key={user.name}
               >
-                <Typography sx={{ fontWeight: 600, flex: '1 0 34px', textAlign: 'center', marginRight: 0.5 }}>
-                  {idx === 0 || leader.position != leaders[idx - 1].position ? leader.position : ''}
-                </Typography>
+                <Box sx={{ fontWeight: 600, flex: '1 0 40px', textAlign: 'center', marginRight: 0.5 }}>
+                  <Typography sx={{ display: 'inline' }}>
+                    {idx === 0 || leader.position != leaders[idx - 1].position ? leader.position : ''}
+                  </Typography>
+                  {(idx === 0 || leader.position != leaders[idx - 1].position) && (
+                    <sup style={{ fontSize: '50%', fontWeight: 400, display: 'inline' }}>
+                      {String(leader.position).endsWith('1')
+                        ? 'st'
+                        : String(leader.position).endsWith('2')
+                        ? 'nd'
+                        : String(leader.position).endsWith('3')
+                        ? 'rd'
+                        : 'th'}
+                    </sup>
+                  )}
+                </Box>
                 <Box>
                   <UserAvatar image={user.image} name={user.displayName || user.name} size={idx == 1 ? 26 : 26} />
                 </Box>
