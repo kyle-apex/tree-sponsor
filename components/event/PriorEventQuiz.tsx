@@ -229,25 +229,36 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
               setIsLoadingInstagram(false);
             }}
           />
-          <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2} mt={3}>
-            Tree ID Guessing Game
-          </Typography>
-          <Typography variant='body2' mb={2}>
-            We map the trees at our events to help learn about our surroundings.{' '}
-          </Typography>
-          <Typography variant='body2'>Try the Tree ID Guessing Game to test your knowledge or learn something new:</Typography>
-          <Button
-            sx={{ cursor: 'pointer', mt: 2 }}
-            variant='contained'
-            color='primary'
-            onClick={() => {
-              setActiveTab('trees');
-              tabsRef?.current.scrollIntoView();
+          <Box
+            sx={{
+              background: 'linear-gradient(to top, #486e624f, #486e6233), url(/background-lighter.svg)',
+              border: 'solid 1px #486E62',
+              borderRadius: '5px',
+              p: 2,
+              mt: 4,
             }}
-            fullWidth
+            className='box-shadow checkin-tree-quiz'
           >
-            <SearchIcon sx={{ fontSize: '16px', mr: 0.75 }}></SearchIcon>Identify this event&apos;s trees
-          </Button>
+            <Typography variant='h6' color='primary' sx={{ textAlign: 'center' }} mb={2}>
+              Tree ID Guessing Game
+            </Typography>
+            <Typography variant='body2' mb={2}>
+              We map the trees at our events to help learn about our surroundings.{' '}
+            </Typography>
+            <Typography variant='body2'>Try the Tree ID Guessing Game to test your knowledge or learn something new:</Typography>
+            <Button
+              sx={{ cursor: 'pointer', mt: 2 }}
+              variant='contained'
+              color='primary'
+              onClick={() => {
+                setActiveTab('trees');
+                tabsRef?.current.scrollIntoView();
+              }}
+              fullWidth
+            >
+              <SearchIcon sx={{ fontSize: '16px', mr: 0.75 }}></SearchIcon>Identify this event&apos;s trees
+            </Button>
+          </Box>
         </Box>
       )}
       {activeTab == 'trees' && (
