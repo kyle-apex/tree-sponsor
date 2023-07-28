@@ -48,6 +48,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
       fields?.discoveredFrom || '',
     )}&emailOptIn=${fields?.isEmailOptIn || ''}`;
     const results = (await parsedGet(url)) as MembershipStatus;
+    console.log('results', results);
 
     if (results?.email) {
       setStoredEmail(results.email);
@@ -72,6 +73,13 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
     { refetchOnMount: true, refetchOnWindowFocus: true },
   );
 
+  console.log('leaders', leaders);
+
+  const isMember = !!leaders?.find(leader => {
+    return leader.isCurrentUser && leader.isMember;
+  });
+  console.log('isMember', isMember, 'isFetching', isFetching);
+
   const onQuizDialogClose = () => {
     refetchLeaders();
     setIsFirstQuiz(false);
@@ -88,7 +96,6 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   }, [storedEmail]);
 
   const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: string) => {
-    console.log('newValue', newValue);
     setActiveTab(newValue);
     tabsRef?.current.scrollIntoView();
   };
@@ -119,10 +126,136 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
           {formatDateString(event?.startDate)}
           {event.location?.name && ' - ' + event.location.name}
         </Typography>
-        {!isLoggedIn && (
+
+        {event.instagramPostId && (
+          <>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }} mb={2} ref={tabsRef}>
+              <Tabs
+                className='account-tabs'
+                value={activeTab}
+                onChange={handleTabChange}
+                variant='fullWidth'
+                aria-label='basic tabs example'
+              >
+                <Tab
+                  value='overview'
+                  sx={{ borderTopLeftRadius: '5px' }}
+                  label={
+                    <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <div>📸&nbsp;&nbsp;Overview</div>
+                    </Box>
+                  }
+                />
+                <Tab
+                  value='trees'
+                  label={
+                    <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <div>🌳&nbsp;&nbsp;Trees</div>
+                    </Box>
+                  }
+                  sx={{ borderTopRightRadius: '5px' }}
+                />
+              </Tabs>
+            </Box>
+            {hasFloatingTabs && (
+              <Box
+                sx={{ borderBottom: 1, borderColor: 'divider', zIndex: 7000, width: floatingTabsWidth + 'px' }}
+                mb={2}
+                className={'checkin-floating-tabs'}
+              >
+                <Tabs
+                  className='account-tabs'
+                  value={activeTab}
+                  onChange={handleTabChange}
+                  variant='fullWidth'
+                  aria-label='basic tabs example'
+                >
+                  <Tab
+                    value='overview'
+                    label={
+                      <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <div>📸&nbsp;&nbsp;Overview</div>
+                      </Box>
+                    }
+                  />
+                  <Tab
+                    value='trees'
+                    label={
+                      <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <div>🌳&nbsp;&nbsp;Trees</div>
+                      </Box>
+                    }
+                  />
+                </Tabs>
+              </Box>
+            )}
+          </>
+        )}
+        {activeTab == 'overview' && event.instagramPostId && (
+          <Box mb={3}>
+            {isLoadingInstagram && (
+              <Skeleton variant='rectangular' sx={{ width: '100%', marginBottom: 3, borderRadius: '3px' }} height={300} />
+            )}
+
+            <InstagramEmbed
+              url={'https://www.instagram.com/p/' + event.instagramPostId}
+              clientAccessToken={process.env.NEXT_PUBLIC_FACEBOOK_ID + '|' + process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_TOKEN}
+              maxWidth={500}
+              hideCaption={false}
+              containerTagName='div'
+              protocol=''
+              injectScript
+              onLoading={() => {
+                setIsLoadingInstagram(true);
+              }}
+              onSuccess={() => {
+                console.log('scu');
+                setIsLoadingInstagram(false);
+              }}
+              onAfterRender={() => {
+                setIsLoadingInstagram(false);
+              }}
+              onFailure={() => {
+                setIsLoadingInstagram(false);
+              }}
+            />
+            <Box
+              sx={{
+                background: 'linear-gradient(to top, #486e624f, #486e6233), url(/background-lighter.svg)',
+                border: 'solid 1px #486E62',
+                borderRadius: '5px',
+                p: 2,
+                mt: 4,
+              }}
+              className='box-shadow checkin-tree-quiz'
+            >
+              <Typography variant='h6' color='primary' sx={{ textAlign: 'center' }} mb={2}>
+                Tree ID Guessing Game
+              </Typography>
+              <Typography variant='body2' mb={2}>
+                We map the trees at our events to help learn about our surroundings.{' '}
+              </Typography>
+              <Typography variant='body2'>Try the Tree ID Guessing Game to test your knowledge or learn something new:</Typography>
+              <Button
+                sx={{ cursor: 'pointer', mt: 2 }}
+                variant='contained'
+                color='primary'
+                onClick={() => {
+                  setActiveTab('trees');
+                  tabsRef?.current.scrollIntoView();
+                }}
+                fullWidth
+              >
+                <SearchIcon sx={{ fontSize: '16px', mr: 0.75 }}></SearchIcon>Identify this event&apos;s trees
+              </Button>
+            </Box>
+          </Box>
+        )}
+
+        {!isLoggedIn && activeTab == 'trees' && (
           <>
             <Typography variant='body2' sx={{ mb: 2, mt: 1, textAlign: 'left' }}>
-              Check-in to save your tree ID results:
+              Check-in to save your Tree ID Guessing Game results:
             </Typography>
             <Box>
               <CheckinForm
@@ -143,124 +276,6 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
           </>
         )}
       </Box>
-      {event.instagramPostId && (
-        <>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }} mb={2} ref={tabsRef}>
-            <Tabs className='account-tabs' value={activeTab} onChange={handleTabChange} variant='fullWidth' aria-label='basic tabs example'>
-              <Tab
-                value='overview'
-                sx={{ borderTopLeftRadius: '5px' }}
-                label={
-                  <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                    <div>📸&nbsp;&nbsp;Overview</div>
-                  </Box>
-                }
-              />
-              <Tab
-                value='trees'
-                label={
-                  <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                    <div>🌳&nbsp;&nbsp;Trees</div>
-                  </Box>
-                }
-                sx={{ borderTopRightRadius: '5px' }}
-              />
-            </Tabs>
-          </Box>
-          {hasFloatingTabs && (
-            <Box
-              sx={{ borderBottom: 1, borderColor: 'divider', zIndex: 7000, width: floatingTabsWidth + 'px' }}
-              mb={2}
-              className={'checkin-floating-tabs'}
-            >
-              <Tabs
-                className='account-tabs'
-                value={activeTab}
-                onChange={handleTabChange}
-                variant='fullWidth'
-                aria-label='basic tabs example'
-              >
-                <Tab
-                  value='overview'
-                  label={
-                    <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <div>📸&nbsp;&nbsp;Overview</div>
-                    </Box>
-                  }
-                />
-                <Tab
-                  value='trees'
-                  label={
-                    <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <div>🌳&nbsp;&nbsp;Trees</div>
-                    </Box>
-                  }
-                />
-              </Tabs>
-            </Box>
-          )}
-        </>
-      )}
-      {activeTab == 'overview' && event.instagramPostId && (
-        <Box mb={3}>
-          {isLoadingInstagram && (
-            <Skeleton variant='rectangular' sx={{ width: '100%', marginBottom: 3, borderRadius: '3px' }} height={300} />
-          )}
-
-          <InstagramEmbed
-            url={'https://www.instagram.com/p/' + event.instagramPostId}
-            clientAccessToken={process.env.NEXT_PUBLIC_FACEBOOK_ID + '|' + process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_TOKEN}
-            maxWidth={500}
-            hideCaption={false}
-            containerTagName='div'
-            protocol=''
-            injectScript
-            onLoading={() => {
-              setIsLoadingInstagram(true);
-            }}
-            onSuccess={() => {
-              console.log('scu');
-              setIsLoadingInstagram(false);
-            }}
-            onAfterRender={() => {
-              setIsLoadingInstagram(false);
-            }}
-            onFailure={() => {
-              setIsLoadingInstagram(false);
-            }}
-          />
-          <Box
-            sx={{
-              background: 'linear-gradient(to top, #486e624f, #486e6233), url(/background-lighter.svg)',
-              border: 'solid 1px #486E62',
-              borderRadius: '5px',
-              p: 2,
-              mt: 4,
-            }}
-            className='box-shadow checkin-tree-quiz'
-          >
-            <Typography variant='h6' color='primary' sx={{ textAlign: 'center' }} mb={2}>
-              Tree ID Guessing Game
-            </Typography>
-            <Typography variant='body2' mb={2}>
-              We map the trees at our events to help learn about our surroundings.{' '}
-            </Typography>
-            <Typography variant='body2'>Try the Tree ID Guessing Game to test your knowledge or learn something new:</Typography>
-            <Button
-              sx={{ cursor: 'pointer', mt: 2 }}
-              variant='contained'
-              color='primary'
-              onClick={() => {
-                setActiveTab('trees');
-                tabsRef?.current.scrollIntoView();
-              }}
-              fullWidth
-            >
-              <SearchIcon sx={{ fontSize: '16px', mr: 0.75 }}></SearchIcon>Identify this event&apos;s trees
-            </Button>
-          </Box>
-        </Box>
-      )}
       {activeTab == 'trees' && (
         <Box
           sx={{
@@ -351,6 +366,41 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
             leaderBoardMode={leaderBoardMode}
             setLeaderBoardMode={setLeaderBoardMode}
           ></TreeIdLeaderPosition>
+        </Box>
+      )}
+      {!isMember && !isFetching && (
+        <Box
+          sx={{
+            background: 'linear-gradient(to top, #6e485430, #6e48541a),url(/background-lighter.svg)',
+            border: 'solid 1px #6e4854',
+            borderRadius: '5px',
+            p: 2,
+            mt: 1,
+            mb: 2,
+          }}
+          className='box-shadow checkin-tree-quiz'
+        >
+          <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
+            Support Austin&apos;s Trees!
+          </Typography>
+          <Typography variant='body2' mb={2}>
+            TreeFolks is Austin&apos; tree planting nonprofit to help ensure a shady, green, and beautiful future.
+          </Typography>
+          <Typography variant='body2'>
+            Be a lasting part of that future by becoming a Supporting Member with a $20/yr annual donation:
+          </Typography>
+          <Button
+            sx={{ cursor: 'pointer', mt: 2 }}
+            variant='contained'
+            color='secondary'
+            onClick={() => {
+              setActiveTab('trees');
+              tabsRef?.current.scrollIntoView();
+            }}
+            fullWidth
+          >
+            Become a Supporting Member
+          </Button>
         </Box>
       )}
       {isLoggedIn && <PriorEventList currentEventId={event.id} hasTreeQuizByDefault={activeTab != 'overview'}></PriorEventList>}
