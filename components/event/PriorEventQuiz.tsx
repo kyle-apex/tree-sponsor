@@ -31,7 +31,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   const [leaderBoardMode, setLeaderBoardMode] = useState('');
   const [hasFloatingTabs, setHasFloatingTabs] = useState(false);
   const [floatingTabsWidth, setFloatingTabsWidth] = useState(300);
-  const [isLoadingInstagram, setIsLoadingInstagram] = useState(false);
+  const [isLoadingInstagram, setIsLoadingInstagram] = useState(!!event.instagramPostId);
   const tabsRef = useRef<HTMLElement>();
 
   const [isFirstQuiz, setIsFirstQuiz] = useState(true);

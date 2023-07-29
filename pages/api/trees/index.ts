@@ -52,6 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       orderBy: { createdDate: 'desc' },
       include: {
         images: { orderBy: { sequence: 'asc' } },
+        categories: { select: { name: true, id: true } },
       },
       //take: 1,
       //where: { id: 5 },

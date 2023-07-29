@@ -1,5 +1,5 @@
 import { create } from 'domain';
-import { PartialEvent, PartialUser } from 'interfaces';
+import { PartialCategory, PartialEvent, PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { getSession } from 'utils/auth/get-session';
@@ -47,11 +47,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return { id: user?.id };
           }),
         };
+      if (event.categories)
+        data.categories = {
+          connect: event.categories.map((category: PartialCategory) => {
+            return { id: category?.id };
+          }),
+        };
       upsertedEvent = await prisma.event.create({ data: data });
     } else {
       delete req.body.location;
       const data = { ...req.body } as Prisma.EventUncheckedUpdateInput;
-      delete data.categories;
+      //delete data.categories;
 
       if (event.organizers)
         data.organizers = {
@@ -60,6 +66,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }),
         };
       else data.organizers = { set: [] };
+
+      if (event.categories)
+        data.categories = {
+          set: event.categories.map((category: PartialCategory) => {
+            return { id: category?.id };
+          }),
+        };
+      else data.categories = { set: [] };
 
       if (event?.location?.id) {
         await prisma.location.update({ data: { ...event.location }, where: { id: event.location.id } });

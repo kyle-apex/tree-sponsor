@@ -1,7 +1,7 @@
 import React from 'react';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import TextField from '@mui/material/TextField';
-import { PartialTree } from 'interfaces';
+import { PartialTree, PartialCategory } from 'interfaces';
 import SpeciesSelector from './SpeciesSelector';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -13,13 +13,14 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CategoryMultiSelect from 'components/category/CategoryMultiSelect';
 
 const TreeFormFields = ({
   tree,
   handleChange,
 }: {
   tree: PartialTree;
-  handleChange: (propertyName: string, value: string | number) => void;
+  handleChange: (propertyName: string, value: string | number | PartialCategory[]) => void;
 }) => {
   // updating usequery via handleChange does not trigger re-render to show lower section
   //console.log('tree form field render');
@@ -88,6 +89,13 @@ const TreeFormFields = ({
             size='small'
             fullWidth={true}
           ></TextField>
+          <CategoryMultiSelect
+            label='Add a Category'
+            selectedCategories={tree?.categories}
+            onUpdated={categories => {
+              handleChange('categories', categories);
+            }}
+          ></CategoryMultiSelect>
         </AccordionDetails>
       </Accordion>
     </>

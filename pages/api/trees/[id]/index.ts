@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import throwError from 'utils/api/throw-error';
 import { prisma, Prisma } from 'utils/prisma/init';
 import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
-import { PartialTree, PartialTreeImage } from 'interfaces';
+import { PartialCategory, PartialTree, PartialTreeImage } from 'interfaces';
 import { v4 as uuidv4 } from 'uuid';
 
 import uploadTreeImages from 'utils/aws/upload-tree-images';
@@ -41,9 +41,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return throwError(res, 'Access denied');
     }
 
-    const tree = req.body as Partial<Tree>;
+    const tree = { ...req.body };
 
-    const updateData: Prisma.TreeUpdateInput = { ...tree };
+    const updateData = { ...req.body } as Prisma.TreeUncheckedUpdateInput;
+
+    //const updateData: Prisma.TreeUpdateInput = { ...tree };
+
+    if (tree.categories)
+      updateData.categories = {
+        set: tree.categories.map((category: PartialCategory) => {
+          return { id: category?.id };
+        }),
+      };
 
     const pictureUrl = tree?.pictureUrl;
 

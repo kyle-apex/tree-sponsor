@@ -76,6 +76,7 @@ export type PartialTree = Partial<Tree> & {
   location?: PartialLocation;
   speciesQuizResponses?: PartialSpeciesQuizResponse[];
   sequence?: number;
+  categories?: PartialCategory[];
 };
 export type PartialTreeChangeLog = Partial<TreeChangeLog> & { tree: PartialTree };
 
