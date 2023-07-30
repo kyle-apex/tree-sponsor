@@ -153,7 +153,6 @@ const Selector = <T extends { id?: number }>({
               setValue(null);
             });
 
-            console.log('changed focus');
             autoCompleteRef.current.parentElement.parentElement.focus();
           }
         }}
@@ -161,7 +160,11 @@ const Selector = <T extends { id?: number }>({
         getOptionLabel={getOptionLabel}
         filterOptions={a => a}
         renderOption={(props, option: T) => (
-          <Box component='li' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start !important' }} {...props}>
+          <Box
+            component='li'
+            sx={{ display: 'flex', width: '100%', overflow: 'hidden', flexDirection: 'column', alignItems: 'flex-start !important' }}
+            {...props}
+          >
             {optionDisplay(option)}
           </Box>
         )}

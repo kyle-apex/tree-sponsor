@@ -231,7 +231,6 @@ const EventDetailsForm = ({
       </Box>
       <CategoryMultiSelect
         label='Add a Category'
-        hasAdd={true}
         selectedCategories={event?.categories}
         onUpdated={categories => {
           updateAttribute('categories', categories);

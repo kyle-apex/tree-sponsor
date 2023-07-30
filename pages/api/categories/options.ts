@@ -12,14 +12,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     const query: Prisma.CategoryFindManyArgs = {
       orderBy: [{ name: 'asc' }],
-      select: { name: true, id: true },
+      select: { name: true, id: true, description: true },
       where: { OR: [{ isPublic: true }, { userId }] },
       take: 150,
     };
 
     if (req.query.search) {
       query.where = {
-        OR: [{ name: { contains: req.query.search as string } }, { isPublic: true }, { userId }],
+        AND: [
+          { OR: [{ name: { contains: req.query.search as string } }, { description: { contains: req.query.search as string } }] },
+          { OR: [{ isPublic: true }, { userId }] },
+        ],
       };
     }
 

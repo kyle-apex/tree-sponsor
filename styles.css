@@ -19,6 +19,10 @@ a {
 .checkin-tree-quiz .index-map {
   border-radius: 0;
 }
+.MuiAutocomplete-popper {
+  width: auto !important;
+  max-width: 400px;
+}
 .checkin-floating-tabs {
   position: fixed;
   top: 0;

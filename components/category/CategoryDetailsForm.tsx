@@ -46,13 +46,13 @@ const CategoryDetailsForm = ({
       <Box sx={{ marginTop: 3, marginBottom: 3, minHeight: '110px', display: 'block' }}>
         <TextEditor
           label='Description'
-          placeholder='Enter a description of your event'
+          placeholder='Enter a description of your category'
           value={category?.description}
           onChange={val => updateAttribute('description', val)}
         />
       </Box>
       <UniquePathField
-        label='Event Link Path'
+        label='Category Link Path'
         initialValue={category.path}
         validatorPath='/categories/is-duplicate-path?path='
         onChange={newValue => {

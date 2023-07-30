@@ -41,9 +41,19 @@ const CategorySelector = ({
       }
       optionDisplay={option => {
         return (
-          <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center', paddingRight: 1, paddingLeft: 1, ...sx }} gap={2}>
-            <Box>
+          <Box
+            sx={{ flexDirection: 'row', width: '100%', display: 'flex', alignItems: 'center', paddingRight: 1, paddingLeft: 1, ...sx }}
+            gap={2}
+          >
+            <Box sx={{ width: '100%' }}>
               <Typography variant='body1'>{option.name}</Typography>
+              <Typography
+                variant='subtitle2'
+                sx={{ fontStyle: 'italic', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
+                color='gray'
+              >
+                {option.description}
+              </Typography>
             </Box>
           </Box>
         );
