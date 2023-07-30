@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from 'react-query';
+import { QueryKey, useMutation, useQueryClient } from 'react-query';
 
 export const useUpdateQueryById = <T extends { id?: string | number }>(
-  key: string | (string | Record<string, unknown>)[],
+  key: QueryKey,
   updateFunction: (id: number, attributes: Record<string, unknown>) => Promise<void>,
   hasRefetch?: boolean,
   debounceMilliseconds?: number,

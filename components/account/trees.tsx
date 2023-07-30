@@ -17,6 +17,8 @@ import axios from 'axios';
 import SearchIcon from '@mui/icons-material/Search';
 import TablePagination from '@mui/material/TablePagination';
 import IdentifyTreeFlowDialog from 'components/tree/IdentifyTreeFlowDialog';
+import useEditTree from 'utils/hooks/use-edit-tree';
+import usePagination from 'utils/hooks/use-pagination';
 
 async function fetchTrees() {
   const queryString = ''; //`?take=0`;
@@ -27,46 +29,14 @@ const apiKey = ['my-trees', 'review'];
 
 const AccountTrees = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(8);
+  const { page, rowsPerPage, handleChangePage, handleChangeRowsPerPage } = usePagination(8);
 
   const { data: trees, refetch: refetchTrees } = useQuery<PartialTree[]>(apiKey, () => fetchTrees(), {
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   });
 
-  const updateTree = async (id: number, attributes: Record<string, unknown>) => {
-    await axios.patch('/api/trees/' + id, attributes);
-  };
-
-  const { updateById } = useUpdateQueryById(apiKey, updateTree, false, 500);
-
-  const handleUpdateById = async (id: number, attributes: Record<string, unknown>, callback?: () => void) => {
-    const pictureUrl: string = attributes.pictureUrl as string;
-
-    if (pictureUrl && !pictureUrl.startsWith('https://')) {
-      await updateById(id, attributes, refetchTrees);
-    } else await updateById(id, attributes, callback);
-  };
-
-  const handleDeleteImage = async (uuid: string) => {
-    await axios.delete('/api/treeImages/' + uuid);
-    refetchTrees();
-  };
-
-  async function handleDelete(treeId: number) {
-    await axios.delete('/api/trees/' + treeId);
-    refetchTrees();
-  }
-
-  const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: { target: { value: string } }) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  const { handleUpdateById, handleDelete, handleDeleteImage } = useEditTree(apiKey, refetchTrees);
 
   return (
     <Box>

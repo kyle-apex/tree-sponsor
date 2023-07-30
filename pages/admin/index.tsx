@@ -27,6 +27,7 @@ import restrictPageAccess from 'utils/auth/restrict-page-access';
 import { GetSessionOptions } from 'next-auth/client';
 import RestrictSection from 'components/RestrictSection';
 import { capitalCase } from 'change-case';
+import usePagination from 'utils/hooks/use-pagination';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'isAdmin');
@@ -88,8 +89,7 @@ export default function EnhancedTable(): JSX.Element {
   const classes = useStyles();
   const [order, setOrder] = useState('asc' as 'asc' | 'desc');
   const [orderBy, setOrderBy] = useState('createdDate');
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(100);
+  const { page, rowsPerPage, handleChangePage, handleChangeRowsPerPage } = usePagination(100);
 
   const [nameFilter, setNameFilter] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -125,15 +125,6 @@ export default function EnhancedTable(): JSX.Element {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-  };
-
-  const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: { target: { value: string } }) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
   };
 
   return (

@@ -21,6 +21,8 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import TablePagination from '@mui/material/TablePagination';
 import SplitRow from 'components/layout/SplitRow';
+import useEditTree from 'utils/hooks/use-edit-tree';
+import usePagination from 'utils/hooks/use-pagination';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'isTreeReviewer');
@@ -34,8 +36,7 @@ async function fetchTrees(reviewStatusFilter = '') {
 const ReviewTreesPage = () => {
   const [reviewStatus, setReviewStatus] = useState<ReviewStatus>('New');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(8);
+  const { page, rowsPerPage, handleChangePage, handleChangeRowsPerPage } = usePagination(8);
 
   const apiKey = ['review-trees', reviewStatus];
 
@@ -44,39 +45,8 @@ const ReviewTreesPage = () => {
     refetchOnWindowFocus: false,
   });
 
-  const updateTree = async (id: number, attributes: Record<string, unknown>) => {
-    await axios.patch('/api/trees/' + id, attributes);
-  };
+  const { handleUpdateById, handleDelete, handleDeleteImage } = useEditTree(apiKey, refetchTrees);
 
-  const { updateById } = useUpdateQueryById(apiKey, updateTree, false, 500);
-
-  const handleUpdateById = async (id: number, attributes: Record<string, unknown>) => {
-    const pictureUrl: string = attributes.pictureUrl as string;
-
-    if (pictureUrl && !pictureUrl.startsWith('https://')) {
-      await updateById(id, attributes, refetchTrees);
-    } else await updateById(id, attributes);
-  };
-
-  const { remove } = useRemoveFromQuery<PartialTree>(apiKey, handleDelete);
-
-  const handleDeleteImage = async (uuid: string) => {
-    await axios.delete('/api/treeImages/' + uuid);
-    refetchTrees();
-  };
-
-  async function handleDelete(treeId: number) {
-    await axios.delete('/api/trees/' + treeId);
-    refetchTrees();
-  }
-  const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: { target: { value: string } }) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
   // TODO refactor into memoized component to avoid re-render all when updating
   return (
     <>
