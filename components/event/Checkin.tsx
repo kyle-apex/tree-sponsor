@@ -13,6 +13,8 @@ import Tab from '@mui/material/Tab';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import { useRouter } from 'next/router';
+
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
 import {
   PartialEvent,
@@ -49,6 +51,7 @@ import PinIcon from '@mui/icons-material/LocationOn';
 
 import TreeIdLeaderPosition from './TreeIdLeaderPosition';
 import CheckinForm, { CheckinFormHandle } from './CheckinForm';
+import { Router } from 'next/router';
 //import TreeIdLeaderPosition from './TreeIdLeaderPosition';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
@@ -72,6 +75,7 @@ const getDonationDateMessage = (subscription: PartialSubscription): string => {
 const attendeesDisplayLimit = 50;
 
 const Checkin = ({ event }: { event?: PartialEvent }) => {
+  const router = useRouter();
   const [email, setEmail] = useLocalStorage('checkinEmail', '');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddTreeDialogOpen, setIsAddTreeDialogOpen] = useState(false);
@@ -133,6 +137,15 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     let status;
     if (result?.subscription) status = { ...result, isFound: true };
     else status = { ...result, isFound: false, email };
+
+    // redirect to the past page if this is a previous event
+    const startOfToday = new Date();
+    startOfToday.setHours(0);
+    if (!status.myCheckin && event.startDate < startOfToday) {
+      router.push(`/e/${event.path}/quiz#trees`);
+      return;
+    }
+
     setStatus(status);
     setIsPrivate(status.myCheckin?.isPrivate);
 
