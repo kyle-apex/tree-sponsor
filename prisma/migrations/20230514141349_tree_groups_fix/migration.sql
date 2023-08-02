@@ -40,3 +40,9 @@ ALTER TABLE
     `Event`
 ADD
     COLUMN `instagramPostId` VARCHAR(64) NULL;
+
+-- AlterTable
+ALTER TABLE
+    `Tree`
+ADD
+    COLUMN `sessionId` VARCHAR(191) NULL;

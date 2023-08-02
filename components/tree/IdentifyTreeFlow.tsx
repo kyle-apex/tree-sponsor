@@ -23,6 +23,7 @@ import Typography from '@mui/material/Typography';
 import useLocalStorage from 'utils/hooks/use-local-storage';
 import Selector from 'components/Selector';
 import UserSelector from 'components/UserSelector';
+import { CheckinSessionContext } from 'components/event/CheckinSessionProvider';
 
 const steps = [{ label: 'Identify' }, { label: 'Photograph' }, { label: 'Location' }];
 const tomorrow = new Date();
@@ -43,7 +44,7 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
   const [isSkipped, setIsSkipped] = useState(false);
   const imageRef = useRef<any>();
   const [email] = useLocalStorage('checkinEmail', '');
-  const [sessionId, setSessionId] = useLocalStorage('checkinSessionId', '');
+  const { sessionId, setSessionId } = useContext(CheckinSessionContext);
 
   // Helps delay saving tree while image upload is in progress
   const [saveDelayArgs, setSaveDelayArgs] = useState<Partial<{ step: number; isCompleted: boolean }>>();

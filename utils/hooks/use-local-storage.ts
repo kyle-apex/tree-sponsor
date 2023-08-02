@@ -10,8 +10,9 @@ export default function useLocalStorage(key: string, initialValue: string) {
 
       if (item) {
         const expiration = window.localStorage.getItem(key + 'Expiration');
-        const expirationDate = new Date(JSON.parse(expiration));
-        if (expirationDate && expirationDate < new Date()) {
+        const parsedExpiration = JSON.parse(expiration);
+        const expirationDate = new Date(parsedExpiration);
+        if (parsedExpiration && expirationDate && expirationDate < new Date()) {
           item = null;
           window.localStorage.removeItem(key);
           window.localStorage.removeItem(key + 'Expiration');

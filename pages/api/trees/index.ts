@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let userId;
     let tree;
     const email = req.body.email;
-    if (req.body.email) {
+    if (req.body.email !== undefined) {
       tree = req.body.tree;
       if (session?.user?.id) userId = session.user.id;
       else {

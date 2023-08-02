@@ -4,7 +4,9 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import { CheckinSessionContext } from 'components/event/CheckinSessionProvider';
 import { PartialTree } from 'interfaces';
+import { useContext } from 'react';
 import { useQuery } from 'react-query';
 import parsedGet from 'utils/api/parsed-get';
 import useEditTree from 'utils/hooks/use-edit-tree';
@@ -13,6 +15,7 @@ import AddTreeForm from './AddTreeForm';
 import TreeReview from './TreeReview';
 
 async function fetchTrees(sessionId = '') {
+  console.log('sessionId', sessionId);
   if (!sessionId) return [];
   const queryString = '?sessionId=' + encodeURIComponent(sessionId);
   return parsedGet<PartialTree[]>('/api/trees' + queryString);
@@ -27,14 +30,16 @@ const EditSessionTreesDialog = ({
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onComplete?: () => void;
 }) => {
-  const [sessionId] = useLocalStorage('sessionId', '');
+  const { sessionId } = useContext(CheckinSessionContext);
   const handleClose = () => {
     setIsOpen(false);
+    if (onComplete) onComplete();
   };
 
   const apiKey = ['session-trees', sessionId];
+  console.log('apiKey', apiKey);
 
-  const { data: trees, refetch: refetchTrees } = useQuery<PartialTree[]>(apiKey, () => fetchTrees(), {
+  const { data: trees, refetch: refetchTrees } = useQuery<PartialTree[]>(apiKey, () => fetchTrees(sessionId), {
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   });
@@ -50,7 +55,7 @@ const EditSessionTreesDialog = ({
         <Grid container spacing={4} mt={-1}>
           {trees?.map(tree => {
             return (
-              <Grid key={tree.id} item xs={12} sm={6}>
+              <Grid key={tree.id} item xs={12} sm={12}>
                 <Card sx={{ '.MuiCardContent-root': { padding: 0, paddingBottom: 0 } }}>
                   <CardContent sx={{ pb: '0 !important' }}>
                     <TreeReview

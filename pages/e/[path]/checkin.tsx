@@ -8,6 +8,7 @@ import { prisma } from 'utils/prisma/init';
 import { useEffect } from 'react';
 import formatServerProps from 'utils/api/format-server-props';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
+import CheckinSessionProvider from 'components/event/CheckinSessionProvider';
 
 const CheckinPage = ({ event }: { event: PartialEvent }) => {
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
@@ -20,7 +21,9 @@ const CheckinPage = ({ event }: { event: PartialEvent }) => {
       description={'TreeFolks Young Professionals welcomes you to our ' + event.name}
     >
       <LogoMessage isCheckin={true} justifyContent='start'>
-        <Checkin event={parsedEvent} />
+        <CheckinSessionProvider>
+          <Checkin event={parsedEvent} />
+        </CheckinSessionProvider>
       </LogoMessage>
     </Layout>
   );
