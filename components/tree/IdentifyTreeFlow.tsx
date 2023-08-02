@@ -25,6 +25,8 @@ import Selector from 'components/Selector';
 import UserSelector from 'components/UserSelector';
 
 const steps = [{ label: 'Identify' }, { label: 'Photograph' }, { label: 'Location' }];
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
 
 const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: () => void; longitude?: number; latitude?: number }) => {
   const { leafImage, setLeafImage, tree, setTree, reset } = useContext(IdentifyTreeContext);
@@ -41,6 +43,8 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
   const [isSkipped, setIsSkipped] = useState(false);
   const imageRef = useRef<any>();
   const [email] = useLocalStorage('checkinEmail', '');
+  const [sessionId, setSessionId] = useLocalStorage('checkinSessionId', '');
+
   // Helps delay saving tree while image upload is in progress
   const [saveDelayArgs, setSaveDelayArgs] = useState<Partial<{ step: number; isCompleted: boolean }>>();
 
@@ -61,9 +65,11 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
     const data = { ...tree };
     // save space in the request by removing pictureUrl
     delete data.pictureUrl;
-    const updatedTreeResult = await axios.post('/api/trees', { tree: { ...data }, email });
+
+    const updatedTreeResult = await axios.post('/api/trees', { tree: { ...data }, email, sessionId: sessionId });
     const updatedTree = updatedTreeResult.data;
     if (updatedTree?.id) handleChange('id', updatedTree.id);
+    if (updatedTree.sessionId && !sessionId) setSessionId(updatedTree.sessionId, tomorrow);
     if (updatedTree?.pictureUrl) {
       handleChange('pictureUrl', updatedTree.pictureUrl);
     }

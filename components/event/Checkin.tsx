@@ -407,7 +407,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               open={isAddTreeDialogOpen}
               setOpen={setIsAddTreeDialogOpen}
               onComplete={() => {
-                console.log('completed');
                 setIsQuizRefreshing(true);
               }}
               latitude={event.location ? Number(event.location.latitude) : null}
