@@ -67,10 +67,12 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
     // save space in the request by removing pictureUrl
     delete data.pictureUrl;
 
+    const isNewTree = !data?.id;
+
     const updatedTreeResult = await axios.post('/api/trees', { tree: { ...data }, email, sessionId: sessionId });
     const updatedTree = updatedTreeResult.data;
     if (updatedTree?.id) handleChange('id', updatedTree.id);
-    if (updatedTree.sessionId && !sessionId) setSessionId(updatedTree.sessionId, tomorrow);
+    if (updatedTree.sessionId && isNewTree) setSessionId(updatedTree.sessionId, tomorrow);
     if (updatedTree?.pictureUrl) {
       handleChange('pictureUrl', updatedTree.pictureUrl);
     }

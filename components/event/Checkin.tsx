@@ -417,7 +417,13 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 >
                   <EditIcon sx={{ fontSize: 'inherit' }}></EditIcon> <Box sx={{ textDecoration: 'underline' }}>Edit Added Tree(s)</Box>
                 </a>
-                <EditSessionTreesDialog isOpen={isEditTreeDialogOpen} setIsOpen={setIsEditTreeDialogOpen}></EditSessionTreesDialog>
+                <EditSessionTreesDialog
+                  isOpen={isEditTreeDialogOpen}
+                  setIsOpen={setIsEditTreeDialogOpen}
+                  onComplete={() => {
+                    setIsQuizRefreshing(true);
+                  }}
+                ></EditSessionTreesDialog>
               </Box>
             )}
             <TreeIdLeaderPosition

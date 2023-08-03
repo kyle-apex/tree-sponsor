@@ -18,19 +18,23 @@ import CategoryMultiSelect from 'components/category/CategoryMultiSelect';
 const TreeFormFields = ({
   tree,
   handleChange,
+  isForQuiz,
 }: {
   tree: PartialTree;
   handleChange: (propertyName: string, value: string | number | PartialCategory[]) => void;
+  isForQuiz?: boolean;
 }) => {
   // updating usequery via handleChange does not trigger re-render to show lower section
   //console.log('tree form field render');
   return (
     <>
-      <Typography sx={{ marginBottom: 2 }} variant='inherit' color='secondary'>
-        Optional Details
-      </Typography>
+      {!isForQuiz && (
+        <Typography sx={{ marginBottom: 2 }} variant='inherit' color='secondary'>
+          Optional Details
+        </Typography>
+      )}
       <SpeciesSelector onChange={speciesId => handleChange('speciesId', speciesId)} defaultValue={tree.speciesId}></SpeciesSelector>
-      {tree.speciesId && (
+      {tree.speciesId && !isForQuiz && (
         <FormControl component='fieldset' sx={{ marginTop: 2 }}>
           <FormLabel component='legend' sx={{ fontSize: '.75rem' }}>
             Identification Correctness Confidence
@@ -48,56 +52,60 @@ const TreeFormFields = ({
           </RadioGroup>
         </FormControl>
       )}
-      <TextField
-        sx={{ marginBottom: 3, marginTop: 2 }}
-        label='Name/Nickname (ex: The Treaty Oak)'
-        onChange={e => handleChange('name', e.target.value)}
-        defaultValue={tree.name || ''}
-        value={undefined}
-        size='small'
-        fullWidth={true}
-      ></TextField>
+      {!isForQuiz && (
+        <TextField
+          sx={{ marginBottom: 3, marginTop: 2 }}
+          label='Name/Nickname (ex: The Treaty Oak)'
+          onChange={e => handleChange('name', e.target.value)}
+          defaultValue={tree.name || ''}
+          value={undefined}
+          size='small'
+          fullWidth={true}
+        ></TextField>
+      )}
 
-      <Accordion
-        sx={{
-          mb: 2,
-          mt: 0,
-          '&:before': { opacity: 0.2 },
-        }}
-      >
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls='panel1a-content' id='panel1a-header'>
-          <Typography color='secondary' variant='inherit'>
-            Advanced Details
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <TextField
-            sx={{ marginBottom: 2 }}
-            label='Height Estimation (feet)'
-            onChange={e => handleChange('height', e.target.value)}
-            defaultValue={tree.height}
-            type='number'
-            size='small'
-            fullWidth={true}
-          ></TextField>
-          <TextField
-            sx={{ marginBottom: 2 }}
-            label='Diameter (inches)'
-            onChange={e => handleChange('diameter', e.target.value)}
-            type='number'
-            defaultValue={tree.diameter}
-            size='small'
-            fullWidth={true}
-          ></TextField>
-          <CategoryMultiSelect
-            label='Add a Category'
-            selectedCategories={tree?.categories}
-            onUpdated={categories => {
-              handleChange('categories', categories);
-            }}
-          ></CategoryMultiSelect>
-        </AccordionDetails>
-      </Accordion>
+      {!isForQuiz && (
+        <Accordion
+          sx={{
+            mb: 2,
+            mt: 0,
+            '&:before': { opacity: 0.2 },
+          }}
+        >
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls='panel1a-content' id='panel1a-header'>
+            <Typography color='secondary' variant='inherit'>
+              Advanced Details
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <TextField
+              sx={{ marginBottom: 2 }}
+              label='Height Estimation (feet)'
+              onChange={e => handleChange('height', e.target.value)}
+              defaultValue={tree.height}
+              type='number'
+              size='small'
+              fullWidth={true}
+            ></TextField>
+            <TextField
+              sx={{ marginBottom: 2 }}
+              label='Diameter (inches)'
+              onChange={e => handleChange('diameter', e.target.value)}
+              type='number'
+              defaultValue={tree.diameter}
+              size='small'
+              fullWidth={true}
+            ></TextField>
+            <CategoryMultiSelect
+              label='Add a Category'
+              selectedCategories={tree?.categories}
+              onUpdated={categories => {
+                handleChange('categories', categories);
+              }}
+            ></CategoryMultiSelect>
+          </AccordionDetails>
+        </Accordion>
+      )}
     </>
   );
 };

@@ -1,3 +1,4 @@
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Dialog from '@mui/material/Dialog';
@@ -6,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { CheckinSessionContext } from 'components/event/CheckinSessionProvider';
 import { PartialTree } from 'interfaces';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import parsedGet from 'utils/api/parsed-get';
 import useEditTree from 'utils/hooks/use-edit-tree';
@@ -39,18 +40,26 @@ const EditSessionTreesDialog = ({
   const apiKey = ['session-trees', sessionId];
   console.log('apiKey', apiKey);
 
-  const { data: trees, refetch: refetchTrees } = useQuery<PartialTree[]>(apiKey, () => fetchTrees(sessionId), {
+  const {
+    data: trees,
+    refetch: refetchTrees,
+    isFetching,
+  } = useQuery<PartialTree[]>(apiKey, () => fetchTrees(sessionId), {
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   });
+
+  useEffect(() => {
+    if (isOpen && !isFetching) refetchTrees();
+  }, [isOpen]);
 
   const { handleUpdateById, handleDelete, handleDeleteImage } = useEditTree(apiKey, refetchTrees);
 
   return (
     <Dialog open={isOpen} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px', margin: '0px' } }} onClose={handleClose}>
       <DialogContent className=''>
-        <Typography mb={3} variant='h2'>
-          Edit Trees
+        <Typography mb={0} variant='h2' color='secondary'>
+          Edit Tree(s)
         </Typography>
         <Grid container spacing={4} mt={-1}>
           {trees?.map(tree => {
@@ -65,6 +74,7 @@ const EditSessionTreesDialog = ({
                       onDeleteImage={handleDeleteImage}
                       onRefetch={refetchTrees}
                       isAdmin={false}
+                      isForQuiz={true}
                     />
                   </CardContent>
                 </Card>
@@ -72,6 +82,9 @@ const EditSessionTreesDialog = ({
             );
           })}
         </Grid>
+        <Button fullWidth color='inherit' sx={{ mt: 3 }} onClick={handleClose}>
+          Close
+        </Button>
       </DialogContent>
     </Dialog>
   );
