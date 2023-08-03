@@ -40,16 +40,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!tree) return throwError(res, 'Please submit new tree data.');
 
-    if (!req.query.sessionId) tree.sessionId = uuidv4();
+    tree.sessionId = req.body.sessionId ? req.body.sessionId : uuidv4();
 
     const upsertedTree = await upsertTree(tree, userId);
 
     res.status(200).json(upsertedTree);
   } else if (req.method === 'GET') {
-    if (!session?.user?.id) return throwUnauthenticated(res);
-    const userId = session.user.id;
-    const reviewStatus = req.query.reviewStatus as ReviewStatus;
-    const sessionId = req.query.sessionId as string;
+    if (!session?.user?.id && !req.query?.sessionId) return throwUnauthenticated(res);
+    const userId = session?.user?.id;
+    const reviewStatus = req.query?.reviewStatus as ReviewStatus;
+    const sessionId = req.query?.sessionId as string;
 
     const take = req.query.take ? Number(req.query.take) : null;
     const filter: Prisma.TreeFindManyArgs = {
