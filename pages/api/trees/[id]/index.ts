@@ -37,6 +37,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (changeLog) isAuthorized = true;
     }
 
+    const sessionId = req.query?.sessionId as string;
+
+    if (!isAuthorized && sessionId) {
+      const treeWithSessionId = await prisma.tree.findFirst({ where: { id, sessionId } });
+      if (treeWithSessionId?.id) isAuthorized = true;
+    }
+
     if (!isAuthorized) {
       return throwError(res, 'Access denied');
     }

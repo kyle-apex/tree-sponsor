@@ -16,7 +16,6 @@ import AddTreeForm from './AddTreeForm';
 import TreeReview from './TreeReview';
 
 async function fetchTrees(sessionId = '') {
-  console.log('sessionId', sessionId);
   if (!sessionId) return [];
   const queryString = '?sessionId=' + encodeURIComponent(sessionId);
   return parsedGet<PartialTree[]>('/api/trees' + queryString);
@@ -38,7 +37,6 @@ const EditSessionTreesDialog = ({
   };
 
   const apiKey = ['session-trees', sessionId];
-  console.log('apiKey', apiKey);
 
   const {
     data: trees,

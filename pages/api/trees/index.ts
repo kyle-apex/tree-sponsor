@@ -70,7 +70,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (take) filter.take = take;
     if (!filter.where) filter.where = {};
     filter.where.pictureUrl = { not: null };
-    const trees = await prisma.tree.findMany(filter);
+    let trees = await prisma.tree.findMany(filter);
+    trees = trees.map(t => {
+      // remove sessionId if not reading for particular sessionId
+      return sessionId ? t : { ...t, sessionId: null };
+    });
     res.status(200).json(trees);
   }
 }

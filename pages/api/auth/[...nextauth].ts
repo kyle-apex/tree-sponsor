@@ -26,6 +26,10 @@ export default NextAuth({
       clientId: process.env.APPLE_ID,
       clientSecret: process.env.APPLE_SECRET,
     }),*/
+    /*Providers.Instagram({
+      clientId: process.env.FACEBOOK_ID,
+      clientSecret: process.env.FACEBOOK_SECRET,
+    }),this does not give their email address*/
     Providers.Facebook({
       clientId: process.env.FACEBOOK_ID,
       clientSecret: process.env.FACEBOOK_SECRET,

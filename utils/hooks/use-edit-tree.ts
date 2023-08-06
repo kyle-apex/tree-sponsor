@@ -13,7 +13,8 @@ export default function useEditTree(
   handleDeleteImage: (uuid: string) => Promise<void>;
 } {
   const updateTree = async (id: number, attributes: Record<string, unknown>) => {
-    await axios.patch('/api/trees/' + id, attributes);
+    const sessionId = apiKey?.length > 1 ? (apiKey[1] as string) : '';
+    await axios.patch('/api/trees/' + id + '?sessionId=' + encodeURIComponent(sessionId), attributes);
   };
 
   const { updateById } = useUpdateQueryById(apiKey, updateTree, false, 500);

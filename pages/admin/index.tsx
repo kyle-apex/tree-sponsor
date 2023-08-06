@@ -142,11 +142,13 @@ export default function EnhancedTable(): JSX.Element {
           <Link href='/admin/fundraising-dashboard'>
             <Button variant='outlined'>Fundraising Dashboard</Button>
           </Link>
-          <RestrictSection accessType='isReviewer'>
-            <Link href='/admin/review/sponsorships'>
-              <Button variant='outlined'>Review Thank-a-Trees</Button>
-            </Link>
-          </RestrictSection>
+          {false && (
+            <RestrictSection accessType='isReviewer'>
+              <Link href='/admin/review/sponsorships'>
+                <Button variant='outlined'>Review Thank-a-Trees</Button>
+              </Link>
+            </RestrictSection>
+          )}
           <RestrictSection accessType='isTreeReviewer'>
             <Link href='/admin/review/trees'>
               <Button variant='outlined'>Manage Trees</Button>
