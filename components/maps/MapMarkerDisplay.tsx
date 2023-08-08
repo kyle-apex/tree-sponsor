@@ -54,16 +54,68 @@ const MapMarkerDisplay = ({
   });
   useEffect(() => {
     if (!showLocation) {
-      //console.log('showLocation center', showLocation);
+      //console.log('viewport', viewport);
       const centeredViewport = centerViewport(
         viewport as Viewport,
         markers,
         mapRef?.current ? mapRef?.current?.getMap()?._containerWidth || 350 : 350,
         height ? Number(height.replace('px', '').replace('%', '')) : 200,
       );
+      //const map = mapRef.current.getMap();
+      //console.log('map', map);
+      //https://stackoverflow.com/questions/37100144/consume-arcgis-map-service-into-mapbox-gl-api
+
       setViewport(centeredViewport);
     }
   }, [markers, showLocation]);
+
+  useEffect(() => {
+    const map = mapRef.current?.getMap();
+    console.log('map', map);
+    map?.on('load', function () {
+      console.log('called on laod', map.getStyle().layers);
+      map.addLayer({
+        id: 'raster-demo',
+        type: 'raster',
+        minzoom: 18,
+        maxzoom: 21,
+        source: {
+          type: 'raster',
+          tiles: [
+            'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0&bbox={bbox-epsg-3857}&bboxSR=EPSG:3857&imageSR=EPSG:3857&size=256,256&f=image',
+          ],
+          tileSize: 256,
+        },
+      });
+
+      map.addLayer({
+        id: 'cache-demo',
+        type: 'raster',
+        minzoom: 14,
+        maxzoom: 18.5,
+        source: {
+          type: 'raster',
+          tiles: ['https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+          tileSize: 256,
+        },
+      });
+      const satellite1 = map.getLayer('satellite');
+      // window['satellite1'] = satellite1;
+      //console.log('satellite1', satellite1);
+      map.moveLayer('cache-demo', 'satellite');
+      //map.moveLayer('satellite', 'cache-demo');
+      map.moveLayer('raster-demo', 'satellite');
+      //map.moveLayer('satellite', 'raster-demo');
+      map.removeLayer('satellite');
+      map.addLayer({ id: 'satellite', minzoom: 0, maxzoom: 14, type: 'raster', source: 'mapbox://mapbox.satellite' });
+      map.addLayer({ id: 'satellite2', minzoom: 21, maxzoom: 26, type: 'raster', source: 'mapbox://mapbox.satellite' });
+
+      map.moveLayer('satellite', 'raster-demo');
+      map.moveLayer('satellite2', 'raster-demo');
+
+      console.log('called on laod', map.getStyle().layers);
+    });
+  }, []);
 
   const debouncedOnViewportChange = useDebouncedCallback((viewport: Partial<Viewport>) => {
     if (onViewportChange) onViewportChange(viewport);
