@@ -22,6 +22,7 @@ const TreeIdQuiz = ({
   mapHeight = '200px',
   showLocation,
   onCloseDialog,
+  categoryIds,
 }: {
   eventId?: number;
   isRefreshing?: boolean;
@@ -31,6 +32,7 @@ const TreeIdQuiz = ({
   mapHeight?: string;
   showLocation?: boolean;
   onCloseDialog?: () => void;
+  categoryIds?: number[];
 }) => {
   const [email] = useLocalStorage('checkinEmail', '');
   const currentMapCoordinateRef = useRef<Coordinate>(null);
@@ -38,15 +40,18 @@ const TreeIdQuiz = ({
   const latitude = currentMapCoordinateRef?.current?.latitude || defaultLatitude;
   const longitude = currentMapCoordinateRef?.current?.longitude || defaultLongitude;
 
+  const apiUrl = categoryIds ? 'for-categories' : 'for-coordinate';
+
   const {
     data: trees,
     isFetching,
     refetch,
     isFetched,
-  } = useGet<PartialTree[]>(`/api/trees/for-coordinate`, 'trees', {
+  } = useGet<PartialTree[]>(`/api/trees/` + apiUrl, 'trees', {
     latitude,
     longitude,
     email,
+    categoryIds,
   });
   const [selectedTree, setSelectedTree] = useState<PartialTree>();
   const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
@@ -75,7 +80,6 @@ const TreeIdQuiz = ({
   }, [defaultLatitude, defaultLongitude]);
 
   const onViewportChange = (viewport: any) => {
-    console.log('viewport', viewport);
     if (showLocation) currentMapCoordinateRef.current = { latitude: viewport.latitude, longitude: viewport.longitude };
   };
 
@@ -88,6 +92,7 @@ const TreeIdQuiz = ({
         latitude,
         longitude,
         email,
+        categoryIds,
       },
     ],
     handleUpdate,
@@ -107,6 +112,7 @@ const TreeIdQuiz = ({
         ></TreeDisplayDialog>
         {isFetched && (
           <MapMarkerDisplay
+            isGoogle={true}
             markers={trees?.map(tree => {
               let isQuizCorrect;
               if (tree.speciesQuizResponses?.length > 0) {
