@@ -108,7 +108,7 @@ const MapMarkerDisplay = ({
       {isGoogle && (
         <Box sx={{ height: '300px' }}>
           <GoogleMapReact
-            bootstrapURLKeys={{ key: 'AIzaSyCtso5gIzesbPgpb__kJXZq9Xysjpr57ZE' }}
+            bootstrapURLKeys={{ key: process.env.NEXT_PUBLIC_GOOGLE_STREET_VIEW_KEY }}
             defaultCenter={{ lat: 30.2594625, lng: -97.7505386 }}
             center={{ lat: viewport.latitude, lng: viewport.longitude }}
             zoom={viewport.zoom + 0.5}
