@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import MapGL, { GeolocateControl, MapRef, NavigationControl, WebMercatorViewport } from 'react-map-gl';
 import { QuizCoordinate, Coordinate, MapStyle, Viewport } from 'interfaces';
 import MapMarker from 'components/sponsor/MapMarker';
@@ -122,6 +123,8 @@ const MapMarkerDisplay = ({
                 return (
                   <img
                     key={marker.latitude + marker.longitude}
+                    /*
+                    // @ts-ignore */
                     lat={marker.latitude}
                     lng={marker.longitude}
                     src={
