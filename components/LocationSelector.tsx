@@ -113,16 +113,16 @@ const LocationSelector = ({
           }}
           fitBoundsOptions={{ maxZoom: 20, zoom }}
         />
-        {false && (
-          <Geocoder
-            mapRef={mapRef}
-            mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-            position='top-left'
-            onViewportChange={handleViewportChange}
-            proximity={SEARCH_LOCATION}
-            countries='us'
-          />
-        )}
+
+        <Geocoder
+          mapRef={mapRef}
+          mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+          position='top-left'
+          onViewportChange={handleViewportChange}
+          proximity={SEARCH_LOCATION}
+          countries='us'
+        />
+
         <Marker latitude={viewport.latitude} longitude={viewport.longitude} className={classes.markerContainer}>
           <RoomSharpIcon style={{ fontSize: 50 }} className={classes.marker}></RoomSharpIcon>
         </Marker>
