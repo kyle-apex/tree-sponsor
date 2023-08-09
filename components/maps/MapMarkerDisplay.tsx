@@ -50,6 +50,7 @@ const MapMarkerDisplay = ({
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
   const [zoom, setZoom] = useState(16);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [viewport, setViewport] = useState<Partial<Viewport>>({
     width: '100%',
@@ -72,6 +73,10 @@ const MapMarkerDisplay = ({
       //https://stackoverflow.com/questions/37100144/consume-arcgis-map-service-into-mapbox-gl-api
       //console.log('centeredViewport', centeredViewport);
       setViewport(centeredViewport);
+      setIsRefreshing(true);
+      setTimeout(() => {
+        setIsRefreshing(false);
+      }, 1);
     }
   }, [markers, showLocation]);
 
@@ -107,48 +112,50 @@ const MapMarkerDisplay = ({
     <>
       {isGoogle && (
         <Box sx={{ height: '300px' }}>
-          <GoogleMapReact
-            bootstrapURLKeys={{ key: process.env.NEXT_PUBLIC_GOOGLE_STREET_VIEW_KEY }}
-            defaultCenter={{ lat: 30.2594625, lng: -97.7505386 }}
-            center={{ lat: viewport.latitude, lng: viewport.longitude }}
-            zoom={viewport.zoom + 0.5}
-            options={{ mapTypeId: 'hybrid', fullscreenControl: false }}
-            onZoomAnimationEnd={a => {
-              console.log('google zoom', a);
-              setZoom(a);
-            }}
-          >
-            {markers?.map(marker => {
-              if (marker?.latitude) {
-                return (
-                  <img
-                    key={marker.latitude + marker.longitude}
-                    /*
+          {!isRefreshing && (
+            <GoogleMapReact
+              bootstrapURLKeys={{ key: process.env.NEXT_PUBLIC_GOOGLE_STREET_VIEW_KEY }}
+              defaultCenter={{ lat: 30.2594625, lng: -97.7505386 }}
+              center={{ lat: viewport.latitude, lng: viewport.longitude }}
+              zoom={viewport.zoom + 0.5}
+              options={{ mapTypeId: 'hybrid', fullscreenControl: false }}
+              onZoomAnimationEnd={a => {
+                console.log('google zoom', a);
+                setZoom(a);
+              }}
+            >
+              {markers?.map(marker => {
+                if (marker?.latitude) {
+                  return (
+                    <img
+                      key={marker.latitude + marker.longitude}
+                      /*
                     // @ts-ignore */
-                    lat={marker.latitude}
-                    lng={marker.longitude}
-                    src={
-                      marker.isQuizCorrect === true
-                        ? '/pin-quiz-correct.svg'
-                        : marker.isQuizCorrect === false
-                        ? '/pin-quiz-incorrect.svg'
-                        : '/pin-quiz.svg'
-                    }
-                    style={{
-                      width: (30 * zoom) / 12 + 'px',
-                      marginLeft: (-30 * zoom) / 24 + 'px',
-                      marginTop: -1 * ((30 * zoom) / 12) * 1.3,
-                      zIndex: marker.isQuizCorrect === true || marker.isQuizCorrect === false ? 0 : 1,
-                      position: 'absolute',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => onClick(marker)}
-                    alt='Map Marker'
-                  ></img>
-                );
-              }
-            })}
-          </GoogleMapReact>
+                      lat={marker.latitude}
+                      lng={marker.longitude}
+                      src={
+                        marker.isQuizCorrect === true
+                          ? '/pin-quiz-correct.svg'
+                          : marker.isQuizCorrect === false
+                          ? '/pin-quiz-incorrect.svg'
+                          : '/pin-quiz.svg'
+                      }
+                      style={{
+                        width: (30 * zoom) / 12 + 'px',
+                        marginLeft: (-30 * zoom) / 24 + 'px',
+                        marginTop: -1 * ((30 * zoom) / 12) * 1.3,
+                        zIndex: marker.isQuizCorrect === true || marker.isQuizCorrect === false ? 0 : 1,
+                        position: 'absolute',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => onClick(marker)}
+                      alt='Map Marker'
+                    ></img>
+                  );
+                }
+              })}
+            </GoogleMapReact>
+          )}
         </Box>
       )}
       {!isGoogle && (
