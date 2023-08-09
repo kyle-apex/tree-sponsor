@@ -348,6 +348,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               <SplitRow>
                 <a
                   onClick={() => {
+                    window.location.reload();
                     setIsQuizRefreshing(true);
                   }}
                   style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '4px', alignItems: 'center', color: '#6e4854' }}
