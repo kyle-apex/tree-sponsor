@@ -1,5 +1,5 @@
-import React, { useCallback, useRef } from 'react';
-import MapGL, { Marker, GeolocateControl, NavigationControl } from 'react-map-gl';
+import React, { useCallback, useEffect, useRef } from 'react';
+import MapGL, { Marker, GeolocateControl, NavigationControl, MapRef } from 'react-map-gl';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Geocoder from 'react-map-gl-geocoder';
@@ -43,7 +43,7 @@ const LocationSelector = ({
   mapStyle?: MapStyle;
   zoom?: number;
 }) => {
-  const mapRef = useRef();
+  const mapRef = useRef<MapRef>();
   const geolocatedRef = useRef<boolean>();
 
   const START_LONGITUDE = longitude || -97.7405213210974;
@@ -55,9 +55,32 @@ const LocationSelector = ({
     zoom: zoom,
   });
 
-  //30.476811100617866, -97.85117098722235
-
   const handleViewportChange = useCallback(newViewport => setViewport(newViewport), []);
+
+  useEffect(() => {
+    const map = mapRef?.current?.getMap();
+
+    map?.on('load', function () {
+      map.addSource('arcgis', {
+        type: 'raster',
+        tiles: [
+          'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=' +
+            process.env.NEXT_PUBLIC_ARCGIS_TOKEN,
+        ],
+        minzoom: 0,
+        maxzoom: 19,
+      });
+      map.addLayer({
+        id: 'arcgis-layer',
+        source: 'arcgis',
+        type: 'raster',
+        minzoom: 0,
+        maxzoom: 24,
+      });
+      map.moveLayer('arcgis-layer', 'satellite');
+      map.removeLayer('satellite');
+    });
+  }, []);
 
   const classes = useStyles();
   return (
@@ -90,14 +113,16 @@ const LocationSelector = ({
           }}
           fitBoundsOptions={{ maxZoom: 20, zoom }}
         />
-        <Geocoder
-          mapRef={mapRef}
-          mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-          position='top-left'
-          onViewportChange={handleViewportChange}
-          proximity={SEARCH_LOCATION}
-          countries='us'
-        />
+        {false && (
+          <Geocoder
+            mapRef={mapRef}
+            mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+            position='top-left'
+            onViewportChange={handleViewportChange}
+            proximity={SEARCH_LOCATION}
+            countries='us'
+          />
+        )}
         <Marker latitude={viewport.latitude} longitude={viewport.longitude} className={classes.markerContainer}>
           <RoomSharpIcon style={{ fontSize: 50 }} className={classes.marker}></RoomSharpIcon>
         </Marker>

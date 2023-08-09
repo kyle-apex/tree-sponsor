@@ -14,19 +14,6 @@ const geolocateControlStyle = {
   bottom: 40,
 };
 
-const transformRequest = (url, resourceType) => {
-  console.log('a', url, 'b', resourceType);
-  if (
-    resourceType === 'Tile' &&
-    url.indexOf('https://services.arcgisonline.com') > -1 &&
-    (url.includes('tile/21') || url.includes('tile/22') || url.includes('tile/20'))
-  ) {
-    return false; /*{
-      url: url.replace('tile/21', 'tile/19'),
-    };*/
-  }
-};
-
 const MapMarkerDisplay = ({
   markers,
   onClick,
@@ -84,28 +71,12 @@ const MapMarkerDisplay = ({
 
   useEffect(() => {
     const map = mapRef.current?.getMap();
-    console.log('map', map);
     map?.on('load', function () {
-      console.log('called on laod', map.getStyle().layers);
-
-      /*map.addLayer({
-        id: 'raster-demo',
-        type: 'raster',
-        minzoom: 18,
-        maxzoom: 21,
-        source: {
-          type: 'raster',
-          tiles: [
-            'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0&bbox={bbox-epsg-3857}&bboxSR=EPSG:3857&imageSR=EPSG:3857&size=256,256&f=image&token=AAPK40aa74276b30480aa4810d68c9f7f7b6zwPjVYsvY3jW-lc8oHHFwuJICLRE4G-eHV4z3ISfQXUkauWH1_a0nOUTnZ-bI7gc',
-          ],
-          tileSize: 256,
-        },
-      });*/
-      //map.removeLayer('background');
       map.addSource('arcgis', {
         type: 'raster',
         tiles: [
-          'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=AAPK40aa74276b30480aa4810d68c9f7f7b6zwPjVYsvY3jW-lc8oHHFwuJICLRE4G-eHV4z3ISfQXUkauWH1_a0nOUTnZ-bI7gc',
+          'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=' +
+            process.env.NEXT_PUBLIC_ARCGIS_TOKEN,
         ],
         minzoom: 0,
         maxzoom: 19,
@@ -116,32 +87,9 @@ const MapMarkerDisplay = ({
         type: 'raster',
         minzoom: 0,
         maxzoom: 24,
-        /*type: 'raster',
-        minzoom: 0,
-        maxzoom: 18.5,
-        source: {
-          type: 'raster',
-          tiles: [
-            'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=AAPK40aa74276b30480aa4810d68c9f7f7b6zwPjVYsvY3jW-lc8oHHFwuJICLRE4G-eHV4z3ISfQXUkauWH1_a0nOUTnZ-bI7gc',
-          ],
-          tileSize: 256,
-        },*/
       });
-      const satellite1 = map.getLayer('satellite');
-      // window['satellite1'] = satellite1;
-      //console.log('satellite1', satellite1);
       map.moveLayer('arcgis-layer', 'satellite');
-      //map.moveLayer('satellite', 'cache-demo');
-      //map.moveLayer('raster-demo', 'cache-demo');
-      //map.moveLayer('satellite', 'raster-demo');
       map.removeLayer('satellite');
-      //map.addLayer({ id: 'satellite', minzoom: 0, maxzoom: 14, type: 'raster', source: 'mapbox://mapbox.satellite' });
-      //map.addLayer({ id: 'satellite2', minzoom: 18, maxzoom: 26, type: 'raster', source: 'mapbox://mapbox.satellite' });
-
-      //map.moveLayer('satellite', 'cache-demo');
-      //map.moveLayer('satellite2', 'raster-demo');
-
-      console.log('called on laod', map.getStyle().layers);
     });
   }, []);
 
@@ -162,7 +110,7 @@ const MapMarkerDisplay = ({
       mapStyle={MAP_STYLE[mapStyle]}
       dragPan={!isMobile}
       //transformRequest={transformRequest}
-      maxZoom={22}
+      maxZoom={21}
     >
       {showLocation && (
         <GeolocateControl
