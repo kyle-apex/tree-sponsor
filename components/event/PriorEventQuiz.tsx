@@ -314,6 +314,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
             <Box sx={{ textAlign: 'right', mt: -1.5, mb: 0.2, fontSize: '80%', pl: 0.5, pr: 0.5 }}>
               <a
                 onClick={() => {
+                  window.location.reload();
                   setIsQuizRefreshing(true);
                 }}
                 style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '4px', alignItems: 'center', color: '#6e4854' }}
