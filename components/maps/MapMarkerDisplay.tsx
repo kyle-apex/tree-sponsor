@@ -14,6 +14,19 @@ const geolocateControlStyle = {
   bottom: 40,
 };
 
+const transformRequest = (url, resourceType) => {
+  console.log('a', url, 'b', resourceType);
+  if (
+    resourceType === 'Tile' &&
+    url.indexOf('https://services.arcgisonline.com') > -1 &&
+    (url.includes('tile/21') || url.includes('tile/22') || url.includes('tile/20'))
+  ) {
+    return false; /*{
+      url: url.replace('tile/21', 'tile/19'),
+    };*/
+  }
+};
+
 const MapMarkerDisplay = ({
   markers,
   onClick,
@@ -74,7 +87,8 @@ const MapMarkerDisplay = ({
     console.log('map', map);
     map?.on('load', function () {
       console.log('called on laod', map.getStyle().layers);
-      map.addLayer({
+
+      /*map.addLayer({
         id: 'raster-demo',
         type: 'raster',
         minzoom: 18,
@@ -82,36 +96,50 @@ const MapMarkerDisplay = ({
         source: {
           type: 'raster',
           tiles: [
-            'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0&bbox={bbox-epsg-3857}&bboxSR=EPSG:3857&imageSR=EPSG:3857&size=256,256&f=image',
+            'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0&bbox={bbox-epsg-3857}&bboxSR=EPSG:3857&imageSR=EPSG:3857&size=256,256&f=image&token=AAPK40aa74276b30480aa4810d68c9f7f7b6zwPjVYsvY3jW-lc8oHHFwuJICLRE4G-eHV4z3ISfQXUkauWH1_a0nOUTnZ-bI7gc',
           ],
           tileSize: 256,
         },
-      });
-
-      map.addLayer({
-        id: 'cache-demo',
+      });*/
+      //map.removeLayer('background');
+      map.addSource('arcgis', {
         type: 'raster',
-        minzoom: 14,
+        tiles: [
+          'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=AAPK40aa74276b30480aa4810d68c9f7f7b6zwPjVYsvY3jW-lc8oHHFwuJICLRE4G-eHV4z3ISfQXUkauWH1_a0nOUTnZ-bI7gc',
+        ],
+        minzoom: 0,
+        maxzoom: 19,
+      });
+      map.addLayer({
+        id: 'arcgis-layer',
+        source: 'arcgis',
+        type: 'raster',
+        minzoom: 0,
+        maxzoom: 24,
+        /*type: 'raster',
+        minzoom: 0,
         maxzoom: 18.5,
         source: {
           type: 'raster',
-          tiles: ['https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+          tiles: [
+            'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=AAPK40aa74276b30480aa4810d68c9f7f7b6zwPjVYsvY3jW-lc8oHHFwuJICLRE4G-eHV4z3ISfQXUkauWH1_a0nOUTnZ-bI7gc',
+          ],
           tileSize: 256,
-        },
+        },*/
       });
       const satellite1 = map.getLayer('satellite');
       // window['satellite1'] = satellite1;
       //console.log('satellite1', satellite1);
-      map.moveLayer('cache-demo', 'satellite');
+      map.moveLayer('arcgis-layer', 'satellite');
       //map.moveLayer('satellite', 'cache-demo');
-      map.moveLayer('raster-demo', 'satellite');
+      //map.moveLayer('raster-demo', 'cache-demo');
       //map.moveLayer('satellite', 'raster-demo');
       map.removeLayer('satellite');
-      map.addLayer({ id: 'satellite', minzoom: 0, maxzoom: 14, type: 'raster', source: 'mapbox://mapbox.satellite' });
-      map.addLayer({ id: 'satellite2', minzoom: 21, maxzoom: 26, type: 'raster', source: 'mapbox://mapbox.satellite' });
+      //map.addLayer({ id: 'satellite', minzoom: 0, maxzoom: 14, type: 'raster', source: 'mapbox://mapbox.satellite' });
+      //map.addLayer({ id: 'satellite2', minzoom: 18, maxzoom: 26, type: 'raster', source: 'mapbox://mapbox.satellite' });
 
-      map.moveLayer('satellite', 'raster-demo');
-      map.moveLayer('satellite2', 'raster-demo');
+      //map.moveLayer('satellite', 'cache-demo');
+      //map.moveLayer('satellite2', 'raster-demo');
 
       console.log('called on laod', map.getStyle().layers);
     });
@@ -133,6 +161,8 @@ const MapMarkerDisplay = ({
       className={isEdit ? 'mapboxgl-map box-shadow' : 'index-map mapboxgl-map box-shadow'}
       mapStyle={MAP_STYLE[mapStyle]}
       dragPan={!isMobile}
+      //transformRequest={transformRequest}
+      maxZoom={22}
     >
       {showLocation && (
         <GeolocateControl
