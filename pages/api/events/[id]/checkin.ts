@@ -24,6 +24,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const event = await prisma.event.findFirst({ where: { id: eventId }, include: { location: {}, organizers: {} } });
 
+  const eventCompletedDate = event.startDate;
+  eventCompletedDate.setDate(eventCompletedDate.getDate() + 1);
+  eventCompletedDate.setHours(0);
+
   if (req.method === 'GET') {
     let subscription;
     const user = await findOrCreateCheckinUser({
@@ -72,7 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       updateSubscriptionsForUser(email);
     }
 
-    if (userId) {
+    if (userId && new Date() < eventCompletedDate) {
       const newCheckin = await prisma.eventCheckIn.upsert({
         where: { email_eventId: { email, eventId } },
         create: createCheckin,

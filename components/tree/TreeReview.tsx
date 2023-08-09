@@ -26,6 +26,7 @@ const TreeReview = ({
   onDeleteImage,
   isAdmin,
   onRefetch,
+  isForQuiz,
 }: {
   tree: PartialTree;
   onUpdate: (id: number, attributes: Record<string, unknown>, callback?: () => void) => Promise<void>;
@@ -33,6 +34,7 @@ const TreeReview = ({
   onDeleteImage?: (uuid: string) => void;
   isAdmin?: boolean;
   onRefetch?: () => void;
+  isForQuiz?: boolean;
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [mode, setMode] = useState<Mode>('Image');
@@ -164,6 +166,7 @@ const TreeReview = ({
             onUpdate(tree.id, { [propertyName]: value });
             if (propertyName == 'speciesId') tree.speciesId = value as number;
           }}
+          isForQuiz={isForQuiz}
         ></TreeFormFields>
         {isAdmin && (
           <ReviewStatusSelect
@@ -178,7 +181,11 @@ const TreeReview = ({
             mb={2}
           />
         )}
-        {onDelete && <DeleteIconButton itemType='tree' title='Delete Tree?' onDelete={() => onDelete(tree.id)}></DeleteIconButton>}
+        {onDelete && (
+          <Box mt={isForQuiz ? 2 : 0}>
+            <DeleteIconButton itemType='tree' title='Delete Tree?' onDelete={() => onDelete(tree.id)}></DeleteIconButton>
+          </Box>
+        )}
       </Box>
     </>
   );

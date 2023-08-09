@@ -19,6 +19,10 @@ a {
 .checkin-tree-quiz .index-map {
   border-radius: 0;
 }
+.MuiAutocomplete-popper {
+  width: auto !important;
+  max-width: 400px;
+}
 .checkin-floating-tabs {
   position: fixed;
   top: 0;
@@ -29,6 +33,11 @@ a {
 }
 .instagram-media-rendered {
   min-width: 250px !important;
+}
+.superscript{
+  font-size: 50%; 
+  font-weight: 400; 
+  display: inline;
 }
 .full-width {
   width: 100%;

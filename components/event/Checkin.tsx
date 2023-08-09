@@ -1,6 +1,6 @@
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useCallback, useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef, useContext } from 'react';
 import LoadingButton from '../LoadingButton';
 import parsedGet from 'utils/api/parsed-get';
 import Link from 'next/link';
@@ -13,6 +13,8 @@ import Tab from '@mui/material/Tab';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import { useRouter } from 'next/router';
+
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
 import {
   PartialEvent,
@@ -46,9 +48,13 @@ import TreeIdQuiz from './TreeIdQuiz';
 import BecomeAMemberDialog from './BecomeAMemberDialog';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import PinIcon from '@mui/icons-material/LocationOn';
+import EditIcon from '@mui/icons-material/Edit';
 
 import TreeIdLeaderPosition from './TreeIdLeaderPosition';
 import CheckinForm, { CheckinFormHandle } from './CheckinForm';
+import { Router } from 'next/router';
+import CheckinSessionProvider, { CheckinSessionContext } from './CheckinSessionProvider';
+import EditSessionTreesDialog from 'components/tree/EditSessionTreesDialog';
 //import TreeIdLeaderPosition from './TreeIdLeaderPosition';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
@@ -72,9 +78,12 @@ const getDonationDateMessage = (subscription: PartialSubscription): string => {
 const attendeesDisplayLimit = 50;
 
 const Checkin = ({ event }: { event?: PartialEvent }) => {
+  const router = useRouter();
   const [email, setEmail] = useLocalStorage('checkinEmail', '');
+  const { sessionId } = useContext(CheckinSessionContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddTreeDialogOpen, setIsAddTreeDialogOpen] = useState(false);
+  const [isEditTreeDialogOpen, setIsEditTreeDialogOpen] = useState(false);
   const [isQuizRefreshing, setIsQuizRefreshing] = useState(false);
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useHashToggle('history', false);
   const [isMembershipDialogOpen, setIsMembershipDialogOpen] = useState(false);
@@ -122,6 +131,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
   const getMembershipStatus = async (fields?: CheckinFields) => {
     setIsLoading(true);
+    console.log('get status', fields);
     if (fields?.email) setEmail(fields.email);
     const url = `/api/events/${event.id}/checkin?email=${encodeURIComponent(fields?.email || email)}&firstName=${encodeURIComponent(
       fields?.firstName || '',
@@ -133,6 +143,15 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     let status;
     if (result?.subscription) status = { ...result, isFound: true };
     else status = { ...result, isFound: false, email };
+
+    // redirect to the past page if this is a previous event
+    const startOfToday = new Date();
+    startOfToday.setHours(0);
+    if (!status.myCheckin && event.startDate < startOfToday) {
+      router.push(`/e/${event.path}/quiz#trees`);
+      return;
+    }
+
     setStatus(status);
     setIsPrivate(status.myCheckin?.isPrivate);
 
@@ -381,6 +400,32 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 </Box>
               </Box>
             )}
+            {sessionId && (
+              <Box sx={{ textAlign: 'center', fontSize: '80%', mt: 1, mb: -1, mr: 0.5 }}>
+                <a
+                  onClick={() => {
+                    setIsEditTreeDialogOpen(true);
+                  }}
+                  style={{
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    gap: '3px',
+                    justifyContent: 'right',
+                    color: '#6e4854',
+                  }}
+                >
+                  <EditIcon sx={{ fontSize: 'inherit' }}></EditIcon> <Box sx={{ textDecoration: 'underline' }}>Edit Added Tree(s)</Box>
+                </a>
+                <EditSessionTreesDialog
+                  isOpen={isEditTreeDialogOpen}
+                  setIsOpen={setIsEditTreeDialogOpen}
+                  onComplete={() => {
+                    setIsQuizRefreshing(true);
+                  }}
+                ></EditSessionTreesDialog>
+              </Box>
+            )}
             <TreeIdLeaderPosition
               isLoading={isFetchingLeaders}
               leaders={leaders}
@@ -394,7 +439,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               open={isAddTreeDialogOpen}
               setOpen={setIsAddTreeDialogOpen}
               onComplete={() => {
-                console.log('completed');
                 setIsQuizRefreshing(true);
               }}
               latitude={event.location ? Number(event.location.latitude) : null}

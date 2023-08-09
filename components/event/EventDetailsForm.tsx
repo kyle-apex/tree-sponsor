@@ -219,18 +219,23 @@ const EventDetailsForm = ({
           </Collapse>
         </>
       )}
+      <Box mb={3}>
+        <UserMultiSelect
+          label='Add an Organizer'
+          users={event.organizers}
+          deleteDialogPropertyName='organizer'
+          onUpdated={(users: PartialUser[]) => {
+            updateAttribute('organizers', users);
+          }}
+        ></UserMultiSelect>
+      </Box>
       <CategoryMultiSelect
+        label='Add a Category'
         selectedCategories={event?.categories}
-        setSelectedCategories={categories => updateAttribute('categories', categories)}
-      ></CategoryMultiSelect>
-      <UserMultiSelect
-        label='Add an Organizer'
-        users={event.organizers}
-        deleteDialogPropertyName='organizer'
-        onUpdated={(users: PartialUser[]) => {
-          updateAttribute('organizers', users);
+        onUpdated={categories => {
+          updateAttribute('categories', categories);
         }}
-      ></UserMultiSelect>
+      ></CategoryMultiSelect>
     </>
   );
 };

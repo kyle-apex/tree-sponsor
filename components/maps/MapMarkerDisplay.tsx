@@ -54,16 +54,44 @@ const MapMarkerDisplay = ({
   });
   useEffect(() => {
     if (!showLocation) {
-      //console.log('showLocation center', showLocation);
+      //console.log('viewport', viewport);
       const centeredViewport = centerViewport(
         viewport as Viewport,
         markers,
         mapRef?.current ? mapRef?.current?.getMap()?._containerWidth || 350 : 350,
         height ? Number(height.replace('px', '').replace('%', '')) : 200,
       );
+      //const map = mapRef.current.getMap();
+      //console.log('map', map);
+      //https://stackoverflow.com/questions/37100144/consume-arcgis-map-service-into-mapbox-gl-api
+
       setViewport(centeredViewport);
     }
   }, [markers, showLocation]);
+
+  useEffect(() => {
+    const map = mapRef.current?.getMap();
+    map?.on('load', function () {
+      map.addSource('arcgis', {
+        type: 'raster',
+        tiles: [
+          'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=' +
+            process.env.NEXT_PUBLIC_ARCGIS_TOKEN,
+        ],
+        minzoom: 0,
+        maxzoom: 19,
+      });
+      map.addLayer({
+        id: 'arcgis-layer',
+        source: 'arcgis',
+        type: 'raster',
+        minzoom: 0,
+        maxzoom: 24,
+      });
+      map.moveLayer('arcgis-layer', 'satellite');
+      map.removeLayer('satellite');
+    });
+  }, []);
 
   const debouncedOnViewportChange = useDebouncedCallback((viewport: Partial<Viewport>) => {
     if (onViewportChange) onViewportChange(viewport);
@@ -81,6 +109,8 @@ const MapMarkerDisplay = ({
       className={isEdit ? 'mapboxgl-map box-shadow' : 'index-map mapboxgl-map box-shadow'}
       mapStyle={MAP_STYLE[mapStyle]}
       dragPan={!isMobile}
+      //transformRequest={transformRequest}
+      maxZoom={21}
     >
       {showLocation && (
         <GeolocateControl

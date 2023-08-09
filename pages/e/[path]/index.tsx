@@ -170,7 +170,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       data: {
         name: 'Some Event',
         startDate: eval(JSON.stringify(new Date())),
-        categories: [{ name: 'Tree of the Year', trees: { name: 'Some Other Tree' } }],
+        categories: [{ name: 'Tree of the Year', trees: { name: 'Some Other Tree', id: 1 } }],
       },
     };
     return { props: { event: results.data } };

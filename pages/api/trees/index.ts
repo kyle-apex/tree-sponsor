@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let userId;
     let tree;
     const email = req.body.email;
-    if (req.body.email) {
+    if (req.body.email !== undefined) {
       tree = req.body.tree;
       if (session?.user?.id) userId = session.user.id;
       else {
@@ -40,28 +40,41 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!tree) return throwError(res, 'Please submit new tree data.');
 
+    tree.sessionId = req.body.sessionId ? req.body.sessionId : uuidv4();
+
     const upsertedTree = await upsertTree(tree, userId);
 
     res.status(200).json(upsertedTree);
   } else if (req.method === 'GET') {
-    if (!session?.user?.id) return throwUnauthenticated(res);
-    const userId = session.user.id;
-    const reviewStatus = req.query.reviewStatus as ReviewStatus;
+    if (!session?.user?.id && !req.query?.sessionId) return throwUnauthenticated(res);
+    const userId = session?.user?.id;
+    const reviewStatus = req.query?.reviewStatus as ReviewStatus;
+    const sessionId = req.query?.sessionId as string;
+
     const take = req.query.take ? Number(req.query.take) : null;
     const filter: Prisma.TreeFindManyArgs = {
       orderBy: { createdDate: 'desc' },
       include: {
         images: { orderBy: { sequence: 'asc' } },
+        categories: { select: { name: true, id: true } },
       },
       //take: 1,
       //where: { id: 5 },
     };
 
     if (reviewStatus) filter.where = { reviewStatus };
+    if (sessionId) {
+      if (!filter.where) filter.where = {};
+      filter.where.sessionId = sessionId;
+    }
     if (take) filter.take = take;
     if (!filter.where) filter.where = {};
     filter.where.pictureUrl = { not: null };
-    const trees = await prisma.tree.findMany(filter);
+    let trees = await prisma.tree.findMany(filter);
+    trees = trees.map(t => {
+      // remove sessionId if not reading for particular sessionId
+      return sessionId ? t : { ...t, sessionId: null };
+    });
     res.status(200).json(trees);
   }
 }

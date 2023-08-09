@@ -7,7 +7,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const email = req.query.email as string;
   const eventId = req.query.eventId ? Number(req.query.eventId) : null;
   const showAll = (req.query.showAll as string) === 'true';
-  if (!email) return;
+  if (!email) {
+    res.status(200).json([]);
+    return;
+  }
   const leaders: LeaderRow[] = await listTopQuizResponders(req.query.year as string, eventId);
   const results: LeaderRow[] = [];
   let currentLeader = leaders.find(leader => leader.user?.email == email);

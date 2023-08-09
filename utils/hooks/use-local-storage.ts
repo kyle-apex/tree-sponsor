@@ -6,7 +6,18 @@ export default function useLocalStorage(key: string, initialValue: string) {
   const [storedValue, setStoredValue] = useState(() => {
     try {
       // Get from local storage by key
-      const item = window.localStorage.getItem(key);
+      let item = window.localStorage.getItem(key);
+
+      if (item) {
+        const expiration = window.localStorage.getItem(key + 'Expiration');
+        const parsedExpiration = JSON.parse(expiration);
+        const expirationDate = new Date(parsedExpiration);
+        if (parsedExpiration && expirationDate && expirationDate < new Date()) {
+          item = null;
+          window.localStorage.removeItem(key);
+          window.localStorage.removeItem(key + 'Expiration');
+        }
+      }
       // Parse stored json or if none return initialValue
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
@@ -17,7 +28,7 @@ export default function useLocalStorage(key: string, initialValue: string) {
   });
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
-  const setValue = (value: string) => {
+  const setValue = (value: string, expirationDate?: Date) => {
     try {
       // Allow value to be a function so we have same API as useState
       //const valueToStore = value instanceof Function ? value(storedValue) : value;
@@ -25,6 +36,9 @@ export default function useLocalStorage(key: string, initialValue: string) {
       setStoredValue(value);
       // Save to local storage
       window.localStorage.setItem(key, JSON.stringify(value));
+      if (expirationDate) {
+        window.localStorage.setItem(key + 'Expiration', JSON.stringify(expirationDate));
+      }
     } catch (error) {
       // A more advanced implementation would handle the error case
       //console.log(error);

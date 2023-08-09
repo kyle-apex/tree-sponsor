@@ -27,6 +27,7 @@ import restrictPageAccess from 'utils/auth/restrict-page-access';
 import { GetSessionOptions } from 'next-auth/client';
 import RestrictSection from 'components/RestrictSection';
 import { capitalCase } from 'change-case';
+import usePagination from 'utils/hooks/use-pagination';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'isAdmin');
@@ -88,8 +89,7 @@ export default function EnhancedTable(): JSX.Element {
   const classes = useStyles();
   const [order, setOrder] = useState('asc' as 'asc' | 'desc');
   const [orderBy, setOrderBy] = useState('createdDate');
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(100);
+  const { page, rowsPerPage, handleChangePage, handleChangeRowsPerPage } = usePagination(100);
 
   const [nameFilter, setNameFilter] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -127,15 +127,6 @@ export default function EnhancedTable(): JSX.Element {
     setOrderBy(property);
   };
 
-  const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: { target: { value: string } }) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
   return (
     <Layout title='Admin'>
       <div className={classes.root}>
@@ -151,11 +142,13 @@ export default function EnhancedTable(): JSX.Element {
           <Link href='/admin/fundraising-dashboard'>
             <Button variant='outlined'>Fundraising Dashboard</Button>
           </Link>
-          <RestrictSection accessType='isReviewer'>
-            <Link href='/admin/review/sponsorships'>
-              <Button variant='outlined'>Review Thank-a-Trees</Button>
-            </Link>
-          </RestrictSection>
+          {false && (
+            <RestrictSection accessType='isReviewer'>
+              <Link href='/admin/review/sponsorships'>
+                <Button variant='outlined'>Review Thank-a-Trees</Button>
+              </Link>
+            </RestrictSection>
+          )}
           <RestrictSection accessType='isTreeReviewer'>
             <Link href='/admin/review/trees'>
               <Button variant='outlined'>Manage Trees</Button>

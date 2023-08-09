@@ -2,7 +2,7 @@ import { prisma } from 'utils/prisma/init';
 import { v4 as uuidv4 } from 'uuid';
 import uploadTreeImages from 'utils/aws/upload-tree-images';
 import getTreeImagePath from 'utils/aws/get-tree-image-path';
-import { PartialTree, PartialTreeImage } from 'interfaces';
+import { PartialCategory, PartialTree, PartialTreeImage } from 'interfaces';
 import { Prisma } from '@prisma/client';
 
 type TreeImage = PartialTreeImage & { uuid: string };
@@ -26,7 +26,15 @@ export default async function upsertTree(tree: PartialTree, userId: number) {
 
   const treeToUpdate: Omit<
     PartialTree,
-    'id' | 'locationId' | 'speciesId' | 'lastChangedByUserId' | 'species' | 'location' | 'speciesQuizResponses' | 'createdByUserId'
+    | 'id'
+    | 'locationId'
+    | 'speciesId'
+    | 'lastChangedByUserId'
+    | 'species'
+    | 'location'
+    | 'categories'
+    | 'speciesQuizResponses'
+    | 'createdByUserId'
   > = { ...tree };
 
   //type upsertType = Prisma.TreeUpsertArgs | Prisma.TreeUpsertWithoutImagesInput;
@@ -48,6 +56,19 @@ export default async function upsertTree(tree: PartialTree, userId: number) {
       images: {},
     },
   };
+
+  if (tree.categories) {
+    upsertArgs.create.categories = {
+      connect: tree.categories.map((category: PartialCategory) => {
+        return { id: category?.id };
+      }),
+    };
+    upsertArgs.update.categories = {
+      set: tree.categories.map((category: PartialCategory) => {
+        return { id: category?.id };
+      }),
+    };
+  }
 
   //const image = (tree.images?.length > 0 && tree.images[0]) as TreeImage;
 

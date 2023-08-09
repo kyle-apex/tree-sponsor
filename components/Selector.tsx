@@ -12,6 +12,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import { Theme } from '@mui/material/styles';
 import { SxProps } from '@mui/system/styleFunctionSx';
+import LoadingButton from 'components/LoadingButton';
+import { useAddToQuery } from 'utils/hooks/use-add-to-query';
 
 const Selector = <T extends { id?: number }>({
   defaultValue,
@@ -27,6 +29,7 @@ const Selector = <T extends { id?: number }>({
   sx,
   isLoading,
   resetOnSelect,
+  hasAdd,
 }: {
   defaultValue?: number;
   onChange?: (val: number) => void;
@@ -41,11 +44,25 @@ const Selector = <T extends { id?: number }>({
   sx?: SxProps<Theme>;
   isLoading?: boolean;
   resetOnSelect?: boolean;
+  hasAdd?: boolean;
 }) => {
   const queryClient = useQueryClient();
   const [searchText, setSearchText] = React.useState('');
+  const [isAdding, setIsAdding] = useState(false);
   const [value, setValue] = useState<any | string>(null); // should be T | string, but typescript couldn't quite figure that oout
   const autoCompleteRef = useRef<HTMLElement>();
+  //const { add } = useAddToQuery<T>(queryKey, addToDatabase);
+
+  async function addToDatabase(item: Partial<T>): Promise<T> {
+    const newItem = { ...item };
+    const result = await axios.post(`/api/${apiPath}/`, newItem);
+    refetch();
+    const resultItem = result.data as T;
+    if (onSelect) onSelect(resultItem);
+    if (onChange) onChange(resultItem?.id);
+    setSearchText('');
+    return resultItem;
+  }
 
   const debouncedSetSearchText = useDebouncedCallback((value: string) => {
     setSearchText(value);
@@ -114,9 +131,9 @@ const Selector = <T extends { id?: number }>({
   }, []);
 
   return (
-    <>
+    <Box flexDirection='row' gap={1} sx={{ display: 'flex', ...sx }}>
       <Autocomplete
-        sx={sx}
+        sx={{ flex: '1 1 100%' }}
         ref={autoCompleteRef}
         options={data}
         loading={isFetching}
@@ -136,7 +153,6 @@ const Selector = <T extends { id?: number }>({
               setValue(null);
             });
 
-            console.log('changed focus');
             autoCompleteRef.current.parentElement.parentElement.focus();
           }
         }}
@@ -144,7 +160,11 @@ const Selector = <T extends { id?: number }>({
         getOptionLabel={getOptionLabel}
         filterOptions={a => a}
         renderOption={(props, option: T) => (
-          <Box component='li' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start !important' }} {...props}>
+          <Box
+            component='li'
+            sx={{ display: 'flex', width: '100%', overflow: 'hidden', flexDirection: 'column', alignItems: 'flex-start !important' }}
+            {...props}
+          >
             {optionDisplay(option)}
           </Box>
         )}
@@ -168,7 +188,21 @@ const Selector = <T extends { id?: number }>({
           />
         )}
       ></Autocomplete>
-    </>
+      {hasAdd && (
+        <LoadingButton
+          isLoading={isAdding}
+          color='primary'
+          variant='contained'
+          disabled={!searchText}
+          sx={{ flex: '1 0 100px' }}
+          onClick={() => {
+            addToDatabase({ name: searchText } as any);
+          }}
+        >
+          Add New
+        </LoadingButton>
+      )}
+    </Box>
   );
 };
 
