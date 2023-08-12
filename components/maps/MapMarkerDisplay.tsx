@@ -120,7 +120,6 @@ const MapMarkerDisplay = ({
               zoom={viewport.zoom + 0.5}
               options={{ mapTypeId: 'hybrid', fullscreenControl: false }}
               onZoomAnimationEnd={a => {
-                console.log('google zoom', a);
                 setZoom(a);
               }}
             >

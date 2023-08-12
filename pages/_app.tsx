@@ -43,6 +43,25 @@ const MyApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: 
         selector: '#feedback',
       },
     };
+
+    // fix bold google maps issue
+    const head = document.getElementsByTagName('head')[0];
+
+    // Save the original method
+    const insertBefore = head.insertBefore;
+
+    // Replace it!
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    head.insertBefore = function (newElement, referenceElement) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (newElement.href && newElement.href.indexOf('https://fonts.googleapis.com/css?family=Roboto') === 0) {
+        return;
+      }
+
+      insertBefore.call(head, newElement, referenceElement);
+    };
   }, []);
 
   const queryClient = new QueryClient();
@@ -54,7 +73,7 @@ const MyApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: 
           <IdentifyTreeProvider>
             <Head>
               <title>Thank-a-Tree | TreeFolksYP</title>
-              <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, maximum-scale=1' />
+              <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, maximum-scale=1, user-scalable=no' />
               <meta property='og:type' content='website' />
               <meta property='fb:app_id' content={process.env.NEXT_PUBLIC_FACEBOOK_ID} />
               <link
