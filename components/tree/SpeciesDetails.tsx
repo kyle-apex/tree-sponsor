@@ -23,27 +23,33 @@ const SpeciesDetails = ({ species }: { species: PartialSpecies }) => {
       <TableContainer>
         <Table aria-label='simple table'>
           <TableBody>
-            <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-              <TableCell sx={{ width: '10px', padding: '16px 0px' }} component='td' scope='row'>
-                <HeightIcon></HeightIcon>
-              </TableCell>
-              <TableCell>Mature Height</TableCell>
-              <TableCell align='right'>{species.height}ft</TableCell>
-            </TableRow>
-            <TableRow sx={{ '&:last-child td': { border: 0 } }}>
-              <TableCell sx={{ width: '10px', padding: '16px 0px' }} component='td' scope='row'>
-                <WatchLaterIcon></WatchLaterIcon>
-              </TableCell>
-              <TableCell>Life Span</TableCell>
-              <TableCell align='right'>{species.longevity}</TableCell>
-            </TableRow>
-            <TableRow sx={{ '&:last-child td': { border: 0 } }}>
-              <TableCell sx={{ width: '10px', padding: '16px 0px' }} component='td' scope='row'>
-                <TrendingUpIcon></TrendingUpIcon>
-              </TableCell>
-              <TableCell>Growth Rate</TableCell>
-              <TableCell align='right'>{species.growthRate}</TableCell>
-            </TableRow>
+            {species.height && (
+              <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableCell sx={{ width: '10px', padding: '16px 0px' }} component='td' scope='row'>
+                  <HeightIcon></HeightIcon>
+                </TableCell>
+                <TableCell>Mature Height</TableCell>
+                <TableCell align='right'>{species.height}ft</TableCell>
+              </TableRow>
+            )}
+            {species.longevity && (
+              <TableRow sx={{ '&:last-child td': { border: 0 } }}>
+                <TableCell sx={{ width: '10px', padding: '16px 0px' }} component='td' scope='row'>
+                  <WatchLaterIcon></WatchLaterIcon>
+                </TableCell>
+                <TableCell>Life Span</TableCell>
+                <TableCell align='right'>{species.longevity}</TableCell>
+              </TableRow>
+            )}
+            {species.growthRate && (
+              <TableRow sx={{ '&:last-child td': { border: 0 } }}>
+                <TableCell sx={{ width: '10px', padding: '16px 0px' }} component='td' scope='row'>
+                  <TrendingUpIcon></TrendingUpIcon>
+                </TableCell>
+                <TableCell>Growth Rate</TableCell>
+                <TableCell align='right'>{species.growthRate}</TableCell>
+              </TableRow>
+            )}
             {species.isNative && (
               <TableRow sx={{ '&:last-child td': { border: 0 } }}>
                 <TableCell sx={{ width: '10px', padding: '16px 0px' }} component='td' scope='row'>
