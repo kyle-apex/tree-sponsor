@@ -43,6 +43,25 @@ const MyApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: 
         selector: '#feedback',
       },
     };
+
+    // fix bold google maps issue
+    const head = document.getElementsByTagName('head')[0];
+
+    // Save the original method
+    const insertBefore = head.insertBefore;
+
+    // Replace it!
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    head.insertBefore = function (newElement, referenceElement) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (newElement.href && newElement.href.indexOf('https://fonts.googleapis.com/css?family=Roboto') === 0) {
+        return;
+      }
+
+      insertBefore.call(head, newElement, referenceElement);
+    };
   }, []);
 
   const queryClient = new QueryClient();
