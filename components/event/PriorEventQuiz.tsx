@@ -301,7 +301,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
                 display: 'flex',
               }}
             >
-              <Box sx={{ margin: 'auto', width: '80%', justifySelf: 'center', fontSize: '20px' }}>
+              <Box sx={{ margin: 'auto', width: '80%', justifySelf: 'center', fontSize: '20px', textAlign: 'center' }}>
                 Enter your email address above to record your results
               </Box>
             </Box>
@@ -358,15 +358,16 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
               </Box>
             </Box>
           )}
-
-          <TreeIdLeaderPosition
-            isLoading={isFetching}
-            leaders={leaders}
-            setShowAll={setShowAllLeaders}
-            showAll={showAllLeaders}
-            leaderBoardMode={leaderBoardMode}
-            setLeaderBoardMode={setLeaderBoardMode}
-          ></TreeIdLeaderPosition>
+          {isLoggedIn && (
+            <TreeIdLeaderPosition
+              isLoading={isFetching}
+              leaders={leaders}
+              setShowAll={setShowAllLeaders}
+              showAll={showAllLeaders}
+              leaderBoardMode={leaderBoardMode}
+              setLeaderBoardMode={setLeaderBoardMode}
+            ></TreeIdLeaderPosition>
+          )}
         </Box>
       )}
       {!isMember && !isFetching && (
