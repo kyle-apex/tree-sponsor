@@ -1,6 +1,6 @@
 import { useGet } from 'utils/hooks/use-get';
 import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
-import { Coordinate, PartialTree } from 'interfaces';
+import { Coordinate, PartialTree, QuizCoordinate } from 'interfaces';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import MapMarkerDisplay from 'components/maps/MapMarkerDisplay';
 import Box from '@mui/material/Box';
@@ -35,6 +35,7 @@ const TreeIdQuiz = ({
   categoryIds?: number[];
 }) => {
   const [email] = useLocalStorage('checkinEmail', '');
+  const [markers, setMarkers] = useState<QuizCoordinate[]>();
   const currentMapCoordinateRef = useRef<Coordinate>(null);
 
   const latitude = currentMapCoordinateRef?.current?.latitude || defaultLatitude;
@@ -56,7 +57,6 @@ const TreeIdQuiz = ({
   const [selectedTree, setSelectedTree] = useState<PartialTree>();
   const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
-
   const handleTreeClick = useCallback(
     (marker: Coordinate) => {
       const tree = trees.find(tree => Number(tree.latitude) == marker.latitude && Number(tree.longitude) == marker.longitude);
@@ -65,6 +65,19 @@ const TreeIdQuiz = ({
     },
     [trees],
   );
+
+  useEffect(() => {
+    setMarkers(
+      trees?.map(tree => {
+        let isQuizCorrect;
+        if (tree.speciesQuizResponses?.length > 0) {
+          const quizResponse = tree.speciesQuizResponses[0];
+          isQuizCorrect = quizResponse.isCorrect === true;
+        }
+        return { latitude: Number(tree.latitude), longitude: Number(tree.longitude), isQuizCorrect };
+      }),
+    );
+  }, [trees]);
 
   const refresh = useCallback(async () => {
     await refetch();
@@ -113,14 +126,7 @@ const TreeIdQuiz = ({
         {isFetched && (
           <MapMarkerDisplay
             isGoogle={true}
-            markers={trees?.map(tree => {
-              let isQuizCorrect;
-              if (tree.speciesQuizResponses?.length > 0) {
-                const quizResponse = tree.speciesQuizResponses[0];
-                isQuizCorrect = quizResponse.isCorrect === true;
-              }
-              return { latitude: Number(tree.latitude), longitude: Number(tree.longitude), isQuizCorrect };
-            })}
+            markers={markers}
             height={mapHeight}
             onClick={coordinate => {
               handleTreeClick(coordinate);
