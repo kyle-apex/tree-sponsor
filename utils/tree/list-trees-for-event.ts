@@ -7,7 +7,7 @@ import listTreesForCoordinate from './list-trees-for-location';
 export default async function listTreesForEvent(eventId: number, userId?: number): Promise<PartialTree[]> {
   const event = await prisma.event.findFirst({
     where: { id: eventId },
-    include: { location: {}, trees: { include: { tree: { include: getTreeIncludeFilter(userId) } } } },
+    include: { location: {}, trees: { include: { tree: { include: getTreeIncludeFilter(userId) } }, orderBy: { sequence: 'asc' } } },
   });
 
   let trees: PartialTree[] = [];
