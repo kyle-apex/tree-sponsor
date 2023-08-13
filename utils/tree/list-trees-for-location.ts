@@ -1,4 +1,5 @@
 import { PartialTree } from 'interfaces';
+import { getTreeIncludeFilter } from 'utils/prisma/common-filters';
 import { getLocationFilterByDistance } from 'utils/prisma/get-location-filter-by-distance';
 import { Prisma, prisma } from 'utils/prisma/init';
 
@@ -10,11 +11,7 @@ export default async function listTreesForCoordinate(
 ): Promise<PartialTree[]> {
   if (!latitude || !longitude) return [];
   const whereFilter = getLocationFilterByDistance(latitude, longitude, distance || 500);
-  const includeFilter: Prisma.TreeInclude = {
-    images: { orderBy: { sequence: 'asc' } },
-    species: { select: { id: true, commonName: true, height: true, growthRate: true, longevity: true, isNative: true } },
-    speciesQuizResponses: { where: { userId: userId } },
-  };
+  const includeFilter = getTreeIncludeFilter(userId);
   whereFilter.speciesId = { not: null };
 
   if (!userId) delete includeFilter.speciesQuizResponses;

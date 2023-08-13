@@ -169,6 +169,10 @@ const EventDetailsForm = ({
         <Checkbox defaultChecked={event?.isPrivate} onChange={e => updateAttribute('isPrivate', e.target.checked)}></Checkbox> Hide event
         from public view (test or private event)
       </Box>
+      <Box sx={{ marginBottom: 3 }}>
+        <Checkbox defaultChecked={event?.hasSpecificTrees} onChange={e => updateAttribute('hasSpecificTrees', e.target.checked)}></Checkbox>
+        Has event specific trees (Choose this option if you want to specify a sequence of trees or trees for this event span a large area)
+      </Box>
       <LocationSelector
         onViewportChange={({ latitude, longitude }) => {
           debouncedSetLocation(latitude, longitude);

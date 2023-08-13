@@ -74,9 +74,12 @@ const MapMarkerDisplay = ({
       //console.log('centeredViewport', centeredViewport);
       setViewport(centeredViewport);
       setIsRefreshing(true);
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         setIsRefreshing(false);
       }, 1);
+      return () => {
+        clearTimeout(timeout);
+      };
     }
   }, [markers, showLocation]);
 

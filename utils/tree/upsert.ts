@@ -7,7 +7,7 @@ import { Prisma } from '@prisma/client';
 
 type TreeImage = PartialTreeImage & { uuid: string };
 
-export default async function upsertTree(tree: PartialTree, userId: number) {
+export default async function upsertTree(tree: PartialTree, userId: number, eventId?: number) {
   const treeId = tree.id;
 
   if (!treeId) {
@@ -56,6 +56,21 @@ export default async function upsertTree(tree: PartialTree, userId: number) {
       images: {},
     },
   };
+
+  if (eventId) {
+    const event = await prisma.event.findFirst({ where: { id: eventId }, include: { trees: true } });
+    let sequence = 0;
+    event?.trees?.forEach(treeToEvent => {
+      if (treeToEvent.sequence + 1 > sequence) sequence = treeToEvent.sequence + 1;
+    });
+    if (event)
+      upsertArgs.create.events = {
+        create: {
+          sequence,
+          event: { connect: { id: eventId } },
+        },
+      };
+  }
 
   if (tree.categories) {
     upsertArgs.create.categories = {

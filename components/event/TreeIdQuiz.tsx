@@ -23,6 +23,7 @@ const TreeIdQuiz = ({
   showLocation,
   onCloseDialog,
   categoryIds,
+  onFetched,
 }: {
   eventId?: number;
   isRefreshing?: boolean;
@@ -33,6 +34,7 @@ const TreeIdQuiz = ({
   showLocation?: boolean;
   onCloseDialog?: () => void;
   categoryIds?: number[];
+  onFetched?: (trees: PartialTree[]) => void;
 }) => {
   const [email] = useLocalStorage('checkinEmail', '');
   const [markers, setMarkers] = useState<QuizCoordinate[]>();
@@ -41,8 +43,9 @@ const TreeIdQuiz = ({
   const latitude = currentMapCoordinateRef?.current?.latitude || defaultLatitude;
   const longitude = currentMapCoordinateRef?.current?.longitude || defaultLongitude;
 
-  const apiUrl = categoryIds ? 'for-categories' : 'for-coordinate';
-
+  const apiUrl = eventId ? 'for-event' : categoryIds ? 'for-categories' : 'for-coordinate';
+  //30.26172 -97.722017 500
+  //30.27141 -97.758546 NaN
   const {
     data: trees,
     isFetching,
@@ -53,6 +56,7 @@ const TreeIdQuiz = ({
     longitude,
     email,
     categoryIds,
+    eventId,
   });
   const [selectedTree, setSelectedTree] = useState<PartialTree>();
   const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
@@ -78,6 +82,10 @@ const TreeIdQuiz = ({
       }),
     );
   }, [trees]);
+
+  useEffect(() => {
+    if (isFetched && onFetched) onFetched(trees);
+  }, [trees, isFetched]);
 
   const refresh = useCallback(async () => {
     await refetch();

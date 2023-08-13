@@ -29,7 +29,17 @@ const steps = [{ label: 'Identify' }, { label: 'Photograph' }, { label: 'Locatio
 const tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
 
-const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: () => void; longitude?: number; latitude?: number }) => {
+const IdentifyTreeFlow = ({
+  onComplete,
+  longitude,
+  latitude,
+  eventId,
+}: {
+  onComplete?: () => void;
+  longitude?: number;
+  latitude?: number;
+  eventId?: number;
+}) => {
   const { leafImage, setLeafImage, tree, setTree, reset } = useContext(IdentifyTreeContext);
 
   const [isUpserting, setIsUpserting] = useState(false);
@@ -69,7 +79,7 @@ const IdentifyTreeFlow = ({ onComplete, longitude, latitude }: { onComplete?: ()
 
     const isNewTree = !data?.id;
 
-    const updatedTreeResult = await axios.post('/api/trees', { tree: { ...data }, email, sessionId: sessionId });
+    const updatedTreeResult = await axios.post('/api/trees', { tree: { ...data }, email, sessionId: sessionId, eventId });
     const updatedTree = updatedTreeResult.data;
     if (updatedTree?.id) handleChange('id', updatedTree.id);
     if (updatedTree.sessionId && isNewTree) setSessionId(updatedTree.sessionId, tomorrow);

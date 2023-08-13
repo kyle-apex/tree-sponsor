@@ -42,6 +42,7 @@ const EditSessionTreesDialog = ({
     data: trees,
     refetch: refetchTrees,
     isFetching,
+    isFetched,
   } = useQuery<PartialTree[]>(apiKey, () => fetchTrees(sessionId), {
     keepPreviousData: true,
     refetchOnWindowFocus: false,
@@ -59,6 +60,11 @@ const EditSessionTreesDialog = ({
         <Typography mb={0} variant='h2' color='secondary'>
           Edit Tree(s)
         </Typography>
+        {isFetched && !trees?.length && (
+          <Typography mb={0} mt={2} variant='body1'>
+            No tree available to edit for this event Please login to manage your added trees.
+          </Typography>
+        )}
         <Grid container spacing={4} mt={-1}>
           {trees?.map(tree => {
             return (
