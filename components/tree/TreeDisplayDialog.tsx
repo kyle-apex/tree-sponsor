@@ -18,12 +18,14 @@ const TreeDisplayDialog = ({
   tree,
   eventId,
   onClose,
+  onNextTree,
 }: {
   open: boolean;
   setOpen: (isOpen: boolean) => void;
   tree: PartialTree;
   eventId?: number;
   onClose?: () => void;
+  onNextTree?: () => void;
 }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +43,14 @@ const TreeDisplayDialog = ({
           <SponsorshipDisplayLoading />
         ) : (
           <>
-            <TreeDisplay title='Tree ID Quiz' tree={tree} handleClose={handleClose} eventId={eventId} hasFullHeightImage={true} />
+            <TreeDisplay
+              title='Tree ID Quiz'
+              tree={tree}
+              handleClose={handleClose}
+              eventId={eventId}
+              hasFullHeightImage={true}
+              onNextTree={onNextTree}
+            />
           </>
         )}
       </DialogContent>

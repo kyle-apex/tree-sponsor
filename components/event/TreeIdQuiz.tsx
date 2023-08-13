@@ -105,6 +105,23 @@ const TreeIdQuiz = ({
   };
 
   //const { remove } = useRemoveFromQuery(['attendees', { searchString }], handleDelete, true);
+  const onNextTree = useCallback(() => {
+    setIsQuizDialogOpen(false);
+    setTimeout(() => {
+      setSelectedTree(currentTree => {
+        let newTree;
+        if (!currentTree) newTree = trees[0];
+        else {
+          const currentIndex = trees.indexOf(currentTree);
+          let nextIndex = currentIndex + 1;
+          if (nextIndex >= trees.length) nextIndex = 0;
+          newTree = trees[nextIndex];
+        }
+        return newTree;
+      });
+      setIsQuizDialogOpen(true);
+    }, 400);
+  }, [trees]);
 
   const { updateById: updateTreeById } = useUpdateQueryById(
     [
@@ -130,6 +147,7 @@ const TreeIdQuiz = ({
           onClose={() => {
             if (onCloseDialog) onCloseDialog();
           }}
+          onNextTree={onNextTree}
         ></TreeDisplayDialog>
         {isFetched && (
           <MapMarkerDisplay

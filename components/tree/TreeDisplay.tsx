@@ -40,6 +40,7 @@ const TreeDisplay = ({
   hasFullHeightImage,
   title,
   eventId,
+  onNextTree,
 }: {
   tree?: PartialTree;
   isEditMode?: boolean;
@@ -48,6 +49,7 @@ const TreeDisplay = ({
   hasFullHeightImage?: boolean;
   title?: string;
   eventId?: number;
+  onNextTree?: () => void;
 }) => {
   const classes = useStyles();
 
@@ -248,6 +250,7 @@ const TreeDisplay = ({
                 subtitleSx={{ textAlign: isMobile && leafImage ? 'left' : 'center' }}
                 hasLeaf={!!leafImage}
                 onClose={handleClose}
+                onNextTree={onNextTree}
               ></SpeciesQuiz>
 
               {handleClose && (

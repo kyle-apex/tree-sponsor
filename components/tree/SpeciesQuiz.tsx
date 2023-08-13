@@ -19,6 +19,8 @@ import { SxProps, Theme } from '@mui/material/styles';
 import TreeIdHelpDialog from 'components/event/TreeIdHelpDialog';
 import HintIcon from '@mui/icons-material/QuestionMark';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ClearIcon from '@mui/icons-material/Clear';
+import SplitRow from 'components/layout/SplitRow';
 
 const saveResponse = async (speciesQuizResponse: PartialSpeciesQuizResponse & { email: string }) => {
   await axios.post('/api/speciesQuizResponses', speciesQuizResponse);
@@ -49,6 +51,7 @@ const SpeciesQuiz = ({
   subtitleSx,
   hasLeaf,
   onClose,
+  onNextTree,
 }: {
   correctSpecies: PartialSpecies;
   treeId?: number;
@@ -56,6 +59,7 @@ const SpeciesQuiz = ({
   subtitleSx?: SxProps<Theme>;
   hasLeaf?: boolean;
   onClose?: React.MouseEventHandler<HTMLButtonElement>;
+  onNextTree?: React.MouseEventHandler<HTMLButtonElement>;
 }) => {
   const [clickedSpeciesId, setClickedSpeciesId] = useState<number>(null);
   const [speciesOptions, setSpeciesOptions] = useState<PartialSpecies[]>([]);
@@ -127,9 +131,17 @@ const SpeciesQuiz = ({
           Name that tree{!isSmall ? ' species' : ''}!
         </Typography>
       ) : (
-        <Button variant='outlined' size='small' color='inherit' sx={{ width: '120px' }} onClick={onClose}>
-          Next tree <ChevronRightIcon fontSize='small' sx={{ ml: 0.5 }}></ChevronRightIcon>
-        </Button>
+        <Box display='flex' justifyContent={hasLeaf || !onNextTree ? 'flex-start' : 'flex-end'}>
+          {onNextTree ? (
+            <Button variant='outlined' size='small' color='inherit' sx={{ width: '120px', pr: 0 }} onClick={onNextTree}>
+              Next Tree <ChevronRightIcon fontSize='small' sx={{ ml: 0.5 }}></ChevronRightIcon>
+            </Button>
+          ) : (
+            <Button size='small' variant='outlined' color='inherit' sx={{ minWidth: '70px', mr: 0.5 }} onClick={onClose}>
+              <ClearIcon sx={{ mr: 0.5 }} fontSize='small'></ClearIcon>Close
+            </Button>
+          )}
+        </Box>
       )}
       <Box id='scroll-element' sx={{ mt: !clickedSpeciesId ? -6 : -6, mb: 8 }}></Box>
 
@@ -175,7 +187,17 @@ const SpeciesQuiz = ({
               }}
               sx={{
                 textTransform: 'none',
-                background: color == 'secondary' ? 'linear-gradient(to top, #6e48544f, #6e48541f), url(/background-lighter.svg)' : '',
+                fontWeight: color == 'primary' ? '600' : '',
+                background:
+                  color == 'secondary'
+                    ? 'linear-gradient(to top, #6e48544f, #6e48541f), url(/background-lighter.svg)'
+                    : color == 'primary'
+                    ? 'linear-gradient(to top, #486e624f, #486e6233), url(/background-lighter.svg)'
+                    : color == 'error'
+                    ? 'linear-gradient(to top, #d32f2f33, #d32f2f1c),url(/background-lighter.svg)'
+                    : '',
+                color: color == 'primary' ? '#486e62' : color == 'error' ? '#d32f2f' : '',
+                border: color == 'primary' ? 'solid 1px #486e62' : color == 'error' ? 'solid 1px' : '',
               }}
             >
               {icon}

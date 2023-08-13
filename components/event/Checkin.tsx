@@ -103,9 +103,8 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [showAllLeaders, setShowAllLeaders] = useState(false);
   const [leaderBoardMode, setLeaderBoardMode] = useState('');
 
-  const [hasTrees, setHasTrees] = useState(false);
+  const [hasTrees, setHasTrees] = useState(null);
   const onFetchedTrees = useCallback(async (trees: PartialTree[]) => {
-    console.log('onFetched', trees, !!trees?.length);
     setHasTrees(!!trees?.length);
   }, []);
 
@@ -403,7 +402,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 onCloseDialog={onQuizDialogClose}
                 onFetched={onFetchedTrees}
               ></TreeIdQuiz>
-              {!hasTrees && (
+              {hasTrees === false && (
                 <Box
                   sx={{
                     zIndex: 1001,
