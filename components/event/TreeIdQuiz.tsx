@@ -145,6 +145,7 @@ const TreeIdQuiz = ({
           setOpen={setIsQuizDialogOpen}
           eventId={eventId}
           onClose={() => {
+            refetch();
             if (onCloseDialog) onCloseDialog();
           }}
           onNextTree={onNextTree}
