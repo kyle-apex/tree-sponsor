@@ -41,6 +41,7 @@ function getQuizOptions(species: PartialSpecies[], correctSpecies: PartialSpecie
     }
     randomIndex = null;
   }
+  console.log('got quiz options', options);
   return options;
 }
 
@@ -80,25 +81,30 @@ const SpeciesQuiz = ({
     { refetchOnMount: false, refetchOnWindowFocus: false },
   );
 
-  useEffect(() => {
-    setSpeciesOptions(getQuizOptions(prioritySpecies, correctSpecies));
+  /*useEffect(() => {
+    console.log('set from first one');
+    
   }, [correctSpecies?.id, prioritySpecies]);
-
+*/
   useEffect(() => {
     //console.log('treeId', treeId, trees);
+    setSpeciesOptions(getQuizOptions(prioritySpecies, correctSpecies));
     if (treeId && trees?.length > 0) {
       const tree = trees.find((tree: PartialTree) => tree.id == treeId);
-      if (tree.speciesQuizResponses?.length > 0 && !clickedSpeciesId) {
+      console.log('tree', treeId, tree, correctSpecies?.id);
+      if (tree.speciesQuizResponses?.length > 0) {
+        //} && (!clickedSpeciesId || clickedSpeciesId == -1)) {
         if (tree.speciesQuizResponses[0].isCorrect) setClickedSpeciesId(correctSpecies.id);
         else {
           // add the incorrect species to the list and select it
+          console.log('set from second one', tree.speciesQuizResponses[0].incorrectGuessName);
           if (tree.speciesQuizResponses[0].incorrectGuessName)
             setSpeciesOptions(options => [...options, { commonName: tree.speciesQuizResponses[0].incorrectGuessName, id: -1 }]);
           setClickedSpeciesId(-1);
         }
       }
     }
-  }, [trees, treeId]);
+  }, [trees, treeId, correctSpecies?.id, prioritySpecies]);
 
   const handleClick = async (newlyClickedSpeciesId: number) => {
     if (clickedSpeciesId === null) {
@@ -133,7 +139,16 @@ const SpeciesQuiz = ({
       ) : (
         <Box display='flex' justifyContent={hasLeaf || !onNextTree ? 'flex-start' : 'flex-end'}>
           {onNextTree ? (
-            <Button variant='outlined' size='small' color='inherit' sx={{ width: '120px', pr: 0 }} onClick={onNextTree}>
+            <Button
+              variant='outlined'
+              size='small'
+              color='inherit'
+              sx={{ width: '120px', pr: 0 }}
+              onClick={() => {
+                onNextTree();
+                setClickedSpeciesId(null);
+              }}
+            >
               Next Tree <ChevronRightIcon fontSize='small' sx={{ ml: 0.5 }}></ChevronRightIcon>
             </Button>
           ) : (

@@ -34,7 +34,6 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   const [isLoadingInstagram, setIsLoadingInstagram] = useState(!!event.instagramPostId);
   const tabsRef = useRef<HTMLElement>();
 
-  const [isFirstQuiz, setIsFirstQuiz] = useState(true);
   const [isQuizRefreshing, setIsQuizRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useHash(event.instagramPostId ? 'overview' : 'trees', ['overview', 'trees']);
 
@@ -82,7 +81,6 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
 
   const onQuizDialogClose = () => {
     refetchLeaders();
-    setIsFirstQuiz(false);
   };
 
   const logout = () => {
@@ -159,7 +157,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
             </Box>
             {hasFloatingTabs && (
               <Box
-                sx={{ borderBottom: 1, borderColor: 'divider', zIndex: 7000, width: floatingTabsWidth + 'px' }}
+                sx={{ borderBottom: 1, borderColor: 'divider', zIndex: 1200, width: floatingTabsWidth + 'px' }}
                 mb={2}
                 className={'checkin-floating-tabs'}
               >
@@ -326,6 +324,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
           <Box>
             <TreeIdQuiz
               eventId={event.id}
+              event={event}
               isRefreshing={isQuizRefreshing}
               defaultLatitude={Number(event.location?.latitude)}
               defaultLongitude={Number(event.location?.longitude)}
@@ -334,30 +333,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
               onCloseDialog={onQuizDialogClose}
             ></TreeIdQuiz>
           </Box>
-          {isFirstQuiz && (
-            <Box sx={{ mt: -4, fontSize: '95%', zIndex: 1000, position: 'relative' }}>
-              <Box
-                style={{
-                  textDecoration: 'none',
-                  display: 'flex',
-                  gap: '3px',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#486e62',
-                  padding: '3px 5px',
-                  backgroundColor: '#FFCC37',
-                  borderRadius: '16px',
-                  width: '160px',
-                  textAlign: 'center',
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
-                }}
-                className='box-shadow'
-              >
-                <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a pin to begin
-              </Box>
-            </Box>
-          )}
+
           {isLoggedIn && (
             <TreeIdLeaderPosition
               isLoading={isFetching}

@@ -44,7 +44,7 @@ import CheckinHistoryDialog from './CheckinHistoryDialog';
 import useHashToggle from 'utils/hooks/use-hash-toggle';
 import useWindowFocus from 'utils/hooks/use-window-focus';
 import EventNameDisplay from './EventNameDisplay';
-import TreeIdQuiz from './TreeIdQuiz';
+import TreeIdQuiz, { TreeIdQuizHandle } from './TreeIdQuiz';
 import BecomeAMemberDialog from './BecomeAMemberDialog';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import PinIcon from '@mui/icons-material/LocationOn';
@@ -99,7 +99,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [isShowAllAttendees, setIsShowAllAttendees] = useState(false);
 
-  const [isFirstQuiz, setIsFirstQuiz] = useState(true);
   const [showAllLeaders, setShowAllLeaders] = useState(false);
   const [leaderBoardMode, setLeaderBoardMode] = useState('');
 
@@ -109,6 +108,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   }, []);
 
   const checkinFormRef = useRef<CheckinFormHandle>();
+  const treeIdQuizHandle = useRef<TreeIdQuizHandle>();
 
   // Preload species to immediately have quiz options
   const { data: prioritySpecies, isFetched } = useGet<PartialSpecies>(
@@ -206,7 +206,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
   const onQuizDialogClose = () => {
     refetchLeaders();
-    setIsFirstQuiz(false);
   };
 
   return (
@@ -393,7 +392,9 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
             <Box sx={{ position: 'relative' }}>
               <TreeIdQuiz
+                ref={treeIdQuizHandle}
                 eventId={event.id}
+                event={event}
                 isRefreshing={isQuizRefreshing}
                 defaultLatitude={Number(event.location?.latitude)}
                 defaultLongitude={Number(event.location?.longitude)}
@@ -425,30 +426,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 </Box>
               )}
             </Box>
-            {isFirstQuiz && hasTrees && (
-              <Box sx={{ mt: -4, fontSize: '95%', zIndex: 1000, position: 'relative' }}>
-                <Box
-                  style={{
-                    textDecoration: 'none',
-                    display: 'flex',
-                    gap: '3px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#486e62',
-                    padding: '3px 5px',
-                    backgroundColor: '#FFCC37',
-                    borderRadius: '16px',
-                    width: '160px',
-                    textAlign: 'center',
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                  }}
-                  className='box-shadow'
-                >
-                  <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a pin to begin
-                </Box>
-              </Box>
-            )}
+
             {sessionId && (
               <Box sx={{ textAlign: 'center', fontSize: '80%', mt: 1, mb: hasTrees ? -1 : 1, mr: 0.5 }}>
                 <a
