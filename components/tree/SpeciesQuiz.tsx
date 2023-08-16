@@ -60,7 +60,7 @@ const SpeciesQuiz = ({
   subtitleSx?: SxProps<Theme>;
   hasLeaf?: boolean;
   onClose?: React.MouseEventHandler<HTMLButtonElement>;
-  onNextTree?: React.MouseEventHandler<HTMLButtonElement>;
+  onNextTree?: () => void;
 }) => {
   const [clickedSpeciesId, setClickedSpeciesId] = useState<number>(null);
   const [speciesOptions, setSpeciesOptions] = useState<PartialSpecies[]>([]);
