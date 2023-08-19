@@ -57,6 +57,7 @@ const TreeIdQuiz = forwardRef(
     const [markers, setMarkers] = useState<QuizCoordinate[]>();
     const currentMapCoordinateRef = useRef<Coordinate>(null);
     const [isFirstQuiz, setIsFirstQuiz] = useState(true);
+    //const [isRecenterMap, setIsRecenterMap] = useState(false);
 
     const latitude = currentMapCoordinateRef?.current?.latitude || defaultLatitude;
     const longitude = currentMapCoordinateRef?.current?.longitude || defaultLongitude;
@@ -160,7 +161,7 @@ const TreeIdQuiz = forwardRef(
       true,
     );
     return (
-      <QuizContext.Provider value={{ updateTreeById, trees, event }}>
+      <QuizContext.Provider value={{ updateTreeById, trees, event, isRefreshing }}>
         <Box>
           <TreeDisplayDialog
             tree={selectedTree}

@@ -79,7 +79,7 @@ const TreeIdLeaderPosition = ({
             </ToggleButton>
           </ToggleButtonGroup>
         </Box>
-        <Box sx={{ mr: '5px', fontSize: '80%', color: '#6e4854' }}>Correct Guesses</Box>
+        <Box sx={{ mr: '5px', fontSize: '80%', color: '#6e4854', textAlign: 'right' }}>Correct Guesses</Box>
       </SplitRow>
       <Box mb={2}>
         {(!leaders?.length || isLoading) && (

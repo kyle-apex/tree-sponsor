@@ -2,7 +2,7 @@
 import MapGL, { GeolocateControl, MapRef, NavigationControl, WebMercatorViewport } from 'react-map-gl';
 import { QuizCoordinate, Coordinate, MapStyle, Viewport } from 'interfaces';
 import MapMarker from 'components/sponsor/MapMarker';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useContext } from 'react';
 import { useTheme } from '@mui/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import centerViewport from 'utils/maps/center-viewport';
@@ -11,6 +11,7 @@ import CornerEditIcon from 'components/tree/CornerEditIcon';
 import { useDebouncedCallback } from 'use-debounce';
 import GoogleMapReact from 'google-map-react';
 import Box from '@mui/material/Box';
+import QuizContext from 'components/tree/QuizContext';
 
 const geolocateControlStyle = {
   right: 8,
@@ -50,7 +51,7 @@ const MapMarkerDisplay = ({
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
   const [zoom, setZoom] = useState(16);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  //const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [viewport, setViewport] = useState<Partial<Viewport>>({
     width: '100%',
@@ -59,6 +60,7 @@ const MapMarkerDisplay = ({
     longitude: defaultLongitude || -97.7505386,
     zoom: defaultZoom || 10.7,
   });
+  const { isRefreshing } = useContext(QuizContext);
 
   useEffect(() => {
     //console.log('changed markers', showLocation);
@@ -77,7 +79,7 @@ const MapMarkerDisplay = ({
       centeredViewport.zoom = centeredViewport.zoom + Math.random() * 0.0001;
       setViewport(centeredViewport);
     }
-  }, [markers, showLocation]);
+  }, [isRefreshing, showLocation]);
 
   useEffect(() => {
     const map = mapRef.current?.getMap();
@@ -111,7 +113,7 @@ const MapMarkerDisplay = ({
     <>
       {isGoogle && (
         <Box sx={{ height: '300px' }}>
-          {!isRefreshing && (
+          {true && (
             <GoogleMapReact
               bootstrapURLKeys={{ key: process.env.NEXT_PUBLIC_GOOGLE_STREET_VIEW_KEY }}
               defaultCenter={{ lat: 30.2594625, lng: -97.7505386 }}
