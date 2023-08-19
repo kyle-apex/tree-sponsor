@@ -123,23 +123,28 @@ const TreeIdQuiz = forwardRef(
     };
 
     //const { remove } = useRemoveFromQuery(['attendees', { searchString }], handleDelete, true);
-    const onNextTree = useCallback(() => {
-      //setIsQuizDialogOpen(false);
-      //setTimeout(() => {
-      setSelectedTree(currentTree => {
-        let newTree;
-        if (!currentTree) newTree = trees[0];
-        else {
-          const currentIndex = trees.indexOf(currentTree);
-          let nextIndex = currentIndex + 1;
-          if (nextIndex >= trees.length) nextIndex = 0;
-          newTree = trees[nextIndex];
-        }
-        return newTree;
-      });
-      //setIsQuizDialogOpen(true);
-      //}, 400);
-    }, [trees]);
+    const onNextTree = useCallback(
+      (isPrev?: boolean) => {
+        setSelectedTree(currentTree => {
+          let newTree;
+          if (!currentTree) newTree = trees[0];
+          else {
+            const currentIndex = trees.indexOf(currentTree);
+            if (isPrev) {
+              let prevIndex = currentIndex - 1;
+              if (prevIndex < 0) prevIndex = trees.length - 1;
+              newTree = trees[prevIndex];
+            } else {
+              let nextIndex = currentIndex + 1;
+              if (nextIndex >= trees.length) nextIndex = 0;
+              newTree = trees[nextIndex];
+            }
+          }
+          return newTree;
+        });
+      },
+      [trees],
+    );
 
     const { updateById: updateTreeById } = useUpdateQueryById(
       [

@@ -12,7 +12,7 @@ import ChevronLeft from '@mui/icons-material/ChevronLeft';
 import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import React, { SetStateAction, useState } from 'react';
+import React, { SetStateAction, useContext, useMemo, useState } from 'react';
 import { PartialTree } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 import Box from '@mui/material/Box';
@@ -24,6 +24,7 @@ import { useSwipeable } from 'react-swipeable';
 import MobileStepper from '@mui/material/MobileStepper';
 import useTheme from '@mui/styles/useTheme';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import QuizContext from './QuizContext';
 
 // TODO
 const useStyles = makeStyles(() => ({
@@ -49,7 +50,7 @@ const TreeDisplay = ({
   hasFullHeightImage?: boolean;
   title?: string;
   eventId?: number;
-  onNextTree?: () => void;
+  onNextTree?: (isPrev?: boolean) => void;
 }) => {
   const classes = useStyles();
 

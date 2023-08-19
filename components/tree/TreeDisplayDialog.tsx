@@ -25,7 +25,7 @@ const TreeDisplayDialog = ({
   tree: PartialTree;
   eventId?: number;
   onClose?: () => void;
-  onNextTree?: () => void;
+  onNextTree?: (isPrev?: boolean) => void;
 }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
