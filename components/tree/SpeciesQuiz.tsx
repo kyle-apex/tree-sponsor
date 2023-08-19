@@ -242,11 +242,11 @@ const SpeciesQuiz = ({
                 fontWeight: color == 'primary' ? '600' : '',
                 background:
                   color == 'secondary'
-                    ? 'linear-gradient(to top, #6e48544f, #6e48541f), url(/background-lighter.svg)'
+                    ? 'linear-gradient(to top, #6e48542b, #6e48541f),url(/background-lighter.svg)'
                     : color == 'primary'
-                    ? 'linear-gradient(to top, #486e624f, #486e6233), url(/background-lighter.svg)'
+                    ? 'linear-gradient(to top, #486e6242, #486e6233),url(/background-lighter.svg)'
                     : color == 'error'
-                    ? 'linear-gradient(to top, #d32f2f33, #d32f2f1c),url(/background-lighter.svg)'
+                    ? 'linear-gradient(to top, #d32f2f30, #d32f2f1c),url(/background-lighter.svg)'
                     : '',
                 color: color == 'primary' ? '#486e62' : color == 'error' ? '#d32f2f' : '',
                 border: color == 'primary' ? 'solid 1px #486e62' : color == 'error' ? 'solid 1px' : '',
