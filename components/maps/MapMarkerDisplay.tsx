@@ -60,7 +60,7 @@ const MapMarkerDisplay = ({
     longitude: defaultLongitude || -97.7505386,
     zoom: defaultZoom || 10.7,
   });
-  const { isRefreshing } = useContext(QuizContext);
+  const quizContext = useContext(QuizContext);
 
   useEffect(() => {
     //console.log('changed markers', showLocation);
@@ -79,7 +79,7 @@ const MapMarkerDisplay = ({
       centeredViewport.zoom = centeredViewport.zoom + Math.random() * 0.0001;
       setViewport(centeredViewport);
     }
-  }, [isRefreshing, showLocation]);
+  }, [quizContext?.isRefreshing, showLocation]);
 
   useEffect(() => {
     const map = mapRef.current?.getMap();
