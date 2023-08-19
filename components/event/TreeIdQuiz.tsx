@@ -160,7 +160,7 @@ const TreeIdQuiz = forwardRef(
       true,
     );
     return (
-      <QuizContext.Provider value={{ updateTreeById, trees }}>
+      <QuizContext.Provider value={{ updateTreeById, trees, event }}>
         <Box>
           <TreeDisplayDialog
             tree={selectedTree}

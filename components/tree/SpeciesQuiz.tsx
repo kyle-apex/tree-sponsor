@@ -66,7 +66,7 @@ const SpeciesQuiz = ({
 }) => {
   const [clickedSpeciesId, setClickedSpeciesId] = useState<number>(null);
   const [speciesOptions, setSpeciesOptions] = useState<PartialSpecies[]>([]);
-  const { updateTreeById, trees } = useContext(QuizContext);
+  const { updateTreeById, trees, event } = useContext(QuizContext);
   const [email] = useLocalStorage('checkinEmail', '');
   const [isHintDialogOpen, setIsHintDialogOpen] = useState(false);
 
@@ -136,7 +136,7 @@ const SpeciesQuiz = ({
   return (
     <>
       <Box display='flex' justifyContent={hasLeaf || !onNextTree ? 'flex-start' : 'flex-start'} gap={1}>
-        {onNextTree ? (
+        {onNextTree && event?.hasSpecificTrees ? (
           <>
             <Button
               variant='outlined'
@@ -176,16 +176,18 @@ const SpeciesQuiz = ({
             </Button>
           </>
         ) : (
-          <Button size='small' variant='outlined' color='inherit' sx={{ minWidth: '70px', mr: 0.5 }} onClick={onClose}>
-            <ClearIcon sx={{ mr: 0.5 }} fontSize='small'></ClearIcon>Close
-          </Button>
+          clickedSpeciesId && (
+            <Button size='small' variant='outlined' color='inherit' sx={{ minWidth: '70px', mr: 0.5 }} onClick={onClose}>
+              <ClearIcon sx={{ mr: 0.5 }} fontSize='small'></ClearIcon>Close
+            </Button>
+          )
         )}
       </Box>
       {!clickedSpeciesId ? (
         <Typography
           mb={2}
           variant='body1'
-          mt={onNextTree ? 2 : 0}
+          mt={onNextTree && event?.hasSpecificTrees ? 2 : 0}
           sx={{ fontStyle: 'italic', textAlign: isMobile ? 'left' : 'center', color: 'gray', ...subtitleSx }}
         >
           Name that tree{!isSmall ? ' species' : ''}!
