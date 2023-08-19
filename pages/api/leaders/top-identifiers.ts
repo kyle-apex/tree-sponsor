@@ -54,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       id: { in: userIds },
     },
   });
-  console.log('groupedTrees', groupedTrees, userIds, users);
+  //console.log('groupedTrees', groupedTrees, userIds, users);
 
   const leaders: LeaderRow[] = groupedTrees?.map((tree, idx) => {
     const row: LeaderRow = { position: idx + 1 };
@@ -62,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     row.user = users.find(user => user.id == tree.createdByUserId);
     return row;
   });
-  console.log('leaders', leaders);
+  // console.log('leaders', leaders);
   /*
   prisma.tree.findMany({});
 

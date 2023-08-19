@@ -47,7 +47,6 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
       fields?.discoveredFrom || '',
     )}&emailOptIn=${fields?.isEmailOptIn || ''}`;
     const results = (await parsedGet(url)) as MembershipStatus;
-    console.log('results', results);
 
     if (results?.email) {
       setStoredEmail(results.email);
@@ -72,12 +71,9 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
     { refetchOnMount: true, refetchOnWindowFocus: true },
   );
 
-  console.log('leaders', leaders);
-
   const isMember = !!leaders?.find(leader => {
     return leader.isCurrentUser && leader.isMember;
   });
-  console.log('isMember', isMember, 'isFetching', isFetching);
 
   const onQuizDialogClose = () => {
     refetchLeaders();
@@ -207,7 +203,6 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
                 setIsLoadingInstagram(true);
               }}
               onSuccess={() => {
-                console.log('scu');
                 setIsLoadingInstagram(false);
               }}
               onAfterRender={() => {

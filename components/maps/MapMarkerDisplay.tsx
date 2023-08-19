@@ -59,7 +59,9 @@ const MapMarkerDisplay = ({
     longitude: defaultLongitude || -97.7505386,
     zoom: defaultZoom || 10.7,
   });
+
   useEffect(() => {
+    //console.log('changed markers', showLocation);
     if (!showLocation) {
       //console.log('viewport', viewport);
       const centeredViewport = centerViewport(
@@ -68,18 +70,12 @@ const MapMarkerDisplay = ({
         mapRef?.current ? mapRef?.current?.getMap()?._containerWidth || 350 : 350,
         height ? Number(height.replace('px', '').replace('%', '')) : 250,
       );
-      //const map = mapRef.current.getMap();
-      //console.log('map', map);
-      //https://stackoverflow.com/questions/37100144/consume-arcgis-map-service-into-mapbox-gl-api
-      //console.log('centeredViewport', centeredViewport);
+
+      // added to trigger a google maps change
+      centeredViewport.latitude = centeredViewport.latitude + Math.random() * 0.0001;
+      centeredViewport.longitude = centeredViewport.longitude + Math.random() * 0.0001;
+      centeredViewport.zoom = centeredViewport.zoom + Math.random() * 0.0001;
       setViewport(centeredViewport);
-      setIsRefreshing(true);
-      const timeout = setTimeout(() => {
-        setIsRefreshing(false);
-      }, 1);
-      return () => {
-        clearTimeout(timeout);
-      };
     }
   }, [markers, showLocation]);
 
