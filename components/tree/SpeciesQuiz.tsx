@@ -1,7 +1,7 @@
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import { PartialSpecies, PartialTree, PartialSpeciesQuizResponse } from 'interfaces';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useGet } from 'utils/hooks/use-get';
@@ -19,6 +19,10 @@ import { SxProps, Theme } from '@mui/material/styles';
 import TreeIdHelpDialog from 'components/event/TreeIdHelpDialog';
 import HintIcon from '@mui/icons-material/QuestionMark';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+
+import ClearIcon from '@mui/icons-material/Clear';
+import SplitRow from 'components/layout/SplitRow';
 
 const saveResponse = async (speciesQuizResponse: PartialSpeciesQuizResponse & { email: string }) => {
   await axios.post('/api/speciesQuizResponses', speciesQuizResponse);
@@ -39,6 +43,7 @@ function getQuizOptions(species: PartialSpecies[], correctSpecies: PartialSpecie
     }
     randomIndex = null;
   }
+  console.log('got quiz options', options);
   return options;
 }
 
@@ -49,6 +54,7 @@ const SpeciesQuiz = ({
   subtitleSx,
   hasLeaf,
   onClose,
+  onNextTree,
 }: {
   correctSpecies: PartialSpecies;
   treeId?: number;
@@ -56,12 +62,18 @@ const SpeciesQuiz = ({
   subtitleSx?: SxProps<Theme>;
   hasLeaf?: boolean;
   onClose?: React.MouseEventHandler<HTMLButtonElement>;
+  onNextTree?: (isPrev?: boolean) => void;
 }) => {
   const [clickedSpeciesId, setClickedSpeciesId] = useState<number>(null);
   const [speciesOptions, setSpeciesOptions] = useState<PartialSpecies[]>([]);
-  const { updateTreeById, trees } = useContext(QuizContext);
+  const { updateTreeById, trees, event } = useContext(QuizContext);
   const [email] = useLocalStorage('checkinEmail', '');
   const [isHintDialogOpen, setIsHintDialogOpen] = useState(false);
+
+  const treeIndex = useMemo(() => {
+    const tree = trees.find((t: PartialTree) => t.id == treeId);
+    return trees.indexOf(tree);
+  }, [trees, treeId]);
 
   const theme = useTheme();
 
@@ -76,25 +88,30 @@ const SpeciesQuiz = ({
     { refetchOnMount: false, refetchOnWindowFocus: false },
   );
 
-  useEffect(() => {
-    setSpeciesOptions(getQuizOptions(prioritySpecies, correctSpecies));
+  /*useEffect(() => {
+    console.log('set from first one');
+    
   }, [correctSpecies?.id, prioritySpecies]);
-
+*/
   useEffect(() => {
     //console.log('treeId', treeId, trees);
+    setSpeciesOptions(getQuizOptions(prioritySpecies, correctSpecies));
     if (treeId && trees?.length > 0) {
       const tree = trees.find((tree: PartialTree) => tree.id == treeId);
-      if (tree.speciesQuizResponses?.length > 0 && !clickedSpeciesId) {
+      console.log('tree', treeId, tree, correctSpecies?.id);
+      if (tree.speciesQuizResponses?.length > 0) {
+        //} && (!clickedSpeciesId || clickedSpeciesId == -1)) {
         if (tree.speciesQuizResponses[0].isCorrect) setClickedSpeciesId(correctSpecies.id);
         else {
           // add the incorrect species to the list and select it
+          console.log('set from second one', tree.speciesQuizResponses[0].incorrectGuessName);
           if (tree.speciesQuizResponses[0].incorrectGuessName)
             setSpeciesOptions(options => [...options, { commonName: tree.speciesQuizResponses[0].incorrectGuessName, id: -1 }]);
           setClickedSpeciesId(-1);
         }
       }
     }
-  }, [trees, treeId]);
+  }, [trees, treeId, correctSpecies?.id, prioritySpecies]);
 
   const handleClick = async (newlyClickedSpeciesId: number) => {
     if (clickedSpeciesId === null) {
@@ -108,6 +125,8 @@ const SpeciesQuiz = ({
 
       const response = { treeId, eventId, isCorrect, incorrectGuessName, email };
       await saveResponse(response);
+      const tree = trees.find((tree: PartialTree) => tree.id == treeId) as PartialTree;
+      tree.speciesQuizResponses = [response];
       updateTreeById(treeId, { newResponse: response });
     }
   };
@@ -118,18 +137,65 @@ const SpeciesQuiz = ({
   }
   return (
     <>
+      <Box display='flex' justifyContent={hasLeaf || !onNextTree ? 'flex-start' : 'flex-start'} gap={1}>
+        {onNextTree && event?.hasSpecificTrees ? (
+          <>
+            <Button
+              variant='outlined'
+              size='small'
+              color='inherit'
+              sx={{ width: '32px', minWidth: '20px', pr: 0, pl: 0 }}
+              onClick={() => {
+                onNextTree(true);
+                setClickedSpeciesId(null);
+              }}
+            >
+              <ChevronLeftIcon fontSize='small'></ChevronLeftIcon>
+            </Button>
+            <Button
+              variant='outlined'
+              size='small'
+              color='inherit'
+              sx={{ width: '50px', minWidth: '20px', pr: 0, pl: 0, textAlign: 'center' }}
+              onClick={() => {
+                onNextTree();
+                setClickedSpeciesId(null);
+              }}
+            >
+              {treeIndex + 1}/{trees?.length}
+            </Button>
+            <Button
+              variant='outlined'
+              size='small'
+              color='inherit'
+              sx={{ width: '32px', minWidth: '20px', pr: 0, pl: 0 }}
+              onClick={() => {
+                onNextTree();
+                setClickedSpeciesId(null);
+              }}
+            >
+              <ChevronRightIcon fontSize='small'></ChevronRightIcon>
+            </Button>
+          </>
+        ) : (
+          clickedSpeciesId && (
+            <Button size='small' variant='outlined' color='inherit' sx={{ minWidth: '70px', mr: 0.5 }} onClick={onClose}>
+              <ClearIcon sx={{ mr: 0.5 }} fontSize='small'></ClearIcon>Close
+            </Button>
+          )
+        )}
+      </Box>
       {!clickedSpeciesId ? (
         <Typography
           mb={2}
           variant='body1'
+          mt={onNextTree && event?.hasSpecificTrees ? 2 : 0}
           sx={{ fontStyle: 'italic', textAlign: isMobile ? 'left' : 'center', color: 'gray', ...subtitleSx }}
         >
           Name that tree{!isSmall ? ' species' : ''}!
         </Typography>
       ) : (
-        <Button variant='outlined' size='small' color='inherit' sx={{ width: '120px' }} onClick={onClose}>
-          Next tree <ChevronRightIcon fontSize='small' sx={{ ml: 0.5 }}></ChevronRightIcon>
-        </Button>
+        <></>
       )}
       <Box id='scroll-element' sx={{ mt: !clickedSpeciesId ? -6 : -6, mb: 8 }}></Box>
 
@@ -142,8 +208,8 @@ const SpeciesQuiz = ({
             : 'secondary';
 
         let icon;
-        const isIncorrect = species.id == clickedSpeciesId && species.id != correctSpecies.id;
-        const isCorrect = species.id == clickedSpeciesId && species.id == correctSpecies.id;
+        const isIncorrect = species?.id == clickedSpeciesId && species?.id != correctSpecies?.id;
+        const isCorrect = species?.id == clickedSpeciesId && species?.id == correctSpecies?.id;
 
         if (species.id == clickedSpeciesId) {
           icon =
@@ -175,7 +241,17 @@ const SpeciesQuiz = ({
               }}
               sx={{
                 textTransform: 'none',
-                background: color == 'secondary' ? 'linear-gradient(to top, #6e48544f, #6e48541f), url(/background-lighter.svg)' : '',
+                fontWeight: color == 'primary' ? '600' : '',
+                background:
+                  color == 'secondary'
+                    ? 'linear-gradient(to top, #6e48542b, #6e48541f),url(/background-lighter.svg)'
+                    : color == 'primary'
+                    ? 'linear-gradient(to top, #486e6242, #486e6233),url(/background-lighter.svg)'
+                    : color == 'error'
+                    ? 'linear-gradient(to top, #d32f2f30, #d32f2f1c),url(/background-lighter.svg)'
+                    : '',
+                color: color == 'primary' ? '#486e62' : color == 'error' ? '#d32f2f' : '',
+                border: color == 'primary' ? 'solid 1px #486e62' : color == 'error' ? 'solid 1px' : '',
               }}
             >
               {icon}

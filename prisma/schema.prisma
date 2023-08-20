@@ -234,10 +234,20 @@ model Tree {
   lastChangedByUserId      Int?
   lastChangedByUser        User?                 @relation("lastChangedByUser", fields: [lastChangedByUserId], references: [id])
   categories               Category[]            @relation("TreeToCategory")
-  events                   Event[]               @relation("TreeToEvent")
+  events                   TreeToEvent[]
   checkIns                 TreeCheckIn[]
   speciesQuizResponses     SpeciesQuizResponse[]
   groupLinks               TreeToGroup[]
+}
+
+model TreeToEvent {
+  tree     Tree  @relation(fields: [treeId], references: [id])
+  treeId   Int // relation scalar field (used in the `@relation` attribute above)
+  event    Event @relation(fields: [eventId], references: [id])
+  eventId  Int // relation scalar field (used in the `@relation` attribute above)
+  sequence Int   @default(0)
+
+  @@id([treeId, eventId])
 }
 
 model TreeGroup {
@@ -297,6 +307,7 @@ model Event {
   path                String?               @db.VarChar(256)
   instagramPostId     String?               @db.VarChar(64)
   isPrivate           Boolean?              @default(false)
+  hasSpecificTrees    Boolean?              @default(false)
   location            Location?             @relation(fields: [locationId], references: [id])
   locationId          Int?
   categories          Category[]            @relation("CategoryToEvent")
@@ -305,7 +316,7 @@ model Event {
   organizers          User[]                @relation("OrganizerToEvent")
   role                Role?                 @relation(fields: [roleId], references: [id])
   roleId              Int?
-  trees               Tree[]                @relation("TreeToEvent")
+  trees               TreeToEvent[]
   checkIns            EventCheckIn[]
   SpeciesQuizResponse SpeciesQuizResponse[]
 }

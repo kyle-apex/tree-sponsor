@@ -44,7 +44,7 @@ import CheckinHistoryDialog from './CheckinHistoryDialog';
 import useHashToggle from 'utils/hooks/use-hash-toggle';
 import useWindowFocus from 'utils/hooks/use-window-focus';
 import EventNameDisplay from './EventNameDisplay';
-import TreeIdQuiz from './TreeIdQuiz';
+import TreeIdQuiz, { TreeIdQuizHandle } from './TreeIdQuiz';
 import BecomeAMemberDialog from './BecomeAMemberDialog';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import PinIcon from '@mui/icons-material/LocationOn';
@@ -99,11 +99,16 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [isShowAllAttendees, setIsShowAllAttendees] = useState(false);
 
-  const [isFirstQuiz, setIsFirstQuiz] = useState(true);
   const [showAllLeaders, setShowAllLeaders] = useState(false);
   const [leaderBoardMode, setLeaderBoardMode] = useState('');
 
+  const [hasTrees, setHasTrees] = useState(null);
+  const onFetchedTrees = useCallback(async (trees: PartialTree[]) => {
+    setHasTrees(!!trees?.length);
+  }, []);
+
   const checkinFormRef = useRef<CheckinFormHandle>();
+  const treeIdQuizHandle = useRef<TreeIdQuizHandle>();
 
   // Preload species to immediately have quiz options
   const { data: prioritySpecies, isFetched } = useGet<PartialSpecies>(
@@ -131,7 +136,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
   const getMembershipStatus = async (fields?: CheckinFields) => {
     setIsLoading(true);
-    console.log('get status', fields);
     if (fields?.email) setEmail(fields.email);
     const url = `/api/events/${event.id}/checkin?email=${encodeURIComponent(fields?.email || email)}&firstName=${encodeURIComponent(
       fields?.firstName || '',
@@ -202,7 +206,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
   const onQuizDialogClose = () => {
     refetchLeaders();
-    setIsFirstQuiz(false);
   };
 
   return (
@@ -346,63 +349,86 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
             <Box sx={{ textAlign: 'right', mt: -1.5, mb: 0.2, fontSize: '80%', pl: 0.5, pr: 0.5 }}>
               <SplitRow>
-                <a
-                  onClick={() => {
-                    //window.location.reload();
-                    setIsQuizRefreshing(true);
-                  }}
-                  style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '4px', alignItems: 'center', color: '#6e4854' }}
-                >
-                  <AutorenewIcon sx={{ fontSize: 'inherit' }} /> <Box sx={{ textDecoration: 'underline' }}>Reload</Box>
-                </a>
+                {hasTrees ? (
+                  <a
+                    onClick={() => {
+                      //window.location.reload();
+                      setIsQuizRefreshing(true);
+                    }}
+                    style={{
+                      textDecoration: 'none',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      gap: '4px',
+                      alignItems: 'center',
+                      color: '#6e4854',
+                    }}
+                  >
+                    <AutorenewIcon sx={{ fontSize: 'inherit' }} /> <Box sx={{ textDecoration: 'underline' }}>Reload</Box>
+                  </a>
+                ) : (
+                  <></>
+                )}
                 <a
                   onClick={() => {
                     if (!hasActiveMembership) {
                       setIsMembershipDialogOpen(true);
                     } else setIsAddTreeDialogOpen(true);
                   }}
-                  style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', gap: '3px', alignItems: 'center', color: '#6e4854' }}
+                  style={{
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    gap: '3px',
+                    alignItems: 'center',
+                    color: '#6e4854',
+                  }}
                 >
                   <LoupeIcon sx={{ fontSize: 'inherit' }}></LoupeIcon> <Box sx={{ textDecoration: 'underline' }}>Add a tree</Box>
                 </a>
               </SplitRow>
               <BecomeAMemberDialog open={isMembershipDialogOpen} setOpen={setIsMembershipDialogOpen}></BecomeAMemberDialog>
             </Box>
-            <TreeIdQuiz
-              eventId={event.id}
-              isRefreshing={isQuizRefreshing}
-              defaultLatitude={Number(event.location?.latitude)}
-              defaultLongitude={Number(event.location?.longitude)}
-              setIsRefreshing={setIsQuizRefreshing}
-              mapHeight='250px'
-              onCloseDialog={onQuizDialogClose}
-            ></TreeIdQuiz>
-            {isFirstQuiz && (
-              <Box sx={{ mt: -4, fontSize: '95%', zIndex: 1000, position: 'relative' }}>
+
+            <Box sx={{ position: 'relative' }}>
+              <TreeIdQuiz
+                ref={treeIdQuizHandle}
+                eventId={event.id}
+                event={event}
+                isRefreshing={isQuizRefreshing}
+                defaultLatitude={Number(event.location?.latitude)}
+                defaultLongitude={Number(event.location?.longitude)}
+                setIsRefreshing={setIsQuizRefreshing}
+                mapHeight='250px'
+                onCloseDialog={onQuizDialogClose}
+                onFetched={onFetchedTrees}
+              ></TreeIdQuiz>
+              {hasTrees === false && (
                 <Box
-                  style={{
-                    textDecoration: 'none',
+                  sx={{
+                    zIndex: 1001,
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    height: '100%',
+                    width: '100%',
+                    backgroundColor: '#808080e8',
+                    color: 'white',
                     display: 'flex',
-                    gap: '3px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#486e62',
-                    padding: '3px 5px',
-                    backgroundColor: '#FFCC37',
-                    borderRadius: '16px',
-                    width: '160px',
-                    textAlign: 'center',
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
                   }}
-                  className='box-shadow'
                 >
-                  <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a pin to begin
+                  <Box sx={{ margin: 'auto', width: '90%', justifySelf: 'center', textAlign: 'center' }}>
+                    <Typography sx={{ fontSize: '18px', lineHeight: 1.2 }}>
+                      Return to this page later in the event to test your memory!
+                    </Typography>
+                    <Typography sx={{ fontSize: '12px', mt: 0.2 }}>(Scan QR or visit checkin.tfyp.org)</Typography>
+                  </Box>
                 </Box>
-              </Box>
-            )}
+              )}
+            </Box>
+
             {sessionId && (
-              <Box sx={{ textAlign: 'center', fontSize: '80%', mt: 1, mb: -1, mr: 0.5 }}>
+              <Box sx={{ textAlign: 'center', fontSize: '80%', mt: 1, mb: hasTrees ? -1 : 1, mr: 0.5 }}>
                 <a
                   onClick={() => {
                     setIsEditTreeDialogOpen(true);
@@ -427,15 +453,16 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 ></EditSessionTreesDialog>
               </Box>
             )}
-            <TreeIdLeaderPosition
-              isLoading={isFetchingLeaders}
-              leaders={leaders}
-              setShowAll={setShowAllLeaders}
-              showAll={showAllLeaders}
-              leaderBoardMode={leaderBoardMode}
-              setLeaderBoardMode={setLeaderBoardMode}
-            ></TreeIdLeaderPosition>
-
+            {hasTrees && (
+              <TreeIdLeaderPosition
+                isLoading={isFetchingLeaders}
+                leaders={leaders}
+                setShowAll={setShowAllLeaders}
+                showAll={showAllLeaders}
+                leaderBoardMode={leaderBoardMode}
+                setLeaderBoardMode={setLeaderBoardMode}
+              ></TreeIdLeaderPosition>
+            )}
             <IdentifyTreeFlowDialog
               open={isAddTreeDialogOpen}
               setOpen={setIsAddTreeDialogOpen}
@@ -444,6 +471,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               }}
               latitude={event.location ? Number(event.location.latitude) : null}
               longitude={event.location ? Number(event.location.longitude) : null}
+              eventId={event.id}
             ></IdentifyTreeFlowDialog>
           </Box>
           <Attendees

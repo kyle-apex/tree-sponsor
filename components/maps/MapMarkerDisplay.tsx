@@ -2,7 +2,7 @@
 import MapGL, { GeolocateControl, MapRef, NavigationControl, WebMercatorViewport } from 'react-map-gl';
 import { QuizCoordinate, Coordinate, MapStyle, Viewport } from 'interfaces';
 import MapMarker from 'components/sponsor/MapMarker';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useContext } from 'react';
 import { useTheme } from '@mui/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import centerViewport from 'utils/maps/center-viewport';
@@ -11,6 +11,7 @@ import CornerEditIcon from 'components/tree/CornerEditIcon';
 import { useDebouncedCallback } from 'use-debounce';
 import GoogleMapReact from 'google-map-react';
 import Box from '@mui/material/Box';
+import QuizContext from 'components/tree/QuizContext';
 
 const geolocateControlStyle = {
   right: 8,
@@ -50,7 +51,7 @@ const MapMarkerDisplay = ({
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
   const [zoom, setZoom] = useState(16);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  //const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [viewport, setViewport] = useState<Partial<Viewport>>({
     width: '100%',
@@ -59,7 +60,10 @@ const MapMarkerDisplay = ({
     longitude: defaultLongitude || -97.7505386,
     zoom: defaultZoom || 10.7,
   });
+  const quizContext = useContext(QuizContext);
+
   useEffect(() => {
+    //console.log('changed markers', showLocation);
     if (!showLocation) {
       //console.log('viewport', viewport);
       const centeredViewport = centerViewport(
@@ -68,17 +72,14 @@ const MapMarkerDisplay = ({
         mapRef?.current ? mapRef?.current?.getMap()?._containerWidth || 350 : 350,
         height ? Number(height.replace('px', '').replace('%', '')) : 250,
       );
-      //const map = mapRef.current.getMap();
-      //console.log('map', map);
-      //https://stackoverflow.com/questions/37100144/consume-arcgis-map-service-into-mapbox-gl-api
-      //console.log('centeredViewport', centeredViewport);
+
+      // added to trigger a google maps change
+      centeredViewport.latitude = centeredViewport.latitude + Math.random() * 0.0001;
+      centeredViewport.longitude = centeredViewport.longitude + Math.random() * 0.0001;
+      centeredViewport.zoom = centeredViewport.zoom + Math.random() * 0.0001;
       setViewport(centeredViewport);
-      setIsRefreshing(true);
-      setTimeout(() => {
-        setIsRefreshing(false);
-      }, 1);
     }
-  }, [markers, showLocation]);
+  }, [quizContext?.isRefreshing, markers?.length, showLocation]);
 
   useEffect(() => {
     const map = mapRef.current?.getMap();
@@ -112,7 +113,7 @@ const MapMarkerDisplay = ({
     <>
       {isGoogle && (
         <Box sx={{ height: '300px' }}>
-          {!isRefreshing && (
+          {true && (
             <GoogleMapReact
               bootstrapURLKeys={{ key: process.env.NEXT_PUBLIC_GOOGLE_STREET_VIEW_KEY }}
               defaultCenter={{ lat: 30.2594625, lng: -97.7505386 }}
@@ -120,7 +121,6 @@ const MapMarkerDisplay = ({
               zoom={viewport.zoom + 0.5}
               options={{ mapTypeId: 'hybrid', fullscreenControl: false }}
               onZoomAnimationEnd={a => {
-                console.log('google zoom', a);
                 setZoom(a);
               }}
             >

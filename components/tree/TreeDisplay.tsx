@@ -12,7 +12,7 @@ import ChevronLeft from '@mui/icons-material/ChevronLeft';
 import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import React, { SetStateAction, useState } from 'react';
+import React, { SetStateAction, useContext, useMemo, useState } from 'react';
 import { PartialTree } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 import Box from '@mui/material/Box';
@@ -24,6 +24,7 @@ import { useSwipeable } from 'react-swipeable';
 import MobileStepper from '@mui/material/MobileStepper';
 import useTheme from '@mui/styles/useTheme';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import QuizContext from './QuizContext';
 
 // TODO
 const useStyles = makeStyles(() => ({
@@ -40,6 +41,7 @@ const TreeDisplay = ({
   hasFullHeightImage,
   title,
   eventId,
+  onNextTree,
 }: {
   tree?: PartialTree;
   isEditMode?: boolean;
@@ -48,6 +50,7 @@ const TreeDisplay = ({
   hasFullHeightImage?: boolean;
   title?: string;
   eventId?: number;
+  onNextTree?: (isPrev?: boolean) => void;
 }) => {
   const classes = useStyles();
 
@@ -229,18 +232,6 @@ const TreeDisplay = ({
           <PhotoViewDialog imageUrl={activePhotoUrl} open={isPhotoViewOpen} setOpen={setIsPhotoViewOpen}></PhotoViewDialog>
           {hasSpeciesQuiz && (
             <CardContent sx={{ flex: '1 1 100%', background: 'url(/background-lighter.svg)' }}>
-              {false && (
-                <Typography
-                  variant='h6'
-                  color='secondary'
-                  sx={{ textAlign: isMobile && leafImage ? 'left' : 'center' }}
-                  mt={isMobile ? -1 : 0}
-                  mb={2}
-                >
-                  Tree ID Quiz
-                </Typography>
-              )}
-
               <SpeciesQuiz
                 correctSpecies={tree.species}
                 treeId={tree.id}
@@ -248,6 +239,7 @@ const TreeDisplay = ({
                 subtitleSx={{ textAlign: isMobile && leafImage ? 'left' : 'center' }}
                 hasLeaf={!!leafImage}
                 onClose={handleClose}
+                onNextTree={onNextTree}
               ></SpeciesQuiz>
 
               {handleClose && (

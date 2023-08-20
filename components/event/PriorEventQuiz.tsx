@@ -34,7 +34,6 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   const [isLoadingInstagram, setIsLoadingInstagram] = useState(!!event.instagramPostId);
   const tabsRef = useRef<HTMLElement>();
 
-  const [isFirstQuiz, setIsFirstQuiz] = useState(true);
   const [isQuizRefreshing, setIsQuizRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useHash(event.instagramPostId ? 'overview' : 'trees', ['overview', 'trees']);
 
@@ -48,7 +47,6 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
       fields?.discoveredFrom || '',
     )}&emailOptIn=${fields?.isEmailOptIn || ''}`;
     const results = (await parsedGet(url)) as MembershipStatus;
-    console.log('results', results);
 
     if (results?.email) {
       setStoredEmail(results.email);
@@ -73,16 +71,12 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
     { refetchOnMount: true, refetchOnWindowFocus: true },
   );
 
-  console.log('leaders', leaders);
-
   const isMember = !!leaders?.find(leader => {
     return leader.isCurrentUser && leader.isMember;
   });
-  console.log('isMember', isMember, 'isFetching', isFetching);
 
   const onQuizDialogClose = () => {
     refetchLeaders();
-    setIsFirstQuiz(false);
   };
 
   const logout = () => {
@@ -159,7 +153,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
             </Box>
             {hasFloatingTabs && (
               <Box
-                sx={{ borderBottom: 1, borderColor: 'divider', zIndex: 7000, width: floatingTabsWidth + 'px' }}
+                sx={{ borderBottom: 1, borderColor: 'divider', zIndex: 1200, width: floatingTabsWidth + 'px' }}
                 mb={2}
                 className={'checkin-floating-tabs'}
               >
@@ -209,7 +203,6 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
                 setIsLoadingInstagram(true);
               }}
               onSuccess={() => {
-                console.log('scu');
                 setIsLoadingInstagram(false);
               }}
               onAfterRender={() => {
@@ -301,7 +294,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
                 display: 'flex',
               }}
             >
-              <Box sx={{ margin: 'auto', width: '80%', justifySelf: 'center', fontSize: '20px' }}>
+              <Box sx={{ margin: 'auto', width: '80%', justifySelf: 'center', fontSize: '20px', textAlign: 'center' }}>
                 Enter your email address above to record your results
               </Box>
             </Box>
@@ -326,6 +319,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
           <Box>
             <TreeIdQuiz
               eventId={event.id}
+              event={event}
               isRefreshing={isQuizRefreshing}
               defaultLatitude={Number(event.location?.latitude)}
               defaultLongitude={Number(event.location?.longitude)}
@@ -334,39 +328,17 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
               onCloseDialog={onQuizDialogClose}
             ></TreeIdQuiz>
           </Box>
-          {isFirstQuiz && (
-            <Box sx={{ mt: -4, fontSize: '95%', zIndex: 1000, position: 'relative' }}>
-              <Box
-                style={{
-                  textDecoration: 'none',
-                  display: 'flex',
-                  gap: '3px',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#486e62',
-                  padding: '3px 5px',
-                  backgroundColor: '#FFCC37',
-                  borderRadius: '16px',
-                  width: '160px',
-                  textAlign: 'center',
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
-                }}
-                className='box-shadow'
-              >
-                <PinIcon sx={{ fontSize: 'inherit' }}></PinIcon> Tap a pin to begin
-              </Box>
-            </Box>
-          )}
 
-          <TreeIdLeaderPosition
-            isLoading={isFetching}
-            leaders={leaders}
-            setShowAll={setShowAllLeaders}
-            showAll={showAllLeaders}
-            leaderBoardMode={leaderBoardMode}
-            setLeaderBoardMode={setLeaderBoardMode}
-          ></TreeIdLeaderPosition>
+          {isLoggedIn && (
+            <TreeIdLeaderPosition
+              isLoading={isFetching}
+              leaders={leaders}
+              setShowAll={setShowAllLeaders}
+              showAll={showAllLeaders}
+              leaderBoardMode={leaderBoardMode}
+              setLeaderBoardMode={setLeaderBoardMode}
+            ></TreeIdLeaderPosition>
+          )}
         </Box>
       )}
       {!isMember && !isFetching && (

@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     tree.sessionId = req.body.sessionId ? req.body.sessionId : uuidv4();
 
-    const upsertedTree = await upsertTree(tree, userId);
+    const upsertedTree = await upsertTree(tree, userId, req.body.eventId);
 
     res.status(200).json(upsertedTree);
   } else if (req.method === 'GET') {

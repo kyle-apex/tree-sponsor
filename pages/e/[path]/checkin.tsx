@@ -42,6 +42,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         location: {},
       },
     });
+    console.log('event1', event);
     formatServerProps(event);
 
     return { props: { event } };
