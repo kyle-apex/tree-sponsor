@@ -577,9 +577,10 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
       <TreeDisplayDialog tree={selectedTree} open={isDialogOpen} setOpen={setIsDialogOpen} eventId={event.id}></TreeDisplayDialog>
 
-      {!status && event.location && (
+      {!status?.myCheckin && event.location && (
         <Box sx={{ display: 'none' }}>
           <MapMarkerDisplay
+            isGoogle={true}
             markers={[{ latitude: Number(event.location.latitude), longitude: Number(event.location.longitude) }]}
             height='200px'
             mapStyle='SATELLITE'
