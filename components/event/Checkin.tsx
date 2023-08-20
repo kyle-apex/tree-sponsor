@@ -577,7 +577,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
       <TreeDisplayDialog tree={selectedTree} open={isDialogOpen} setOpen={setIsDialogOpen} eventId={event.id}></TreeDisplayDialog>
 
-      {false && !status?.myCheckin && event.location && (
+      {!status?.myCheckin && event.location && (
         <Box sx={{ display: 'none' }}>
           <MapMarkerDisplay
             isGoogle={true}
