@@ -20,6 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (eventId) eventLeaders = await listTopQuizResponders(req.query.year as string, eventId);*/
 
   function addLeader(leader: LeaderRow) {
+    if (!leader.user) leader.user = { name: 'You' };
     results.push(leader); //{ ...leader.user, count: leader.count, rank: leader.position });
   }
 
@@ -42,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
     currentLeader = { user, count: 0, position: lastPosition, isMember: user?.subscriptions?.length > 0 };
   }
-  currentLeader.isCurrentUser = true;
+  if (currentLeader) currentLeader.isCurrentUser = true;
 
   if (!showAll || leaders?.length == 0) {
     const currentIndex = leaders.indexOf(currentLeader);
@@ -82,7 +83,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (lastPositionUserCount > 0) {
       const excludedUserIds: number[] = leaders.map(leader => leader.user?.id);
-      excludedUserIds.push(currentLeader.user.id);
+      if (currentLeader?.user?.id) excludedUserIds.push(currentLeader.user.id);
       const oneYearAgo = new Date();
       oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
       const lastPositionUsers = await prisma.eventCheckIn.findMany({
@@ -115,7 +116,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         isCurrentUser: !!(leader.user?.email == currentLeader?.user?.email && currentLeader?.user?.email),
       });
     });
-    if (!leaders?.find(leader => leader.isCurrentUser)) addLeader(currentLeader);
+    if (!leaders?.find(leader => leader.isCurrentUser) && currentLeader) addLeader(currentLeader);
   }
 
   results?.forEach(result => {
