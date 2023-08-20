@@ -2,7 +2,7 @@
 import MapGL, { GeolocateControl, MapRef, NavigationControl, WebMercatorViewport } from 'react-map-gl';
 import { QuizCoordinate, Coordinate, MapStyle, Viewport } from 'interfaces';
 import MapMarker from 'components/sponsor/MapMarker';
-import { useRef, useState, useEffect, useContext } from 'react';
+import { useRef, useState, useEffect, useContext, useCallback } from 'react';
 import { useTheme } from '@mui/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import centerViewport from 'utils/maps/center-viewport';
@@ -51,6 +51,7 @@ const MapMarkerDisplay = ({
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
   const [zoom, setZoom] = useState(16);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   //const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [viewport, setViewport] = useState<Partial<Viewport>>({
@@ -62,53 +63,86 @@ const MapMarkerDisplay = ({
   });
   const quizContext = useContext(QuizContext);
 
+  const centerMapViewport = useCallback(() => {
+    const centeredViewport = centerViewport(
+      viewport as Viewport,
+      markers,
+      mapRef?.current ? mapRef?.current?.getMap()?._containerWidth || 350 : 350,
+      height ? Number(height.replace('px', '').replace('%', '')) : 300,
+    );
+    centeredViewport.latitude = centeredViewport.latitude + Math.random() * 0.0001;
+    centeredViewport.longitude = centeredViewport.longitude + Math.random() * 0.0001;
+    centeredViewport.zoom = centeredViewport.zoom + Math.random() * 0.0001;
+
+    setViewport(centeredViewport);
+  }, [height, viewport]);
+
   useEffect(() => {
-    //console.log('changed markers', showLocation);
-    if (!showLocation) {
+    console.log('changed markers', markers?.length, showLocation, quizContext?.isRefreshing);
+    if (!showLocation && markers?.length && !quizContext?.isRefreshing) {
       //console.log('viewport', viewport);
       const centeredViewport = centerViewport(
         viewport as Viewport,
         markers,
         mapRef?.current ? mapRef?.current?.getMap()?._containerWidth || 350 : 350,
-        height ? Number(height.replace('px', '').replace('%', '')) : 250,
+        height ? Number(height.replace('px', '').replace('%', '')) : 300,
       );
 
       // added to trigger a google maps change
+
+      /*if (isInitialLoad) {
+        //setIsInitialLoad(false);
+        console.log('called useEffect');
+        const timeout = setTimeout(() => {
+          console.log('ceneredViewport', centeredViewport);
+          centeredViewport.latitude = centeredViewport.latitude + Math.random() * 0.0001;
+          centeredViewport.longitude = centeredViewport.longitude + Math.random() * 0.0001;
+          centeredViewport.zoom = centeredViewport.zoom + Math.random() * 0.0001;
+          setViewport(centeredViewport);
+        }, 1000);
+        return () => {
+          clearTimeout(timeout);
+        };
+      } else {*/
       centeredViewport.latitude = centeredViewport.latitude + Math.random() * 0.0001;
       centeredViewport.longitude = centeredViewport.longitude + Math.random() * 0.0001;
       centeredViewport.zoom = centeredViewport.zoom + Math.random() * 0.0001;
+      //}
+
       setViewport(centeredViewport);
     }
   }, [quizContext?.isRefreshing, markers?.length, showLocation]);
 
   useEffect(() => {
-    const map = mapRef.current?.getMap();
-    map?.on('load', function () {
-      map.addSource('arcgis', {
-        type: 'raster',
-        tiles: [
-          'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=' +
-            process.env.NEXT_PUBLIC_ARCGIS_TOKEN,
-        ],
-        minzoom: 0,
-        maxzoom: 19,
+    if (!isGoogle) {
+      const map = mapRef.current?.getMap();
+      map?.on('load', function () {
+        map.addSource('arcgis', {
+          type: 'raster',
+          tiles: [
+            'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=' +
+              process.env.NEXT_PUBLIC_ARCGIS_TOKEN,
+          ],
+          minzoom: 0,
+          maxzoom: 19,
+        });
+        map.addLayer({
+          id: 'arcgis-layer',
+          source: 'arcgis',
+          type: 'raster',
+          minzoom: 0,
+          maxzoom: 24,
+        });
+        map.moveLayer('arcgis-layer', 'satellite');
+        map.removeLayer('satellite');
       });
-      map.addLayer({
-        id: 'arcgis-layer',
-        source: 'arcgis',
-        type: 'raster',
-        minzoom: 0,
-        maxzoom: 24,
-      });
-      map.moveLayer('arcgis-layer', 'satellite');
-      map.removeLayer('satellite');
-    });
+    }
   }, []);
 
   const debouncedOnViewportChange = useDebouncedCallback((viewport: Partial<Viewport>) => {
     if (onViewportChange) onViewportChange(viewport);
   }, 200);
-
+  console.log('markers', markers);
   return (
     <>
       {isGoogle && (
@@ -116,12 +150,20 @@ const MapMarkerDisplay = ({
           {true && (
             <GoogleMapReact
               bootstrapURLKeys={{ key: process.env.NEXT_PUBLIC_GOOGLE_STREET_VIEW_KEY }}
-              defaultCenter={{ lat: 30.2594625, lng: -97.7505386 }}
               center={{ lat: viewport.latitude, lng: viewport.longitude }}
               zoom={viewport.zoom + 0.5}
               options={{ mapTypeId: 'hybrid', fullscreenControl: false }}
               onZoomAnimationEnd={a => {
                 setZoom(a);
+              }}
+              onGoogleApiLoaded={centerMapViewport}
+              onTilesLoaded={() => {
+                console.log('tiles loaded');
+                if (isInitialLoad) {
+                  setIsInitialLoad(false);
+                  centerMapViewport();
+                  console.log('tiles loaded3');
+                }
               }}
             >
               {markers?.map(marker => {
