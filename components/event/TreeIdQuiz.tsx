@@ -200,7 +200,17 @@ const TreeIdQuiz = forwardRef(
           )}
         </Box>
         {isFetched && trees?.length > 0 && isFirstQuiz && (
-          <Box sx={{ mt: event?.hasSpecificTrees ? '-50px' : -4, fontSize: '95%', zIndex: 1000, position: 'relative' }}>
+          <Box
+            sx={{
+              mt: event?.hasSpecificTrees ? '-50px' : -4,
+              fontSize: '95%',
+              zIndex: 1000,
+              position: 'relative',
+              width: event?.hasSpecificTrees ? '125px' : '175px',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+            }}
+          >
             <Box
               style={{
                 textDecoration: 'none',
