@@ -1,5 +1,5 @@
 import { create } from 'domain';
-import { PartialCategory, PartialEvent, PartialUser } from 'interfaces';
+import { PartialCategory, PartialEvent, PartialTree, PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { getSession } from 'utils/auth/get-session';
@@ -56,6 +56,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       upsertedEvent = await prisma.event.create({ data: data });
     } else {
       delete req.body.location;
+      const trees = req.body.trees;
+      delete req.body.trees;
       const data = { ...req.body } as Prisma.EventUncheckedUpdateInput;
       //delete data.categories;
 
@@ -81,6 +83,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const newLocation = await prisma.location.create({ data: { ...event.location } });
         data.locationId = newLocation.id;
       }
+      trees?.forEach(async (tree: PartialTree, idx: number) => {
+        await prisma.treeToEvent.update({ where: { treeId_eventId: { treeId: tree.id, eventId: event.id } }, data: { sequence: idx } });
+      });
 
       upsertedEvent = await prisma.event.update({ data, where: { id: event.id } });
     }

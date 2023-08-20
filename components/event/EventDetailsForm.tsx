@@ -15,6 +15,8 @@ import LocationSelector from 'components/LocationSelector';
 import { paramCase } from 'change-case';
 import { useDebouncedCallback } from 'use-debounce';
 import UserMultiSelect from './UserMultiSelect';
+import DragDropTreeOrder from './DragDropTreeOrder';
+import Typography from '@mui/material/Typography';
 
 const TextEditor = dynamic(() => import('components/TextEditor'), {
   ssr: false,
@@ -221,6 +223,14 @@ const EventDetailsForm = ({
               ></DateTimeField>
             </SplitRow>
           </Collapse>
+        </>
+      )}
+      {event?.id && event?.hasSpecificTrees && event?.trees?.length && (
+        <>
+          <Typography variant='h2' color='secondary'>
+            Tree Ordering
+          </Typography>
+          <DragDropTreeOrder defaultTrees={event.trees}></DragDropTreeOrder>
         </>
       )}
       <Box mb={3}>
