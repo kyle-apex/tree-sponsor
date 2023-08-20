@@ -125,6 +125,8 @@ const SpeciesQuiz = ({
 
       const response = { treeId, eventId, isCorrect, incorrectGuessName, email };
       await saveResponse(response);
+      const tree = trees.find((tree: PartialTree) => tree.id == treeId) as PartialTree;
+      tree.speciesQuizResponses = [response];
       updateTreeById(treeId, { newResponse: response });
     }
   };
