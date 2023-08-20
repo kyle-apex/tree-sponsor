@@ -105,7 +105,7 @@ const TreeIdLeaderPosition = ({
                   pb: '3px',
                   mb: '3px',
                 }}
-                key={user.name}
+                key={user?.name + '|' + idx}
               >
                 <Box sx={{ fontWeight: 600, flex: '1 0 40px', textAlign: 'center', marginRight: 0.5 }}>
                   <Typography sx={{ display: 'inline' }}>
@@ -123,16 +123,20 @@ const TreeIdLeaderPosition = ({
                     </sup>
                   )}
                 </Box>
-                <Box>
-                  <UserAvatar image={user.image} name={user.displayName || user.name} size={idx == 1 ? 26 : 26} />
-                </Box>
+                {user && (
+                  <Box>
+                    <UserAvatar image={user.image} name={user.displayName || user.name} size={idx == 1 ? 26 : 26} />
+                  </Box>
+                )}
 
-                <Typography
-                  variant='subtitle2'
-                  sx={{ ml: 1, flex: '1 1 100%', display: 'flex', alignContent: 'center', alignItems: 'center', gap: '5px', pr: 0.5 }}
-                >
-                  {user.displayName || user.name} {leader.isMember && <SupporterIcon fontSize='small' color='primary'></SupporterIcon>}
-                </Typography>
+                {user && (
+                  <Typography
+                    variant='subtitle2'
+                    sx={{ ml: 1, flex: '1 1 100%', display: 'flex', alignContent: 'center', alignItems: 'center', gap: '5px', pr: 0.5 }}
+                  >
+                    {user.displayName || user.name} {leader.isMember && <SupporterIcon fontSize='small' color='primary'></SupporterIcon>}
+                  </Typography>
+                )}
 
                 <Typography
                   variant='subtitle2'

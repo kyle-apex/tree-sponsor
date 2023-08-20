@@ -1,5 +1,6 @@
 import { PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
+import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { getSession } from 'utils/auth/get-session';
 import { prisma } from 'utils/prisma/init';
 
@@ -9,11 +10,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let userId;
 
     userId = session?.user?.id;
+    const email = req.body.email;
 
     if (!userId) {
       const user = (await prisma.user.findFirst({ where: { email: req.body.email } })) as PartialUser;
       userId = user?.id;
     }
+
+    if (!userId && email && /.+@.+\..+/.test(email)) {
+      // create user?
+      const newUser = await prisma.user.create({ data: { email } });
+      userId = newUser?.id;
+    }
+
+    if (!userId) return throwUnauthenticated(res);
 
     delete req.body.email;
 
