@@ -14,8 +14,7 @@ interface DragItem {
   id: string;
   type: string;
 }
-const DragDropTree = ({ id, text, index, moveCard, tree }: { id: any; text: string; index: number; moveCard: any; tree: PartialTree }) => {
-  const previewRef = useRef<HTMLLIElement>(null);
+const DragDropTree = ({ id, index, moveCard, tree }: { id: any; text: string; index: number; moveCard: any; tree: PartialTree }) => {
   const handleRef = useRef<HTMLLIElement>(null);
 
   const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
