@@ -241,9 +241,9 @@ model Tree {
 }
 
 model TreeToEvent {
-  tree     Tree  @relation(fields: [treeId], references: [id])
+  tree     Tree  @relation(fields: [treeId], references: [id], onDelete: Cascade)
   treeId   Int // relation scalar field (used in the `@relation` attribute above)
-  event    Event @relation(fields: [eventId], references: [id])
+  event    Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId  Int // relation scalar field (used in the `@relation` attribute above)
   sequence Int   @default(0)
 
