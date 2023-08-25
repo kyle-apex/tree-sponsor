@@ -20,6 +20,7 @@ import Tab from '@mui/material/Tab';
 import useHash from 'utils/hooks/use-hash';
 import Skeleton from '@mui/material/Skeleton';
 import SearchIcon from '@mui/icons-material/Search';
+import Link from 'next/link';
 
 const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', '');
@@ -362,18 +363,11 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
           <Typography variant='body2'>
             Be a lasting part of that future by becoming a Supporting Member with a $20/yr annual donation:
           </Typography>
-          <Button
-            sx={{ cursor: 'pointer', mt: 2 }}
-            variant='contained'
-            color='secondary'
-            onClick={() => {
-              setActiveTab('trees');
-              tabsRef?.current.scrollIntoView();
-            }}
-            fullWidth
-          >
-            Become a Supporting Member
-          </Button>
+          <Link href='/membership'>
+            <Button sx={{ cursor: 'pointer', mt: 2 }} variant='contained' color='secondary' fullWidth>
+              Become a Supporting Member
+            </Button>
+          </Link>
         </Box>
       )}
       {isLoggedIn && <PriorEventList currentEventId={event.id} hasTreeQuizByDefault={activeTab != 'overview'}></PriorEventList>}

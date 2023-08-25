@@ -78,38 +78,10 @@ const MapMarkerDisplay = ({
   }, [height, viewport]);
 
   useEffect(() => {
-    console.log('changed markers', markers?.length, showLocation, quizContext?.isRefreshing);
+    //console.log('changed markers', markers?.length, showLocation, quizContext?.isRefreshing);
     if (!showLocation && markers?.length && !quizContext?.isRefreshing) {
       //console.log('viewport', viewport);
-      const centeredViewport = centerViewport(
-        viewport as Viewport,
-        markers,
-        mapRef?.current ? mapRef?.current?.getMap()?._containerWidth || 350 : 350,
-        height ? Number(height.replace('px', '').replace('%', '')) : 300,
-      );
-
-      // added to trigger a google maps change
-
-      /*if (isInitialLoad) {
-        //setIsInitialLoad(false);
-        console.log('called useEffect');
-        const timeout = setTimeout(() => {
-          console.log('ceneredViewport', centeredViewport);
-          centeredViewport.latitude = centeredViewport.latitude + Math.random() * 0.0001;
-          centeredViewport.longitude = centeredViewport.longitude + Math.random() * 0.0001;
-          centeredViewport.zoom = centeredViewport.zoom + Math.random() * 0.0001;
-          setViewport(centeredViewport);
-        }, 1000);
-        return () => {
-          clearTimeout(timeout);
-        };
-      } else {*/
-      centeredViewport.latitude = centeredViewport.latitude + Math.random() * 0.0001;
-      centeredViewport.longitude = centeredViewport.longitude + Math.random() * 0.0001;
-      centeredViewport.zoom = centeredViewport.zoom + Math.random() * 0.0001;
-      //}
-
-      setViewport(centeredViewport);
+      centerMapViewport();
     }
   }, [quizContext?.isRefreshing, markers?.length, showLocation]);
 
@@ -142,7 +114,6 @@ const MapMarkerDisplay = ({
   const debouncedOnViewportChange = useDebouncedCallback((viewport: Partial<Viewport>) => {
     if (onViewportChange) onViewportChange(viewport);
   }, 200);
-  console.log('markers', markers);
   return (
     <>
       {isGoogle && (
@@ -158,11 +129,9 @@ const MapMarkerDisplay = ({
               }}
               onGoogleApiLoaded={centerMapViewport}
               onTilesLoaded={() => {
-                console.log('tiles loaded');
                 if (isInitialLoad) {
                   setIsInitialLoad(false);
                   centerMapViewport();
-                  console.log('tiles loaded3');
                 }
               }}
             >
@@ -221,21 +190,6 @@ const MapMarkerDisplay = ({
               style={{ ...geolocateControlStyle }}
               positionOptions={{ enableHighAccuracy: true }}
               trackUserLocation={false}
-              // eslint-disable-next-line @typescript-eslint/no-empty-function
-
-              onGeolocate={(_e: any) => {
-                //console.log('on geolocate', e);
-                //if (zoomToLocation || geolocatedRef.current) {
-                /*setViewport({
-              longitude: e.coords.longitude,
-              latitude: e.coords.latitude,
-              zoom: defaultZoom,
-              width: '100%',
-              height: height || '100%',
-            });*/
-                //}
-                //geolocatedRef.current = true;
-              }}
               fitBoundsOptions={{ maxZoom: defaultZoom + 0.5, defaultZoom }}
             />
           )}
