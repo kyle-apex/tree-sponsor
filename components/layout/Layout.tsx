@@ -22,7 +22,7 @@ const Layout = ({
   header,
   isFullWidth,
   description = 'TreeFolks Young Professionals (ages 21–40ish) volunteer, educate, fundraise, and build community in support of the mission of TreeFolks: planting, caring for, and giving people free trees to plant!',
-  ogImage = process.env.NEXT_PUBLIC_OG_IMAGE || 'https://tfyp-images.s3.amazonaws.com/og-image.png',
+  ogImage = process.env.NEXT_PUBLIC_OG_IMAGE || '/preview-images/index.jpeg',
 }: Props) => (
   <>
     <Head>

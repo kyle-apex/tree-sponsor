@@ -8,11 +8,13 @@ import formatServerProps from 'utils/api/format-server-props';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 import PriorEventQuiz from 'components/event/PriorEventQuiz';
 
+const shareDescription = 'Recap recent TreeFolksYP events and trees with our Tree ID Guessing Game.';
+
 const CheckinPage = ({ event }: { event: PartialEvent }) => {
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
 
   return (
-    <Layout title='Event Tree ID' header='TreeFolksYP' ogImage='/preview-images/past.png'>
+    <Layout title='Event Tree ID' header='TreeFolksYP' ogImage='/preview-images/past.png' description={shareDescription}>
       <LogoMessage justifyContent='start'>
         <PriorEventQuiz event={parsedEvent} />
       </LogoMessage>
