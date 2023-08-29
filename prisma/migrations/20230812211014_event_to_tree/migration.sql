@@ -72,3 +72,6 @@ ALTER TABLE
   `Event`
 ADD
   COLUMN `hasSpecificTrees` BOOLEAN NULL DEFAULT false;
+
+ALTER TABLE `SpeciesQuizResponse`
+ADD CONSTRAINT UniqueTreeIdUserId UNIQUE (TreeId,UserId);

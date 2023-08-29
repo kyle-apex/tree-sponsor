@@ -400,6 +400,8 @@ model SpeciesQuizResponse {
   treeId             Int?
   eventId            Int?
   event              Event?    @relation(fields: [eventId], references: [id])
+
+  @@unique([userId, treeId])
 }
 
 model Location {
