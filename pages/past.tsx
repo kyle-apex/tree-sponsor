@@ -20,7 +20,6 @@ export async function getServerSideProps() {
     },
     orderBy: { startDate: 'desc' },
   });
-  console.log('event', event);
 
   return {
     props: {

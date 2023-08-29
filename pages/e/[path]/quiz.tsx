@@ -12,7 +12,7 @@ const CheckinPage = ({ event }: { event: PartialEvent }) => {
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
 
   return (
-    <Layout title='Event Tree ID' header='TreeFolksYP'>
+    <Layout title='Event Tree ID' header='TreeFolksYP' ogImage='/preview-images/past.png'>
       <LogoMessage justifyContent='start'>
         <PriorEventQuiz event={parsedEvent} />
       </LogoMessage>
