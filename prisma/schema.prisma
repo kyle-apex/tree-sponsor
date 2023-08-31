@@ -71,6 +71,8 @@ model User {
   sponsorships             Sponsorship[]
   comments                 Comment[]
   reactions                Reaction[]
+  referralUserId           Int?
+  referralUser             User?                     @relation("referralUser", fields: [referralUserId], references: [id])
 
   commentReactions      CommentReaction[]
   notifications         Notification[]        @relation("user")
@@ -86,6 +88,7 @@ model User {
   organizedEvents       Event[]               @relation("OrganizerToEvent")
   groups                TreeGroup[]
   treeToGroupLinks      TreeToGroup[]
+  referredUsers         User[]                @relation("referralUser")
 
   @@map(name: "users")
 }
@@ -141,6 +144,7 @@ model SubscriptionWithDetails {
   stripeProductId  String?
   userId           Int
   userName         String?
+  referralUserId   Int?
   productId        Int
   productName      String?
   email            String?

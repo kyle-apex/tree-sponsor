@@ -18,5 +18,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const result = await updateUser(id, req.body);
     res.status(200).json(result);
+  } else if (req.method === 'GET') {
+    const isAdmin = await isCurrentUserAuthorized('isAdmin', req);
+
+    // users can only be updated by admins
+    if (!isAdmin) {
+      return throwError(res, 'Access denied');
+    }
+
+    const result = await prisma.user.findFirst({ where: { id } });
+    res.status(200).json(result);
   }
 }

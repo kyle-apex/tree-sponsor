@@ -87,7 +87,6 @@ const Selector = <T extends { id?: number }>({
     const { data } = await axios.get(`/api/${apiPath}/` + id);
     return [data];
   };
-
   const { data, isFetching, refetch } = useQuery<T[]>(
     [queryKey, searchText || !defaultValue ? searchText : 'id:' + defaultValue],
     context => fetchOptions(searchText, value, context),
@@ -101,6 +100,7 @@ const Selector = <T extends { id?: number }>({
     },
   );
 
+  // TODO improve performance
   const prefetchData = async () => {
     if (!defaultValue) queryClient.prefetchQuery([queryKey, ''], () => fetchOptions(''));
     else {
@@ -144,8 +144,12 @@ const Selector = <T extends { id?: number }>({
         }}
         onChange={(_event, option: T | string) => {
           if (option && typeof option != 'string') {
-            if (onChange) onChange(option.id);
+            if (onChange) onChange(option?.id);
             if (onSelect) onSelect(option);
+          }
+          if (!option && !resetOnSelect) {
+            if (onChange) onChange(null);
+            if (onSelect) onSelect(null);
           }
           setValue(option);
           if (resetOnSelect) {
