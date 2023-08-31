@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
 import throwError from 'utils/api/throw-error';
 import { getSession } from 'utils/auth/get-session';
+import { prisma } from 'utils/prisma/init';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = Number(req.query.id);
