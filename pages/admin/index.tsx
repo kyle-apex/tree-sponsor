@@ -235,7 +235,7 @@ export default function EnhancedTable(): JSX.Element {
                       </TableCell>
                       <TableCell>{createdDate.toLocaleDateString()}</TableCell>
                       <TableCell>{row.email}</TableCell>
-                      <TableCell>
+                      <TableCell sx={{ minWidth: '200px' }}>
                         <UserSelector
                           defaultValue={row.referralUserId}
                           resetOnSelect={false}

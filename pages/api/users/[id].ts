@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const id = Number(req.query.id);
   if (req.method === 'PATCH') {
     const isAdmin = await isCurrentUserAuthorized('isAdmin', req);
-    console.log('isAdmin', isAdmin);
+
     // users can only be updated by admins
     if (!isAdmin) {
       //const session = await getSession({ req });
