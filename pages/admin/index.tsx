@@ -28,6 +28,7 @@ import { GetSessionOptions } from 'next-auth/client';
 import RestrictSection from 'components/RestrictSection';
 import { capitalCase } from 'change-case';
 import usePagination from 'utils/hooks/use-pagination';
+import UserSelector from 'components/UserSelector';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'isAdmin');
@@ -83,6 +84,7 @@ const headCells = [
   { id: 'lastPaymentDate', numeric: false, disablePadding: false, label: 'Last Donation' },
   { id: 'createdDate', numeric: false, disablePadding: false, label: 'Member Since' },
   { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
+  { id: 'referralUserId', numeric: false, disablePadding: false, label: 'Referred By' },
 ];
 
 export default function EnhancedTable(): JSX.Element {
@@ -98,10 +100,13 @@ export default function EnhancedTable(): JSX.Element {
   const debounceMilliseconds = 1;
 
   const updateUser = async (userId: number, attributes: Record<string, unknown>) => {
-    await axios.patch('/api/users/' + userId, { hasShirt: !!attributes.hasShirt });
+    const newAttributes =
+      attributes.referralUserId !== undefined ? { referralUserId: attributes.referralUserId } : { hasShirt: !!attributes.hasShirt };
+    await axios.patch('/api/users/' + userId, newAttributes);
   };
 
   const { updateById: updateHasShirt } = useUpdateQueryById('members', updateUser);
+  const { updateById: updateReferralUserId } = useUpdateQueryById('members', updateUser);
 
   useEffect(() => {
     const filterTimer = setTimeout(() => {
@@ -230,6 +235,17 @@ export default function EnhancedTable(): JSX.Element {
                       </TableCell>
                       <TableCell>{createdDate.toLocaleDateString()}</TableCell>
                       <TableCell>{row.email}</TableCell>
+                      <TableCell sx={{ minWidth: '200px' }}>
+                        <UserSelector
+                          defaultValue={row.referralUserId}
+                          resetOnSelect={false}
+                          isEmailHidden={true}
+                          onChange={(referralUserId: number) => {
+                            updateReferralUserId(row.userId, { referralUserId });
+                          }}
+                          label='Referred By'
+                        ></UserSelector>
+                      </TableCell>
                     </StyledTableRow>
                   );
                 })}

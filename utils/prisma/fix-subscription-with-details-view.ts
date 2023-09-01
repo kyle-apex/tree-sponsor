@@ -8,7 +8,7 @@ export default async function fixSubscriptionWithDetailsView() {
   }
 
   try {
-    await prisma.$executeRaw`CREATE VIEW SubscriptionWithDetails AS
+    await prisma.$executeRaw`CREATE OR REPLACE VIEW SubscriptionWithDetails AS
   SELECT
       s.id,
       s.status,
@@ -23,6 +23,7 @@ export default async function fixSubscriptionWithDetailsView() {
       u.name as userName,
       u.email as email,
       u.hasShirt,
+      u.referralUserId,
       s.createdDate,
       s.lastPaymentDate,
       s.expirationDate

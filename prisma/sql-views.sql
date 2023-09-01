@@ -1,6 +1,6 @@
 DROP Table SubscriptionWithDetails;
 
-CREATE VIEW SubscriptionWithDetails AS
+CREATE OR REPLACE VIEW SubscriptionWithDetails AS
 SELECT
     s.id,
     s.status,
@@ -15,6 +15,7 @@ SELECT
     u.name as userName,
     u.email as email,
     u.hasShirt,
+    u.referralUserId,
     s.createdDate,
     s.lastPaymentDate,
     s.expirationDate

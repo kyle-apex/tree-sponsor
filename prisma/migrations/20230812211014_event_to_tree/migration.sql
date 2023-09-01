@@ -72,3 +72,20 @@ ALTER TABLE
   `Event`
 ADD
   COLUMN `hasSpecificTrees` BOOLEAN NULL DEFAULT false;
+
+ALTER TABLE `SpeciesQuizResponse`
+ADD CONSTRAINT UniqueTreeIdUserId UNIQUE (TreeId,UserId);
+
+-- AlterTable
+ALTER TABLE
+    `users`
+ADD
+    COLUMN `referralUserId` INTEGER NULL;
+
+-- AddForeignKey
+ALTER TABLE
+    `users`
+ADD
+    CONSTRAINT `referralUserId` FOREIGN KEY (`referralUserId`) REFERENCES `users`(`id`) ON DELETE
+SET
+    NULL ON UPDATE CASCADE;

@@ -15,6 +15,8 @@ const UserSelector = ({
   label = 'User',
   sx,
   isLoading,
+  isEmailHidden,
+  resetOnSelect = true,
 }: {
   defaultValue?: number;
   onChange?: (val: number) => void;
@@ -23,6 +25,8 @@ const UserSelector = ({
   label?: string;
   sx?: SxProps<Theme>;
   isLoading?: boolean;
+  isEmailHidden?: boolean;
+  resetOnSelect?: boolean;
 }) => {
   return (
     <Selector<PartialUser>
@@ -32,7 +36,7 @@ const UserSelector = ({
       onSelect={onSelect}
       size={size}
       apiPath='users'
-      resetOnSelect={true}
+      resetOnSelect={resetOnSelect}
       queryKey='userOptions'
       getOptionLabel={(option: PartialUser) => `${option.displayName || option.name || option.email}`}
       hasMatchingValue={(currentValue: PartialUser, searchText: string) =>
@@ -44,9 +48,11 @@ const UserSelector = ({
             <UserAvatar name={option?.displayName || option?.name} image={option?.image} size={36} />
             <Box>
               <Typography variant='body1'>{option.displayName || option.name || option.email}</Typography>
-              <Typography variant='subtitle2' sx={{ fontStyle: 'italic' }} color='gray'>
-                {option.email}
-              </Typography>
+              {!isEmailHidden && (
+                <Typography variant='subtitle2' sx={{ fontStyle: 'italic' }} color='gray'>
+                  {option.email}
+                </Typography>
+              )}
             </Box>
           </Box>
         );
