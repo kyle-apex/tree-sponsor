@@ -16,6 +16,7 @@ import getImageDimensions from 'utils/aws/get-image-dimensions';
 import CornerEditIcon from './CornerEditIcon';
 import PreviewAndReorderImagesDialog from './PreviewAndReorderImagesDialog';
 import axios from 'axios';
+import useLocalStorage from 'utils/hooks/use-local-storage';
 
 type Mode = 'Image' | 'Map';
 
@@ -39,13 +40,14 @@ const TreeReview = ({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [mode, setMode] = useState<Mode>('Image');
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
+  const [sessionId] = useLocalStorage('checkinSessionId', '');
 
   const handleOnMakePrimaryImage = async (index: number) => {
     const removed = tree.images.splice(index, 1);
     tree.images.unshift(removed[0]);
     const promises: any[] = [];
     tree.images.forEach((image, idx) => {
-      promises.push(axios.patch('/api/treeImages/' + image.uuid, { sequence: idx }));
+      promises.push(axios.patch('/api/treeImages/' + image.uuid + '?sessionId=' + encodeURIComponent(sessionId), { sequence: idx }));
     });
     await Promise.all(promises);
     onUpdate(tree.id, { pictureUrl: tree.images[0].url }, () => {
@@ -57,7 +59,7 @@ const TreeReview = ({
     const promises: any[] = [];
     tree.images.forEach((image, idx) => {
       const isLeaf = index == idx;
-      promises.push(axios.patch('/api/treeImages/' + image.uuid, { isLeaf }));
+      promises.push(axios.patch('/api/treeImages/' + image.uuid + '?sessionId=' + encodeURIComponent(sessionId), { isLeaf }));
     });
     await Promise.all(promises);
     if (onRefetch) onRefetch();

@@ -30,12 +30,15 @@ export default function useEditTree(
   };
 
   const handleDeleteImage = async (uuid: string) => {
-    await axios.delete('/api/treeImages/' + uuid);
+    const sessionId = apiKey?.length > 1 ? (apiKey[1] as string) : '';
+    await axios.delete('/api/treeImages/' + uuid + '?sessionId=' + encodeURIComponent(sessionId));
     if (onComplete) onComplete();
   };
 
   async function handleDelete(treeId: number) {
-    await axios.delete('/api/trees/' + treeId);
+    const sessionId = apiKey?.length > 1 ? (apiKey[1] as string) : '';
+
+    await axios.delete('/api/trees/' + treeId + '?sessionId=' + encodeURIComponent(sessionId));
     if (onComplete) onComplete();
   }
 
