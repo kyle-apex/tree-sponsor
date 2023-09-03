@@ -89,3 +89,9 @@ ADD
     CONSTRAINT `referralUserId` FOREIGN KEY (`referralUserId`) REFERENCES `users`(`id`) ON DELETE
 SET
     NULL ON UPDATE CASCADE;
+
+-- AlterTable
+ALTER TABLE
+    `Tree`
+ADD
+    COLUMN `funFact` Varchar(512) NULL;

@@ -217,6 +217,7 @@ model Tree {
   pictureUrl               String?
   latitude                 Decimal?              @db.Decimal(8, 5)
   longitude                Decimal?              @db.Decimal(9, 6)
+  funFact                  String?               @db.VarChar(512)
   streetViewPitch          String?               @default("")
   streetViewHeading        String?               @default("")
   streetViewLatitude       Decimal?              @db.Decimal(8, 5)

@@ -24,6 +24,8 @@ import useLocalStorage from 'utils/hooks/use-local-storage';
 import Selector from 'components/Selector';
 import UserSelector from 'components/UserSelector';
 import { CheckinSessionContext } from 'components/event/CheckinSessionProvider';
+import TextField from '@mui/material/TextField';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 const steps = [{ label: 'Identify' }, { label: 'Photograph' }, { label: 'Location' }];
 const tomorrow = new Date();
@@ -59,6 +61,9 @@ const IdentifyTreeFlow = ({
   // Helps delay saving tree while image upload is in progress
   const [saveDelayArgs, setSaveDelayArgs] = useState<Partial<{ step: number; isCompleted: boolean }>>();
 
+  /* fun fact hooks */
+  const [funFact, setFunFact] = useState('');
+
   const handleChange = useCallback((propertyName: string, value: string | number) => {
     setTree((current: PartialTree) => {
       return { ...current, [propertyName]: value };
@@ -70,6 +75,8 @@ const IdentifyTreeFlow = ({
     const { w, h } = await getImageDimensions(tree.pictureUrl);
     if (!tree.images?.length) tree.images = [{ url: tree.pictureUrl, width: w, height: h }];
     else tree.images = [{ ...tree.images[0], url: tree.pictureUrl, width: w, height: h }];
+
+    tree.funFact = funFact;
 
     if (leafImage) tree.images.push(leafImage);
 
@@ -353,6 +360,16 @@ const IdentifyTreeFlow = ({
           </LoadingButton>
         </SplitRow>
       </Box>
+      <TextField
+        placeholder='Add a fun fact...'
+        value={funFact}
+        onChange={e => setFunFact(e.target.value)}
+        size='small'
+        sx={{ mt: 3, width: '100%' }}
+        minRows={1}
+        label={funFact ? '(Optional) Fun Fact' : '(Optional)'}
+        multiline
+      ></TextField>
     </>
   );
 };

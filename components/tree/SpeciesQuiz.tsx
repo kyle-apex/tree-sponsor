@@ -18,6 +18,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { SxProps, Theme } from '@mui/material/styles';
 import TreeIdHelpDialog from 'components/event/TreeIdHelpDialog';
 import HintIcon from '@mui/icons-material/QuestionMark';
+import FactIcon from '@mui/icons-material/PriorityHighOutlined';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
@@ -43,7 +44,7 @@ function getQuizOptions(species: PartialSpecies[], correctSpecies: PartialSpecie
     }
     randomIndex = null;
   }
-  console.log('got quiz options', options);
+  //console.log('got quiz options', options);
   return options;
 }
 
@@ -98,13 +99,13 @@ const SpeciesQuiz = ({
     setSpeciesOptions(getQuizOptions(prioritySpecies, correctSpecies));
     if (treeId && trees?.length > 0) {
       const tree = trees.find((tree: PartialTree) => tree.id == treeId);
-      console.log('tree', treeId, tree, correctSpecies?.id);
+      //console.log('tree', treeId, tree, correctSpecies?.id);
       if (tree.speciesQuizResponses?.length > 0) {
         //} && (!clickedSpeciesId || clickedSpeciesId == -1)) {
         if (tree.speciesQuizResponses[0].isCorrect) setClickedSpeciesId(correctSpecies.id);
         else {
           // add the incorrect species to the list and select it
-          console.log('set from second one', tree.speciesQuizResponses[0].incorrectGuessName);
+          //console.log('set from second one', tree.speciesQuizResponses[0].incorrectGuessName);
           if (tree.speciesQuizResponses[0].incorrectGuessName)
             setSpeciesOptions(options => [...options, { commonName: tree.speciesQuizResponses[0].incorrectGuessName, id: -1 }]);
           setClickedSpeciesId(-1);
@@ -267,7 +268,23 @@ const SpeciesQuiz = ({
           </Box>
         );
       })}
-      {clickedSpeciesId && <SpeciesDetails species={correctSpecies}></SpeciesDetails>}
+      {clickedSpeciesId && (
+        <>
+          {trees?.length >= treeIndex && trees[treeIndex]?.funFact && (
+            <Typography mb={1} variant='body1' mt={3}>
+              Fun fact: {trees[treeIndex]?.funFact}
+            </Typography>
+          )}
+          <SpeciesDetails species={correctSpecies}></SpeciesDetails>
+        </>
+      )}
+      {!clickedSpeciesId && trees?.length >= treeIndex && trees[treeIndex]?.funFact && (
+        <Box sx={{ fontSize: '0.875rem', textAlign: 'center', pt: 1, pb: 1, pl: 2.5, pr: 2, mb: 2 }} className='primary-info'>
+          <Box sx={{ display: 'flex', gap: '16px', alignItems: 'center', flexDirection: 'row' }}>
+            <FactIcon></FactIcon> <Box sx={{ textAlign: 'left' }}>{trees[treeIndex]?.funFact}</Box>
+          </Box>
+        </Box>
+      )}
       {!clickedSpeciesId && (
         <Box sx={{ fontSize: '0.875rem', textAlign: 'center', pt: 1, pb: 1, pl: 2.5, pr: 2 }} className='primary-info'>
           <a
@@ -277,7 +294,7 @@ const SpeciesQuiz = ({
             style={{ cursor: 'pointer', marginBottom: 1, display: 'flex', gap: '16px', alignItems: 'center', justifyContent: 'end' }}
           >
             <HintIcon></HintIcon>{' '}
-            <Box sx={{ textAlign: 'left' }}>Want a hint? Click here to take a picture of a leaf for species suggestions</Box>
+            <Box sx={{ textAlign: 'left' }}>Stumped? Click here to take a picture of a leaf for species suggestions</Box>
           </a>
           <TreeIdHelpDialog isOpen={isHintDialogOpen} setIsOpen={setIsHintDialogOpen}></TreeIdHelpDialog>
         </Box>
