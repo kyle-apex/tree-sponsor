@@ -56,7 +56,9 @@ const IdentifyTreeFlow = ({
   const [isSkipped, setIsSkipped] = useState(false);
   const imageRef = useRef<any>();
   const [email] = useLocalStorage('checkinEmail', '');
-  const { sessionId, setSessionId } = useContext(CheckinSessionContext);
+  const SessionContext = useContext(CheckinSessionContext);
+  let sessionId = '';
+  if (SessionContext) sessionId = SessionContext.sessionId;
 
   // Helps delay saving tree while image upload is in progress
   const [saveDelayArgs, setSaveDelayArgs] = useState<Partial<{ step: number; isCompleted: boolean }>>();
@@ -89,7 +91,7 @@ const IdentifyTreeFlow = ({
     const updatedTreeResult = await axios.post('/api/trees', { tree: { ...data }, email, sessionId: sessionId, eventId });
     const updatedTree = updatedTreeResult.data;
     if (updatedTree?.id) handleChange('id', updatedTree.id);
-    if (updatedTree.sessionId && isNewTree) setSessionId(updatedTree.sessionId, tomorrow);
+    if (updatedTree.sessionId && isNewTree && SessionContext) SessionContext.setSessionId(updatedTree.sessionId, tomorrow);
     if (updatedTree?.pictureUrl) {
       handleChange('pictureUrl', updatedTree.pictureUrl);
     }

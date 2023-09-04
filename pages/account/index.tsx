@@ -120,13 +120,15 @@ const AccountPage = () => {
               <Typography color='primary'>Add tree identifications</Typography>
             </a>
           </li>
-          <li>
-            <Link href='/account/thank-a-tree'>
-              <a style={{ textDecoration: 'none' }}>
-                <Typography color='primary'>Thank a Tree</Typography>
-              </a>
-            </Link>
-          </li>
+          {false && (
+            <li>
+              <Link href='/account/thank-a-tree'>
+                <a style={{ textDecoration: 'none' }}>
+                  <Typography color='primary'>Thank a Tree</Typography>
+                </a>
+              </Link>
+            </li>
+          )}
 
           <RestrictSection accessType='isAdmin'>
             <li>
