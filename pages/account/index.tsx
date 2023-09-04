@@ -170,21 +170,27 @@ const AccountPage = () => {
                 <Box mt={1} sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}>
                   <Typography color='secondary'>Referred Members:</Typography>{' '}
                   <Typography variant='body1'>{referralStats.referrals?.length || 0}</Typography>
-                  <Typography>|</Typography>
-                  <Typography color='secondary'> Referral Donations:</Typography>{' '}
-                  <Typography variant='body1'>{referralStats.numberOfDonations}</Typography>
-                  <Typography>|</Typography>
-                  <Typography color='secondary'>Referral Donation Total:</Typography>{' '}
-                  <Typography variant='body1'>${referralStats.amountOfDonations}</Typography>
                 </Box>
-                {activeReferrals?.length > 0 && (
+                {referralStats.numberOfDonations && (
                   <Box mt={1} sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}>
+                    <Typography color='secondary'> Referral Donations:</Typography>{' '}
+                    <Typography variant='body1'>{referralStats.numberOfDonations}</Typography>
+                  </Box>
+                )}
+                {referralStats.numberOfDonations && (
+                  <Box mt={1} sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}>
+                    <Typography color='secondary'>Referral Donation Total:</Typography>{' '}
+                    <Typography variant='body1'>${referralStats.amountOfDonations}</Typography>
+                  </Box>
+                )}
+                {activeReferrals?.length > 0 && (
+                  <Box mt={1} sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
                     <Typography color='secondary'>Active Referrals:</Typography>
                     <Typography variant='body1'>{activeReferrals.map(ref => ref.name).join(', ')}</Typography>
                   </Box>
                 )}
                 {inactiveReferrals?.length > 0 && (
-                  <Box mt={1} sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}>
+                  <Box mt={1} sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
                     <Typography color='secondary'>Inactive Referrals:</Typography>
                     <Typography variant='body1'>
                       {inactiveReferrals
