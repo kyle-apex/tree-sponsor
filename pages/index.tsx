@@ -19,6 +19,7 @@ import AnimalsImage from 'components/index/icons/AnimalsImage';
 import SignupForm from 'components/membership/SignupForm';
 import CoreTeamBio from 'components/index/CoreTeamBio';
 import { prisma } from 'utils/prisma/init';
+import { TREE_BENEFITS } from 'consts';
 
 const useStyles = makeStyles(theme => ({
   headlineContainer: {
@@ -31,15 +32,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const treeBenefits: TitleSection[] = [
-  { title: 'Pollution', description: 'Trees give us the air we breathe and remove toxins from the air' },
-  { title: 'Flood Prevention', description: 'Roots help prevent soil erosion and soak up water to reduce flooding' },
-  { title: 'Homes', description: 'Friends of all shapes and sizes call trees home and rely on them for food and shelter' },
-  { title: 'Shade', description: 'Trees reduce electric bills and keep us cool' },
-  { title: 'Atmosphere', description: 'Think of your favorite picnic, restaurant, bar, and/or park enhanced by trees' },
-  { title: 'Activities', description: 'Do not forget to be grateful for climbing, swinging, decorating, and much more!' },
-];
-// Join us at our tree plantings, giveaways, tree maintenance, and cleanup events'
 const getIcon = (title: string) => {
   switch (title) {
     case 'Pollution':
@@ -56,23 +48,13 @@ const getIcon = (title: string) => {
       return <ActivitiesImage />;
   }
 };
-/*
-export const getStaticProps = async () => {
-  return {
-    props: {
-      treeBenefits: treeBenefits,
-    },
-  };
-};
-*/
+
 const IndexPage = ({
-  treeBenefits,
   stripePriceIdLow,
   stripePriceIdMedium,
   stripePriceIdHigh,
   users,
 }: {
-  treeBenefits: TitleSection[];
   stripePriceIdLow: string;
   stripePriceIdMedium: string;
   stripePriceIdHigh: string;
@@ -121,7 +103,7 @@ const IndexPage = ({
           Why Support the Urban Forest with an Annual Membership?
         </Typography>
         <Grid container direction={{ xs: 'column', sm: 'row', md: 'row' }} spacing={2} mb={5}>
-          {treeBenefits.map((benefit, idx) => (
+          {TREE_BENEFITS.map((benefit, idx) => (
             <Grid key={idx} item xs={12} sm={4} mb={4}>
               <Grid container gap='15px' wrap='nowrap' direction={{ xs: 'row', sm: 'row', md: 'row' }}>
                 <Grid item className='icon-container' alignSelf={{ xs: 'start', sm: 'center' }}>
@@ -144,11 +126,10 @@ const IndexPage = ({
       <div className='wide-container index'>
         <Container maxWidth='sm'>
           <Typography color='white' variant='h1' sx={{ fontSize: '2rem' }}>
-            Become a Member
+            Become a Supporting Member
           </Typography>
           <Typography variant='body2' mb={-1}>
-            Support the Central Texas urban forest by becoming a TreeFolks Young Professionals (TreeFolksYP) member. Please select an annual
-            TreeFolks donation level below:
+            Support the Central Texas urban forest with an annual membership. Please select a TreeFolks donation level below:
           </Typography>
         </Container>
       </div>
@@ -217,7 +198,6 @@ export async function getStaticProps() {
       stripePriceIdLow: process.env.STRIPE_PRICE_ID_LOW || '',
       stripePriceIdMedium: process.env.STRIPE_PRICE_ID_MEDIUM || '',
       stripePriceIdHigh: process.env.STRIPE_PRICE_ID_HIGH || '',
-      treeBenefits,
       users,
     },
   };

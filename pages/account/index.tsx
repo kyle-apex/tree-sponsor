@@ -20,6 +20,9 @@ import CheckinHistoryDialog from 'components/event/CheckinHistoryDialog';
 import useHash from 'utils/hooks/use-hash';
 import AccountTrees from 'components/account/trees';
 import IdentifyTreeFlow from 'components/tree/IdentifyTreeFlow';
+import CopyIconButton from 'components/CopyIconButton';
+import parsedGet from 'utils/api/parsed-get';
+import { ReferralStats } from 'interfaces';
 
 export const getServerSideProps = serverSideIsAuthenticated;
 
@@ -29,15 +32,27 @@ const AccountPage = () => {
   const router = useRouter();
   const [nextSession] = useSession();
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
+  const [referralStats, setReferralStats] = useState<ReferralStats>();
 
   const session = nextSession as Session;
   const user = session?.user;
+
+  const getReferrals = async () => {
+    const stats = (await parsedGet('/api/me/referrals')) as ReferralStats;
+    setReferralStats(stats);
+  };
+  useEffect(() => {
+    getReferrals();
+  }, []);
 
   if (user?.email) localStorage.setItem('checkinEmail', JSON.stringify(user.email));
 
   const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: string) => {
     setActiveTab(newValue);
   };
+
+  const activeReferrals = referralStats?.referrals?.filter(ref => ref.status == 'active');
+  const inactiveReferrals = referralStats?.referrals?.filter(ref => ref.status != 'active');
 
   return (
     <Layout title='Account'>
@@ -59,6 +74,7 @@ const AccountPage = () => {
           <Tab label='Billing' value='billing' />
         </Tabs>
       </Box>
+
       <Box hidden={'membership' != activeTab}>
         <Typography variant='h2' color='secondary'>
           I want to...
@@ -120,13 +136,15 @@ const AccountPage = () => {
               <Typography color='primary'>Add tree identifications</Typography>
             </a>
           </li>
-          <li>
-            <Link href='/account/thank-a-tree'>
-              <a style={{ textDecoration: 'none' }}>
-                <Typography color='primary'>Thank a Tree</Typography>
-              </a>
-            </Link>
-          </li>
+          {false && (
+            <li>
+              <Link href='/account/thank-a-tree'>
+                <a style={{ textDecoration: 'none' }}>
+                  <Typography color='primary'>Thank a Tree</Typography>
+                </a>
+              </Link>
+            </li>
+          )}
 
           <RestrictSection accessType='isAdmin'>
             <li>
@@ -138,6 +156,55 @@ const AccountPage = () => {
             </li>
           </RestrictSection>
         </ul>
+        {user && (
+          <Box mb={3}>
+            <Typography color='secondary'>Supporting Member Referral Link:</Typography>
+            <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
+              <CopyIconButton text={`tfyp.org/r/${user?.profilePath}`}></CopyIconButton>
+              <Typography variant='subtitle2' color='gray'>
+                {`tfyp.org/r/${user?.profilePath}`}
+              </Typography>
+            </Box>
+            {referralStats && (
+              <>
+                <Box mt={1} sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}>
+                  <Typography color='secondary'>Referred Members:</Typography>{' '}
+                  <Typography variant='body1'>{referralStats.referrals?.length || 0}</Typography>
+                </Box>
+                {referralStats.numberOfDonations && (
+                  <Box mt={1} sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}>
+                    <Typography color='secondary'> Referral Donations:</Typography>{' '}
+                    <Typography variant='body1'>{referralStats.numberOfDonations}</Typography>
+                  </Box>
+                )}
+                {referralStats.numberOfDonations && (
+                  <Box mt={1} sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}>
+                    <Typography color='secondary'>Referral Donation Total:</Typography>{' '}
+                    <Typography variant='body1'>${referralStats.amountOfDonations}</Typography>
+                  </Box>
+                )}
+                {activeReferrals?.length > 0 && (
+                  <Box mt={1} sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <Typography color='secondary'>Active Referrals:</Typography>
+                    <Typography variant='body1'>{activeReferrals.map(ref => ref.name).join(', ')}</Typography>
+                  </Box>
+                )}
+                {inactiveReferrals?.length > 0 && (
+                  <Box mt={1} sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <Typography color='secondary'>Inactive Referrals:</Typography>
+                    <Typography variant='body1'>
+                      {inactiveReferrals
+                        .map(ref => {
+                          return ref.name + ` (${ref.status.replace('_', ' ')})`;
+                        })
+                        .join(', ')}
+                    </Typography>
+                  </Box>
+                )}
+              </>
+            )}
+          </Box>
+        )}
         <MembershipPerks isMember={user?.subscriptions?.length > 0}></MembershipPerks>
       </Box>
 

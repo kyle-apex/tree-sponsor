@@ -37,15 +37,19 @@ const SignupForm = ({
   stripePriceIdLow,
   stripePriceIdMedium,
   stripePriceIdHigh,
+  foundFromSource,
+  cancelRedirectPath,
 }: {
   stripePriceIdLow: string;
   stripePriceIdMedium: string;
   stripePriceIdHigh: string;
+  foundFromSource?: string;
+  cancelRedirectPath?: string;
 }) => {
   const [session] = useSession();
 
   const mySession = session as Session;
-  const [foundFrom, setFoundFrom] = useState('');
+  const [foundFrom, setFoundFrom] = useState(foundFromSource);
 
   const memberships = [
     { trees: 1, price: 20, hasShirt: false, stripePriceId: stripePriceIdLow },
@@ -100,7 +104,12 @@ const SignupForm = ({
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>TreeFolksYP Tee Shirt</TableCell>
+            <TableCell>
+              <div style={{ color: 'gray', marginLeft: '-10px', fontWeight: 'lighter', fontSize: '.75rem', marginTop: '-20px' }}>
+                Membership Bonuses:
+              </div>
+              <div>TreeFolksYP Tee Shirt</div>
+            </TableCell>
             <TableCell>
               {memberships[activeMembershipIndex].hasShirt ? (
                 <CheckCircleIcon color='primary'></CheckCircleIcon>
@@ -133,6 +142,7 @@ const SignupForm = ({
           fullWidth={true}
           size='small'
           autoComplete='off'
+          disabled={!!foundFromSource}
         ></TextField>
       </Box>
       <Box sx={{ marginTop: 2 }}>
@@ -155,7 +165,8 @@ const SignupForm = ({
           metadata={{ 'Email Subscribe': isMembership ? 'Yes' : 'No', 'Found From': foundFrom }}
           price={memberships[activeMembershipIndex].stripePriceId}
           isForMembership={true}
-          label='Continue to Payment'
+          label='Continue to Donation'
+          cancelRedirectPath={cancelRedirectPath}
         ></CheckoutButton>
       </Box>
     </Container>

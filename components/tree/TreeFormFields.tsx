@@ -34,6 +34,15 @@ const TreeFormFields = ({
         </Typography>
       )}
       <SpeciesSelector onChange={speciesId => handleChange('speciesId', speciesId)} defaultValue={tree.speciesId}></SpeciesSelector>
+      <TextField
+        defaultValue={tree.funFact || ''}
+        onChange={e => handleChange('funFact', e.target.value)}
+        size='small'
+        sx={{ mt: 2, width: '100%' }}
+        minRows={1}
+        label='Fun Fact'
+        multiline
+      ></TextField>
       {tree.speciesId && !isForQuiz && (
         <FormControl component='fieldset' sx={{ marginTop: 2 }}>
           <FormLabel component='legend' sx={{ fontSize: '.75rem' }}>

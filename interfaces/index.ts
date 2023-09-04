@@ -164,3 +164,5 @@ export type CheckinFields = {
   discoveredFrom?: string;
   isEmailOptIn?: boolean;
 };
+
+export type ReferralStats = { numberOfDonations: number; amountOfDonations: number; referrals: { name: string; status: string }[] };

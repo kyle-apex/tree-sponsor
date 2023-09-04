@@ -10,6 +10,9 @@ import getTreeImagePath from 'utils/aws/get-tree-image-path';
 import { Tree, TreeImage } from '@prisma/client';
 import { getSession } from 'utils/auth/get-session';
 import getBase64ImageDimensions from 'utils/aws/get-base64-image-dimensions';
+import throwUnauthenticated from 'utils/api/throw-unauthenticated';
+import { hasValidTreeSessionId } from 'utils/auth/has-valid-tree-session-id';
+import { isAuthorizedToUpdateTree } from 'utils/auth/is-authorized-to-update-tree';
 
 export const config = {
   api: {
@@ -27,26 +30,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const session = await getSession({ req });
 
   if (req.method === 'PATCH') {
-    let isAuthorized = await isCurrentUserAuthorized('isTreeReviewer', req);
+    const isAuthorized = await isAuthorizedToUpdateTree(req, id, 'isTreeReviewer');
 
-    if (!isAuthorized && session?.user?.id) {
-      const changeLog = await prisma.treeChangeLog.findFirst({
-        where: { tree: { id: id }, user: { id: session?.user?.id }, type: 'Create' },
-      });
-      console.log('changeLog', changeLog);
-      if (changeLog) isAuthorized = true;
-    }
-
-    const sessionId = req.query?.sessionId as string;
-
-    if (!isAuthorized && sessionId) {
-      const treeWithSessionId = await prisma.tree.findFirst({ where: { id, sessionId } });
-      if (treeWithSessionId?.id) isAuthorized = true;
-    }
-
-    if (!isAuthorized) {
-      return throwError(res, 'Access denied');
-    }
+    if (!isAuthorized) return throwUnauthenticated(res);
 
     const tree = { ...req.body };
 
@@ -82,13 +68,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const imagePath = getTreeImagePath(image.uuid);
 
       const newPictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}/small`;
-      console.log('existing url', existingTree.pictureUrl);
       delete updateData.pictureUrl;
 
       if (newSequence == 0) updateData.pictureUrl = newPictureUrl;
       else if (!existingTree.pictureUrl) {
         updateData.pictureUrl = existingTree.images[0].url;
-        console.log('updating basic', updateData.pictureUrl);
       }
 
       image['width'] = width;
@@ -113,29 +97,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await uploadTreeImages(pictureUrl, image.uuid);
     }
 
-    console.log('tree patch updateData', id, updateData, updateData.images);
-
     const result = await prisma.tree.update({
       where: { id },
       data: updateData,
     });
     res.status(200).json(result);
   } else if (req.method === 'DELETE') {
-    let isAuthorized = await isCurrentUserAuthorized('isAdmin', req);
-
-    if (!isAuthorized && session?.user?.id) {
-      const changeLog = await prisma.treeChangeLog.findFirst({
-        where: { tree: { id: id }, user: { id: session?.user?.id }, type: 'Create' },
-      });
-      console.log('changeLog', changeLog);
-      if (changeLog) isAuthorized = true;
-    }
+    const isAuthorized = await isAuthorizedToUpdateTree(req, id, 'isAdmin');
 
     if (isAuthorized) {
       await prisma.tree.delete({ where: { id } });
       res.json({ count: 1 });
-    } else {
-      return throwError(res, 'Access denied');
-    }
+    } else return throwUnauthenticated(res);
   }
 }
