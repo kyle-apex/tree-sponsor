@@ -11,11 +11,13 @@ export default function CheckoutButton({
   metadata,
   isForMembership,
   label,
+  cancelRedirectPath,
 }: {
   price: string;
   metadata?: Record<string, string>;
   isForMembership?: boolean;
   label?: string;
+  cancelRedirectPath?: string;
 }) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,6 +29,7 @@ export default function CheckoutButton({
         price,
         metadata,
         isForMembership,
+        cancelRedirectPath,
       });
       const stripe = await getStripe();
       stripe.redirectToCheckout(data);
