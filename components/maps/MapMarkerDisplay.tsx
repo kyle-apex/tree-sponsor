@@ -75,12 +75,11 @@ const MapMarkerDisplay = ({
     centeredViewport.zoom = centeredViewport.zoom + Math.random() * 0.0001;
 
     setViewport(centeredViewport);
-  }, [height, viewport]);
+  }, [height, viewport, markers]);
 
   useEffect(() => {
     //console.log('changed markers', markers?.length, showLocation, quizContext?.isRefreshing);
     if (!showLocation && markers?.length && !quizContext?.isRefreshing) {
-      //console.log('viewport', viewport);
       centerMapViewport();
     }
   }, [quizContext?.isRefreshing, markers?.length, showLocation]);

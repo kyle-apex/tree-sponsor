@@ -399,7 +399,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 defaultLatitude={Number(event.location?.latitude)}
                 defaultLongitude={Number(event.location?.longitude)}
                 setIsRefreshing={setIsQuizRefreshing}
-                mapHeight='250px'
+                mapHeight='300px'
                 onCloseDialog={onQuizDialogClose}
                 onFetched={onFetchedTrees}
               ></TreeIdQuiz>
@@ -582,7 +582,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           <MapMarkerDisplay
             isGoogle={true}
             markers={[{ latitude: Number(event.location.latitude), longitude: Number(event.location.longitude) }]}
-            height='200px'
+            height='300px'
             mapStyle='SATELLITE'
             markerScale={0.5}
             isQuiz={true}
