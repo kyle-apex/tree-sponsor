@@ -325,7 +325,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
               defaultLatitude={Number(event.location?.latitude)}
               defaultLongitude={Number(event.location?.longitude)}
               setIsRefreshing={setIsQuizRefreshing}
-              mapHeight='250px'
+              mapHeight='300px'
               onCloseDialog={onQuizDialogClose}
             ></TreeIdQuiz>
           </Box>
