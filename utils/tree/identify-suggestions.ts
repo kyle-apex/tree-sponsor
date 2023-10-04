@@ -10,7 +10,7 @@ export const identifySuggestions = async (imageContent: string): Promise<Partial
     api_key: apiKey,
     images: [imageContent],
     // modifiers docs: https://github.com/flowerchecker/Plant-id-API/wiki/Modifiers
-    modifiers: ['crops_simple', 'similar_images'],
+    modifiers: ['crops_medium', 'similar_images'], // crops_simple -> slower, but higher accuracy
     plant_language: 'en',
     // plant details docs: https://github.com/flowerchecker/Plant-id-API/wiki/Plant-details
     plant_details: ['common_names'], //, 'url', 'name_authority', 'taxonomy', 'synonyms'
@@ -27,8 +27,8 @@ export const identifySuggestions = async (imageContent: string): Promise<Partial
     body: JSON.stringify(data),
   });
   console.log('response', response);
-  const result = await response.json();
   console.log('id api time', new Date().getTime() - t2);
+  const result = await response.json();
 
   //TO DO - media queries for padding
   /*

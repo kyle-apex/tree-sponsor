@@ -91,10 +91,11 @@ const UserReferralPage = ({
 
   if (!featuredSponsorship) featuredSponsorship = user?.sponsorships?.length > 0 && user?.sponsorships[0];
 
-  const description = featuredSponsorship?.description ? featuredSponsorship.description : DEFAULT_DESCRIPTION;
-  const titlePrefix = featuredSponsorship?.title ? user?.sponsorships[0].title : user?.displayName || user?.name;
-  const title = `${titlePrefix} | Thank-a-Tree with TreeFolksYP`;
-  const imageUrl = featuredSponsorship ? featuredSponsorship.pictureUrl : '';
+  const description =
+    (user.displayName || user.name) +
+    ' would like to invite you to become a TreeFolksYP supporting member with an annual donation to TreeFolks.';
+  const title = 'Help plant trees! TreeFolks Supporting Membership via ' + (user.displayName || user.name);
+  const imageUrl = '/preview-images/tree-giveaway-photo.jpg';
 
   user?.sponsorships?.sort((a, b) => {
     if (a.id == featuredId) return -1;
@@ -131,7 +132,7 @@ const UserReferralPage = ({
   });
 
   return (
-    <Layout isFullWidth={true}>
+    <Layout isFullWidth={true} title={title} description={description}>
       {!user ? (
         <Box>Profile not found</Box>
       ) : (
@@ -157,20 +158,24 @@ const UserReferralPage = ({
               </Typography>
               <hr></hr>
               <Typography variant='h2' sx={{ mt: 3 }}>
+                What is TreeFolks?
+              </Typography>
+              <Typography variant='subtitle1' sx={{ mb: 3 }}>
+                TreeFolks (Austin&apos;s tree planting nonprofit) plants and gives away thousands of trees across Central Texas every year
+                with support from people like you.
+              </Typography>
+              <Typography variant='h2' sx={{ mt: 5 }}>
                 What is TreeFolksYP?
               </Typography>
-              <Typography variant='subtitle1' sx={{ mb: 0 }}>
+              <Typography variant='subtitle1' sx={{ mb: 3 }}>
                 TreeFolks Young Professionals (ages 21 – 40ish) volunteer, educate, fundraise, and build community in support of the mission
-                of TreeFolks: planting, caring for, and giving people free trees to plant!
+                of TreeFolks: planting, caring for, and giving folks free trees to plant!
               </Typography>
             </Box>
           </Container>
-          <Container
-            maxWidth='md'
-            sx={{ minHeight: 'calc(100vh - 185px)', marginBottom: 0, display: 'flex', flexDirection: 'column', paddingTop: 5 }}
-          >
+          <Container maxWidth='md' sx={{ marginBottom: 0, display: 'flex', flexDirection: 'column', paddingTop: 5 }}>
             <Typography variant='h2' color='secondary' mb={6}>
-              Why Support the Urban Forest with an Annual Membership?
+              Why Support the Urban Forest with an Annual Donation?
             </Typography>
             <Grid container direction={{ xs: 'column', sm: 'row', md: 'row' }} spacing={2} mb={5}>
               {TREE_BENEFITS.map((benefit, idx) => (
@@ -237,7 +242,7 @@ const UserReferralPage = ({
           stripePriceIdHigh={stripePriceIdHigh}
           stripePriceIdLow={stripePriceIdLow}
           stripePriceIdMedium={stripePriceIdMedium}
-          foundFromSource={user?.name}
+          foundFromSource={user?.displayName || user?.name}
           cancelRedirectPath={'/r/' + user.profilePath}
         ></SignupForm>
       </Box>
