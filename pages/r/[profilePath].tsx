@@ -94,8 +94,8 @@ const UserReferralPage = ({
   const description =
     (user.displayName || user.name) +
     ' would like to invite you to become a TreeFolksYP supporting member with an annual donation to TreeFolks.';
-  const title = "You're Invited! TreeFolks Supporting Membership via " + (user.displayName || user.name);
-  const imageUrl = '/preview-images/tree-giveaway-photo.jpeg';
+  const title = 'Help plant trees! TreeFolks Supporting Membership via ' + (user.displayName || user.name);
+  const imageUrl = '/preview-images/tree-giveaway-photo.jpg';
 
   user?.sponsorships?.sort((a, b) => {
     if (a.id == featuredId) return -1;
