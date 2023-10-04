@@ -242,7 +242,7 @@ const UserReferralPage = ({
           stripePriceIdHigh={stripePriceIdHigh}
           stripePriceIdLow={stripePriceIdLow}
           stripePriceIdMedium={stripePriceIdMedium}
-          foundFromSource={user?.name}
+          foundFromSource={user?.displayName || user?.name}
           cancelRedirectPath={'/r/' + user.profilePath}
         ></SignupForm>
       </Box>
@@ -255,7 +255,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   try {
     const results = await axios.get(process.env.URL + '/api/u/' + profilePath);
-    console.log('results', results);
     return {
       props: {
         user: results.data,
