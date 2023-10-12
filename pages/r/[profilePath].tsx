@@ -134,7 +134,7 @@ const UserReferralPage = ({
   return (
     <Layout isFullWidth={true} title={title} description={description}>
       {!user ? (
-        <Box>Profile not found</Box>
+        <Box>Profile not found. If you are trying to configure your page, please login and set your Profile Path on the Profile page.</Box>
       ) : (
         <>
           <Head>
