@@ -1,5 +1,6 @@
 import { CheckinFields, PartialUser } from 'interfaces';
 import { prisma } from 'utils/prisma/init';
+import { generateProfilePath } from 'utils/user/generate-profile-path';
 
 const findOrCreateCheckinUser = async (fields: CheckinFields) => {
   if (!fields) return;
@@ -15,7 +16,8 @@ const findOrCreateCheckinUser = async (fields: CheckinFields) => {
     await prisma.user.update({ where: { email }, data: { name: user.name } });
   }
   if (!user && firstName) {
-    user = await prisma.user.create({ data: { email, name: `${firstName} ${lastName}`.trim(), profile: {} } });
+    const profilePath = generateProfilePath({ email, name: `${firstName} ${lastName}`.trim() });
+    user = await prisma.user.create({ data: { email, name: `${firstName} ${lastName}`.trim(), profilePath, profile: {} } });
   }
   return user;
 };
