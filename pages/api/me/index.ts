@@ -38,6 +38,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } else if (req.method === 'PATCH') {
     const profilePath = req.body.profilePath;
     console.log('profilePath', profilePath);
+    console.log('body', req.body);
+    console.log('email', session.user?.email);
 
     if (profilePath) {
       const isDuplicate = await isDuplicateProfilePath(userId, profilePath);
