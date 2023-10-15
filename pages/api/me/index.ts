@@ -13,6 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!session?.user?.id) return throwUnauthenticated(res);
 
   const userId = session.user.id;
+  console.log('userId', userId);
 
   const imageUrl = req.body.image;
 
@@ -28,7 +29,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       '?d=' +
       new Date().getTime();
   }
-
   if (req.method === 'GET') {
     const obj = await prisma.user.findFirst({
       where: { id: userId },
@@ -37,6 +37,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(200).json(obj);
   } else if (req.method === 'PATCH') {
     const profilePath = req.body.profilePath;
+    console.log('profilePath', profilePath);
+
     if (profilePath) {
       const isDuplicate = await isDuplicateProfilePath(userId, profilePath);
       if (isDuplicate) return throwError(res, `The profile path "${profilePath}" is already in use.`);
