@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useState, useRef, useCallback } from 'reac
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import LoadingButton from 'components/LoadingButton';
 import { PartialUser } from 'interfaces';
@@ -18,6 +18,8 @@ import Skeleton from '@mui/material/Skeleton';
 import CenteredSection from 'components/layout/CenteredSection';
 import InputAdornment from '@mui/material/InputAdornment';
 import dynamic from 'next/dynamic';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 const TextEditor = dynamic(() => import('components/TextEditor'), {
   ssr: false,
   // eslint-disable-next-line react/display-name
@@ -36,6 +38,9 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const [twitterHandle, setTwitterHandle] = useState('');
   const [linkedInLink, setLinkedInLink] = useState('');
   const [isChanged, setIsChanged] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
   const [profilePathState, setProfilePathState] = useState({
     profilePath: '',
     isLoading: false,
@@ -129,8 +134,13 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
         },
       };
     }
-
-    await axios.patch('/api/me', prismaUpdateQuery);
+    try {
+      await axios.patch('/api/me', prismaUpdateQuery);
+    } catch (error: unknown) {
+      const err = error as AxiosError;
+      setErrorMessage(err?.response?.data?.message || err?.message);
+      setSnackbarOpen(true);
+    }
     setIsLoading(false);
     setIsChanged(false);
   };
@@ -306,6 +316,16 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       <Typography sx={{ color: theme => theme.palette.grey[600] }} variant='body2' mt={2} mb={-1}>
         Profile updates will appear across the site after clicking &quot;Save&quot; and refreshing the page.
       </Typography>
+      <Snackbar
+        open={snackbarOpen}
+        onClose={() => {
+          setSnackbarOpen(false);
+        }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity='error' color='error' sx={{ width: '100%' }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </CenteredSection>
   );
 };
