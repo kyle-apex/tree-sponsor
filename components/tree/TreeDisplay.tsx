@@ -25,6 +25,9 @@ import MobileStepper from '@mui/material/MobileStepper';
 import useTheme from '@mui/styles/useTheme';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import QuizContext from './QuizContext';
+import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 
 // TODO
 const useStyles = makeStyles(() => ({
@@ -61,6 +64,9 @@ const TreeDisplay = ({
   const [displayedImageIndex, setDisplayedImageIndex] = useState(0);
   const [isPhotoViewOpen, setIsPhotoViewOpen] = useState(false);
   const [activePhotoUrl, setActivePhotoUrl] = useState('');
+
+  const quizContext = useContext(QuizContext);
+  const hasNavigation = quizContext?.event?.hasNavigation;
 
   const handleDialogClose = (isOpen: SetStateAction<boolean>) => {
     setIsEditDialogOpen(isOpen);
@@ -230,8 +236,44 @@ const TreeDisplay = ({
             )}
           </CardMedia>
           <PhotoViewDialog imageUrl={activePhotoUrl} open={isPhotoViewOpen} setOpen={setIsPhotoViewOpen}></PhotoViewDialog>
+
           {hasSpeciesQuiz && (
             <CardContent sx={{ flex: '1 1 100%', background: 'url(/background-lighter.svg)' }}>
+              {hasNavigation && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: isMobile && leafImage ? '10px' : '16px',
+                    borderBottom: 'solid 1px lightgray',
+                    marginBottom: '10px',
+                  }}
+                >
+                  <Typography>Navigate{isMobile && leafImage ? '' : ' to tree'}:</Typography>
+                  <a
+                    target='_blank'
+                    href={`https://www.google.com/maps/dir/?api=1&travelmode=walking&layer=walking&destination=${tree?.latitude},${tree?.longitude}`}
+                    rel='noreferrer'
+                  >
+                    <DirectionsWalkIcon></DirectionsWalkIcon>
+                  </a>
+                  <a
+                    target='_blank'
+                    href={`https://www.google.com/maps/dir/?api=1&travelmode=bicycling&layer=bicycling&destination=${tree?.latitude},${tree?.longitude}`}
+                    rel='noreferrer'
+                  >
+                    <DirectionsBikeIcon></DirectionsBikeIcon>
+                  </a>
+                  <a
+                    target='_blank'
+                    href={`https://www.google.com/maps/dir/?api=1&travelmode=walking&layer=traffic&destination=${tree?.latitude},${tree?.longitude}`}
+                    rel='noreferrer'
+                    style={{ marginLeft: '2px' }}
+                  >
+                    <DirectionsCarIcon></DirectionsCarIcon>
+                  </a>
+                </Box>
+              )}
               <SpeciesQuiz
                 correctSpecies={tree.species}
                 treeId={tree.id}

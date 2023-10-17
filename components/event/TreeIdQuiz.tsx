@@ -233,7 +233,6 @@ const TreeIdQuiz = forwardRef(
               className='box-shadow'
               onClick={() => {
                 if (event?.hasSpecificTrees) {
-                  console.log('trees', trees);
                   setSelectedTree(trees[0]);
                   setIsQuizDialogOpen(true);
                   setIsFirstQuiz(false);
