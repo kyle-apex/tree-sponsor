@@ -240,8 +240,16 @@ const TreeDisplay = ({
           {hasSpeciesQuiz && (
             <CardContent sx={{ flex: '1 1 100%', background: 'url(/background-lighter.svg)' }}>
               {hasNavigation && (
-                <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px', borderBottom: 'solid 1px lightgray', marginBottom: '10px' }}>
-                  <Typography>Navigate to tree:</Typography>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: isMobile && leafImage ? '10px' : '16px',
+                    borderBottom: 'solid 1px lightgray',
+                    marginBottom: '10px',
+                  }}
+                >
+                  <Typography>Navigate{isMobile && leafImage ? '' : ' to tree'}:</Typography>
                   <a
                     target='_blank'
                     href={`https://www.google.com/maps/dir/?api=1&travelmode=walking&layer=walking&destination=${tree?.latitude},${tree?.longitude}`}
