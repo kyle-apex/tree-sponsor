@@ -266,7 +266,7 @@ const TreeDisplay = ({
                   </a>
                   <a
                     target='_blank'
-                    href={`https://www.google.com/maps/dir/?api=1&travelmode=walking&layer=traffic&destination=${tree?.latitude},${tree?.longitude}`}
+                    href={`https://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${tree?.latitude},${tree?.longitude}`}
                     rel='noreferrer'
                     style={{ marginLeft: '2px' }}
                   >
