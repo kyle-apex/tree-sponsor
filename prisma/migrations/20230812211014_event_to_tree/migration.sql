@@ -95,3 +95,9 @@ ALTER TABLE
     `Tree`
 ADD
     COLUMN `funFact` Varchar(512) NULL;
+
+-- AlterTable
+ALTER TABLE
+    `Event`
+ADD
+    COLUMN `hasNavigation` BOOLEAN NULL DEFAULT false;
