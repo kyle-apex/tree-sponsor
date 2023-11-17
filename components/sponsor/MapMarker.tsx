@@ -43,7 +43,11 @@ const MapMarker = ({
           marginTop: -1 * ((50 * zoom) / 10) * 1.3,
           cursor: 'pointer',
         }}
-        onClick={() => onClick()}
+        onClick={e => {
+          onClick();
+          e.stopPropagation();
+          e.preventDefault();
+        }}
         alt='Map Marker'
       />
     </Marker>
