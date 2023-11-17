@@ -25,24 +25,12 @@ const MembershipPerks = ({ isMember }: { isMember?: boolean }) => {
               <ul style={{ color: 'var(--secondary-text-color)' }}>
                 <li>Members only updates and events</li>
                 <li>Subscribing to our events calendar</li>
-                <li>Member communications</li>
                 <li>Sharing event photos</li>
+                <li>Taking your involvement to the next level with our &quot;Ten [minutes] for the Trees Pledge&quot;</li>
               </ul>
             </li>
           </>
         )}
-        <RestrictSection accessType='isAdmin'>
-          <li>
-            <a
-              href={process.env.BAND_CORE_TEAM_URL || 'https://band.us/n/aaa18bv1q2U44'}
-              target='_blank'
-              rel='noreferrer'
-              style={{ textDecoration: 'none' }}
-            >
-              <Typography color='primary'>Join our Core Team BAND</Typography>
-            </a>
-          </li>
-        </RestrictSection>
         <li>
           <a
             href={process.env.INSTAGRAM_URL || 'https://www.instagram.com/treefolks_yp/'}
