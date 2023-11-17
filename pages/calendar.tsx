@@ -19,7 +19,7 @@ const CalendarPage = () => {
         Import the calendar to your favorite applications using one of the options below. Be sure to join our BAND app groups to RSVP, keep
         up to date with, and/or organize carpools for events.{' '}
         <Link href='/account'>
-          <a>(View BAND links in your account)</a>
+          <a>(View BAND link in your account)</a>
         </Link>
       </p>
       <Typography variant='h2' color='secondary'>
@@ -40,19 +40,6 @@ const CalendarPage = () => {
             <Typography color='primary'>Subscribe to the event Google Calendar</Typography>
           </a>
         </li>
-        <li>
-          <a
-            href={
-              process.env.BAND_CALENDAR_CORE_TEAM_URL ||
-              'https://calendar.google.com/calendar/render?cid=6n0r37k3qo8lrm94h1aqqtsdp7po5f97%40import.calendar.google.com'
-            }
-            target='_blank'
-            rel='noreferrer'
-            style={{ textDecoration: 'none' }}
-          >
-            <Typography color='primary'>Subscribe to the Core Team meeting Google Calendar</Typography>
-          </a>
-        </li>
       </ul>
       <Typography variant='h2' color='secondary'>
         Import
@@ -64,15 +51,6 @@ const CalendarPage = () => {
             <CopyIconButton text={importLink}></CopyIconButton>
             <Typography variant='subtitle2' color='gray'>
               {importLink}
-            </Typography>
-          </Box>
-        </li>
-        <li>
-          <Typography>Core Team meeting calendar import link:</Typography>
-          <Box sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
-            <CopyIconButton text={importCoreTeamLink}></CopyIconButton>
-            <Typography variant='subtitle2' color='gray'>
-              {importCoreTeamLink}
             </Typography>
           </Box>
         </li>

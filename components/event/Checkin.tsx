@@ -300,15 +300,6 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 </a>
                 .
               </Typography>
-              {status.myCheckin?.user?.roles?.find(role => role.name === 'Core Team') && (
-                <Typography variant='body2' component='p' mb={4}>
-                  🗓 &nbsp;Help plan/organize in the
-                  <a href={process.env.BAND_CORE_TEAM_URL || 'https://band.us/n/aaa18bv1q2U44'} target='_blank' rel='noreferrer' style={{}}>
-                    <span style={{ marginLeft: '4px' }}>Core Team BAND</span>
-                  </a>
-                  .
-                </Typography>
-              )}
             </>
           )}
           {!hasActiveMembership && (
