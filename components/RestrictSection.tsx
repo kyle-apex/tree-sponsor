@@ -3,7 +3,15 @@ import React, { ReactNode } from 'react';
 import { Session } from 'interfaces';
 import { AccessTypes, AccessType } from 'utils/auth/AccessType';
 
-const RestrictSection = ({ children, accessType }: { children: ReactNode; accessType: AccessType }) => {
+const RestrictSection = ({
+  children,
+  accessType,
+  accessType2,
+}: {
+  children: ReactNode;
+  accessType: AccessType;
+  accessType2?: AccessType;
+}) => {
   const [nextSession] = useSession();
 
   const session = nextSession as Session;
@@ -17,6 +25,7 @@ const RestrictSection = ({ children, accessType }: { children: ReactNode; access
       if (typeof item === 'string') {
         const accessType = item as AccessType;
         merged[accessType] ||= role[accessType];
+        if (accessType2) merged[accessType2] ||= role[accessType2];
       }
     }
     return merged;

@@ -102,6 +102,7 @@ model Role {
   isTreeReviewer      Boolean    @default(false)
   hasMemberManagement Boolean    @default(false)
   hasEventManagement  Boolean    @default(false)
+  hasShirtManagement  Boolean    @default(false)
   users               User[]     @relation("UserToRole")
   Event               Event[]
   Category            Category[]
@@ -513,5 +514,15 @@ model Donation {
   amount      Decimal?  @db.Decimal(6, 2)
   source      String?
   date        DateTime?
+  createdDate DateTime? @default(now())
+}
+
+model StoreProduct {
+  id          Int       @id @default(autoincrement())
+  name        String?   @db.VarChar(128)
+  description String?
+  pictureUrl  String?
+  price       Decimal?  @db.Decimal(6, 2)
+  link        String?
   createdDate DateTime? @default(now())
 }

@@ -1,4 +1,11 @@
-export type AccessType = 'isAdmin' | 'hasAuthManagement' | 'isReviewer' | 'isTreeReviewer' | 'hasEventManagement' | 'hasMemberManagement';
+export type AccessType =
+  | 'isAdmin'
+  | 'hasAuthManagement'
+  | 'isReviewer'
+  | 'isTreeReviewer'
+  | 'hasEventManagement'
+  | 'hasMemberManagement'
+  | 'hasShirtManagement';
 export enum AccessTypes {
   isAdmin,
   hasAuthManagement,
@@ -6,4 +13,5 @@ export enum AccessTypes {
   isTreeReviewer,
   hasEventManagement,
   hasMemberManagement,
+  hasShirtManagement,
 }
