@@ -61,7 +61,7 @@ const MemberStore = () => {
       </Typography>
       <Typography variant='body1' mb={2}>
         If you, or a friend, would like a shirt beyond the free shirt that comes with your membership, you can order shirts at{' '}
-        <a target='_blank' href='https://shop.tfyp.org' rel='noreferrer'>
+        <a target='_blank' href='https://shop.tfyp.org' rel='noopener noreferrer'>
           https://shop.tfyp.org
         </a>
       </Typography>
