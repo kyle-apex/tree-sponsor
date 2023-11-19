@@ -25,7 +25,7 @@ const MemberStore = () => {
         <Typography color='secondary' variant='h1'>
           TreeFolksYP Member Shirts
         </Typography>
-        <RestrictSection accessType='isAdmin' accessType2='hasShirtManagement'>
+        <RestrictSection accessType='hasShirtManagement'>
           <IconButton
             onClick={() => {
               setCurrentProduct({});

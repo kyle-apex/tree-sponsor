@@ -49,7 +49,7 @@ export const StoreProduct: React.FC<StoreProductProps> = ({ product, onEdit }) =
               {product.name}
             </Typography>
           </Link>
-          <RestrictSection accessType='isAdmin' accessType2='hasShirtManagement'>
+          <RestrictSection accessType='hasShirtManagement'>
             <IconButton
               onClick={() => {
                 onEdit();
