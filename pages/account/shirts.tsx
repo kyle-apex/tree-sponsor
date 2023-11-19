@@ -13,12 +13,19 @@ import AddIcon from '@mui/icons-material/Add';
 import { useGet } from 'utils/hooks/use-get';
 import SplitRow from 'components/layout/SplitRow';
 import Link from 'next/link';
+import axios from 'axios';
 
 const MemberStore = () => {
   const [isEditMode, setIsEditMode] = React.useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
   const [currentProduct, setCurrentProduct] = useState<PartialStoreProduct | undefined>(undefined);
   const { data: products, isFetched, refetch } = useGet<PartialStoreProduct[]>('/api/store', 'storeProducts');
+
+  const deleteProduct = async (id: number) => {
+    await axios.delete(`/api/store/${id}`);
+    refetch();
+  };
 
   return (
     <Layout title='Shirts'>
@@ -74,6 +81,9 @@ const MemberStore = () => {
               onEdit={() => {
                 setCurrentProduct(product);
                 setIsOpen(true);
+              }}
+              onDelete={() => {
+                deleteProduct(product.id);
               }}
             />
           </Grid>
