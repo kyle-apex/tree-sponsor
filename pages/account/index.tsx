@@ -136,6 +136,15 @@ const AccountPage = () => {
               <Typography color='primary'>Add tree identifications</Typography>
             </a>
           </li>
+          {user?.subscriptions?.length > 0 && (
+            <li>
+              <Link href='/account/shirts'>
+                <a style={{ textDecoration: 'none' }}>
+                  <Typography color='primary'>Order a TreeFolksYP Member Shirt</Typography>
+                </a>
+              </Link>
+            </li>
+          )}
           {false && (
             <li>
               <Link href='/account/thank-a-tree'>

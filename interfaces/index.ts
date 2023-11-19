@@ -21,6 +21,7 @@ import {
   SpeciesQuizResponse,
   TreeGroup,
   SubscriptionWithDetails,
+  StoreProduct,
 } from '@prisma/client';
 
 import { ViewportProps } from 'react-map-gl';
@@ -88,6 +89,8 @@ export type PartialEvent = Partial<Event> & {
   location?: PartialLocation;
   organizers?: PartialUser[];
 };
+
+export type PartialStoreProduct = Partial<StoreProduct>;
 export type PartialCategory = Partial<Category> & { events?: PartialEvent[]; trees?: PartialTree[] };
 export type PartialEventCheckIn = Partial<EventCheckIn> & { user?: PartialUser; event?: PartialEvent };
 export type PartialProfile = Partial<Profile>;

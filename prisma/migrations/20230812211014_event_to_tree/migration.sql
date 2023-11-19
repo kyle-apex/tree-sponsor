@@ -73,31 +73,51 @@ ALTER TABLE
 ADD
   COLUMN `hasSpecificTrees` BOOLEAN NULL DEFAULT false;
 
-ALTER TABLE `SpeciesQuizResponse`
-ADD CONSTRAINT UniqueTreeIdUserId UNIQUE (TreeId,UserId);
+ALTER TABLE
+  `SpeciesQuizResponse`
+ADD
+  CONSTRAINT UniqueTreeIdUserId UNIQUE (TreeId, UserId);
 
 -- AlterTable
 ALTER TABLE
-    `users`
+  `users`
 ADD
-    COLUMN `referralUserId` INTEGER NULL;
+  COLUMN `referralUserId` INTEGER NULL;
 
 -- AddForeignKey
 ALTER TABLE
-    `users`
+  `users`
 ADD
-    CONSTRAINT `referralUserId` FOREIGN KEY (`referralUserId`) REFERENCES `users`(`id`) ON DELETE
+  CONSTRAINT `referralUserId` FOREIGN KEY (`referralUserId`) REFERENCES `users`(`id`) ON DELETE
 SET
-    NULL ON UPDATE CASCADE;
+  NULL ON UPDATE CASCADE;
 
 -- AlterTable
 ALTER TABLE
-    `Tree`
+  `Tree`
 ADD
-    COLUMN `funFact` Varchar(512) NULL;
+  COLUMN `funFact` Varchar(512) NULL;
 
 -- AlterTable
 ALTER TABLE
-    `Event`
+  `Event`
 ADD
-    COLUMN `hasNavigation` BOOLEAN NULL DEFAULT false;
+  COLUMN `hasNavigation` BOOLEAN NULL DEFAULT false;
+
+-- AlterTable
+ALTER TABLE
+  `Role`
+ADD
+  COLUMN `hasShirtManagement` BOOLEAN NOT NULL DEFAULT false;
+
+-- CreateTable
+CREATE TABLE `StoreProduct` (
+  `id` INTEGER NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(128) NULL,
+  `price` DECIMAL(6, 2) NULL,
+  `description` TEXT NULL,
+  `pictureUrl` VARCHAR(512) NULL,
+  `link` VARCHAR(512) NULL,
+  `createdDate` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
