@@ -12,6 +12,7 @@ import AddEditStoreProductDialog from 'components/store/AddEditStoreProductDialo
 import AddIcon from '@mui/icons-material/Add';
 import { useGet } from 'utils/hooks/use-get';
 import SplitRow from 'components/layout/SplitRow';
+import Link from 'next/link';
 
 const MemberStore = () => {
   const [isEditMode, setIsEditMode] = React.useState(false);
@@ -25,6 +26,7 @@ const MemberStore = () => {
         <Typography color='secondary' variant='h1'>
           TreeFolksYP Member Shirts
         </Typography>
+
         <RestrictSection accessType='hasShirtManagement'>
           <IconButton
             onClick={() => {
@@ -45,6 +47,24 @@ const MemberStore = () => {
           )}
         </RestrictSection>
       </SplitRow>
+      <Typography variant='body1' mb={2}>
+        Clicking &quot;Order&quot; will take you to Printful to select your size and shipping address.{' '}
+      </Typography>
+      <Typography variant='body1' mb={2}>
+        The website will show a price, but after calculating shipping will show &quot;This order will be paid by the owner of the product
+        template,&quot; so you do not need to enter credit card information.
+      </Typography>
+
+      <Typography variant='body1' mb={2}>
+        After submitting, your order will ship after admin approval. If approval takes more than a day or two, please contact
+        yp@treefolks.org.
+      </Typography>
+      <Typography variant='body1' mb={2}>
+        If you, or a friend, would like a shirt beyond the free shirt that comes with your membership, you can order shirts at{' '}
+        <a target='_blank' href='https://shop.tfyp.org' rel='noreferrer'>
+          https://shop.tfyp.org
+        </a>
+      </Typography>
 
       <Grid container>
         {products?.map(product => (
