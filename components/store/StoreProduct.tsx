@@ -15,10 +15,13 @@ import RestrictSection from 'components/RestrictSection';
 import EditIcon from '@mui/icons-material/Edit';
 import SplitRow from 'components/layout/SplitRow';
 import Button from '@mui/material/Button';
+import DeleteIconButton from 'components/DeleteIconButton';
+import Box from '@mui/material/Box';
 
 interface StoreProductProps {
   product: PartialStoreProduct;
   onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 const useStyles = makeStyles({
@@ -34,7 +37,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const StoreProduct: React.FC<StoreProductProps> = ({ product, onEdit }) => {
+export const StoreProduct: React.FC<StoreProductProps> = ({ product, onEdit, onDelete }) => {
   const classes = useStyles();
 
   return (
@@ -50,14 +53,17 @@ export const StoreProduct: React.FC<StoreProductProps> = ({ product, onEdit }) =
             </Typography>
           </Link>
           <RestrictSection accessType='hasShirtManagement'>
-            <IconButton
-              onClick={() => {
-                onEdit();
-              }}
-              size='medium'
-            >
-              <EditIcon></EditIcon>
-            </IconButton>
+            <Box>
+              <IconButton
+                onClick={() => {
+                  onEdit();
+                }}
+                size='small'
+              >
+                <EditIcon sx={{ fontSize: '1.2rem' }}></EditIcon>
+              </IconButton>
+            </Box>
+            <DeleteIconButton itemType='Shirt' onDelete={onDelete} />
           </RestrictSection>
         </SplitRow>
         <Link href={product.link}>

@@ -31,7 +31,7 @@ const DeleteIconButton = ({
           setIsLoading(true);
           onDelete();
         }}
-        title={title}
+        title={title || `Remove ${itemType}?`}
         itemType={itemType}
       ></DeleteConfirmationDialog>
     </Box>

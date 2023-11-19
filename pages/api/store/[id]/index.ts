@@ -10,12 +10,18 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
   const id = Number(req.query.id);
 
   if (req.method === 'PATCH' && id) {
-    const isAdmin = await isCurrentUserAuthorized('isAdmin', req);
     const hasShirtManagement = await isCurrentUserAuthorized('hasShirtManagement', req);
 
-    if (!isAdmin && !hasShirtManagement) return throwUnauthenticated(res);
+    if (!hasShirtManagement) return throwUnauthenticated(res);
 
     const product = await prisma.storeProduct.update({ where: { id }, data: req.body });
     res.json(product);
+  } else if (req.method == 'DELETE' && id) {
+    const hasShirtManagement = await isCurrentUserAuthorized('hasShirtManagement', req);
+
+    if (!hasShirtManagement) return throwUnauthenticated(res);
+
+    const result = await prisma.storeProduct.delete({ where: { id } });
+    res.json(result);
   }
 }

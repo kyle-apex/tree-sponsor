@@ -39,6 +39,10 @@ const AddEditStoreProductDialog = ({
     setProduct(product => ({ ...product, [attribute]: value }));
   };
 
+  useEffect(() => {
+    setProduct(currentProduct);
+  }, [currentProduct]);
+
   const save = async () => {
     setIsLoading(true);
     if (product.id) {
@@ -51,7 +55,7 @@ const AddEditStoreProductDialog = ({
 
   return (
     <Dialog open={isOpen} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px', margin: '0px' } }} onClose={handleClose}>
-      <DialogTitle>Edit Shirt</DialogTitle>
+      <DialogTitle>{product?.id ? 'Edit' : 'Add'} Shirt</DialogTitle>
       <DialogContent className=''>
         <AddEditStoreProductForm product={product} updateAttribute={updateAttribute}></AddEditStoreProductForm>
         <SplitRow>
