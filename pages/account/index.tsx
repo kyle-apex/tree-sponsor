@@ -180,13 +180,13 @@ const AccountPage = () => {
                   <Typography color='secondary'>Referred Members:</Typography>{' '}
                   <Typography variant='body1'>{referralStats.referrals?.length || 0}</Typography>
                 </Box>
-                {referralStats.numberOfDonations && (
+                {!!referralStats.numberOfDonations && (
                   <Box mt={1} sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}>
                     <Typography color='secondary'> Referral Donations:</Typography>{' '}
                     <Typography variant='body1'>{referralStats.numberOfDonations}</Typography>
                   </Box>
                 )}
-                {referralStats.numberOfDonations && (
+                {!!referralStats.numberOfDonations && (
                   <Box mt={1} sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}>
                     <Typography color='secondary'>Referral Donation Total:</Typography>{' '}
                     <Typography variant='body1'>${referralStats.amountOfDonations}</Typography>
