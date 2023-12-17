@@ -21,7 +21,15 @@ const TFYPAboutSection = () => {
           Social
         </Typography>
         <div className='detail-content'>
-          {'Keep up with us on '}<a href="https://www.instagram.com/treefolks_yp/" target="_blank" rel="noreferrer">Instagram</a>{' or our '}<a href="https://www.meetup.com/TreeFolks-Young-Professionals/" target="_blank" rel="noreferrer">Meetup.com</a>{' group and make new friends at group volunteer events and socials like Tree Mappy Hours and Solstice parties.'}
+          {'Keep up with us on '}
+          <a href='https://www.instagram.com/treefolks_yp/' target='_blank' rel='noreferrer'>
+            Instagram
+          </a>
+          {' or our '}
+          <a href='https://www.meetup.com/TreeFolks-Young-Professionals/' target='_blank' rel='noreferrer'>
+            Meetup.com
+          </a>
+          {' group and make new friends at group volunteer events and socials like Tree Mappy Hours and Solstice parties.'}
         </div>
       </Grid>
       <Grid md={3} sx={{ textAlign: 'center' }} item>
@@ -30,7 +38,8 @@ const TFYPAboutSection = () => {
           🔟 for the 🌳s
         </Typography>
         <div className='detail-content'>
-          Take involvement to greater heights with our Ten [minutes] for the Trees pledge where members can optionally dedicate 10 minutes/week toward trees/TreeFolks and share what they did, thought of, or learned in our membership community.
+          Take involvement to greater heights with our Ten [minutes] for the Trees pledge where members can optionally dedicate 10
+          minutes/week toward trees/TreeFolks and share what they did, thought of, or learned in our membership community.
         </div>
       </Grid>
       <Grid md={3} sx={{ textAlign: 'center' }} item>
