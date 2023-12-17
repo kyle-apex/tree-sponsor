@@ -9,7 +9,7 @@ describe('Home', () => {
   it('renders section titles', () => {
     render(<TFYPAboutSection></TFYPAboutSection>);
 
-    const heading = screen.getByText('Education');
+    const heading = screen.getByText('Social');
 
     expect(heading).toBeInTheDocument();
   });
