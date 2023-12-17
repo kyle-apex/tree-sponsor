@@ -217,7 +217,7 @@ export default function EnhancedTable(): JSX.Element {
                           },
                         }}
                       >
-                        {capitalCase(row.status)}
+                        {row.status ? capitalCase(row.status) : ''}
                       </TableCell>
                       <TableCell className={classes.condensedCell}>
                         {row.amount >= 60 && (
