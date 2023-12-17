@@ -1,3 +1,8 @@
+# Online IDE via GitPod
+Fork repository and open in https://gitpod.io
+
+# Locahost
+
 Install MYSQL:
 https://dev.mysql.com/downloads/mysql/
 

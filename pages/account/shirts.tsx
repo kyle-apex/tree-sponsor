@@ -55,7 +55,7 @@ const MemberStore = () => {
         </RestrictSection>
       </SplitRow>
       <Typography variant='body1' mb={2}>
-        Clicking &quot;Order&quot; will take you to Printful to select your size and shipping address.{' '}
+        Clicking &quot;Order&quot; will take you to Printful to select your size, color option, and shipping address.{' '}
       </Typography>
       <Typography variant='body1' mb={2}>
         The website will show a price, but after calculating shipping will show &quot;This order will be paid by the owner of the product

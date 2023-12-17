@@ -2,7 +2,7 @@ import { PartialSpeciesSuggestion } from 'interfaces';
 import capitalizeFirst from 'utils/format/capitalize-first';
 import getSpeciesForSpeciesSuggestion from './get-species-for-species-suggestion';
 
-export const identifySuggestions = async (imageContent: string): Promise<PartialSpeciesSuggestion[]> => {
+export const identifySuggestions = async (imageContent: string, secondaryImages?: string[]): Promise<PartialSpeciesSuggestion[]> => {
   const apiKey = process.env.PLANT_ID_KEY;
   const plantIdUrl =
     process.env.PLANT_ID_URL || 'https://plant.id/api/v3/identification?details=classification,common_names,inaturalist_id';
@@ -11,7 +11,7 @@ export const identifySuggestions = async (imageContent: string): Promise<Partial
 
   const data = {
     //api_key: apiKey,
-    images: [imageContent],
+    images: secondaryImages?.length > 0 && secondaryImages[0] ? [imageContent, ...secondaryImages] : [imageContent],
     // modifiers docs: https://github.com/flowerchecker/Plant-id-API/wiki/Modifiers
     //modifiers: ['crops_medium', 'similar_images'], // crops_simple -> slower, but higher accuracy
     similar_images: true,
