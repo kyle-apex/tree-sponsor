@@ -5,6 +5,7 @@ import initSpecies from './data/init-species';
 import initAdmin from './data/init-admin';
 import initDemoData from './data/init-demo-data';
 import fixSubscriptionWithDetailsView from './prisma/fix-subscription-with-details-view';
+import initDemoUsers from './data/init-demo-users';
 
 export default async function initializeApplication() {
   // for some reason, full population requires calling this twice
@@ -17,4 +18,5 @@ export default async function initializeApplication() {
   const admin = await initAdmin();
   await initSpecies();
   initDemoData(admin?.id);
+  initDemoUsers();
 }

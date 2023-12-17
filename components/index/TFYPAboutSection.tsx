@@ -21,17 +21,17 @@ const TFYPAboutSection = () => {
           Social
         </Typography>
         <div className='detail-content'>
-          Keep up with us on Facebook or our Meetup.com group and make new friends at group volunteer events and socials like Tree Mappy
+          Keep up with us on <a href="https://www.instagram.com/treefolks_yp/" target="_blank">Instagram</a> or our <a href="https://www.meetup.com/TreeFolks-Young-Professionals/" target="_blank">Meetup.com</a> group and make new friends at group volunteer events and socials like Tree Mappy
           Hours and Solstice parties.
         </div>
       </Grid>
       <Grid md={3} sx={{ textAlign: 'center' }} item>
         <img className='detail-image' src='/index/education.jpg' alt='Education' />
         <Typography variant='h3' color='primary' className='detail-title'>
-          Education
+          🔟 for the 🌳s
         </Typography>
         <div className='detail-content'>
-          Learn and teach more about our urban forest, how to keep it healthy, and how to keep it growing.
+          Take involvement to greater heights with our Ten [minutes] for the Trees pledge where members can optionally dedicate 10 minutes/week toward trees/TreeFolks and share what they did, thought of, or learned in our membership community.
         </div>
       </Grid>
       <Grid md={3} sx={{ textAlign: 'center' }} item>
