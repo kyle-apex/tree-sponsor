@@ -21,8 +21,7 @@ const TFYPAboutSection = () => {
           Social
         </Typography>
         <div className='detail-content'>
-          Keep up with us on <a href="https://www.instagram.com/treefolks_yp/" target="_blank">Instagram</a> or our <a href="https://www.meetup.com/TreeFolks-Young-Professionals/" target="_blank">Meetup.com</a> group and make new friends at group volunteer events and socials like Tree Mappy
-          Hours and Solstice parties.
+          {'Keep up with us on '}<a href="https://www.instagram.com/treefolks_yp/" target="_blank" rel="noreferrer">Instagram</a>{' or our '}<a href="https://www.meetup.com/TreeFolks-Young-Professionals/" target="_blank" rel="noreferrer">Meetup.com</a>{' group and make new friends at group volunteer events and socials like Tree Mappy Hours and Solstice parties.'}
         </div>
       </Grid>
       <Grid md={3} sx={{ textAlign: 'center' }} item>
