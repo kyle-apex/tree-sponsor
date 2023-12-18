@@ -129,7 +129,7 @@ const Selector = <T extends { id?: number }>({
   useEffect(() => {
     if (!defaultValue) prefetchData();
   }, []);
-
+  console.log('data2', data);
   return (
     <Box flexDirection='row' gap={1} sx={{ display: 'flex', ...sx }}>
       <Autocomplete
@@ -162,7 +162,10 @@ const Selector = <T extends { id?: number }>({
         }}
         autoHighlight={true}
         getOptionLabel={getOptionLabel}
-        filterOptions={a => a}
+        filterOptions={a => {
+          console.log('filter options', a);
+          return a;
+        }}
         renderOption={(props, option: T) => (
           <Box
             component='li'
