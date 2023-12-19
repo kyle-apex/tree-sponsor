@@ -38,7 +38,11 @@ const UserSelector = ({
       apiPath='users'
       resetOnSelect={resetOnSelect}
       queryKey='userOptions'
-      getOptionLabel={(option: PartialUser) => `${option.displayName || option.name || option.email}`}
+      getOptionLabel={(option: PartialUser) =>
+        `${option.displayName || option.name || option.email}${
+          (option.displayName || option.name) && option.email ? ' (' + option.email + ')' : ''
+        }`
+      }
       hasMatchingValue={(currentValue: PartialUser, searchText: string) =>
         currentValue?.displayName === searchText || (!currentValue?.displayName && currentValue?.name === searchText)
       }
