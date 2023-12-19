@@ -166,15 +166,18 @@ const Selector = <T extends { id?: number }>({
           console.log('filter options', a);
           return a;
         }}
-        renderOption={(props, option: T) => (
-          <Box
-            component='li'
-            sx={{ display: 'flex', width: '100%', overflow: 'hidden', flexDirection: 'column', alignItems: 'flex-start !important' }}
-            {...props}
-          >
-            {optionDisplay(option)}
-          </Box>
-        )}
+        renderOption={(props, option: T) => {
+          console.log('renderOption', option, props);
+          return (
+            <Box
+              component='li'
+              sx={{ display: 'flex', width: '100%', overflow: 'hidden', flexDirection: 'column', alignItems: 'flex-start !important' }}
+              {...props}
+            >
+              {optionDisplay(option)}
+            </Box>
+          );
+        }}
         renderInput={params => (
           <TextField
             {...params}
