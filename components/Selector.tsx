@@ -169,12 +169,13 @@ const Selector = <T extends { id?: number }>({
         renderOption={(props, option: T) => {
           console.log('renderOption', option, props);
           return (
-            <li
-              style={{ display: 'flex', width: '100%', overflow: 'hidden', flexDirection: 'column', alignItems: 'flex-start !important' }}
+            <Box
+              component='li'
+              sx={{ display: 'flex', width: '100%', overflow: 'hidden', flexDirection: 'column', alignItems: 'flex-start !important' }}
               {...props}
             >
               {optionDisplay(option)}
-            </li>
+            </Box>
           );
         }}
         renderInput={params => (
