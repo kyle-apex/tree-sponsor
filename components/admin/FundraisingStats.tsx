@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import parsedGet from 'utils/api/parsed-get';
 import StatisticIconDisplay from './StatisticIconDisplay';
 import UpdateIcon from '@mui/icons-material/Update';
+import DateField from 'components/form/DateField';
+import { getYearDateRange } from 'utils/get-year-date-range';
+import { useDebouncedCallback } from 'use-debounce';
 
 type Stats = {
   activeDonations: number;
@@ -15,22 +18,63 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
   const [isLoading, setIsLoading] = useState(false);
   const [stats, setStats] = useState<Stats>(null);
 
+  const [startDate, setStartDate] = useState<Date>(null);
+  const [endDate, setEndDate] = useState<Date>(null);
+  const [isCustomDate, setIsCustomDate] = useState(false);
+
   const currentYear = year || new Date().getFullYear();
+
+  const debouncedGetStats = useDebouncedCallback(() => {
+    getStats();
+  }, 10);
 
   const getStats = async () => {
     setIsLoading(true);
-    setStats(await parsedGet(`/api/donations/stats?year=${year}`));
+    console.log('startDate', startDate);
+    console.log('endDate', endDate);
+
+    const dateFilter = startDate && endDate ? `&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}` : '';
+
+    setStats(await parsedGet(`/api/donations/stats?year=${year}${dateFilter}`));
     setIsLoading(false);
   };
 
   useEffect(() => {
-    if (!refreshWhenFalse) getStats();
+    setIsCustomDate(false);
+    const result = getYearDateRange(year);
+    setStartDate(result.startDate);
+    setEndDate(result.endDate);
+    if (!refreshWhenFalse) debouncedGetStats();
   }, [refreshWhenFalse, year]);
+
+  useEffect(() => {
+    debouncedGetStats();
+  }, [startDate, endDate]);
 
   return (
     <>
       <Grid container spacing={4}>
-        {currentYear == new Date().getFullYear() && (
+        <Grid item xs={6} sx={{ textAlign: 'center' }}>
+          <DateField
+            value={startDate}
+            setValue={date => {
+              setIsCustomDate(true);
+              setStartDate(date);
+            }}
+            label='Start Date'
+          ></DateField>
+        </Grid>
+        <Grid item xs={6} sx={{ textAlign: 'center' }}>
+          <DateField
+            value={endDate}
+            setValue={date => {
+              setIsCustomDate(true);
+              setEndDate(date);
+            }}
+            label='End Date'
+          ></DateField>
+        </Grid>
+        {currentYear == new Date().getFullYear() && !isCustomDate && (
           <>
             <Grid item xs={6} sx={{ textAlign: 'center' }}>
               <StatisticIconDisplay
@@ -57,7 +101,7 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
         <Grid item xs={6} sx={{ textAlign: 'center' }}>
           <StatisticIconDisplay
             color='secondary'
-            label={'Member Donations in ' + currentYear}
+            label={`Member Donations${isCustomDate ? '' : ' in ' + currentYear}`}
             count={stats?.currentYearMemberDonations}
             isCurrency={true}
             isLoading={isLoading}
@@ -75,7 +119,7 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
         <Grid item xs={6} sx={{ textAlign: 'center' }}>
           <StatisticIconDisplay
             color='secondary'
-            label={`${currentYear} Event Donations`}
+            label={`${isCustomDate ? '' : currentYear + ' '}Event Donations`}
             count={stats?.currentYearDonations}
             isCurrency={true}
             isLoading={isLoading}
@@ -83,7 +127,7 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
         </Grid>
         <Grid item xs={6} sx={{ textAlign: 'center' }}>
           <StatisticIconDisplay
-            label={`Total ${currentYear} Fundraising`}
+            label={`Total ${isCustomDate ? '' : currentYear + ' '}Fundraising`}
             count={stats?.currentYearDonations + stats?.currentYearMemberDonations}
             isCurrency={true}
             isLoading={isLoading}
