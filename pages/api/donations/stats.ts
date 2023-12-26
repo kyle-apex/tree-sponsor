@@ -18,13 +18,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   calendarYear.setDate(calendarYear.getDate() - 365);
 
-  const { startDate, endDate } = getYearDateRange(year);
+  const startDateString = req.query.startDate ? String(req.query.startDate) : null;
+  const endDateString = req.query.endDate ? String(req.query.endDate) : null;
+
+  let startDate: Date, endDate: Date;
+
+  if (startDateString) {
+    startDate = new Date(startDateString);
+    if (endDateString) endDate = new Date(endDateString);
+  } else {
+    const result = getYearDateRange(year);
+    startDate = result.startDate;
+    endDate = result.endDate;
+  }
+
   console.log('startDate', startDate, endDate);
 
   let whereFilter: Prisma.SubscriptionWithDetailsWhereInput = { lastPaymentDate: { gt: calendarYear } };
 
-  if (endDate) {
-    whereFilter = { lastPaymentDate: { gt: startDate }, createdDate: { lt: endDate } };
+  if (endDate || startDateString) {
+    whereFilter = { lastPaymentDate: { gt: startDate } };
+    if (endDate) whereFilter.createdDate = { lt: endDate };
   }
 
   const subscriptionWithDetails = await prisma.subscriptionWithDetails.findMany({
@@ -40,15 +54,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   };
 
   stats.activeDonations = subscriptionWithDetails.reduce((previous, current) => {
-    if ((current.lastPaymentDate && current.lastPaymentDate?.getFullYear() == year) || endDate)
+    if ((current.lastPaymentDate && current.lastPaymentDate?.getFullYear() == year) || endDate || startDateString)
       stats.currentYearMemberDonations += current.amount;
 
     const total = previous + current.amount;
     return total;
   }, 0);
 
+  const dateWhereFilter: Prisma.DateTimeNullableFilter = {
+    gt: startDate,
+  };
+
+  if (endDate) {
+    dateWhereFilter.lt = endDate;
+  }
+
   const aggregate = await prisma.donation.aggregate({
-    where: { date: { gt: startDate, lt: endDate } },
+    where: { date: dateWhereFilter },
     _sum: {
       amount: true,
     },

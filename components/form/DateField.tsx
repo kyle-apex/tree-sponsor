@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 // TODO: Date not updating
 const DateField = ({ value, setValue, label }: { value: Date | null; setValue: (value: Date | null) => void; label?: string }) => {
-  console.log('rerender', value);
+  //console.log('rerender', value);
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
@@ -12,7 +12,7 @@ const DateField = ({ value, setValue, label }: { value: Date | null; setValue: (
         label={label}
         value={value}
         onChange={newValue => {
-          console.log('onChange', newValue);
+          //console.log('onChange', newValue);
           setValue(newValue);
         }}
       />

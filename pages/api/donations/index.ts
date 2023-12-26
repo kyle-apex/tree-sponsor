@@ -9,12 +9,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     const year = req.query.year ? Number(req.query.year) : new Date().getFullYear();
 
-    const { startDate, endDate } = getYearDateRange(year);
+    const startDateString = req.query.startDate ? String(req.query.startDate) : null;
+    console.log('startDate', startDateString);
+    const endDateString = req.query.endDate ? String(req.query.endDate) : null;
+
+    let startDate, endDate;
+
+    if (startDateString) {
+      console.log('startDateString', startDateString);
+      startDate = new Date(startDateString);
+      if (endDateString) endDate = new Date(endDateString);
+    } else {
+      const result = getYearDateRange(year);
+      startDate = result.startDate;
+      endDate = result.endDate;
+    }
+
+    const whereFilter: {
+      gt?: Date;
+      lt?: Date;
+    } = { gt: startDate };
+
+    if (endDate) whereFilter.lt = endDate;
 
     const donations = await prisma.donation.findMany({
       orderBy: { date: 'asc' },
-      where: { date: { gt: startDate, lt: endDate } },
+      where: { date: whereFilter },
     });
+
     res.status(200).json(donations);
   } else if (req.method === 'POST') {
     const donation = await prisma.donation.create({ data: req.body });
