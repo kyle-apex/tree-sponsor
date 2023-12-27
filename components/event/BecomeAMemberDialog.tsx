@@ -8,7 +8,12 @@ import SplitRow from 'components/layout/SplitRow';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Link from 'next/link';
-import { signIn } from 'next-auth/client';
+
+function getCallbackUrl() {
+  const result = typeof window !== 'undefined' ? window.location.href : '';
+  console.log('result', result);
+  return result;
+}
 
 const BecomeAMemberDialog = ({ open, setOpen }: { open: boolean; setOpen: (isOpen: boolean) => void }) => {
   const handleClose = () => {
@@ -36,7 +41,7 @@ const BecomeAMemberDialog = ({ open, setOpen }: { open: boolean; setOpen: (isOpe
             Become a Supporter
           </Button>
         </Link>
-        <Link href={'/signin?callbackUrl=' + window.location.href}>
+        <Link href={'/signin?callbackUrl=' + getCallbackUrl()}>
           <Button color='secondary' variant='outlined' fullWidth sx={{ mb: 2 }}>
             Login
           </Button>
