@@ -8,6 +8,7 @@ import SplitRow from 'components/layout/SplitRow';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Link from 'next/link';
+import { signIn } from 'next-auth/client';
 
 const BecomeAMemberDialog = ({ open, setOpen }: { open: boolean; setOpen: (isOpen: boolean) => void }) => {
   const handleClose = () => {
@@ -28,11 +29,16 @@ const BecomeAMemberDialog = ({ open, setOpen }: { open: boolean; setOpen: (isOpe
           Adding tree identifications is limitted to TreeFolks Young Professionals supporting members.
         </Typography>
         <Typography variant='body2' component='p' mb={3}>
-          Become a supporting member today with an annual donation to TreeFolks starting at $20/yr:
+          Become a supporting member today with an annual donation to TreeFolks starting at $20/year:
         </Typography>
         <Link href='/membership'>
-          <Button color='primary' variant='contained' fullWidth sx={{ mb: 2 }}>
+          <Button color='primary' variant='contained' fullWidth sx={{ mb: 3 }}>
             Become a Supporter
+          </Button>
+        </Link>
+        <Link href={'/signin?callbackUrl=' + window.location.href}>
+          <Button color='secondary' variant='outlined' fullWidth sx={{ mb: 2 }}>
+            Login
           </Button>
         </Link>
         <Button fullWidth color='inherit' onClick={handleClose}>

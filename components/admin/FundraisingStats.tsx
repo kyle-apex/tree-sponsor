@@ -30,8 +30,6 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
 
   const getStats = async () => {
     setIsLoading(true);
-    console.log('startDate', startDate);
-    console.log('endDate', endDate);
 
     const dateFilter = startDate && endDate ? `&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}` : '';
 
@@ -41,7 +39,7 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
 
   useEffect(() => {
     setIsCustomDate(false);
-    const result = getYearDateRange(year);
+    const result = getYearDateRange(year, true);
     setStartDate(result.startDate);
     setEndDate(result.endDate);
     if (!refreshWhenFalse) debouncedGetStats();
