@@ -12,10 +12,10 @@ export const listTopQuizResponders = async (yearFilter?: string | number, eventI
 
   const { startDate, endDate } = getYearDateRange(year);
 
-  let whereFilter: Prisma.SpeciesQuizResponseWhereInput = { createdDate: { gt: yearStart } };
+  const whereFilter: Prisma.SpeciesQuizResponseWhereInput = {}; //createdDate: { gt: yearStart } };
 
   if (endDate) {
-    whereFilter = { createdDate: { gt: startDate, lt: endDate } };
+    //whereFilter = { createdDate: { gt: startDate, lt: endDate } };
   }
 
   if (eventId) {
