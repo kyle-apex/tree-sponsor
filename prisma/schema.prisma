@@ -17,7 +17,7 @@ model Profile {
   linkedInLink    String? @db.VarChar(50)
   twitterHandle   String? @db.VarChar(50)
   organization    String? @db.VarChar(75)
-  user            User    @relation(fields: [userId], references: [id])
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          Int     @unique
 }
 
@@ -72,7 +72,7 @@ model User {
   comments                 Comment[]
   reactions                Reaction[]
   referralUserId           Int?
-  referralUser             User?                     @relation("referralUser", fields: [referralUserId], references: [id])
+  referralUser             User?                     @relation("referralUser", fields: [referralUserId], references: [id], onDelete: SetNull)
 
   commentReactions      CommentReaction[]
   notifications         Notification[]        @relation("user")
@@ -127,7 +127,7 @@ model Subscription {
   status           String?       @db.VarChar(32)
   stripeCustomerId String?       @db.VarChar(32)
   stripeId         String?       @unique @db.VarChar(32)
-  user             User?         @relation(fields: [userId], references: [id])
+  user             User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId           Int?
   product          Product?      @relation(fields: [productId], references: [id])
   productId        Int?
@@ -160,7 +160,7 @@ model Comment {
   text            String?
   userId          Int?
   isDeleted       Boolean?          @default(false)
-  user            User?             @relation(fields: [userId], references: [id])
+  user            User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
   sponsorshipId   Int?
   sponsorship     Sponsorship?      @relation(fields: [sponsorshipId], references: [id])
   parentCommentId Int?
@@ -174,7 +174,7 @@ model CommentReaction {
   createdDate DateTime? @default(now())
   type        String?
   userId      Int?
-  user        User?     @relation(fields: [userId], references: [id])
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   commentId   Int?
   comment     Comment?  @relation(fields: [commentId], references: [id])
 }
@@ -184,7 +184,7 @@ model Reaction {
   createdDate   DateTime?    @default(now())
   type          String?
   userId        Int?
-  user          User?        @relation(fields: [userId], references: [id])
+  user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
   sponsorshipId Int?
   sponsorship   Sponsorship? @relation(fields: [sponsorshipId], references: [id])
 }
@@ -198,9 +198,9 @@ model Notification {
   createdDate  DateTime? @default(now())
   isRead       Boolean?  @default(false)
   userId       Int?
-  user         User?     @relation("user", fields: [userId], references: [id])
+  user         User?     @relation("user", fields: [userId], references: [id], onDelete: Cascade)
   sourceUserId Int?
-  sourceUser   User?     @relation("sourceUser", fields: [sourceUserId], references: [id])
+  sourceUser   User?     @relation("sourceUser", fields: [sourceUserId], references: [id], onDelete: SetNull)
 }
 
 model Product {
@@ -236,9 +236,9 @@ model Tree {
   images                   TreeImage[]
   changeLogs               TreeChangeLog[]
   createdByUserId          Int?
-  createdByUser            User?                 @relation("createdByUser", fields: [createdByUserId], references: [id])
+  createdByUser            User?                 @relation("createdByUser", fields: [createdByUserId], references: [id], onDelete: SetNull)
   lastChangedByUserId      Int?
-  lastChangedByUser        User?                 @relation("lastChangedByUser", fields: [lastChangedByUserId], references: [id])
+  lastChangedByUser        User?                 @relation("lastChangedByUser", fields: [lastChangedByUserId], references: [id], onDelete: SetNull)
   categories               Category[]            @relation("TreeToCategory")
   events                   TreeToEvent[]
   checkIns                 TreeCheckIn[]
@@ -263,7 +263,7 @@ model TreeGroup {
   createdDate     DateTime?     @default(now())
   pictureUrl      String?
   path            String?       @db.VarChar(256)
-  createdByUser   User?         @relation(fields: [createdByUserId], references: [id])
+  createdByUser   User?         @relation(fields: [createdByUserId], references: [id], onDelete: SetNull)
   createdByUserId Int?
   treeLinks       TreeToGroup[]
 }
@@ -277,7 +277,7 @@ model TreeToGroup {
   tree            Tree?      @relation(fields: [treeId], references: [id])
   groupId         Int
   group           TreeGroup? @relation(fields: [groupId], references: [id])
-  createdByUser   User?      @relation(fields: [createdByUserId], references: [id])
+  createdByUser   User?      @relation(fields: [createdByUserId], references: [id], onDelete: SetNull)
   createdByUserId Int?
 
   @@id([treeId, groupId])
@@ -293,7 +293,7 @@ model Category {
   isPublic    Boolean?  @default(false)
   trees       Tree[]    @relation("TreeToCategory")
   events      Event[]   @relation("CategoryToEvent")
-  user        User?     @relation(fields: [userId], references: [id])
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId      Int?
   role        Role?     @relation(fields: [roleId], references: [id])
   roleId      Int?
@@ -318,7 +318,7 @@ model Event {
   location            Location?             @relation(fields: [locationId], references: [id])
   locationId          Int?
   categories          Category[]            @relation("CategoryToEvent")
-  user                User?                 @relation(fields: [userId], references: [id])
+  user                User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId              Int?
   organizers          User[]                @relation("OrganizerToEvent")
   role                Role?                 @relation(fields: [roleId], references: [id])
@@ -334,7 +334,7 @@ model TreeCheckIn {
   email          String?
   discoveredFrom String?
   userId         Int?
-  user           User?     @relation(fields: [userId], references: [id])
+  user           User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   treeId         Int?
   tree           Tree?     @relation(fields: [treeId], references: [id])
 }
@@ -347,7 +347,7 @@ model EventCheckIn {
   discoveredFrom String?
   isPrivate      Boolean?  @default(false)
   userId         Int?
-  user           User?     @relation(fields: [userId], references: [id])
+  user           User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   eventId        Int?
   event          Event?    @relation(fields: [eventId], references: [id])
 
@@ -367,7 +367,7 @@ model TreeChangeLog {
   oldValue        String?
   newValue        String?
   userId          Int?
-  user            User?          @relation(fields: [userId], references: [id])
+  user            User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
   treeId          Int?
   tree            Tree?          @relation(fields: [treeId], references: [id])
   transactionUuid String?
@@ -401,7 +401,7 @@ model SpeciesQuizResponse {
   isCorrect          Boolean?  @default(false)
   incorrectGuessName String?   @db.VarChar(128)
   createdDate        DateTime? @default(now())
-  user               User?     @relation(fields: [userId], references: [id])
+  user               User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId             Int?
   tree               Tree?     @relation(fields: [treeId], references: [id])
   treeId             Int?
@@ -493,7 +493,7 @@ model Sponsorship {
   isPrivate          Boolean?      @default(false)
   isPrivateLocation  Boolean?      @default(false)
   reviewStatus       ReviewStatus? @default(New)
-  user               User?         @relation(fields: [userId], references: [id])
+  user               User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId             Int?
   tree               Tree?         @relation(fields: [treeId], references: [id])
   treeId             Int?
