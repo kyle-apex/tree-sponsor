@@ -3,7 +3,7 @@ import Layout from 'components/layout/Layout';
 const PrivacyPage = () => (
   <Layout title='Privacy Policy'>
     <h1>Privacy Policy</h1>
-    <p>Last updated: May 05, 2021</p>
+    <p>Last updated: January 08, 2024</p>
     <p>
       This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the
       Service and tells You about Your privacy rights and how the law protects You.
@@ -370,6 +370,14 @@ const PrivacyPage = () => (
       The security of Your Personal Data is important to Us, but remember that no method of transmission over the Internet, or method of
       electronic storage is 100% secure. While We strive to use commercially acceptable means to protect Your Personal Data, We cannot
       guarantee its absolute security.
+    </p>
+    <h2>Removal of Your Personal Data</h2>
+    <p>
+      If you wish to remove Your Personal Data, you can let us know using the{' '}
+      <a href='https://tfyp.org/contact' rel='external nofollow noopener noreferrer' target='_blank'>
+        contact form
+      </a>{' '}
+      or clicking the &quot;Delete my account and personal data&quot; option within your account.
     </p>
     <h1>Children&apos;s Privacy</h1>
     <p>
