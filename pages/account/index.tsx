@@ -15,7 +15,7 @@ import { PartialUser, Session } from 'interfaces';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import RestrictSection from 'components/RestrictSection';
-import { useSession } from 'next-auth/client';
+import { useSession, signOut } from 'next-auth/client';
 import CheckinHistoryDialog from 'components/event/CheckinHistoryDialog';
 import useHash from 'utils/hooks/use-hash';
 import AccountTrees from 'components/account/trees';
@@ -23,6 +23,8 @@ import IdentifyTreeFlow from 'components/tree/IdentifyTreeFlow';
 import CopyIconButton from 'components/CopyIconButton';
 import parsedGet from 'utils/api/parsed-get';
 import { ReferralStats } from 'interfaces';
+import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
+import axios from 'axios';
 
 export const getServerSideProps = serverSideIsAuthenticated;
 
@@ -33,9 +35,16 @@ const AccountPage = () => {
   const [nextSession] = useSession();
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
   const [referralStats, setReferralStats] = useState<ReferralStats>();
+  const [isDeleteAccountConfirmationDialogOpen, setIsDeleteAccountConfirmationDialogOpen] = useState(false);
 
   const session = nextSession as Session;
   const user = session?.user;
+
+  const deleteAccount = async () => {
+    await axios.post('/api/me/delete-account');
+
+    signOut();
+  };
 
   const getReferrals = async () => {
     const stats = (await parsedGet('/api/me/referrals')) as ReferralStats;
@@ -215,6 +224,21 @@ const AccountPage = () => {
           </Box>
         )}
         <MembershipPerks isMember={user?.subscriptions?.length > 0}></MembershipPerks>
+        <a
+          style={{ textDecoration: 'none', cursor: 'pointer', marginTop: '40px', display: 'block' }}
+          onClick={() => {
+            setIsDeleteAccountConfirmationDialogOpen(true);
+          }}
+        >
+          Delete my account and personal data
+        </a>
+        <DeleteConfirmationDialog
+          open={isDeleteAccountConfirmationDialogOpen}
+          setOpen={setIsDeleteAccountConfirmationDialogOpen}
+          title='Remove Account and Personal Data'
+          bodyText='Are you sure you wish to remove your account and personal data from the TFYP.org website?  This cannot be undone.'
+          onConfirm={() => deleteAccount()}
+        ></DeleteConfirmationDialog>
       </Box>
 
       <Box hidden={'trees' != activeTab}>
