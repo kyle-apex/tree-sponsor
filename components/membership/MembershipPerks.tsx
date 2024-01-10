@@ -14,12 +14,7 @@ const MembershipPerks = ({ isMember }: { isMember?: boolean }) => {
         {isMember && (
           <>
             <li>
-              <a
-                href={process.env.BAND_URL || 'https://band.us/n/a4ae81veK4TfW'}
-                target='_blank'
-                rel='noreferrer'
-                style={{ textDecoration: 'none' }}
-              >
+              <a href={process.env.BAND_URL || 'https://band.tfyp.org'} target='_blank' rel='noreferrer' style={{ textDecoration: 'none' }}>
                 <Typography color='primary'>Join our members only group on BAND for:</Typography>
               </a>
               <ul style={{ color: 'var(--secondary-text-color)' }}>
