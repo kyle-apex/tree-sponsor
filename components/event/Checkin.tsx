@@ -295,7 +295,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               </Typography>
               <Typography variant='body2' component='p' mb={status.myCheckin?.user?.roles?.find(role => role.name === 'Core Team') ? 2 : 4}>
                 👥 &nbsp;Keep up with special events and opportunities in our
-                <a href={process.env.BAND_URL || 'https://band.us/n/a4ae81veK4TfW'} target='_blank' rel='noreferrer' style={{}}>
+                <a href={process.env.BAND_URL || 'https://band.tfyp.org'} target='_blank' rel='noreferrer' style={{}}>
                   <span style={{ marginLeft: '4px' }}>members only BAND App community</span>
                 </a>
                 .
