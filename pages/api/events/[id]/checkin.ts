@@ -70,7 +70,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!existingCheckin) {
       // add mailchimp tag
-      const yearPrefix = event.name.includes('2023') ? '' : '2023 ';
+      const yearAsString = new Date().getFullYear() + '';
+      const yearPrefix = event.name.includes(yearAsString) ? '' : yearAsString + ' ';
       const tagName = 'Event: ' + yearPrefix + event.name;
       if (email) addTagToMembersByName(tagName, [email]);
       // update the db with any membership changes
