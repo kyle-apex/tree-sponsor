@@ -41,7 +41,8 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
     setIsCustomDate(false);
     const result = getYearDateRange(year, true);
     setStartDate(result.startDate);
-    setEndDate(result.endDate);
+    if (year == new Date().getFullYear()) setEndDate(null);
+    else setEndDate(result.endDate);
     if (!refreshWhenFalse) debouncedGetStats();
   }, [refreshWhenFalse, year]);
 
