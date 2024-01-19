@@ -7,7 +7,8 @@ export const getLastPaymentDateForSubscription = async (subscription: Stripe.Sub
   const invoices: Stripe.ApiList<Stripe.Invoice> = await stripe.invoices.list({ subscription: subscription.id });
   lastPaymentTime = 0;
   invoices.data.forEach((invoice: Stripe.Invoice) => {
-    if (invoice.amount_paid > 0 && (!lastPaymentTime || invoice.created > lastPaymentTime)) lastPaymentTime = invoice.created;
+    if (invoice.amount_paid > 0 && (!lastPaymentTime || invoice.created > lastPaymentTime) && !invoice.post_payment_credit_notes_amount)
+      lastPaymentTime = invoice.created;
   });
   //}
 
