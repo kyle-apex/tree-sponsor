@@ -9,6 +9,7 @@ import { useDebouncedCallback } from 'use-debounce';
 
 type Stats = {
   activeDonations: number;
+  upcomingMemberDonations: number;
   activeMembers: number;
   currentYearMemberDonations: number;
   currentYearDonations: number;
@@ -88,7 +89,7 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
             <Grid item xs={6} sx={{ textAlign: 'center' }}>
               <StatisticIconDisplay
                 label={'Scheduled by the end of ' + currentYear}
-                count={stats?.activeDonations - stats?.currentYearMemberDonations}
+                count={stats?.upcomingMemberDonations}
                 isCurrency={true}
                 isLoading={isLoading}
                 icon={<UpdateIcon fontSize='medium'></UpdateIcon>}
