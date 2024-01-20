@@ -5,6 +5,7 @@ import { prisma, Prisma } from 'utils/prisma/init';
 
 type Stats = {
   activeDonations: number;
+  upcomingMemberDonations: number;
   activeMembers: number;
   currentYearMemberDonations: number;
   currentYearDonations: number;
@@ -48,16 +49,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const stats: Stats = {
     activeDonations: 0,
+    upcomingMemberDonations: 0,
     activeMembers: subscriptionWithDetails.length,
     currentYearMemberDonations: 0,
     currentYearDonations: 0,
   };
 
   stats.activeDonations = subscriptionWithDetails.reduce((previous, current) => {
-    if ((current.lastPaymentDate && current.lastPaymentDate?.getFullYear() == year) || endDate || startDateString)
-      stats.currentYearMemberDonations += current.amount;
+    let total;
 
-    const total = previous + current.amount;
+    if ((current.lastPaymentDate && current.lastPaymentDate?.getFullYear() == year) || endDate || startDateString) {
+      stats.currentYearMemberDonations += current.amount;
+    } else if (current.status == 'active') stats.upcomingMemberDonations += current.amount;
+
+    if (current.status != 'active') return previous;
+
+    total = previous + current.amount;
+
     return total;
   }, 0);
 
