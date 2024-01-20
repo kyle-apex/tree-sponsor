@@ -83,7 +83,6 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
                 count={stats?.activeDonations}
                 isCurrency={true}
                 isLoading={isLoading}
-                description='Last 365 Days'
               ></StatisticIconDisplay>
             </Grid>
             <Grid item xs={6} sx={{ textAlign: 'center' }}>
