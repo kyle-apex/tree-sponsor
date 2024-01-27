@@ -29,7 +29,7 @@ const userNameDisplay = ({ user }: { user: PartialUser }) => (
 );
 
 const hasRole = (user: PartialUser, roleName: string): boolean => {
-  if (roleName == 'Staff' && user.email?.endsWith('@treefolks.org')) return true;
+  if (roleName == 'Staff' && (user.email?.endsWith('@treefolks.org') || user.email2?.endsWith('@treefolks.org'))) return true;
   return !!user.roles?.find(role => role.name == roleName);
 };
 
@@ -73,7 +73,7 @@ const Attendee = ({
 }) => {
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
   const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useHashToggle('settings', false);
-  const [email] = useLocalStorage('checkinEmail', '');
+  const [email] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
 
   const onSettingsDialogClose = (val: boolean) => {
     setIsSettingsDialogOpen(val);
@@ -86,7 +86,11 @@ const Attendee = ({
 
   const roleDisplay = getRoleDisplay(user);
   const isCurrentUser =
-    (email?.toLowerCase() == user.email?.toLowerCase() || email?.toLowerCase() == `"${user.email?.toLowerCase()}"`) && !hideContactPageIcon;
+    (email?.toLowerCase() == user.email?.toLowerCase() ||
+      email?.toLowerCase() == `"${user.email?.toLowerCase()}"` ||
+      email?.toLowerCase() == user.email2?.toLowerCase() ||
+      email?.toLowerCase() == `"${user.email2?.toLowerCase()}"`) &&
+    !hideContactPageIcon;
 
   const stylesSx = isCurrentUser ? { ...sx, ...currentAttendeeStyles } : { ...sx };
 
@@ -130,33 +134,32 @@ const Attendee = ({
               )}
             </Box>
             <Box sx={{ flex: '1 1 auto' }}></Box>
-            {(email?.toLowerCase() == user.email?.toLowerCase() || email?.toLowerCase() == `"${user.email?.toLowerCase()}"`) &&
-              !hideContactPageIcon && (
-                <>
-                  {isPrivate && (
-                    <Tooltip title='Hidden from other attendees'>
-                      <VisibilityOffIcon color='secondary'></VisibilityOffIcon>
-                    </Tooltip>
-                  )}
-                  {(user.displayName || user.name) && (
-                    <IconButton
-                      onClick={() => {
-                        setIsSettingsDialogOpen(true);
-                      }}
-                      sx={{ ml: 1, padding: 0 }}
-                    >
-                      <SettingsIcon color='secondary'></SettingsIcon>
-                    </IconButton>
-                  )}
-                  <AttendeeSettingsDialog
-                    onSetIsPrivate={onSetIsPrivate}
-                    user={user}
-                    isOpen={isSettingsDialogOpen}
-                    setIsOpen={onSettingsDialogClose}
-                    isPrivate={isPrivate}
-                  ></AttendeeSettingsDialog>
-                </>
-              )}
+            {isCurrentUser && (
+              <>
+                {isPrivate && (
+                  <Tooltip title='Hidden from other attendees'>
+                    <VisibilityOffIcon color='secondary'></VisibilityOffIcon>
+                  </Tooltip>
+                )}
+                {(user.displayName || user.name) && (
+                  <IconButton
+                    onClick={() => {
+                      setIsSettingsDialogOpen(true);
+                    }}
+                    sx={{ ml: 1, padding: 0 }}
+                  >
+                    <SettingsIcon color='secondary'></SettingsIcon>
+                  </IconButton>
+                )}
+                <AttendeeSettingsDialog
+                  onSetIsPrivate={onSetIsPrivate}
+                  user={user}
+                  isOpen={isSettingsDialogOpen}
+                  setIsOpen={onSettingsDialogClose}
+                  isPrivate={isPrivate}
+                ></AttendeeSettingsDialog>
+              </>
+            )}
 
             {(hasContact || user.image) && (
               <>

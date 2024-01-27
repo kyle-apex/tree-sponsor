@@ -93,6 +93,9 @@ const AttendeeSettingsDialog = ({
     imageUploadRef.current.openFileBrowser();
   };
 
+  const sessionEmailIsUserEmail =
+    (session?.user?.email == user?.email && user?.email) || (session?.user?.email == user?.email2 && user?.email2);
+
   return (
     <>
       <Dialog maxWidth='xs' open={isOpen} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', margin: '0px' } }} onClose={handleClose}>
@@ -104,7 +107,7 @@ const AttendeeSettingsDialog = ({
             <Checkbox checked={isPrivate} onChange={e => setIsPrivate(e.target.checked)}></Checkbox> Hide my name from public view
           </Box>
           <Divider sx={{ mb: 2 }}></Divider>
-          {(!session || session.user.email != user.email) && (
+          {(!session || !sessionEmailIsUserEmail) && (
             <>
               <Typography mb={2} variant='body1'>
                 To share your LinkedIn, Instagram, or Twitter contact info with other attendees, login with your email address to update
@@ -123,7 +126,7 @@ const AttendeeSettingsDialog = ({
               </Button>
             </>
           )}
-          {session && session.user.email == user.email && (
+          {sessionEmailIsUserEmail && (
             <>
               <Typography mb={3} variant='h6'>
                 Contact Information/Display Name
@@ -187,12 +190,12 @@ const AttendeeSettingsDialog = ({
               </Box>
             </>
           )}
-          {(!session || session.user.email != user.email) && (
+          {(!session || !sessionEmailIsUserEmail) && (
             <Button fullWidth color='inherit' sx={{ mt: 3 }} onClick={handleClose}>
               Close
             </Button>
           )}
-          {session && session.user.email == user.email && (
+          {session && sessionEmailIsUserEmail && (
             <SplitRow>
               <Button fullWidth color='inherit' sx={{ mt: 3 }} onClick={handleClose}>
                 Close

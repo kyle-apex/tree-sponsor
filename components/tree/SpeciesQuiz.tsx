@@ -68,7 +68,7 @@ const SpeciesQuiz = ({
   const [clickedSpeciesId, setClickedSpeciesId] = useState<number>(null);
   const [speciesOptions, setSpeciesOptions] = useState<PartialSpecies[]>([]);
   const { updateTreeById, trees, event } = useContext(QuizContext);
-  const [email] = useLocalStorage('checkinEmail', '');
+  const [email] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
   const [isHintDialogOpen, setIsHintDialogOpen] = useState(false);
 
   const treeIndex = useMemo(() => {

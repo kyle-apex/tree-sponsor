@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     if (!session || !session.user) return res.status(200).json(false);
-    const isAdmin = await hasAccessForQueriedUser({ email: session.user.email }, 'isAdmin');
+    const isAdmin = await hasAccessForQueriedUser({ OR: [{ email: session.user.email }, { email2: session.user.email }] }, 'isAdmin');
     res.status(200).json(isAdmin);
   }
 }

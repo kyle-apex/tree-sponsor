@@ -48,6 +48,12 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
     initialValue: '',
     hasPatternError: false,
   });
+  const [email2State, setEmail2State] = useState({
+    value: '',
+    isLoading: false,
+    isDuplicate: false,
+    initialValue: '',
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const userRef = useRef<PartialUser>();
@@ -64,6 +70,11 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
     }
 
     bioRef.current = user?.profile?.bio;
+
+    if (user.email2)
+      setEmail2State(state => {
+        return { ...state, value: user.email2 };
+      });
 
     if (user.profilePath)
       setProfilePathState(state => {
@@ -104,10 +115,33 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
     }
   };
 
+  const handleEmail2Change = async (event: { target: { value: string } }) => {
+    setIsChanged(true);
+    const email2 = event.target.value;
+
+    setEmail2State(state => {
+      return { ...state, value: email2 };
+    });
+
+    if (email2 != email2State.initialValue) {
+      let isDuplicate: boolean;
+      if (email2) isDuplicate = (await parsedGet(`/api/users/${user.id}/is-duplicate-email?email=${email2}`)) as boolean;
+      else isDuplicate = false;
+      setEmail2State(state => {
+        return { ...state, isDuplicate };
+      });
+    }
+  };
+
   const updateUser = async () => {
     setIsLoading(true);
 
-    const prismaUpdateQuery: Prisma.UserUpdateInput = { name, image: imageUrl, profilePath: profilePathState.profilePath };
+    const prismaUpdateQuery: Prisma.UserUpdateInput = {
+      name,
+      image: imageUrl,
+      profilePath: profilePathState.profilePath,
+      email2: email2State.value,
+    };
 
     const bio = bioRef.current;
 
@@ -257,6 +291,16 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
             error={profilePathState.isDuplicate || profilePathState.hasPatternError}
             spellCheck='false'
             id='profile-path-field'
+          ></TextField>
+          <TextField
+            value={email2State.value}
+            onChange={handleEmail2Change}
+            label='Secondary Email'
+            size='small'
+            sx={{ marginBottom: 3 }}
+            error={email2State.isDuplicate}
+            spellCheck='false'
+            id='email2-field'
           ></TextField>
           {profilePathState.hasPatternError && <ErrorText>Profile Path must only contain lower case letters and &quot;-&quot;</ErrorText>}
           {profilePathState.isDuplicate && <ErrorText>Profile Path is already in use</ErrorText>}

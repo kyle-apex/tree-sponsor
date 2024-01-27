@@ -111,6 +111,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       props.name = customer.name;
       props.email = email;
 
+      // TODO email2
       const prismaUser = await prisma.user.upsert({
         where: { email: customer.email },
         create: { name: customer.name, email, stripeCustomerId: customer.id },

@@ -11,6 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   await updateSubscriptionsForUser(email);
 
+  // TODO email2
   const subscriptionWithDetails = await prisma.subscriptionWithDetails.findFirst({
     where: { email: email },
     orderBy: { lastPaymentDate: 'desc' },

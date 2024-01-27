@@ -8,8 +8,10 @@ import { User } from '.prisma/client';
 import { Session, PartialUser } from 'interfaces';
 import { AccessTypes } from 'utils/auth/AccessType';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
+import { Adapter } from './custom-prisma-nextauth-adapter';
 
 function getProfilePictureUrl(profile: Profile): string {
+  console.log('profile', profile);
   if (typeof profile?.picture === 'string') return profile.picture;
   else if (profile?.picture) {
     const picture = profile.picture as Record<string, any>;
@@ -64,7 +66,7 @@ export default NextAuth({
   ],
   // Optional SQL or MongoDB database to persist users
   database: process.env.DATABASE_URL,
-  adapter: Adapters.Prisma.Adapter({ prisma }),
+  adapter: Adapter({ prisma }),
   linkOAuthWithExistingUser: true,
   callbacks: {
     async session(session: Session, user): Promise<Session> {

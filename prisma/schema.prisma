@@ -58,6 +58,7 @@ model User {
   displayName              String?
   email                    String?                   @unique
   emailVerified            DateTime?                 @map(name: "email_verified")
+  email2                   String?                   
   image                    String?
   hasShirt                 Boolean?                  @default(false)
   createdAt                DateTime                  @default(now()) @map(name: "created_at")
@@ -352,6 +353,7 @@ model EventCheckIn {
   event          Event?    @relation(fields: [eventId], references: [id])
 
   @@unique([email, eventId])
+  @@unique([userId, eventId])
 }
 
 enum ChangeLogType {

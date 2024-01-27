@@ -2,13 +2,14 @@ import { PartialEventCheckIn, PartialTree, PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getUserDisplaySelect } from 'prisma/common';
 import { prisma, Prisma } from 'utils/prisma/init';
+import { getUserByEmail } from 'utils/user/get-user-by-email';
 import { sortUsersByRole } from 'utils/user/sort-users-by-role';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const eventId = Number(req.query.id);
   const email = String(req.query.email);
 
-  const user = (await prisma.user.findFirst({ where: { email } })) as PartialUser;
+  const user = await getUserByEmail(email);
   const userId = user?.id;
 
   if (!userId) return res.status(200).json({});
@@ -41,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           if (!user.roles) user.roles = [];
           user.roles.push({ name: 'Organizer' });
         }
-        if (user.email?.endsWith('@treefolks.org')) user.roles.push({ name: 'Staff' });
+        if (user.email?.endsWith('@treefolks.org') || user.email2?.endsWith('@treefolks.org')) user.roles.push({ name: 'Staff' });
         if (user?.id != userId) delete user.email;
         return user;
       });

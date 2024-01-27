@@ -23,7 +23,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Link from 'next/link';
 
 const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
-  const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', '');
+  const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeCheckinTab, setActiveCheckinTab] = useState(1);
   const [isLoading, setIsLoading] = useState(false);

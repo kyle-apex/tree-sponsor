@@ -23,6 +23,7 @@ export const upsertSubscription = async (subscription: PartialSubscription): Pro
             },
           },
         },
+        // TODO user.email
         user: {
           connectOrCreate: {
             where: { email: subscription.user.email },

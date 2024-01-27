@@ -33,8 +33,6 @@ ALTER TABLE `Sponsorship` DROP FOREIGN KEY `Sponsorship_userId_fkey`;
 -- DropForeignKey
 ALTER TABLE `TreeCheckIn` DROP FOREIGN KEY `TreeCheckIn_userId_fkey`;
 
--- DropForeignKey
-ALTER TABLE `users` DROP FOREIGN KEY `referralUserId`;
 
 -- AlterTable
 ALTER TABLE `StoreProduct` MODIFY `description` VARCHAR(191) NULL,
@@ -73,3 +71,5 @@ ALTER TABLE `SpeciesQuizResponse` ADD CONSTRAINT `SpeciesQuizResponse_userId_fke
 
 -- AddForeignKey
 ALTER TABLE `Sponsorship` ADD CONSTRAINT `Sponsorship_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `users` ADD COLUMN `email2` VARCHAR(191);

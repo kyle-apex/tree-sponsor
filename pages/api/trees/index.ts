@@ -9,6 +9,7 @@ import getTreeImagePath from 'utils/aws/get-tree-image-path';
 import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
 import { PartialUser, ReviewStatus } from 'interfaces';
 import upsertTree from 'utils/tree/upsert';
+import { getUserByEmail } from 'utils/user/get-user-by-email';
 
 export const config = {
   api: {
@@ -29,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       tree = req.body.tree;
       if (session?.user?.id) userId = session.user.id;
       else {
-        const user = (await prisma.user.findFirst({ where: { email } })) as PartialUser;
+        const user = await getUserByEmail(email);
         if (user) userId = user.id;
       }
     } else {

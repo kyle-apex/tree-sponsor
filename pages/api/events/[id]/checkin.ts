@@ -37,8 +37,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       lastName,
     });
 
+    const userId = user?.id;
+
     const myCheckins = await prisma.eventCheckIn.findMany({
-      where: { eventId: { not: eventId }, email: email },
+      where: { eventId: { not: eventId }, userId },
       include: { event: { include: { location: true } } },
     });
 
@@ -47,10 +49,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     const existingCheckin = await prisma.eventCheckIn.findFirst({
-      where: { email, eventId },
+      where: { userId, eventId },
     });
 
-    const userId = user?.id;
     const updateCheckin: Prisma.EventCheckInUncheckedUpdateInput = {
       userId,
       discoveredFrom,
@@ -73,14 +74,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const yearAsString = new Date().getFullYear() + '';
       const yearPrefix = event.name.includes(yearAsString) ? '' : yearAsString + ' ';
       const tagName = 'Event: ' + yearPrefix + event.name;
-      if (email) addTagToMembersByName(tagName, [email]);
+      const emails = [];
+      if (user.email) emails.push(user.email);
+
+      if (user.email2) {
+        emails.push(user.email2);
+        updateSubscriptionsForUser(user.email2);
+      }
+
+      if (email) addTagToMembersByName(tagName, emails);
       // update the db with any membership changes
       updateSubscriptionsForUser(email);
     }
 
     if (userId && new Date() < eventCompletedDate) {
       const newCheckin = await prisma.eventCheckIn.upsert({
-        where: { email_eventId: { email, eventId } },
+        where: { userId_eventId: { userId, eventId } },
         create: createCheckin,
         update: updateCheckin,
       });
@@ -114,8 +123,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           if (!user.roles) user.roles = [];
           user.roles.push({ name: 'Organizer' });
         }
-        if (user.email?.endsWith('@treefolks.org')) user.roles.push({ name: 'Staff' });
-        if (user?.id != userId) delete user.email;
+        if (user.email?.endsWith('@treefolks.org') || user.email2?.endsWith('@treefolks.org')) user.roles.push({ name: 'Staff' });
+        if (user?.id != userId) {
+          delete user.email;
+          delete user.email2;
+        }
         return user;
       });
 
@@ -123,7 +135,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (user) {
       subscription = await prisma.subscriptionWithDetails.findFirst({
-        where: { email: email },
+        where: { OR: [{ email: user.email }, { email: user.email2 }] },
         orderBy: { lastPaymentDate: 'desc' },
       });
     }

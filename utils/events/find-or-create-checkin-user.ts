@@ -1,11 +1,12 @@
 import { CheckinFields, PartialUser } from 'interfaces';
-import { prisma } from 'utils/prisma/init';
+import { prisma, Prisma } from 'utils/prisma/init';
 import { generateProfilePath } from 'utils/user/generate-profile-path';
+import { getUserByEmail } from 'utils/user/get-user-by-email';
 
 const findOrCreateCheckinUser = async (fields: CheckinFields) => {
   if (!fields) return;
   const { email, firstName, lastName } = fields;
-  let user = (await prisma.user.findFirst({ where: { email }, include: { profile: {} } })) as PartialUser;
+  let user = await getUserByEmail(email, { include: { profile: {} } });
 
   if (user && !user.profile) {
     user.profile = await prisma.profile.create({ data: { userId: user.id } });
