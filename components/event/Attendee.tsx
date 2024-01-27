@@ -73,7 +73,7 @@ const Attendee = ({
 }) => {
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
   const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useHashToggle('settings', false);
-  const [email] = useLocalStorage('checkinEmail', '');
+  const [email] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
 
   const onSettingsDialogClose = (val: boolean) => {
     setIsSettingsDialogOpen(val);

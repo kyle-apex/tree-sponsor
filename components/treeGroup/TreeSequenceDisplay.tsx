@@ -27,7 +27,7 @@ const TreeSequenceDisplay = ({
   defaultLatitude?: number;
   defaultLongitude?: number;
 }) => {
-  const [email] = useLocalStorage('checkinEmail', '');
+  const [email] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
   const {
     data: trees,
     isFetching,

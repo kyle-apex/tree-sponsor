@@ -79,7 +79,7 @@ const attendeesDisplayLimit = 50;
 
 const Checkin = ({ event }: { event?: PartialEvent }) => {
   const router = useRouter();
-  const [email, setEmail] = useLocalStorage('checkinEmail', '');
+  const [email, setEmail] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
   const { sessionId } = useContext(CheckinSessionContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddTreeDialogOpen, setIsAddTreeDialogOpen] = useState(false);
@@ -129,7 +129,9 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   }, [status]);
 
   useEffect(() => {
+    console.log('email', email);
     if (!email) return;
+
     setIsLoadingExistingUser(true);
     getMembershipStatus();
   }, [event?.id]);

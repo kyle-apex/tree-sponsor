@@ -33,7 +33,7 @@ const MapPage = ({ event }: { event?: PartialEvent }) => {
   console.log('e', event);
   const [session] = useSession();
 
-  const [email, setEmail] = useLocalStorage('checkinEmail', '');
+  const [email, setEmail] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
   const [isTreeDialogOpen, setIsTreeDialogOpen] = useState(false);
 
   const [isAddTreeDialogOpen, setIsAddTreeDialogOpen] = useState(false);

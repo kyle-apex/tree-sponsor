@@ -1,12 +1,16 @@
 import { useState } from 'react';
 
-export default function useLocalStorage(key: string, initialValue: string) {
+export default function useLocalStorage(key: string, initialValue: string, secondaryKey?: string) {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = useState(() => {
     try {
       // Get from local storage by key
       let item = window.localStorage.getItem(key);
+      if (secondaryKey && !item) {
+        const secondaryItem = window.localStorage.getItem(secondaryKey);
+        if (secondaryItem) item = secondaryItem;
+      }
 
       if (item) {
         const expiration = window.localStorage.getItem(key + 'Expiration');
@@ -36,6 +40,7 @@ export default function useLocalStorage(key: string, initialValue: string) {
       setStoredValue(value);
       // Save to local storage
       window.localStorage.setItem(key, JSON.stringify(value));
+      if (!value && secondaryKey) window.localStorage.setItem(secondaryKey, JSON.stringify(value));
       if (expirationDate) {
         window.localStorage.setItem(key + 'Expiration', JSON.stringify(expirationDate));
       }

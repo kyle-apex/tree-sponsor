@@ -53,7 +53,7 @@ const TreeIdQuiz = forwardRef(
       },
     }));
 
-    const [email] = useLocalStorage('checkinEmail', '');
+    const [email] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
     const [markers, setMarkers] = useState<QuizCoordinate[]>();
     const currentMapCoordinateRef = useRef<Coordinate>(null);
     const [isFirstQuiz, setIsFirstQuiz] = useState(true);
