@@ -5,6 +5,7 @@ import { getSession } from 'utils/auth/get-session';
 import getProfileImagePath from 'utils/aws/get-profile-image-path';
 import uploadImage from 'utils/aws/upload-image';
 import { prisma } from 'utils/prisma/init';
+import { getUserByEmail } from 'utils/user/get-user-by-email';
 import isDuplicateProfilePath from 'utils/user/is-duplicate-profile-path';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -37,6 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(200).json(obj);
   } else if (req.method === 'PATCH') {
     const profilePath = req.body.profilePath;
+    const email2 = req.body.email2;
     console.log('profilePath', profilePath);
     console.log('body', req.body);
     console.log('email', session.user?.email);
@@ -44,6 +46,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (profilePath) {
       const isDuplicate = await isDuplicateProfilePath(userId, profilePath);
       if (isDuplicate) return throwError(res, `The profile path "${profilePath}" is already in use.`);
+    }
+    if (email2) {
+      const duplicateUser = await getUserByEmail(email2);
+      if (duplicateUser && duplicateUser.id != userId) return throwError(res, `The email "${email2}" is already in use.`);
     }
     const obj = await prisma.user.update({ where: { id: userId }, data: req.body });
     res.status(200).json(obj);

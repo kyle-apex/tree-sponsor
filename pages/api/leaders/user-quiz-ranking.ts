@@ -2,6 +2,7 @@ import { LeaderRow, PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { listTopQuizResponders } from 'utils/leaders/list-top-quiz-responders';
 import { prisma } from 'utils/prisma/init';
+import { getUserByEmail } from 'utils/user/get-user-by-email';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const email = req.query.email as string;
@@ -13,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   const leaders: LeaderRow[] = await listTopQuizResponders(req.query.year as string, eventId);
   const results: LeaderRow[] = [];
-  let currentLeader = leaders.find(leader => leader.user?.email == email);
+  let currentLeader = leaders.find(leader => leader.user?.email == email || leader.user?.email2 == email);
 
   /*let eventLeaders: LeaderRow[];
 
@@ -29,8 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!currentLeader) {
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-    const user = await prisma.user.findFirst({
-      where: { email },
+    const user = await getUserByEmail(email, {
       select: {
         id: true,
         name: true,
@@ -38,9 +38,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         displayName: true,
         profilePath: true,
         email: true,
+        email2: true,
         subscriptions: { where: { lastPaymentDate: { gt: oneYearAgo } }, select: { lastPaymentDate: true } },
       },
     });
+
     currentLeader = { user, count: 0, position: lastPosition, isMember: user?.subscriptions?.length > 0 };
   }
   if (currentLeader) currentLeader.isCurrentUser = true;
@@ -113,7 +115,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         user: leader.user,
         count: leader.count,
         position: leader.position,
-        isCurrentUser: !!(leader.user?.email == currentLeader?.user?.email && currentLeader?.user?.email),
+        isCurrentUser: !!(
+          (leader.user?.email == currentLeader?.user?.email && currentLeader?.user?.email) ||
+          (leader.user?.email2 == currentLeader?.user?.email2 && currentLeader?.user?.email2)
+        ),
       });
     });
     if (!leaders?.find(leader => leader.isCurrentUser) && currentLeader) addLeader(currentLeader);
@@ -122,6 +127,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   results?.forEach(result => {
     result.isMember = result.user?.subscriptions?.length > 0;
     delete result.user?.subscriptions;
+    if (!result.isCurrentUser) {
+      delete result.user?.email;
+      delete result.user?.email2;
+    }
   });
 
   res.status(200).json(results);

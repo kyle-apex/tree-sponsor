@@ -107,7 +107,10 @@ export default function UserRoleTable({
                 return (
                   <StyledTableRow tabIndex={-1} key={user.id}>
                     <TableCell scope='row'>{user.name}</TableCell>
-                    <TableCell scope='row'>{user.email}</TableCell>
+                    <TableCell scope='row'>
+                      {user.email}
+                      {user.email2 ? ' | ' + user.email2 : ''}
+                    </TableCell>
 
                     {roles.map(role => {
                       return (

@@ -55,6 +55,7 @@ const AccountPage = () => {
   }, []);
 
   if (user?.email) localStorage.setItem('checkinEmail', JSON.stringify(user.email));
+  if (user?.email2) localStorage.setItem('checkinEmail2', JSON.stringify(user.email2));
 
   const handleTabChange = (_event: React.SyntheticEvent<Element, Event>, newValue: string) => {
     setActiveTab(newValue);

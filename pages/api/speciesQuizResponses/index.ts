@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { getSession } from 'utils/auth/get-session';
 import { prisma } from 'utils/prisma/init';
+import { getUserByEmail } from 'utils/user/get-user-by-email';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
@@ -13,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const email = req.body.email;
 
     if (!userId) {
-      const user = (await prisma.user.findFirst({ where: { email: req.body.email } })) as PartialUser;
+      const user = await getUserByEmail(email);
       userId = user?.id;
     }
 

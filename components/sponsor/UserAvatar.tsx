@@ -62,7 +62,11 @@ const UserAvatar = ({
     >
       {!isNavigating ? (
         <Box sx={{ alignContent: 'center', display: 'flex' }}>
-          {image ? <img alt='User Avatar' src={image} width={size} height={size} /> : <span>{abbreviation}</span>}
+          {image ? (
+            <img alt='User Avatar' src={image} width={size} height={size} referrerPolicy='no-referrer' />
+          ) : (
+            <span>{abbreviation}</span>
+          )}
         </Box>
       ) : (
         <CircularProgress size={size} color='inherit' />

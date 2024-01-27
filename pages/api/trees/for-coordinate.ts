@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'utils/auth/get-session';
 import listTreesForCoordinate from 'utils/tree/list-trees-for-location';
 import { prisma } from 'utils/prisma/init';
+import { getUserByEmail } from 'utils/user/get-user-by-email';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });
@@ -15,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const email = String(req.query.email);
 
     if (email && !userId) {
-      const user = (await prisma.user.findFirst({ where: { email } })) as PartialUser;
+      const user = await getUserByEmail(email);
       userId = user?.id;
     }
 
