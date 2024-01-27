@@ -1,49 +1,37 @@
-"use strict";
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+Object.defineProperty(exports, '__esModule', {
+  value: true,
 });
 exports.getCompoundId = getCompoundId;
 exports.Adapter = exports.PrismaLegacyAdapter = PrismaLegacyAdapter;
 
-var _crypto = require("crypto");
+var _crypto = require('crypto');
 
 function getCompoundId(a, b) {
-  return (0, _crypto.createHash)("sha256").update(`${a}:${b}`).digest("hex");
+  return (0, _crypto.createHash)('sha256').update(`${a}:${b}`).digest('hex');
 }
 
 function PrismaLegacyAdapter(config) {
   const {
     prisma,
     modelMapping = {
-      User: "user",
-      Account: "account",
-      Session: "session",
-      VerificationRequest: "verificationRequest"
-    }
+      User: 'user',
+      Account: 'account',
+      Session: 'session',
+      VerificationRequest: 'verificationRequest',
+    },
   } = config;
-  const {
-    User,
-    Account,
-    Session,
-    VerificationRequest
-  } = modelMapping;
+  const { User, Account, Session, VerificationRequest } = modelMapping;
   return {
-    async getAdapter({
-      session: {
-        maxAge,
-        updateAge
-      },
-      secret,
-      ...appOptions
-    }) {
+    async getAdapter({ session: { maxAge, updateAge }, secret, ...appOptions }) {
       const sessionMaxAge = maxAge * 1000;
       const sessionUpdateAge = updateAge * 1000;
 
-      const hashToken = token => (0, _crypto.createHash)("sha256").update(`${token}${secret}`).digest("hex");
+      const hashToken = token => (0, _crypto.createHash)('sha256').update(`${token}${secret}`).digest('hex');
 
       return {
-        displayName: "PRISMA_LEGACY",
+        displayName: 'PRISMA_LEGACY',
 
         createUser(profile) {
           var _profile$emailVerifie;
@@ -53,16 +41,19 @@ function PrismaLegacyAdapter(config) {
               name: profile.name,
               email: profile.email,
               image: profile.image,
-              emailVerified: (_profile$emailVerifie = profile.emailVerified) === null || _profile$emailVerifie === void 0 ? void 0 : _profile$emailVerifie.toISOString()
-            }
+              emailVerified:
+                (_profile$emailVerifie = profile.emailVerified) === null || _profile$emailVerifie === void 0
+                  ? void 0
+                  : _profile$emailVerifie.toISOString(),
+            },
           });
         },
 
         getUser(id) {
           return prisma[User].findUnique({
             where: {
-              id
-            }
+              id,
+            },
           });
         },
 
@@ -70,8 +61,8 @@ function PrismaLegacyAdapter(config) {
           if (email) {
             return prisma[User].findFirst({
               where: {
-                OR: [{email: email}, {email2: email}]
-              }
+                OR: [{ email: email }, { email2: email }],
+              },
             });
           }
 
@@ -81,15 +72,15 @@ function PrismaLegacyAdapter(config) {
         async getUserByProviderAccountId(providerId, providerAccountId) {
           const account = await prisma[Account].findUnique({
             where: {
-              compoundId: getCompoundId(providerId, providerAccountId)
-            }
+              compoundId: getCompoundId(providerId, providerAccountId),
+            },
           });
 
           if (account) {
             return prisma[User].findUnique({
               where: {
-                id: account.userId
-              }
+                id: account.userId,
+              },
             });
           }
 
@@ -97,31 +88,25 @@ function PrismaLegacyAdapter(config) {
         },
 
         updateUser(user) {
-          const {
-            id,
-            name,
-            email,
-            image,
-            emailVerified
-          } = user;
+          const { id, name, email, image, emailVerified } = user;
           return prisma[User].update({
             where: {
-              id
+              id,
             },
             data: {
               name,
               email,
               image,
-              emailVerified: emailVerified === null || emailVerified === void 0 ? void 0 : emailVerified.toISOString()
-            }
+              emailVerified: emailVerified === null || emailVerified === void 0 ? void 0 : emailVerified.toISOString(),
+            },
           });
         },
 
         deleteUser(userId) {
           return prisma[User].delete({
             where: {
-              id: userId
-            }
+              id: userId,
+            },
           });
         },
 
@@ -135,16 +120,16 @@ function PrismaLegacyAdapter(config) {
               providerId,
               providerType,
               accessTokenExpires,
-              userId
-            }
+              userId,
+            },
           });
         },
 
         unlinkAccount(_, providerId, providerAccountId) {
           return prisma[Account].delete({
             where: {
-              compoundId: getCompoundId(providerId, providerAccountId)
-            }
+              compoundId: getCompoundId(providerId, providerAccountId),
+            },
           });
         },
 
@@ -161,24 +146,24 @@ function PrismaLegacyAdapter(config) {
             data: {
               expires,
               userId: user.id,
-              sessionToken: (0, _crypto.randomBytes)(32).toString("hex"),
-              accessToken: (0, _crypto.randomBytes)(32).toString("hex")
-            }
+              sessionToken: (0, _crypto.randomBytes)(32).toString('hex'),
+              accessToken: (0, _crypto.randomBytes)(32).toString('hex'),
+            },
           });
         },
 
         async getSession(sessionToken) {
           const session = await prisma[Session].findUnique({
             where: {
-              sessionToken
-            }
+              sessionToken,
+            },
           });
 
           if (session !== null && session !== void 0 && session.expires && new Date() > session.expires) {
             await prisma[Session].delete({
               where: {
-                sessionToken
-              }
+                sessionToken,
+              },
             });
             return null;
           }
@@ -205,33 +190,27 @@ function PrismaLegacyAdapter(config) {
             }
           }
 
-          const {
-            id,
-            expires
-          } = session;
+          const { id, expires } = session;
           return prisma[Session].update({
             where: {
-              id
+              id,
             },
             data: {
-              expires: expires.toISOString()
-            }
+              expires: expires.toISOString(),
+            },
           });
         },
 
         deleteSession(sessionToken) {
           return prisma[Session].delete({
             where: {
-              sessionToken
-            }
+              sessionToken,
+            },
           });
         },
 
         async createVerificationRequest(identifier, url, token, _, provider) {
-          const {
-            sendVerificationRequest,
-            maxAge
-          } = provider;
+          const { sendVerificationRequest, maxAge } = provider;
           let expires = null;
 
           if (maxAge) {
@@ -244,15 +223,15 @@ function PrismaLegacyAdapter(config) {
             data: {
               identifier,
               token: hashToken(token),
-              expires
-            }
+              expires,
+            },
           });
           await sendVerificationRequest({
             identifier,
             url,
             token,
             baseUrl: appOptions.baseUrl,
-            provider
+            provider,
           });
           return verificationRequest;
         },
@@ -262,16 +241,16 @@ function PrismaLegacyAdapter(config) {
           const verificationRequest = await prisma[VerificationRequest].findFirst({
             where: {
               identifier,
-              token: hashedToken
-            }
+              token: hashedToken,
+            },
           });
 
           if (verificationRequest && verificationRequest.expires && new Date() > verificationRequest.expires) {
             await prisma[VerificationRequest].deleteMany({
               where: {
                 identifier,
-                token: hashedToken
-              }
+                token: hashedToken,
+              },
             });
             return null;
           }
@@ -283,13 +262,11 @@ function PrismaLegacyAdapter(config) {
           await prisma[VerificationRequest].deleteMany({
             where: {
               identifier,
-              token: hashToken(token)
-            }
+              token: hashToken(token),
+            },
           });
-        }
-
+        },
       };
-    }
-
+    },
   };
 }
