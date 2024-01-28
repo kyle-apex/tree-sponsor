@@ -22,6 +22,7 @@ export default async function fixSubscriptionWithDetailsView() {
       u.id as userId,
       u.name as userName,
       u.email as email,
+      u.email2 as email2,
       u.hasShirt,
       u.referralUserId,
       s.createdDate,
