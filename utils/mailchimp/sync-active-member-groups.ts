@@ -21,8 +21,13 @@ const syncActiveMemberGroups = async () => {
   calendarYear.setDate(calendarYear.getDate() - 365);
 
   members.forEach(member => {
-    if (member.lastPaymentDate > calendarYear) activeEmails.push(member.email.toLowerCase());
-    else inactiveEmails.push(member.email.toLowerCase());
+    if (member.lastPaymentDate > calendarYear) {
+      activeEmails.push(member.email.toLowerCase());
+      if (member.email2) activeEmails.push(member.email2.toLowerCase());
+    } else {
+      inactiveEmails.push(member.email.toLowerCase());
+      if (member.email2) inactiveEmails.push(member.email2.toLowerCase());
+    }
   });
 
   const inactiveGroupedEmails = await listMembersForGroup(groupingId, inactiveGroupId);

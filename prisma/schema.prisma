@@ -150,6 +150,7 @@ model SubscriptionWithDetails {
   productId        Int
   productName      String?
   email            String?
+  email2           String?
   hasShirt         Boolean?  @default(false)
   amount           Int
   user             User      @relation(fields: [userId], references: [id])
