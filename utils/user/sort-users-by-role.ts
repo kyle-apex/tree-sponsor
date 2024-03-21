@@ -17,6 +17,8 @@ export function sortUsersByRole(users: PartialUser[]) {
   users.sort((a, b) => {
     if (getRoleHeirarchyIndex(a) > getRoleHeirarchyIndex(b)) return -1;
     else if (getRoleHeirarchyIndex(b) > getRoleHeirarchyIndex(a)) return 1;
+    if (a.referredUsers?.length > b.referredUsers?.length) return -1;
+    if (a.referredUsers?.length > b.referredUsers?.length) return 1;
     if (a.roles?.length > b.roles?.length) return -1;
     if (b.roles?.length > a.roles?.length) return 1;
     if (a.subscriptions?.length > b.subscriptions?.length) return -1;

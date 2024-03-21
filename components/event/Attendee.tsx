@@ -16,6 +16,7 @@ import useLocalStorage from 'utils/hooks/use-local-storage';
 import AttendeeSettingsDialog from './AttendeeSettingsDialog';
 import useHashToggle from 'utils/hooks/use-hash-toggle';
 import { SxProps, Theme } from '@mui/material/styles';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 
 const userNameDisplay = ({ user }: { user: PartialUser }) => (
   <Typography
@@ -38,7 +39,7 @@ const getRoleDisplay = (user: PartialUser): string => {
   else if (hasRole(user, 'Organizer')) return 'Organizer';
   else if (hasRole(user, 'Exec Team')) return 'Exec Team';
   //else if (hasRole(user, 'Core Team')) return 'Core Team';
-  else if (user.referredUsers?.length) return 'Ambassador';
+  else if (user.referredUsers?.length > 0) return 'Ambassador';
   else if (user.subscriptions?.length > 0) return 'Supporter';
 };
 
@@ -114,6 +115,25 @@ const Attendee = ({
                 {roleDisplay && (
                   <Typography variant='subtitle2' color='gray' sx={{ fontSize: '.8rem' }}>
                     {roleDisplay}
+                  </Typography>
+                )}
+                {user.referredUsers?.length > 0 && (
+                  <Typography
+                    variant='subtitle2'
+                    color='gray'
+                    sx={{
+                      /*backgroundColor: theme => theme.palette.primary.main,*/
+                      background: 'linear-gradient(to top, #486e62, #486e62cc),url(/background-lighter.svg)',
+                      color: 'white',
+                      fontSize: '.8rem',
+                      padding: '1px 6px',
+                      borderRadius: '5px',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <PersonAddAltIcon sx={{ fontSize: '1rem', mr: 0.6 }}></PersonAddAltIcon>
+                    {user.referredUsers?.length}
                   </Typography>
                 )}
 
