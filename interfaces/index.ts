@@ -125,6 +125,7 @@ export type PartialUser = Partial<
     subscriptions?: Partial<Subscription>[];
     profile?: Partial<Profile>;
     eventCheckIns?: PartialEventCheckIn[];
+    referredUsers?: PartialUser[];
   }
 >;
 
