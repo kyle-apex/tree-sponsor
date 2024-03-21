@@ -63,7 +63,7 @@ const Attendee = ({
   sx,
 }: {
   user: PartialUser;
-  onDelete?: () => void;
+  onDelete?: () => Promise<void>;
   isEditMode?: boolean;
   onSetIsPrivate?: () => void;
   isPrivate?: boolean;
