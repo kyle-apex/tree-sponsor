@@ -72,7 +72,7 @@ const Attendee = ({
   isPrivate?: boolean;
   onRefresh?: () => void;
   hideContactPageIcon?: boolean;
-  onOpenInfoDialog: (message: string) => void;
+  onOpenInfoDialog?: (message: string) => void;
   sx?: SxProps<Theme>;
 }) => {
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
@@ -134,11 +134,12 @@ const Attendee = ({
                       alignItems: 'center',
                     }}
                     onClick={() => {
-                      onOpenInfoDialog(
-                        `${user.name} has referred ${user.referredUsers?.length} supporting member${
-                          user.referredUsers?.length > 1 ? 's' : ''
-                        } to TreeFolksYP!`,
-                      );
+                      if (onOpenInfoDialog)
+                        onOpenInfoDialog(
+                          `${user.name} has referred ${user.referredUsers?.length} supporting member${
+                            user.referredUsers?.length > 1 ? 's' : ''
+                          } to TreeFolksYP!`,
+                        );
                     }}
                   >
                     <PersonAddAltIcon sx={{ fontSize: '1rem', mr: 0.6 }}></PersonAddAltIcon>
