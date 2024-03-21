@@ -3,10 +3,13 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import RestrictSection from 'components/RestrictSection';
 import { PartialUser } from 'interfaces';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Attendee from './Attendee';
 import EditIcon from '@mui/icons-material/Edit';
 import useLocalStorage from 'utils/hooks/use-local-storage';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import Button from '@mui/material/Button';
 
 const Attendees = ({
   users,
@@ -26,6 +29,13 @@ const Attendees = ({
   limit?: number;
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
+  const [infoDialogText, setInfoDialogText] = useState('');
+
+  const onOpenInfoDialog = useCallback((message: string) => {
+    setIsInfoDialogOpen(true);
+    setInfoDialogText(message);
+  }, []);
 
   return (
     <Box mb={2} component='section'>
@@ -54,10 +64,19 @@ const Attendees = ({
               isPrivate={isPrivate}
               user={user}
               onRefresh={onRefresh}
+              onOpenInfoDialog={onOpenInfoDialog}
               sx={{ mb: 2 }}
             />
           );
       })}
+      <Dialog open={isInfoDialogOpen} onClose={() => setIsInfoDialogOpen(false)}>
+        <DialogContent className=''>
+          <Typography sx={{ mt: 2 }}>{infoDialogText}</Typography>
+          <Button fullWidth color='inherit' sx={{ mt: 3 }} onClick={() => setIsInfoDialogOpen(false)}>
+            Close
+          </Button>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
