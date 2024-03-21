@@ -82,7 +82,7 @@ const MemberStore = () => {
                 setCurrentProduct(product);
                 setIsOpen(true);
               }}
-              onDelete={() => {
+              onDelete={async () => {
                 deleteProduct(product.id);
               }}
             />

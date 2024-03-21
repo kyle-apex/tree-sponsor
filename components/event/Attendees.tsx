@@ -49,7 +49,7 @@ const Attendees = ({
             <Attendee
               key={user.id}
               isEditMode={isEditMode}
-              onDelete={() => onDelete(user.id)}
+              onDelete={async () => onDelete(user.id)}
               onSetIsPrivate={onSetIsPrivate}
               isPrivate={isPrivate}
               user={user}
