@@ -114,7 +114,11 @@ const PreviewAndReorderImages = ({
                     border: 'solid 1px gray',
                   }}
                 >
-                  <DeleteIconButton title='Remove Image' itemType='tree image' onDelete={() => onDelete(image.uuid)}></DeleteIconButton>
+                  <DeleteIconButton
+                    title='Remove Image'
+                    itemType='tree image'
+                    onDelete={async () => onDelete(image.uuid)}
+                  ></DeleteIconButton>
                 </Box>
               )}
             </Box>

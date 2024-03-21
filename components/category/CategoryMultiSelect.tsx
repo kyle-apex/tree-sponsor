@@ -70,7 +70,7 @@ const CategoryMultiSelect = ({
                 <DeleteIconButton
                   itemType='category'
                   title='Remove Category?'
-                  onDelete={() => handleDelete(category.id)}
+                  onDelete={async () => handleDelete(category.id)}
                 ></DeleteIconButton>
               </SplitRow>
             );

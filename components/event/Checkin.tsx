@@ -166,7 +166,8 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
   const onDeleteCheckin = async (userId: number) => {
     await axios.delete(`/api/events/delete-checkin?userId=${userId}&eventId=${event.id}`);
-    getMembershipStatus();
+    // do not reload if removing your own checkin
+    if (status?.myCheckin?.userId != userId) getMembershipStatus();
   };
 
   const reset = async () => {

@@ -13,7 +13,7 @@ const DeleteIconButton = ({
 }: {
   title?: string;
   itemType?: string;
-  onDelete?: () => void;
+  onDelete?: () => Promise<void>;
   tooltip?: string;
 }) => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
@@ -27,9 +27,10 @@ const DeleteIconButton = ({
       <DeleteConfirmationDialog
         open={isDeleteConfirmationOpen}
         setOpen={setIsDeleteConfirmationOpen}
-        onConfirm={() => {
+        onConfirm={async () => {
           setIsLoading(true);
-          onDelete();
+          await onDelete();
+          setIsLoading(false);
         }}
         title={title || `Remove ${itemType}?`}
         itemType={itemType}

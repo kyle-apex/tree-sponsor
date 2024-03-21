@@ -16,6 +16,7 @@ import useLocalStorage from 'utils/hooks/use-local-storage';
 import AttendeeSettingsDialog from './AttendeeSettingsDialog';
 import useHashToggle from 'utils/hooks/use-hash-toggle';
 import { SxProps, Theme } from '@mui/material/styles';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 
 const userNameDisplay = ({ user }: { user: PartialUser }) => (
   <Typography
@@ -37,7 +38,8 @@ const getRoleDisplay = (user: PartialUser): string => {
   if (hasRole(user, 'Staff')) return 'Staff';
   else if (hasRole(user, 'Organizer')) return 'Organizer';
   else if (hasRole(user, 'Exec Team')) return 'Exec Team';
-  else if (hasRole(user, 'Core Team')) return 'Core Team';
+  //else if (hasRole(user, 'Core Team')) return 'Core Team';
+  else if (user.referredUsers?.length > 0) return 'Ambassador';
   else if (user.subscriptions?.length > 0) return 'Supporter';
 };
 
@@ -60,15 +62,17 @@ const Attendee = ({
   isPrivate,
   onRefresh,
   hideContactPageIcon,
+  onOpenInfoDialog,
   sx,
 }: {
   user: PartialUser;
-  onDelete?: () => void;
+  onDelete?: () => Promise<void>;
   isEditMode?: boolean;
   onSetIsPrivate?: () => void;
   isPrivate?: boolean;
   onRefresh?: () => void;
   hideContactPageIcon?: boolean;
+  onOpenInfoDialog?: (message: string) => void;
   sx?: SxProps<Theme>;
 }) => {
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
@@ -113,6 +117,33 @@ const Attendee = ({
                 {roleDisplay && (
                   <Typography variant='subtitle2' color='gray' sx={{ fontSize: '.8rem' }}>
                     {roleDisplay}
+                  </Typography>
+                )}
+                {user.referredUsers?.length > 0 && (
+                  <Typography
+                    variant='subtitle2'
+                    color='gray'
+                    sx={{
+                      /*backgroundColor: theme => theme.palette.primary.main,*/
+                      background: 'linear-gradient(to top, #486e62, #486e62cc),url(/background-lighter.svg)',
+                      color: 'white',
+                      fontSize: '.8rem',
+                      padding: '1px 6px',
+                      borderRadius: '5px',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                    onClick={() => {
+                      if (onOpenInfoDialog)
+                        onOpenInfoDialog(
+                          `${user.name} has referred ${user.referredUsers?.length} supporting member${
+                            user.referredUsers?.length > 1 ? 's' : ''
+                          } to TreeFolksYP!`,
+                        );
+                    }}
+                  >
+                    <PersonAddAltIcon sx={{ fontSize: '1rem', mr: 0.6 }}></PersonAddAltIcon>
+                    {user.referredUsers?.length}
                   </Typography>
                 )}
 

@@ -68,7 +68,7 @@ const UserMultiSelect = ({
                 <DeleteIconButton
                   itemType={deleteDialogPropertyName}
                   title='Remove Organizer?'
-                  onDelete={() => handleDelete(user.id)}
+                  onDelete={async () => handleDelete(user.id)}
                 ></DeleteIconButton>
               </SplitRow>
             );

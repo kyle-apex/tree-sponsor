@@ -12,5 +12,6 @@ export function getUserDisplaySelect() {
     roles: {},
     profile: { select: { instagramHandle: true, linkedInLink: true, twitterHandle: true, organization: true, bio: true } },
     subscriptions: { where: { lastPaymentDate: { gt: oneYearAgo } }, select: { lastPaymentDate: true } },
+    referredUsers: { select: { id: true } },
   };
 }

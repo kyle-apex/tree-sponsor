@@ -185,7 +185,7 @@ const TreeReview = ({
         )}
         {onDelete && (
           <Box mt={isForQuiz ? 2 : 0}>
-            <DeleteIconButton itemType='tree' title='Delete Tree?' onDelete={() => onDelete(tree.id)}></DeleteIconButton>
+            <DeleteIconButton itemType='tree' title='Delete Tree?' onDelete={async () => onDelete(tree.id)}></DeleteIconButton>
           </Box>
         )}
       </Box>

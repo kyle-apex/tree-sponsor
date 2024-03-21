@@ -21,7 +21,7 @@ import Box from '@mui/material/Box';
 interface StoreProductProps {
   product: PartialStoreProduct;
   onEdit?: () => void;
-  onDelete?: () => void;
+  onDelete?: () => Promise<void>;
 }
 
 const useStyles = makeStyles({
