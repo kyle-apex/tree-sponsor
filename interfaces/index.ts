@@ -111,7 +111,9 @@ export type PartialComment = Partial<Comment & { user?: Partial<User> } & { reac
 export type PartialReaction = Partial<Reaction & { user?: Partial<User> }>;
 export type PartialNotification = Partial<Notification & { user?: Partial<User>; sourceUser?: Partial<User> }>;
 export type PartialLocation = Partial<Location>;
-export type PartialSubscription = Partial<Subscription & { product?: Partial<Product> } & { user?: Partial<User> }>;
+export type PartialSubscription = Partial<Subscription & { product?: Partial<Product> } & { user?: Partial<User> }> & {
+  stripeCustomer?: Stripe.Customer;
+};
 export type StripeSubscription = Stripe.Subscription & { plan?: { product?: string; amount: number } };
 export type PartialSponsorship = Partial<
   Sponsorship & { tree?: Partial<Tree> } & { user?: Partial<User> } & { comments?: Partial<Comment>[] } & {

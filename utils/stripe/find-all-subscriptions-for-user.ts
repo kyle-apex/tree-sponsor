@@ -43,6 +43,7 @@ export const findAllSubscriptionsForUser = async (email: string): Promise<Partia
               status: sub.status,
               createdDate: new Date(sub.created * 1000),
               lastPaymentDate: lastPaymentDate,
+              stripeCustomer: customer,
             };
 
             subscriptions.push(subscription);

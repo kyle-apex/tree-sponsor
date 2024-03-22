@@ -20,6 +20,8 @@ export const findAllSubscriptions = async (): Promise<PartialSubscription[]> => 
   t1 = new Date().getTime();
 
   for (const customer of allSubscribedCustomers) {
+    // console.log('customer', customer);
+    //console.log('customer meta', customer.metadata, customer.subscriptions?.data?.length);
     await Promise.all(
       customer.subscriptions.data.map(async (sub: StripeSubscription) => {
         const productId = sub.plan.product;
@@ -38,6 +40,7 @@ export const findAllSubscriptions = async (): Promise<PartialSubscription[]> => 
           status: sub.status,
           createdDate: new Date(sub.created * 1000),
           lastPaymentDate: lastPaymentDate,
+          stripeCustomer: customer,
         };
 
         subscriptions.push(subscription);
@@ -53,6 +56,5 @@ export const findAllSubscriptions = async (): Promise<PartialSubscription[]> => 
   subscriptions.forEach((sub: PartialSubscription) => {
     if (sub.product?.stripeId) sub.product.name = productIdToNameMap[sub.product.stripeId];
   });
-
   return subscriptions;
 };
