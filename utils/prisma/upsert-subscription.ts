@@ -2,9 +2,12 @@ import { User } from '.prisma/client';
 import { PartialSubscription } from 'interfaces';
 import { prisma } from 'utils/prisma/init';
 import { generateProfilePath } from 'utils/user/generate-profile-path';
+import { getUserByEmail } from 'utils/user/get-user-by-email';
 
 export const upsertSubscription = async (subscription: PartialSubscription): Promise<void> => {
-  if (subscription.lastPaymentDate)
+  const existingUser = subscription.user?.email ? await getUserByEmail(subscription.user.email) : null;
+
+  if (subscription.lastPaymentDate) {
     await prisma.subscription.upsert({
       where: { stripeId: subscription.stripeId },
       create: {
@@ -23,10 +26,9 @@ export const upsertSubscription = async (subscription: PartialSubscription): Pro
             },
           },
         },
-        // TODO user.email
         user: {
           connectOrCreate: {
-            where: { email: subscription.user.email },
+            where: { email: existingUser?.email || subscription.user.email },
             create: {
               email: subscription.user.email,
               name: subscription.user.name,
@@ -52,7 +54,7 @@ export const upsertSubscription = async (subscription: PartialSubscription): Pro
         },
         user: {
           connectOrCreate: {
-            where: { email: subscription.user.email },
+            where: { email: existingUser?.email || subscription.user.email },
             create: {
               email: subscription.user.email,
               name: subscription.user.name,
@@ -63,14 +65,51 @@ export const upsertSubscription = async (subscription: PartialSubscription): Pro
         },
       },
     });
+  }
   if (subscription.user?.name)
     await prisma.user.updateMany({
-      where: { email: subscription.user.email, name: null },
+      where: { email: existingUser?.email || subscription.user.email, name: null },
       data: { name: subscription.user.name },
     });
+  if (!existingUser?.referralUserId && subscription.stripeCustomer?.metadata && subscription.stripeCustomer?.metadata['Found From']) {
+    const foundFrom = subscription.stripeCustomer?.metadata['Found From'].toLowerCase();
+    const firstWord = foundFrom?.split(' ')[0];
+
+    const allUsers = await prisma.user.findMany({ select: { id: true, name: true, displayName: true } });
+    let referringUser;
+    for (const user of allUsers || []) {
+      const lowerName = user.name?.toLowerCase();
+      if (lowerName && foundFrom.includes(lowerName)) {
+        referringUser = user;
+        break;
+      }
+    }
+    if (!referringUser)
+      for (const user of allUsers || []) {
+        const lowerDisplayName = user.displayName?.toLowerCase();
+        if (lowerDisplayName && foundFrom.includes(lowerDisplayName)) {
+          referringUser = user;
+          break;
+        }
+      }
+
+    if (!referringUser) {
+      const matchingUsers = allUsers.filter(user => {
+        return user.name?.toLowerCase().split(' ')[0] == firstWord;
+      });
+      if (matchingUsers.length === 1) referringUser = matchingUsers[0];
+    }
+
+    if (referringUser?.id) {
+      await prisma.user.updateMany({
+        where: { email: existingUser?.email || subscription.user.email, referralUserId: null },
+        data: { referralUserId: referringUser.id },
+      });
+    }
+  }
   if (subscription.stripeCustomerId)
     await prisma.user.updateMany({
-      where: { email: subscription.user.email, stripeCustomerId: null },
+      where: { email: existingUser?.email || subscription.user.email, stripeCustomerId: null },
       data: { stripeCustomerId: subscription.stripeCustomerId },
     });
 };
