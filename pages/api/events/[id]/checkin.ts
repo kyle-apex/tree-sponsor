@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getUserDisplaySelect } from 'prisma/common';
 import throwError from 'utils/api/throw-error';
 import findOrCreateCheckinUser from 'utils/events/find-or-create-checkin-user';
+import addEventToMember from 'utils/mailchimp/add-event-to-member';
 import addSubscriber from 'utils/mailchimp/add-subscriber';
 import addTagToMembers from 'utils/mailchimp/add-tag-to-members';
 import addTagToMembersByName from 'utils/mailchimp/add-tag-to-members-by-name';
@@ -82,7 +83,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         updateSubscriptionsForUser(user.email2);
       }
 
-      if (email) addTagToMembersByName(tagName, emails);
+      if (email) {
+        // tag by event name
+        addTagToMembersByName(tagName, emails);
+
+        // add an "event" for filtering in mailchimp by "Attended_Event" > Date
+        addEventToMember(email, 'Attended Event');
+      }
       // update the db with any membership changes
       updateSubscriptionsForUser(email);
     }
