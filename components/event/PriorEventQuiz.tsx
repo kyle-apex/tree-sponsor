@@ -8,19 +8,17 @@ import EventNameDisplay from './EventNameDisplay';
 import TreeIdQuiz from './TreeIdQuiz';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { useGet } from 'utils/hooks/use-get';
-import PinIcon from '@mui/icons-material/LocationOn';
 import TreeIdLeaderPosition from './TreeIdLeaderPosition';
 import Button from '@mui/material/Button';
 import parsedGet from 'utils/api/parsed-get';
 import CheckinForm, { CheckinFormHandle } from './CheckinForm';
 import PriorEventList from './PriorEventList';
-import InstagramEmbed from 'react-instagram-embed';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import useHash from 'utils/hooks/use-hash';
-import Skeleton from '@mui/material/Skeleton';
 import SearchIcon from '@mui/icons-material/Search';
 import Link from 'next/link';
+import { InstagramEmbed } from 'react-social-media-embed';
 
 const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
@@ -32,7 +30,6 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   const [leaderBoardMode, setLeaderBoardMode] = useState('');
   const [hasFloatingTabs, setHasFloatingTabs] = useState(false);
   const [floatingTabsWidth, setFloatingTabsWidth] = useState(300);
-  const [isLoadingInstagram, setIsLoadingInstagram] = useState(!!event.instagramPostId);
   const tabsRef = useRef<HTMLElement>();
 
   const [isQuizRefreshing, setIsQuizRefreshing] = useState(false);
@@ -112,7 +109,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [event.instagramPostId]);
-
+  const url = 'https://www.instagram.com/p/' + event.instagramPostId + '/';
   return (
     <>
       <Box sx={{ textAlign: 'center', mt: -1 }}>
@@ -188,31 +185,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
         )}
         {activeTab == 'overview' && event.instagramPostId && (
           <Box mb={3}>
-            {isLoadingInstagram && (
-              <Skeleton variant='rectangular' sx={{ width: '100%', marginBottom: 3, borderRadius: '3px' }} height={300} />
-            )}
-
-            <InstagramEmbed
-              url={'https://www.instagram.com/p/' + event.instagramPostId}
-              clientAccessToken={process.env.NEXT_PUBLIC_FACEBOOK_ID + '|' + process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_TOKEN}
-              maxWidth={500}
-              hideCaption={false}
-              containerTagName='div'
-              protocol=''
-              injectScript
-              onLoading={() => {
-                setIsLoadingInstagram(true);
-              }}
-              onSuccess={() => {
-                setIsLoadingInstagram(false);
-              }}
-              onAfterRender={() => {
-                setIsLoadingInstagram(false);
-              }}
-              onFailure={() => {
-                setIsLoadingInstagram(false);
-              }}
-            />
+            <InstagramEmbed url={'https://www.instagram.com/p/' + event.instagramPostId + '/'} width='100%' captioned />
             <Box
               sx={{
                 background: 'linear-gradient(to top, #486e624f, #486e6233), url(/background-lighter.svg)',
@@ -245,7 +218,6 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
             </Box>
           </Box>
         )}
-
         {!isLoggedIn && activeTab == 'trees' && (
           <>
             <Typography variant='body2' sx={{ mb: 2, mt: 1, textAlign: 'left' }}>

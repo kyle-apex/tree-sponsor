@@ -14,6 +14,7 @@ import { Provider as NextAuthProvider } from 'next-auth/client';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import createEmotionCache from 'utils/create-emotion-cache';
 import IdentifyTreeProvider from 'components/tree/IdentifyTreeProvider';
+import ErrorBoundary from 'components/ErrorBoundary';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -83,7 +84,9 @@ const MyApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: 
             </Head>
             <ThemeProvider theme={theme}>
               <CssBaseline />
-              <Component {...pageProps} />
+              <ErrorBoundary>
+                <Component {...pageProps} />
+              </ErrorBoundary>
             </ThemeProvider>
           </IdentifyTreeProvider>
         </CacheProvider>
