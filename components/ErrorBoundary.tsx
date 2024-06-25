@@ -28,8 +28,8 @@ class ErrorBoundary extends React.Component {
     }
 
     // Return children components in case of no error
-
-    return this.props.children;
+    // eslint-disable-next-line
+    return this.props.children; // eslint-disable-line
   }
 }
 
