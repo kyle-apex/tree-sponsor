@@ -97,7 +97,7 @@ const CheckinLoadingProgress = ({
     <Box sx={{ height: '100%', width: '100%', mt: -1 }}>
       {steps.map(step => {
         return (
-          <Box sx={{ display: 'flex', flexDirection: 'row', fontSize: '80%', alignItems: 'center' }}>
+          <Box key={step.text} sx={{ display: 'flex', flexDirection: 'row', fontSize: '80%', alignItems: 'center' }}>
             <Box sx={{ flex: '1 1 30px', paddingTop: '3px' }}>
               {step.status == 'Completed' && <CheckCircleOutlineIcon color='primary' sx={{ fontSize: '120%' }}></CheckCircleOutlineIcon>}
               {step.status == 'In Progress' && (
