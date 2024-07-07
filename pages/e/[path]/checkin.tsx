@@ -10,7 +10,7 @@ import formatServerProps from 'utils/api/format-server-props';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 import CheckinSessionProvider from 'components/event/CheckinSessionProvider';
 
-const CheckinPage = ({ event }: { event: PartialEvent }) => {
+const CheckinPage = ({ event, activeMemberCount }: { event: PartialEvent; activeMemberCount?: number }) => {
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
 
   return (
@@ -22,7 +22,7 @@ const CheckinPage = ({ event }: { event: PartialEvent }) => {
     >
       <LogoMessage isCheckin={true} justifyContent='start'>
         <CheckinSessionProvider>
-          <Checkin event={parsedEvent} />
+          <Checkin event={parsedEvent} activeMemberCount={activeMemberCount} />
         </CheckinSessionProvider>
       </LogoMessage>
     </Layout>
@@ -42,12 +42,20 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         location: {},
       },
     });
-    console.log('event1', event);
+
+    const calendarYear = new Date();
+    calendarYear.setDate(calendarYear.getDate() - 365);
+
+    const activeMembers = await prisma.subscriptionWithDetails.findMany({
+      where: { lastPaymentDate: { gte: calendarYear } },
+      distinct: ['email'],
+      select: { email: true, lastPaymentDate: true },
+    });
     formatServerProps(event);
 
-    return { props: { event } };
+    return { props: { event, activeMemberCount: activeMembers?.length || 0 } };
   } catch (err) {
     console.log('err', err);
   }
-  return { props: { event: null } };
+  return { props: { event: null, activeMemberCount: 0 } };
 }

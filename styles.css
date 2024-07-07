@@ -524,3 +524,18 @@ input.MuiOutlinedInput-input.Mui-disabled,
   background-color: #303030;
   opacity: 8%;
 }
+
+@keyframes pulseColor {
+  0% {
+    color: #40695c; /* Starting color */
+  }
+  50% {
+    color: #457666a8; 
+  }
+  100% {
+    color: #40695c; /* Ending color */
+  }
+}
+.pulse-icon, .pulse-text, .pulse {
+  animation: pulseColor 3s infinite;
+}

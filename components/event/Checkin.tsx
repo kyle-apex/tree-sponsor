@@ -55,6 +55,7 @@ import CheckinForm, { CheckinFormHandle } from './CheckinForm';
 import { Router } from 'next/router';
 import CheckinSessionProvider, { CheckinSessionContext } from './CheckinSessionProvider';
 import EditSessionTreesDialog from 'components/tree/EditSessionTreesDialog';
+import CheckinLoadingProgress from './CheckinLoadingProgress';
 //import TreeIdLeaderPosition from './TreeIdLeaderPosition';
 const MapMarkerDisplay = dynamic(() => import('components/maps/MapMarkerDisplay'), {
   ssr: false,
@@ -77,7 +78,7 @@ const getDonationDateMessage = (subscription: PartialSubscription): string => {
 
 const attendeesDisplayLimit = 50;
 
-const Checkin = ({ event }: { event?: PartialEvent }) => {
+const Checkin = ({ event, activeMemberCount }: { event?: PartialEvent; activeMemberCount?: number }) => {
   const router = useRouter();
   const [email, setEmail] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
   const { sessionId } = useContext(CheckinSessionContext);
@@ -90,6 +91,8 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
   const [selectedTree, setSelectedTree] = useState<PartialTree>(null);
   const [isPrivate, setIsPrivate] = useState(false);
+
+  const [isShowCheckinProgress, setIsShowCheckinProgress] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingExistingUser, setIsLoadingExistingUser] = useState(false);
@@ -129,14 +132,15 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   }, [status]);
 
   useEffect(() => {
-    console.log('email', email);
     if (!email) return;
 
     setIsLoadingExistingUser(true);
+
     getMembershipStatus();
   }, [event?.id]);
 
   const getMembershipStatus = async (fields?: CheckinFields) => {
+    setIsShowCheckinProgress(true);
     setIsLoading(true);
     if (fields?.email) setEmail(fields.email);
     const url = `/api/events/${event.id}/checkin?email=${encodeURIComponent(fields?.email || email)}&firstName=${encodeURIComponent(
@@ -213,7 +217,17 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
   return (
     <>
-      {isLoadingExistingUser && !status && (
+      {isShowCheckinProgress && (
+        <CheckinLoadingProgress
+          onComplete={() => {
+            setIsShowCheckinProgress(false);
+          }}
+          isMember={status?.isFound}
+          activeMemberCount={activeMemberCount}
+        ></CheckinLoadingProgress>
+      )}
+
+      {!isShowCheckinProgress && isLoadingExistingUser && !status && (
         <Box>
           <Skeleton
             variant='text'
@@ -225,7 +239,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           <Skeleton variant='text' sx={{ width: '100%', marginBottom: 1 }} height={25} />
         </Box>
       )}
-      {status == null && !isLoadingExistingUser && (
+      {!isShowCheckinProgress && status == null && !isLoadingExistingUser && (
         <>
           {false && (
             <Typography variant='h2' color='secondary' sx={{ textAlign: 'center' }}>
@@ -250,12 +264,12 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
         </>
       )}
 
-      {status && (
+      {!isShowCheckinProgress && status && (
         <Typography variant='h6' color='secondary' sx={{ textAlign: 'center' }} mb={2}>
           Welcome{userName ? ' ' + userName : ''}!
         </Typography>
       )}
-      {status && event?.checkInDetails && event.checkInDetails != '<p><br></p>' && (
+      {!isShowCheckinProgress && status && event?.checkInDetails && event.checkInDetails != '<p><br></p>' && (
         <>
           <Typography variant='body2' component='div' mt={-2}>
             <SafeHTMLDisplay html={event?.checkInDetails}></SafeHTMLDisplay>
@@ -277,7 +291,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           </Button>
         </>
       )}
-      {status?.isFound === false && (activeTab == 0 || status.myCheckin?.user?.name) && (
+      {!isShowCheckinProgress && status?.isFound === false && (activeTab == 0 || status.myCheckin?.user?.name) && (
         <>
           <Typography variant='body2' component='p' mb={4}>
             Thanks for joining for today&apos;s event. Grab a name tag (if available), meet a new friend, and learn about the trees around
@@ -286,7 +300,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
         </>
       )}
 
-      {status?.isFound && (
+      {!isShowCheckinProgress && status?.isFound && (
         <>
           {hasActiveMembership && (
             <>
@@ -327,7 +341,15 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
         </>
       )}
       {status && !(status.isFound === false && !status.myCheckin?.user?.name && activeTab == 1) && (
-        <>
+        <Box
+          sx={{
+            width: '100%',
+            top: -2000,
+            position: isShowCheckinProgress ? 'absolute' : 'inherit',
+            zIndex: isShowCheckinProgress ? -1 : 1,
+            display: isShowCheckinProgress ? 'inherit' : 'contents',
+          }}
+        >
           <Box
             sx={{
               background: 'linear-gradient(to top, #486e624f, #486e6233), url(/background-lighter.svg)',
@@ -498,7 +520,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               Show All {status.checkInCount} Attendees
             </Button>
           )}
-        </>
+        </Box>
       )}
       {status?.isFound && (
         <>
@@ -548,7 +570,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           </Button>
         </>
       )}
-      {status?.isFound === false && (activeTab != 1 || status.myCheckin?.user?.name) && (
+      {!isShowCheckinProgress && status?.isFound === false && (activeTab != 1 || status.myCheckin?.user?.name) && (
         <>
           <hr style={{ width: '100%', marginTop: '10px', marginBottom: '20px' }} />
           <Typography variant='body2' component='p' mt={2} mb={2}>
@@ -563,9 +585,11 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
             </Button>
           </Link>
 
-          <Button onClick={reset} variant='outlined' color='secondary'>
-            {activeTab != 1 ? 'Add Another Check-in' : 'Try Another Search'}
-          </Button>
+          {!isShowCheckinProgress && (
+            <Button onClick={reset} variant='outlined' color='secondary'>
+              {activeTab != 1 ? 'Add Another Check-in' : 'Try Another Search'}
+            </Button>
+          )}
         </>
       )}
 
@@ -583,7 +607,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
           ></MapMarkerDisplay>
         </Box>
       )}
-      {status && !(status.isFound === false && activeTab == 1 && !status.myCheckin?.user?.name) && (
+      {!isShowCheckinProgress && status && !(status.isFound === false && activeTab == 1 && !status.myCheckin?.user?.name) && (
         <a
           href='https://www.instagram.com/treefolks_yp/'
           target='_instagram'
