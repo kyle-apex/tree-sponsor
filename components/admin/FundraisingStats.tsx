@@ -32,7 +32,14 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
   const getStats = async () => {
     setIsLoading(true);
 
-    const dateFilter = startDate && endDate ? `&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}` : '';
+    let endDateFilter = endDate;
+
+    if (startDate && !endDate && !(startDate.getMonth() == 0 && startDate.getDate() == 1)) {
+      endDateFilter = new Date();
+      endDateFilter.setDate(endDateFilter.getDate() + 1);
+    }
+
+    const dateFilter = startDate && endDateFilter ? `&startDate=${startDate.toISOString()}&endDate=${endDateFilter.toISOString()}` : '';
 
     setStats(await parsedGet(`/api/donations/stats?year=${year}${dateFilter}`));
     setIsLoading(false);
