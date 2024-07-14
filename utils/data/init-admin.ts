@@ -20,12 +20,12 @@ export default async function initAdmin(): Promise<any> {
         isTreeReviewer: true,
         hasShirtManagement: true,
         hasMemberManagement: true,
-        hasEventManagement: true
+        hasEventManagement: true,
+        hasRedirectManagement: true,
       },
     });
-  let coreTeamRole = await prisma.role.findFirst({ where: { name: "Core Team" } });
-  if (!coreTeamRole)
-    coreTeamRole = await prisma.role.create({ data: { name: "Core Team", isAdmin: true } })
+  let coreTeamRole = await prisma.role.findFirst({ where: { name: 'Core Team' } });
+  if (!coreTeamRole) coreTeamRole = await prisma.role.create({ data: { name: 'Core Team', isAdmin: true } });
   const owners = await Promise.all(
     ownerEmails.map((email: string) => {
       console.log('Set email to admin:', email);

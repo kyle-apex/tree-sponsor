@@ -73,3 +73,18 @@ ALTER TABLE `SpeciesQuizResponse` ADD CONSTRAINT `SpeciesQuizResponse_userId_fke
 ALTER TABLE `Sponsorship` ADD CONSTRAINT `Sponsorship_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `users` ADD COLUMN `email2` VARCHAR(191);
+
+-- CreateTable
+CREATE TABLE `SubdomainRedirect` (
+  `id` INTEGER NOT NULL AUTO_INCREMENT,
+  `subdomain` VARCHAR(64) NULL,
+  `redirect` TEXT NULL,
+  `createdDate` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AlterTable
+ALTER TABLE
+  `Role`
+ADD
+  COLUMN `hasRedirectManagement` BOOLEAN NOT NULL DEFAULT false;
