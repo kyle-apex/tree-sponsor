@@ -12,7 +12,7 @@
     "dev": "next",
     "server": "node server.js",
     "build": "next build",
-    "start": "next start -p $PORT",
+    "start": "node server-prod.js",
     "type-check": "tsc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --quiet",
     "lint-fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
