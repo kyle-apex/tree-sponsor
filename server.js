@@ -4,6 +4,8 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const axios = require('axios');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 const ports = {
   http: 3080,
@@ -11,7 +13,7 @@ const ports = {
 };
 // eslint-disable-next-line no-undef
 if (process.env.GITPOD_WORKSPACE_URL) {
-  const urlWithPort = process.env.GITPOD_WORKSPACE_URL.replace('https://','https://'+ports.https+'-')
+  const urlWithPort = process.env.GITPOD_WORKSPACE_URL.replace('https://', 'https://' + ports.https + '-');
   process.env.URL = urlWithPort;
   process.env.NEXTAUTH_URL = urlWithPort;
 }
@@ -27,13 +29,35 @@ const options = {
   key: fs.readFileSync('localhost.key'),
   cert: fs.readFileSync('localhost.crt'),
 };
-
+console.log('in server.js');
 app.prepare().then(() => {
+  console.log('app prepared');
+  const handleSubdomainRedirects = async (req, res, next) => {
+    const host = req.headers.host;
+    console.log('host', host);
+    const subdomain = host.split('.')[0]; // Extract subdomain
+    console.log('subdomain', subdomain);
+    if (subdomain && subdomain != 'www') {
+      // Redirect to another page or route
+      let subdomainRedirect;
+      try {
+        subdomainRedirect = await prisma.subdomainRedirect.findFirst({ where: { subdomain } });
+        console.log('subdomainredirect', subdomainRedirect)
+      } catch (err) {}
+      if (subdomainRedirect?.redirect) res.redirect(subdomainRedirect.redirect);
+      else next();
+    } else {
+      next();
+    }
+  };
+
+  server.use(handleSubdomainRedirects);
   server.all('*', (req, res) => {
     return handle(req, res);
   });
   http.createServer(server).listen(ports.http);
   https.createServer(options, server).listen(ports.https);
+
   console.log('Running https at', 'https://localhost:3443');
   axios.get('https://localhost:3443/api/init-data');
 });

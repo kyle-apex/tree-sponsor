@@ -47,6 +47,8 @@ const headCells: HeaderCellOptions[] = [
   { id: 'isTreeReviewer', numeric: false, disablePadding: false, label: 'Can Review Trees?' },
   { id: 'hasEventManagement', numeric: false, disablePadding: false, label: 'Can Manage Events?' },
   { id: 'hasShirtManagement', numeric: false, disablePadding: false, label: 'Can Manage Shirts?' },
+  { id: 'hasRedirectManagement', numeric: false, disablePadding: false, label: 'Can Setup Redirects?' },
+
   { id: 'delete', numeric: false, disablePadding: false },
 ];
 
@@ -133,6 +135,14 @@ export default function RoleTable({
                       checked={row.hasShirtManagement}
                       onChange={event => {
                         handleAcessTypeChange(row.id, 'hasShirtManagement', event.target.checked);
+                      }}
+                    ></Checkbox>
+                  </TableCell>
+                  <TableCell>
+                    <Checkbox
+                      checked={row.hasRedirectManagement}
+                      onChange={event => {
+                        handleAcessTypeChange(row.id, 'hasRedirectManagement', event.target.checked);
                       }}
                     ></Checkbox>
                   </TableCell>
