@@ -29,17 +29,20 @@ const options = {
   key: fs.readFileSync('localhost.key'),
   cert: fs.readFileSync('localhost.crt'),
 };
-
+console.log('in server.js');
 app.prepare().then(() => {
+  console.log('app prepared');
   const handleSubdomainRedirects = async (req, res, next) => {
     const host = req.headers.host;
+    console.log('host', host);
     const subdomain = host.split('.')[0]; // Extract subdomain
-    
+    console.log('subdomain', subdomain);
     if (subdomain && subdomain != 'www') {
       // Redirect to another page or route
       let subdomainRedirect;
       try {
         subdomainRedirect = await prisma.subdomainRedirect.findFirst({ where: { subdomain } });
+        console.log('subdomainredirect', subdomainRedirect)
       } catch (err) {}
       if (subdomainRedirect?.redirect) res.redirect(subdomainRedirect.redirect);
       else next();
