@@ -26,7 +26,7 @@ async function handleUpdate(id: number, attributes: Record<string, unknown>) {
 }
 
 const SubdomainRedirects = () => {
-  const [newSubdomainRedirect, setNewSubdomainRedirect] = useState<SubdomainRedirect>({});
+  const [newSubdomainRedirect, setNewSubdomainRedirect] = useState<Partial<SubdomainRedirect>>({});
   const {
     data: subdomainRedirects,
     refetch: refetchRoles,
@@ -39,7 +39,7 @@ const SubdomainRedirects = () => {
 
   return (
     <div>
-      {subdomainRedirects?.map((subdomainRedirect, idx) => {
+      {subdomainRedirects?.map(subdomainRedirect => {
         return (
           <Accordion key={subdomainRedirect.id}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls='panel3-content' id='panel3-header'>
