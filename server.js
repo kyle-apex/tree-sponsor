@@ -34,12 +34,14 @@ app.prepare().then(() => {
   const handleSubdomainRedirects = async (req, res, next) => {
     const host = req.headers.host;
     const subdomain = host.split('.')[0]; // Extract subdomain
-    
-    if (subdomain && subdomain != 'www') {
+    console.log('subdomain', subdomains);
+    if (subdomain && subdomain != 'www' && subdomain != 'tfyp') {
       // Redirect to another page or route
       let subdomainRedirect;
       try {
         subdomainRedirect = await prisma.subdomainRedirect.findFirst({ where: { subdomain } });
+        console.log('subdomainRedirect', subdomainRedirect);
+
       } catch (err) {}
       if (subdomainRedirect?.redirect) res.redirect(subdomainRedirect.redirect);
       else next();
@@ -55,8 +57,9 @@ app.prepare().then(() => {
   http.createServer(server).listen(ports.http);
   https.createServer(options, server).listen(ports.https);
 
-  console.log('Running https at', 'https://localhost:3443');
-  axios.get('https://localhost:3443/api/init-data');
+  console.log('Running https at', dev ? 'https://localhost:3443' : process.env.URL);
+  if (dev)
+    axios.get('https://localhost:3443/api/init-data');
 });
 
 var forceSsl = function (req, res, next) {
