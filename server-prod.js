@@ -4,17 +4,16 @@ const next = require('next')
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
  
-const dev = process.env.NODE_ENV !== 'production'
+const dev = process.env.NODE_ENV !== 'production';
+console.log('dev', dev);
 const hostname = dev ? 'localhost' : '0.0.0.0';
 const port = dev ? 3443 : process.env.PORT;
 // when using middleware `hostname` and `port` must be provided below
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
- 
 app.prepare().then(() => {
   createServer(async (req, res) => {
-    const handleSubdomainRedirects = async (req, res, next) => {
-        const host = req.headers.host;
+    const host = req.headers.host;
         const subdomain = host.split('.')[0]; // Extract subdomain
         console.log('subdomain', subdomains);
         if (subdomain && subdomain != 'www' && subdomain != 'tfyp') {
@@ -26,16 +25,14 @@ app.prepare().then(() => {
     
           } catch (err) {}
           if (subdomainRedirect?.redirect) res.redirect(subdomainRedirect.redirect);
-          else next();
+          else await handle(req, res)
         } else {
-          next();
+            await handle(req, res)
         }
-      };
     
-      server.use(handleSubdomainRedirects);
-  })
+  }) 
     .once('error', (err) => {
-      console.error(err)
+      console.error('got an error', err)
       process.exit(1)
     })
     .listen(port, () => {
