@@ -104,6 +104,7 @@ model Role {
   hasMemberManagement Boolean    @default(false)
   hasEventManagement  Boolean    @default(false)
   hasShirtManagement  Boolean    @default(false)
+  hasRedirectManagement Boolean    @default(false)
   users               User[]     @relation("UserToRole")
   Event               Event[]
   Category            Category[]
@@ -527,5 +528,12 @@ model StoreProduct {
   pictureUrl  String?
   price       Decimal?  @db.Decimal(6, 2)
   link        String?
+  createdDate DateTime? @default(now())
+}
+
+model SubdomainRedirect {
+  id          Int       @id @default(autoincrement())
+  subdomain   String?   @db.VarChar(64)
+  redirect    String?
   createdDate DateTime? @default(now())
 }

@@ -24,7 +24,7 @@ export default async function restrictPageAccess(ctx: GetSessionOptions, accessT
     };
   }
 
-  const hasAccess = hasAccessForQueriedUser({ OR: [{ email: session.user.email }, { email2: session.user.email }] }, accessType);
+  const hasAccess = await hasAccessForQueriedUser({ OR: [{ email: session.user.email }, { email2: session.user.email }] }, accessType);
 
   if (!hasAccess) {
     return {
