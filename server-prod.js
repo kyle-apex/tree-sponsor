@@ -24,7 +24,6 @@ app.prepare().then(() => {
         console.log('subdomainRedirect', subdomainRedirect);
       } catch (err) {}
       if (subdomainRedirect?.redirect) {
-        res.redirect();
         res.writeHead(302, { location: subdomainRedirect.redirect });
         res.end();
       } else await handle(req, res);
