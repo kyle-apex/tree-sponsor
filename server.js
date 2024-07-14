@@ -31,6 +31,17 @@ const options = {
 };
 
 app.prepare().then(() => {
+  var forceSsl = function (req, res, next) {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect(['https://', req.get('Host'), req.url].join(''));
+    }
+    return next();
+  };
+  
+  if (!dev) {
+    server.use(forceSsl);
+  }
+
   const handleSubdomainRedirects = async (req, res, next) => {
     const host = req.headers.host;
     const subdomain = host.split('.')[0]; // Extract subdomain
@@ -62,13 +73,4 @@ app.prepare().then(() => {
     axios.get('https://localhost:3443/api/init-data');
 });
 
-var forceSsl = function (req, res, next) {
-  if (req.headers['x-forwarded-proto'] !== 'https') {
-    return res.redirect(['https://', req.get('Host'), req.url].join(''));
-  }
-  return next();
-};
 
-if (!dev) {
-  app.use(forceSsl);
-}
