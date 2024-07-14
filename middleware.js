@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 export default async function middleware(request) {
-
-    const host = request.headers.host;
+console.log('.js');
+    const host = request.headers.get('host');
     console.log('host.', host);
     const subdomain = host.split('.')[0]; // Extract subdomain
     console.log('subdomain.', subdomain);
