@@ -15,7 +15,7 @@ app.prepare().then(() => {
   createServer(async (req, res) => {
     const host = req.headers.host;
         const subdomain = host.split('.')[0]; // Extract subdomain
-        console.log('subdomain', subdomains);
+        console.log('subdomain', subdomain);
         if (subdomain && subdomain != 'www' && subdomain != 'tfyp') {
           // Redirect to another page or route
           let subdomainRedirect;
