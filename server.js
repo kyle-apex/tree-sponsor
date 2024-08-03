@@ -45,7 +45,6 @@ app.prepare().then(() => {
   const handleSubdomainRedirects = async (req, res, next) => {
     const host = req.headers.host;
     const subdomain = host.split('.')[0]; // Extract subdomain
-    console.log('subdomain', subdomains);
     if (subdomain && subdomain != 'www' && subdomain != 'tfyp') {
       // Redirect to another page or route
       let subdomainRedirect;
