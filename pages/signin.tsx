@@ -181,7 +181,7 @@ export default function signin({
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req } = context;
   const session = await getSession({ req });
-
+  console.log('context.query.callbackUrl', context.query.callbackUrl);
   if (session) {
     return {
       redirect: {

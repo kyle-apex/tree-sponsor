@@ -56,7 +56,7 @@
     "mui-rte": "^2.0.1",
     "mysql": "^2.18.1",
     "next": "^12.1.2",
-    "next-auth": "npm:auto-link-oauth-next-auth@^0.0.5",
+    "next-auth": "npm:auto-link-oauth-next-auth@^0.0.6",
     "nodemailer-sendgrid": "^1.0.3",
     "prisma": "^4.1.1",
     "react": "^17.0.2",
