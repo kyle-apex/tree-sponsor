@@ -261,8 +261,9 @@ function PrismaLegacyAdapter(config) {
         async deleteVerificationRequest(identifier, token) {
           await prisma[VerificationRequest].deleteMany({
             where: {
-              identifier,
-              token: hashToken(token),
+              expires: {
+                lt: new Date()
+              }
             },
           });
         },
