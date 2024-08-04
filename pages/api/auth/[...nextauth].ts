@@ -50,6 +50,7 @@ export default NextAuth({
           pass: process.env.SENDGRID_API_KEY2,
         },
       },
+      maxAge: 60 * 15,
       from: 'yp@treefolks.org',
       sendVerificationRequest({ identifier: email, url, provider: { server, from } }) {
         const { host } = new URL(url);
@@ -119,6 +120,9 @@ export default NextAuth({
 
       if (hasUpdate) await prisma.user.update({ where: { id: user.id as number }, data: updateData });
       return true;
+    },
+    async redirect(_url, baseUrl) {
+      return baseUrl + '/account';
     },
   },
   pages: {
