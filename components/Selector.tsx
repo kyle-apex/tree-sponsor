@@ -79,7 +79,7 @@ const Selector = <T extends { id?: number }>({
     if (!searchText && context?.queryKey?.length > 1 && context.queryKey[1].includes('id'))
       return await fetchDefaultValue(Number(context.queryKey[1].split(':')[1]));
     const { data } = await axios.get(`/api/${apiPath}/options?search=` + encodeURIComponent(searchText));
-    console.log('data', data);
+
     return data;
   }
 
@@ -129,7 +129,7 @@ const Selector = <T extends { id?: number }>({
   useEffect(() => {
     if (!defaultValue) prefetchData();
   }, []);
-  console.log('data2', data);
+
   return (
     <Box flexDirection='row' gap={1} sx={{ display: 'flex', ...sx }}>
       <Autocomplete
