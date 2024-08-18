@@ -262,8 +262,8 @@ function PrismaLegacyAdapter(config) {
           await prisma[VerificationRequest].deleteMany({
             where: {
               expires: {
-                lt: new Date()
-              }
+                lt: new Date(),
+              },
             },
           });
         },
