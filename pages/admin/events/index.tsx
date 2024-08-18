@@ -13,6 +13,8 @@ import axios from 'axios';
 import Typography from '@mui/material/Typography';
 import LoadingButton from 'components/LoadingButton';
 import Link from 'next/link';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useTheme from '@mui/styles/useTheme';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'hasEventManagement');
@@ -32,11 +34,14 @@ const ManageEventsPage = () => {
   const { remove: removePast } = useRemoveFromQuery(['events', { isPastEvent: true }], handleDelete);
   const { remove } = useRemoveFromQuery(['events', { isPastEvent: false }], handleDelete);
 
+  const theme = useTheme();
+  const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
+
   return (
     <AdminLayout
       title='Manage Events'
       header={
-        <Box component='div' flexDirection='row' sx={{ display: 'flex' }} justifyContent='space-between'>
+        <Box component='div' flexDirection='row' sx={{ display: 'flex' }} justifyContent='space-between' alignItems='center'>
           <span>Manage Events</span>
           <LoadingButton
             onClick={() => {
@@ -46,9 +51,9 @@ const ManageEventsPage = () => {
             isLoading={isNavigating}
             startIcon={<AddIcon />}
             variant='contained'
-            sx={{ width: '140px', height: '36.5px' }}
+            sx={{ width: isMobile ? '75px' : '140px', height: '36.5px' }}
           >
-            Add Event
+            {isMobile ? 'Add' : 'Add Event'}
           </LoadingButton>
         </Box>
       }

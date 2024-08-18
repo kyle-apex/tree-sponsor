@@ -87,6 +87,7 @@ const Checkin = ({ event, activeMemberCount }: { event?: PartialEvent; activeMem
   const [isEditTreeDialogOpen, setIsEditTreeDialogOpen] = useState(false);
   const [isQuizRefreshing, setIsQuizRefreshing] = useState(false);
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useHashToggle('history', false);
+  const [isPreview, setIsPreview] = useHashToggle('preview', false);
   const [isMembershipDialogOpen, setIsMembershipDialogOpen] = useState(false);
 
   const [selectedTree, setSelectedTree] = useState<PartialTree>(null);
@@ -140,7 +141,7 @@ const Checkin = ({ event, activeMemberCount }: { event?: PartialEvent; activeMem
   }, [event?.id]);
 
   const getMembershipStatus = async (fields?: CheckinFields) => {
-    setIsShowCheckinProgress(true);
+    if (!isPreview) setIsShowCheckinProgress(true);
     setIsLoading(true);
     if (fields?.email) setEmail(fields.email);
     const url = `/api/events/${event.id}/checkin?email=${encodeURIComponent(fields?.email || email)}&firstName=${encodeURIComponent(

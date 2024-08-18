@@ -16,7 +16,6 @@ const DateTimeField = ({
   minDateTime?: Date;
   onClose?: (value: Date | null) => void;
 }) => {
-  let temp: Date;
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DateTimePicker
@@ -24,12 +23,11 @@ const DateTimeField = ({
         label={label}
         value={value}
         onChange={newValue => {
-          temp = newValue;
           setValue(newValue);
         }}
         onClose={() => {
           setTimeout(() => {
-            onClose(temp);
+            onClose(value);
           }, 100);
         }}
         inputFormat='M/d/yy h:mm a'

@@ -17,6 +17,7 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import { PartialEvent } from 'interfaces';
 import { Router } from '@mui/icons-material';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
+import Box from '@mui/material/Box';
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -73,7 +74,7 @@ export default function EventsTable({
   const preview = (path: string) => {
     //router.push(`/e/${path}/checkin`);
     if (!path) return;
-    window.open(`/e/${path}/checkin`);
+    window.open(`/e/${path}/checkin#preview`);
   };
 
   return (
@@ -98,35 +99,37 @@ export default function EventsTable({
                     <TableCell scope='row'>{event.location?.name}</TableCell>
                     <TableCell scope='row'>{event.path}</TableCell>
                     <TableCell>
-                      <IconButton
-                        onClick={() => {
-                          edit(event.path);
-                        }}
-                        size='large'
-                      >
-                        <EditIcon></EditIcon>
-                      </IconButton>
-                      <IconButton
-                        onClick={() => {
-                          preview(event.path);
-                        }}
-                        size='large'
-                      >
-                        <LaunchIcon></LaunchIcon>
-                      </IconButton>
-                      {!isPastEvent && (
-                        <>
-                          <IconButton
-                            onClick={() => {
-                              setCurrentId(event.id);
-                              setIsConfirmOpen(true);
-                            }}
-                            size='large'
-                          >
-                            <DeleteIcon></DeleteIcon>
-                          </IconButton>
-                        </>
-                      )}
+                      <Box flexDirection='row' display='flex'>
+                        <IconButton
+                          onClick={() => {
+                            edit(event.path);
+                          }}
+                          size='large'
+                        >
+                          <EditIcon></EditIcon>
+                        </IconButton>
+                        <IconButton
+                          onClick={() => {
+                            preview(event.path);
+                          }}
+                          size='large'
+                        >
+                          <LaunchIcon></LaunchIcon>
+                        </IconButton>
+                        {!isPastEvent && (
+                          <>
+                            <IconButton
+                              onClick={() => {
+                                setCurrentId(event.id);
+                                setIsConfirmOpen(true);
+                              }}
+                              size='large'
+                            >
+                              <DeleteIcon></DeleteIcon>
+                            </IconButton>
+                          </>
+                        )}
+                      </Box>
                     </TableCell>
                   </StyledTableRow>
                 );
