@@ -116,7 +116,8 @@ export default function EnhancedTable(): JSX.Element {
 
         return (
           state.userName.toLowerCase().includes(nameFilter.toLowerCase()) ||
-          (state.email && state.email.replace('.com', '').toLowerCase().includes(nameFilter.toLowerCase()))
+          (state.email && state.email.replace('.com', '').toLowerCase().includes(nameFilter.toLowerCase())) ||
+          state.email.toLowerCase().includes(nameFilter.toLowerCase())
         );
       });
 
