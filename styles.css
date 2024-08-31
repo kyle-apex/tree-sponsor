@@ -19,6 +19,7 @@ a {
 }
 .checkin-tree-quiz .index-map {
   border-radius: 0;
+  visibility: inherit !important;
 }
 .MuiAutocomplete-popper {
   width: auto !important;
