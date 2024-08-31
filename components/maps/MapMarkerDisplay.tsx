@@ -104,8 +104,12 @@ const MapMarkerDisplay = ({
           minzoom: 0,
           maxzoom: 24,
         });
-        map.moveLayer('arcgis-layer', 'satellite');
-        map.removeLayer('satellite');
+        try {
+          map.moveLayer('arcgis-layer', 'satellite');
+          map.removeLayer('satellite');
+        } catch (err) {
+          return;
+        }
       });
     }
   }, []);
@@ -113,6 +117,7 @@ const MapMarkerDisplay = ({
   const debouncedOnViewportChange = useDebouncedCallback((viewport: Partial<Viewport>) => {
     if (onViewportChange) onViewportChange(viewport);
   }, 200);
+
   return (
     <>
       {isGoogle && (
@@ -136,6 +141,7 @@ const MapMarkerDisplay = ({
             >
               {markers?.map(marker => {
                 if (marker?.latitude) {
+                  const minWidth = 30;
                   return (
                     <img
                       key={marker.latitude + marker.longitude}
@@ -151,9 +157,9 @@ const MapMarkerDisplay = ({
                           : '/pin-quiz.svg'
                       }
                       style={{
-                        width: (30 * zoom) / 12 + 'px',
-                        marginLeft: (-30 * zoom) / 24 + 'px',
-                        marginTop: -1 * ((30 * zoom) / 12) * 1.3,
+                        width: Math.max((30 * zoom) / 12, minWidth) + 'px',
+                        marginLeft: Math.min((-30 * zoom) / 24, minWidth / -2) + 'px',
+                        marginTop: -1 * Math.max((30 * zoom) / 12, minWidth) * 1.3,
                         zIndex: marker.isQuizCorrect === true || marker.isQuizCorrect === false ? 0 : 1,
                         position: 'absolute',
                         cursor: 'pointer',
@@ -199,7 +205,7 @@ const MapMarkerDisplay = ({
                   key={marker.latitude + marker.longitude}
                   latitude={marker.latitude}
                   longitude={marker.longitude}
-                  zoom={viewport.zoom * markerScale}
+                  zoom={Math.max(viewport.zoom * markerScale, 6.5)}
                   onClick={() => {
                     if (onClick) onClick(marker);
                   }}
