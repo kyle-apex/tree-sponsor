@@ -107,7 +107,9 @@ const MapMarkerDisplay = ({
         try {
           map.moveLayer('arcgis-layer', 'satellite');
           map.removeLayer('satellite');
-        } catch (err) {}
+        } catch (err) {
+          return;
+        }
       });
     }
   }, []);
