@@ -57,6 +57,7 @@ const TreeIdQuiz = forwardRef(
     const [markers, setMarkers] = useState<QuizCoordinate[]>();
     const currentMapCoordinateRef = useRef<Coordinate>(null);
     const [isFirstQuiz, setIsFirstQuiz] = useState(true);
+    const [isGoogleMaps, setIsGoogleMaps] = useState(true);
     //const [isRecenterMap, setIsRecenterMap] = useState(false);
 
     const latitude = currentMapCoordinateRef?.current?.latitude || defaultLatitude;
@@ -90,16 +91,22 @@ const TreeIdQuiz = forwardRef(
     );
 
     useEffect(() => {
-      setMarkers(
-        trees?.map(tree => {
-          let isQuizCorrect;
-          if (tree.speciesQuizResponses?.length > 0) {
-            const quizResponse = tree.speciesQuizResponses[0];
-            isQuizCorrect = quizResponse.isCorrect === true;
-          }
-          return { latitude: Number(tree.latitude), longitude: Number(tree.longitude), isQuizCorrect };
-        }),
-      );
+      let maxLongitude: number;
+      let minLongitude: number;
+      const newMarkers = trees?.map(tree => {
+        let isQuizCorrect;
+        if (tree.speciesQuizResponses?.length > 0) {
+          const quizResponse = tree.speciesQuizResponses[0];
+          isQuizCorrect = quizResponse.isCorrect === true;
+        }
+        if (Number(tree.longitude) > maxLongitude || !maxLongitude) maxLongitude = Number(tree.longitude);
+        if (Number(tree.longitude) < minLongitude || !minLongitude) minLongitude = Number(tree.longitude);
+        return { latitude: Number(tree.latitude), longitude: Number(tree.longitude), isQuizCorrect };
+      });
+
+      if (Math.abs(maxLongitude - minLongitude) > 50) setIsGoogleMaps(false);
+
+      setMarkers(newMarkers);
     }, [trees]);
 
     useEffect(() => {
@@ -178,14 +185,14 @@ const TreeIdQuiz = forwardRef(
           ></TreeDisplayDialog>
           {isFetched && (
             <MapMarkerDisplay
-              isGoogle={true}
+              isGoogle={isGoogleMaps}
               markers={markers}
               height={mapHeight}
               onClick={coordinate => {
                 handleTreeClick(coordinate);
                 setIsFirstQuiz(false);
               }}
-              mapStyle='SATELLITE'
+              mapStyle={isGoogleMaps ? 'SATELLITE' : 'SIMPLE'}
               markerScale={0.5}
               isQuiz={true}
               defaultLatitude={latitude}
