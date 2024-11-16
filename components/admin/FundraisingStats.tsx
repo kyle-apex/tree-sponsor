@@ -13,6 +13,8 @@ type Stats = {
   activeMembers: number;
   currentYearMemberDonations: number;
   currentYearDonations: number;
+  currentActiveDonations: number;
+  currentActiveMembers: number;
 };
 
 const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWhenFalse?: boolean }) => {
@@ -60,6 +62,27 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
 
   return (
     <>
+      <Grid container spacing={4} mb={3}>
+        <Grid item xs={6} sx={{ textAlign: 'center' }}>
+          <StatisticIconDisplay
+            color='secondary'
+            label='Current Member Subscription Donations'
+            count={stats?.currentActiveDonations}
+            isCurrency={true}
+            isLoading={isLoading}
+          ></StatisticIconDisplay>
+        </Grid>
+        <Grid item xs={6} sx={{ textAlign: 'center' }}>
+          <StatisticIconDisplay
+            color='secondary'
+            label='Current Average Subscription Amount'
+            count={stats?.currentActiveDonations / Math.max(1, stats?.currentActiveMembers)}
+            isCurrency={true}
+            isLoading={isLoading}
+          ></StatisticIconDisplay>
+        </Grid>
+      </Grid>
+      <hr style={{ marginBottom: '26px' }} />
       <Grid container spacing={4}>
         <Grid item xs={6} sx={{ textAlign: 'center' }}>
           <DateField
@@ -81,29 +104,7 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
             label='End Date'
           ></DateField>
         </Grid>
-        {currentYear == new Date().getFullYear() && !isCustomDate && (
-          <>
-            <Grid item xs={6} sx={{ textAlign: 'center' }}>
-              <StatisticIconDisplay
-                color='secondary'
-                label='Active Member Subscription Donations'
-                count={stats?.activeDonations}
-                isCurrency={true}
-                isLoading={isLoading}
-              ></StatisticIconDisplay>
-            </Grid>
-            <Grid item xs={6} sx={{ textAlign: 'center' }}>
-              <StatisticIconDisplay
-                label={'Scheduled by the end of ' + currentYear}
-                count={stats?.upcomingMemberDonations}
-                isCurrency={true}
-                isLoading={isLoading}
-                icon={<UpdateIcon fontSize='medium'></UpdateIcon>}
-                color='primary'
-              ></StatisticIconDisplay>
-            </Grid>
-          </>
-        )}
+
         <Grid item xs={6} sx={{ textAlign: 'center' }}>
           <StatisticIconDisplay
             color='secondary'
@@ -115,13 +116,15 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
         </Grid>
         <Grid item xs={6} sx={{ textAlign: 'center' }}>
           <StatisticIconDisplay
-            color='secondary'
-            label='Average Subscription Amount'
-            count={stats?.activeDonations / Math.max(1, stats?.activeMembers)}
+            label={endDate > new Date() ? 'Scheduled by ' + endDate.toDateString() : 'Scheduled by the end of ' + currentYear}
+            count={stats?.upcomingMemberDonations}
             isCurrency={true}
             isLoading={isLoading}
+            icon={<UpdateIcon fontSize='medium'></UpdateIcon>}
+            color='primary'
           ></StatisticIconDisplay>
         </Grid>
+
         <Grid item xs={6} sx={{ textAlign: 'center' }}>
           <StatisticIconDisplay
             color='secondary'
