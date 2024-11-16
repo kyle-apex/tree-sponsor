@@ -55,10 +55,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     currentYearDonations: 0,
   };
 
+  let subscriptionWithDetailsForUpcoming;
+
+  // we want to figure out upcoming donations before this date
+  if (endDate > new Date()) {
+    const currentDateMinusOneYear = new Date();
+    currentDateMinusOneYear.setFullYear(currentDateMinusOneYear.getFullYear() - 1);
+
+    // this can be refactored to use only one call rather than two
+    subscriptionWithDetailsForUpcoming = await prisma.subscriptionWithDetails.findMany({
+      where: { lastPaymentDate: { gt: currentDateMinusOneYear }, status: 'active' },
+      distinct: ['email'],
+    });
+
+    const existingAmountsByMonthAndDay: Record<string, number> = {};
+    subscriptionWithDetailsForUpcoming?.forEach(sub => {
+      const monthAndDay = sub.lastPaymentDate.getMonth() + ';' + sub.lastPaymentDate.getDate();
+      if (!existingAmountsByMonthAndDay[monthAndDay]) existingAmountsByMonthAndDay[monthAndDay] = 0;
+      existingAmountsByMonthAndDay[monthAndDay] += sub.amount;
+    });
+
+    const current = new Date();
+    current.setDate(current.getDate() + 1);
+
+    // Loop through each day in the future
+    while (current <= endDate) {
+      const monthAndDay = current.getMonth() + ';' + current.getDate();
+      if (existingAmountsByMonthAndDay[monthAndDay]) stats.upcomingMemberDonations += existingAmountsByMonthAndDay[monthAndDay];
+
+      current.setDate(current.getDate() + 1);
+    }
+  }
+
   stats.activeDonations = subscriptionWithDetails.reduce((previous, current) => {
     if ((current.lastPaymentDate && current.lastPaymentDate?.getFullYear() == year) || endDate || startDateString) {
       stats.currentYearMemberDonations += current.amount;
-    } else if (current.status == 'active') stats.upcomingMemberDonations += current.amount;
+    } else if (current.status == 'active' && !subscriptionWithDetailsForUpcoming?.length) stats.upcomingMemberDonations += current.amount;
 
     if (current.status != 'active') return previous;
 
