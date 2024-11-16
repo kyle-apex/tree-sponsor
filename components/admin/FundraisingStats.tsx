@@ -81,7 +81,7 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
             label='End Date'
           ></DateField>
         </Grid>
-        {currentYear == new Date().getFullYear() && !isCustomDate && (
+        {currentYear == new Date().getFullYear() && (
           <>
             <Grid item xs={6} sx={{ textAlign: 'center' }}>
               <StatisticIconDisplay
@@ -94,7 +94,7 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
             </Grid>
             <Grid item xs={6} sx={{ textAlign: 'center' }}>
               <StatisticIconDisplay
-                label={'Scheduled by the end of ' + currentYear}
+                label={endDate > new Date() ? 'Scheduled by ' + endDate.toDateString() : 'Scheduled by the end of ' + currentYear}
                 count={stats?.upcomingMemberDonations}
                 isCurrency={true}
                 isLoading={isLoading}
