@@ -9,6 +9,8 @@ type Stats = {
   activeMembers: number;
   currentYearMemberDonations: number;
   currentYearDonations: number;
+  currentActiveDonations: number;
+  currentActiveMembers: number;
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -33,6 +35,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     endDate = result.endDate;
   }
 
+  startDate?.setHours(0);
+  startDate?.setMinutes(0);
+  startDate?.setSeconds(0);
+
   console.log('startDate', startDate, endDate);
 
   let whereFilter: Prisma.SubscriptionWithDetailsWhereInput = { lastPaymentDate: { gt: calendarYear } };
@@ -49,11 +55,49 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const stats: Stats = {
     activeDonations: 0,
+    currentActiveDonations: 0,
+    currentActiveMembers: 0,
     upcomingMemberDonations: 0,
     activeMembers: subscriptionWithDetails.length,
     currentYearMemberDonations: 0,
     currentYearDonations: 0,
   };
+
+  const currentDateMinusOneYear = new Date();
+  currentDateMinusOneYear.setFullYear(currentDateMinusOneYear.getFullYear() - 1);
+
+  // this can be refactored to use only one call rather than two
+  const activeDonationsFullYear = await prisma.subscriptionWithDetails.findMany({
+    where: { lastPaymentDate: { gt: currentDateMinusOneYear }, status: 'active' },
+    distinct: ['email'],
+  });
+
+  stats.currentActiveMembers = activeDonationsFullYear?.length;
+
+  stats.currentActiveDonations = activeDonationsFullYear.reduce((previous, current) => {
+    return previous + current.amount;
+  }, 0);
+
+  // we want to figure out upcoming donations before this date
+  if (endDate > new Date()) {
+    const existingAmountsByMonthAndDay: Record<string, number> = {};
+    activeDonationsFullYear?.forEach(sub => {
+      const monthAndDay = sub.lastPaymentDate.getMonth() + ';' + sub.lastPaymentDate.getDate();
+      if (!existingAmountsByMonthAndDay[monthAndDay]) existingAmountsByMonthAndDay[monthAndDay] = 0;
+      existingAmountsByMonthAndDay[monthAndDay] += sub.amount;
+    });
+
+    const current = new Date();
+    current.setDate(current.getDate() + 1);
+
+    // Loop through each day in the future
+    while (current <= endDate) {
+      const monthAndDay = current.getMonth() + ';' + current.getDate();
+      if (existingAmountsByMonthAndDay[monthAndDay]) stats.upcomingMemberDonations += existingAmountsByMonthAndDay[monthAndDay];
+
+      current.setDate(current.getDate() + 1);
+    }
+  }
 
   stats.activeDonations = subscriptionWithDetails.reduce((previous, current) => {
     if ((current.lastPaymentDate && current.lastPaymentDate?.getFullYear() == year) || endDate || startDateString) {
@@ -68,11 +112,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }, 0);
 
   const dateWhereFilter: Prisma.DateTimeNullableFilter = {
-    gt: startDate,
+    gte: startDate,
   };
 
   if (endDate) {
-    dateWhereFilter.lt = endDate;
+    dateWhereFilter.lte = endDate;
   }
 
   const aggregate = await prisma.donation.aggregate({
