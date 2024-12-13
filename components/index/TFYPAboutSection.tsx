@@ -35,11 +35,10 @@ const TFYPAboutSection = () => {
       <Grid md={3} sx={{ textAlign: 'center' }} item>
         <img className='detail-image' src='/index/education.jpg' alt='Education' />
         <Typography variant='h3' color='primary' className='detail-title'>
-          🔟 for the 🌳s
+          Education
         </Typography>
         <div className='detail-content'>
-          Take involvement to greater heights with our Ten [minutes] for the Trees pledge where members can optionally dedicate 10
-          minutes/week toward trees/TreeFolks and share what they did, thought of, or learned in our membership community.
+          Learn and teach more about our urban forest, how to keep it healthy, and how to keep it growing.
         </div>
       </Grid>
       <Grid md={3} sx={{ textAlign: 'center' }} item>
