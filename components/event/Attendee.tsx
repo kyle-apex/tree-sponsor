@@ -38,7 +38,7 @@ const getRoleDisplay = (user: PartialUser): string => {
   if (hasRole(user, 'Staff')) return 'Staff';
   else if (hasRole(user, 'Organizer')) return 'Organizer';
   else if (hasRole(user, 'Exec Team')) return 'Exec Team';
-  //else if (hasRole(user, 'Core Team')) return 'Core Team';
+  else if (hasRole(user, 'Core Team')) return 'Core Team';
   else if (user.referredUsers?.length > 0) return 'Ambassador';
   else if (user.subscriptions?.length > 0) return 'Supporter';
 };
