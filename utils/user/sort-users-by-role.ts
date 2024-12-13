@@ -1,6 +1,6 @@
 import { PartialUser } from 'interfaces';
 
-const roleHeirarchy = ['Supporter', 'Staff', 'Ambassador', 'Exec Team', 'Organizer'];
+const roleHeirarchy = ['Supporter', 'Staff', 'Ambassador', 'Core Team', 'Exec Team', 'Organizer'];
 export function getRoleHeirarchyIndex(user: PartialUser) {
   const roles = user.roles;
   // Ambassador is a dynamic role based on whether you've referred a member
