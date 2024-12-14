@@ -190,8 +190,25 @@ export async function getStaticProps() {
       profile: { bio: { not: null } },
       image: { not: null },
     },
-    select: { name: true, displayName: true, image: true, profile: { select: { bio: true } } },
-    orderBy: [{ roles: { _count: 'desc' } }, { createdAt: 'asc' }],
+    select: {
+      name: true,
+      displayName: true,
+      image: true,
+      profile: { select: { bio: true } },
+      roles: { select: { name: true } },
+      createdAt: true,
+    },
+  });
+  users.forEach(user => {
+    user.roles = user.roles?.filter(role => role.name != 'Owner');
+  });
+  users.sort((a, b) => {
+    if (a.roles?.length != b.roles?.length) return a.roles?.length > b.roles?.length ? -1 : 1;
+    return a.createdAt < b.createdAt ? -1 : 1;
+  });
+  users.forEach(user => {
+    delete user.createdAt;
+    delete user.roles;
   });
   return {
     props: {
