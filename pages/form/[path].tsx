@@ -6,7 +6,9 @@ import LogoMessage from 'components/layout/LogoMessage';
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
 import { PartialCategory } from 'interfaces';
 import { GetServerSidePropsContext } from 'next';
-import { Typography } from '@mui/material';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Typography from '@mui/material/Typography';
+import Checkbox from '@mui/material/Checkbox';
 
 type FormQuestionType = 'text' | 'multiline' | 'boolean';
 class FormQuestion {
@@ -15,6 +17,7 @@ class FormQuestion {
   type: FormQuestionType;
   placeholder: string;
   required: boolean;
+  checkboxLabel: string;
 }
 class PartialForm {
   name: string;
@@ -24,7 +27,8 @@ class PartialForm {
 }
 
 const exampleForm = {
-  name: 'Participation Agreement',
+  name: 'Core Team Participation Agreement',
+  description: `<p>To complete the process of joining the Core Team, please complete the following to:</p><ul><li>Agree to the Core Team commitments</li><li>Setup your bio for the TreeFolksYP website</li></ul>`,
   questions: [
     {
       question: 'Name',
@@ -40,18 +44,28 @@ const exampleForm = {
       placeholder: 'Your email',
       required: true,
     },
+    {
+      question: 'I agree to do my best to attend at least 50% of Core Team meetings.',
+      required: true,
+      checkboxLabel: 'I agree',
+      type: 'boolean',
+      description:
+        'Meetings will be 6:30-8pm on Wednesdays (typically the second Wednesday of the month).  Half will be virtual on Zoom, but the first two will be in person.',
+    },
   ],
 };
 
 const FormPage = ({ form }: { form: PartialForm }) => {
   console.log('form', form);
   return (
-    <Layout title='Sign In' header='Form Name'>
+    <Layout title={form.name}>
       <LogoMessage justifyContent='start'>
-        <Typography variant='h2' color='secondary' sx={{ mb: 3 }}>
-          {form.name}
-        </Typography>
-        <SafeHTMLDisplay html={form.description}></SafeHTMLDisplay>
+        <Box sx={{ mb: 3 }}>
+          <Typography variant='h2' color='secondary' sx={{ mb: 1 }}>
+            {form.name}
+          </Typography>
+          {form.description && <SafeHTMLDisplay html={form.description}></SafeHTMLDisplay>}
+        </Box>
         {form.questions.map((question, idx) => {
           return (
             <Box
@@ -67,7 +81,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
                 backgroundColor: '#f8f8f8',
               }}
             >
-              <Typography variant='h6' color='primary' sx={{ fontWeight: '600', display: 'inline' }}>
+              <Typography variant='h6' color='primary' sx={{ fontWeight: '600', display: 'inline', fontSize: '1.1rem' }}>
                 {question.question}
                 {question.required && <span style={{ color: '#d32f2f', fontWeight: 400, marginLeft: '2px' }}>*</span>}
               </Typography>
@@ -80,6 +94,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
                 {question.type == 'text' && (
                   <TextField size='small' fullWidth placeholder={question.placeholder || 'Your answer'} variant='standard'></TextField>
                 )}
+                {question.type == 'boolean' && <FormControlLabel control={<Checkbox />} label={question.checkboxLabel} />}
               </Box>
             </Box>
           );
