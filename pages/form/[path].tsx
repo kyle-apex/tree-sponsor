@@ -9,15 +9,24 @@ import { GetServerSidePropsContext } from 'next';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Typography from '@mui/material/Typography';
 import Checkbox from '@mui/material/Checkbox';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import ImageCropper from 'components/ImageCropper';
+import { useState } from 'react';
 
-type FormQuestionType = 'text' | 'multiline' | 'boolean';
+type FormQuestionType = 'text' | 'multiline' | 'checkbox' | 'radio' | 'image';
 class FormQuestion {
   question: string;
   description: string;
   type: FormQuestionType;
   placeholder: string;
   required: boolean;
-  checkboxLabel: string;
+  options: string[];
+  default: any;
+  value: any;
+}
+class FormState {
+  questions: Partial<FormQuestion>[];
 }
 class PartialForm {
   name: string;
@@ -47,19 +56,82 @@ const exampleForm = {
     {
       question: 'I agree to do my best to attend at least 50% of Core Team meetings.',
       required: true,
-      checkboxLabel: 'I agree',
-      type: 'boolean',
+      options: ['I agree'],
+      type: 'checkbox',
       description:
         'Meetings will be 6:30-8pm on Wednesdays (typically the second Wednesday of the month).  Half will be virtual on Zoom, but the first two will be in person.',
+    },
+    {
+      question: 'I agree to assist in the planning of at least one event this year.',
+      required: true,
+      options: ['I agree'],
+      type: 'checkbox',
+      description: '',
+    },
+    {
+      question: 'I agree to provide my input by filling out surveys, etc.',
+      required: true,
+      options: ['I agree'],
+      type: 'checkbox',
+      description: '',
+    },
+    {
+      question: 'I agree to maintain active TreeFolksYP membership.',
+      required: true,
+      options: ['I agree'],
+      type: 'checkbox',
+      description:
+        'Signup at https://treefolks.org/yp with a membership donation level starting at $20/year directly to TreeFolks (tax-deductible)',
+    },
+    {
+      question: 'I agree to help promote TreeFolksYP events that I plan to attend to people in my network',
+      required: true,
+      options: ['I agree'],
+      type: 'checkbox',
+      description: '',
+    },
+    {
+      question: 'If I need to end my membership on the Core Team, I will communicate with the TFYP Executive Committee.',
+      required: true,
+      options: ['I agree'],
+      type: 'checkbox',
+      description: '',
+    },
+    {
+      question: 'Website Bio',
+      required: true,
+      options: ['Include my bio on the website', 'I do not want to be listed on the TreeFolks Core Team website'],
+      type: 'radio',
+      default: 'Include my bio on the website',
+      description: 'Please complete the following for the Core Team section on the TreeFolks website https://treefolks.org/yp',
+    },
+    {
+      question: 'Website Bio: Title/Occupation (Ex: Accountant, Engineer)',
+      required: false,
+      type: 'text',
+      description: '',
+    },
+    {
+      question: 'Website Bio: Short 2-3 sentence bio covering your interest in TreeFolks/environment',
+      required: false,
+      type: 'multiline',
+      description: `Ex: I spend my days working on my computer, so I love a chance to get outside, enjoy nature, and play sports (tennis, volleyball, flag football).  Unfortunately, I don't have a place to plant trees of my own, but TreeFolks gives me a chance to support planting trees all across Austin!`,
+    },
+    {
+      question: 'Website Bio: Headshot (square shaped picture would work best)',
+      required: false,
+      type: 'image',
+      description: `Don’t have one you like? Head outside and take a quick selfie with some greenery in the background!`,
     },
   ],
 };
 
 const FormPage = ({ form }: { form: PartialForm }) => {
   console.log('form', form);
+  const [formState, setFormState] = useState<FormState>({ questions: [] });
   return (
     <Layout title={form.name}>
-      <LogoMessage justifyContent='start'>
+      <LogoMessage justifyContent='start' maxWidth='sm'>
         <Box sx={{ mb: 3 }}>
           <Typography variant='h2' color='secondary' sx={{ mb: 1 }}>
             {form.name}
@@ -67,6 +139,13 @@ const FormPage = ({ form }: { form: PartialForm }) => {
           {form.description && <SafeHTMLDisplay html={form.description}></SafeHTMLDisplay>}
         </Box>
         {form.questions.map((question, idx) => {
+          let questionState = formState.questions?.find(q => q.question == question.question);
+          if (!questionState) {
+            questionState = { question: question.question, type: question.type };
+            setFormState(s => {
+              return { ...s, questions: [...s.questions, questionState] };
+            });
+          }
           return (
             <Box
               key={question.question}
@@ -94,7 +173,48 @@ const FormPage = ({ form }: { form: PartialForm }) => {
                 {question.type == 'text' && (
                   <TextField size='small' fullWidth placeholder={question.placeholder || 'Your answer'} variant='standard'></TextField>
                 )}
-                {question.type == 'boolean' && <FormControlLabel control={<Checkbox />} label={question.checkboxLabel} />}
+                {question.type == 'multiline' && (
+                  <TextField
+                    multiline={true}
+                    sx={{ '.MuiInputBase-multiline': { backgroundColor: 'transparent' } }}
+                    size='small'
+                    fullWidth
+                    placeholder={question.placeholder || 'Your answer'}
+                    variant='standard'
+                  ></TextField>
+                )}
+                {question.type == 'checkbox' &&
+                  question.options.map(option => (
+                    <FormControlLabel
+                      key={option}
+                      control={<Checkbox defaultChecked={option == question.default} />}
+                      label={option}
+                      sx={{ mb: 1 }}
+                    />
+                  ))}
+                {question.type == 'radio' && (
+                  <RadioGroup defaultValue={question.default} aria-labelledby='demo-radio-buttons-group-label' name='radio-buttons-group'>
+                    {question.options.map(option => (
+                      <FormControlLabel key={option} control={<Radio />} label={option} value={option} sx={{ mb: 1 }} />
+                    ))}
+                  </RadioGroup>
+                )}
+                {question.type == 'image' && (
+                  <Box sx={{ textAlign: 'center' }}>
+                    <ImageCropper
+                      imageUrl={questionState.value}
+                      setImageUrl={url => {
+                        questionState.value = url;
+                        setFormState(s => {
+                          return { questions: [...s.questions] };
+                        });
+                      }}
+                      addSubtitleText='Add headshot'
+                      onCrop={() => {}}
+                      previewSx={{ borderRadius: '50%', maxWidth: '100%', width: '200px', height: '200px', margin: '20px auto' }}
+                    ></ImageCropper>
+                  </Box>
+                )}
               </Box>
             </Box>
           );

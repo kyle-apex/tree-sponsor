@@ -159,7 +159,7 @@ const ImageCropper = forwardRef(
 
           setImageUrl(dataUrl);
           setTimeout(() => {
-            setCrop(centerAspectCrop(width, height, 1));
+            setCrop(centerAspectCrop(width, height, 1, 100));
           });
 
           setIsCropping(true);
@@ -237,6 +237,7 @@ const ImageCropper = forwardRef(
                 if (c && onCrop) onCrop(c);
               }}
               aspect={1}
+              keepSelection={true}
             >
               <img
                 src={imageUrl}
