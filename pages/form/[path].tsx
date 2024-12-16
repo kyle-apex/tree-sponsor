@@ -11,9 +11,10 @@ import Typography from '@mui/material/Typography';
 import Checkbox from '@mui/material/Checkbox';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import ImageCropper from 'components/ImageCropper';
-import { useState } from 'react';
+import ImageCropper, { ImageCropperWrapper } from 'components/ImageCropper';
+import { useCallback, useEffect, useState } from 'react';
 import useLocalStorage from 'utils/hooks/use-local-storage';
+import FormControl from '@mui/material/FormControl';
 
 type FormQuestionType = 'text' | 'multiline' | 'checkbox' | 'radio' | 'image';
 class FormQuestion {
@@ -25,6 +26,7 @@ class FormQuestion {
   options: string[];
   default: any;
   value: any;
+  delayedValue: any;
 }
 class FormState {
   questions: Partial<FormQuestion>[];
@@ -123,13 +125,43 @@ const exampleForm = {
       required: false,
       type: 'image',
       description: `Don’t have one you like? Head outside and take a quick selfie with some greenery in the background!`,
+      placeholder: 'Add headshot',
     },
   ],
 };
 
 const FormPage = ({ form }: { form: PartialForm }) => {
+  //const form = exampleForm;
   console.log('form', form);
   const [formState, setFormState] = useLocalStorage<FormState>('form:' + form.name?.replaceAll(' ', '_'), { questions: [] });
+  const updateStateValue = useCallback(
+    (questionState: Partial<FormQuestion>, value: any) => {
+      questionState.value = value;
+      setFormState(s => {
+        return { questions: [...s.questions] };
+      });
+    },
+    [formState],
+  );
+  useEffect(() => {
+    const initializedQuestionStates: Partial<FormQuestion>[] = [];
+    form.questions.map((question, idx) => {
+      let questionState = formState.questions?.find(q => q.question == question.question);
+      if (!questionState) {
+        console.log('setting defaults', JSON.stringify(formState.questions));
+        questionState = { question: question.question, type: question.type, value: question.default };
+        if (!questionState.value && question.type == 'checkbox') questionState.value = [];
+
+        initializedQuestionStates.push(questionState);
+      }
+    });
+    console.log('initializedQuestionStates', initializedQuestionStates);
+    if (initializedQuestionStates?.length)
+      setFormState(s => {
+        return { ...s, questions: [...s.questions, ...initializedQuestionStates] };
+      });
+  }, [formState]);
+  console.log('formState', formState?.questions?.length);
   return (
     <Layout title={form.name}>
       <LogoMessage justifyContent='start' maxWidth='sm'>
@@ -139,87 +171,111 @@ const FormPage = ({ form }: { form: PartialForm }) => {
           </Typography>
           {form.description && <SafeHTMLDisplay html={form.description}></SafeHTMLDisplay>}
         </Box>
-        {form.questions.map((question, idx) => {
-          let questionState = formState.questions?.find(q => q.question == question.question);
-          if (!questionState) {
-            questionState = { question: question.question, type: question.type };
-            setFormState(s => {
-              return { ...s, questions: [...s.questions, questionState] };
-            });
-          }
-          return (
-            <Box
-              key={question.question}
-              className='question-container box-shadow'
-              flexDirection='column'
-              sx={{
-                display: 'flex',
-                mb: 3,
-                border: 'solid 1px #f1f1f1',
-                borderRadius: '5px',
-                padding: '15px 15px 20px',
-                backgroundColor: '#f8f8f8',
-              }}
-            >
-              <Typography variant='h6' color='primary' sx={{ fontWeight: '600', display: 'inline', fontSize: '1.1rem' }}>
-                {question.question}
-                {question.required && <span style={{ color: '#d32f2f', fontWeight: 400, marginLeft: '2px' }}>*</span>}
-              </Typography>
-              {question.description && (
-                <Typography variant='body2' sx={{ mt: 0.5 }}>
-                  {question.description}
+        {process.browser &&
+          form.questions.map((question, idx) => {
+            const questionState = formState.questions?.find(q => q.question == question.question);
+            /*
+            if (!questionState) {
+              console.log('setting defaults', JSON.stringify(formState.questions));
+              questionState = { question: question.question, type: question.type, value: question.default };
+              setFormState(s => {
+                return { ...s, questions: [...s.questions, questionState] };
+              });
+            }
+            if (!questionState.value && question.type == 'checkbox') questionState.value = [];*/
+            console.log('loading', question.question, typeof questionState?.value, questionState?.value);
+
+            if (!questionState) return;
+
+            return (
+              <Box
+                key={question.question}
+                className='question-container box-shadow'
+                flexDirection='column'
+                sx={{
+                  display: 'flex',
+                  mb: 3,
+                  border: 'solid 1px #f1f1f1',
+                  borderRadius: '5px',
+                  padding: '15px 15px 20px',
+                  backgroundColor: '#f8f8f8',
+                }}
+              >
+                <Typography variant='h6' color='primary' sx={{ fontWeight: '600', display: 'inline', fontSize: '1.1rem' }}>
+                  {question.question}
+                  {question.required && <span style={{ color: '#d32f2f', fontWeight: 400, marginLeft: '2px' }}>*</span>}
                 </Typography>
-              )}
-              <Box sx={{ mt: 1 }}>
-                {question.type == 'text' && (
-                  <TextField size='small' fullWidth placeholder={question.placeholder || 'Your answer'} variant='standard'></TextField>
+                {question.description && (
+                  <Typography variant='body2' sx={{ mt: 0.5 }}>
+                    {question.description}
+                  </Typography>
                 )}
-                {question.type == 'multiline' && (
-                  <TextField
-                    multiline={true}
-                    sx={{ '.MuiInputBase-multiline': { backgroundColor: 'transparent' } }}
-                    size='small'
-                    fullWidth
-                    placeholder={question.placeholder || 'Your answer'}
-                    variant='standard'
-                  ></TextField>
-                )}
-                {question.type == 'checkbox' &&
-                  question.options.map(option => (
-                    <FormControlLabel
-                      key={option}
-                      control={<Checkbox defaultChecked={option == question.default} />}
-                      label={option}
-                      sx={{ mb: 1 }}
-                    />
-                  ))}
-                {question.type == 'radio' && (
-                  <RadioGroup defaultValue={question.default} aria-labelledby='demo-radio-buttons-group-label' name='radio-buttons-group'>
-                    {question.options.map(option => (
-                      <FormControlLabel key={option} control={<Radio />} label={option} value={option} sx={{ mb: 1 }} />
-                    ))}
-                  </RadioGroup>
-                )}
-                {question.type == 'image' && (
-                  <Box sx={{ textAlign: 'center' }}>
-                    <ImageCropper
-                      imageUrl={questionState.value}
-                      setImageUrl={url => {
-                        questionState.value = url;
-                        setFormState(s => {
-                          return { questions: [...s.questions] };
-                        });
+                <Box sx={{ mt: 1 }}>
+                  {(question.type == 'text' || question.type == 'multiline') && (
+                    <TextField
+                      size='small'
+                      fullWidth
+                      multiline={question.type == 'multiline'}
+                      sx={{ '.MuiInputBase-multiline': { backgroundColor: 'transparent' } }}
+                      placeholder={question.placeholder || 'Your answer'}
+                      defaultValue={question.default}
+                      value={questionState.value}
+                      onChange={event => {
+                        updateStateValue(questionState, event.target.value);
                       }}
-                      addSubtitleText='Add headshot'
-                      onCrop={() => {}}
-                      previewSx={{ borderRadius: '50%', maxWidth: '100%', width: '200px', height: '200px', margin: '20px auto' }}
-                    ></ImageCropper>
-                  </Box>
-                )}
+                      variant='standard'
+                    ></TextField>
+                  )}
+
+                  {question.type == 'checkbox' &&
+                    question.options.map(option => (
+                      <FormControlLabel
+                        key={option}
+                        control={
+                          <Checkbox
+                            checked={questionState.value?.includes(option)}
+                            onChange={(event, checked) => {
+                              console.log('questionState.value', questionState.value);
+
+                              if (checked && !questionState.value.includes(option)) questionState.value.push(option);
+                              else if (!checked && questionState.value.includes(option)) {
+                                questionState.value.splice(questionState.value.indexOf(option), 1);
+                              }
+
+                              updateStateValue(questionState, questionState.value);
+                            }}
+                          />
+                        }
+                        label={option}
+                        sx={{ mb: 1 }}
+                      />
+                    ))}
+                  {question.type == 'radio' && (
+                    <RadioGroup
+                      value={questionState.value}
+                      onChange={(_event, value) => updateStateValue(questionState, value)}
+                      name={question.question}
+                    >
+                      {question.options.map(option => (
+                        <FormControlLabel key={option} control={<Radio />} label={option} value={option} sx={{ mb: 1 }} />
+                      ))}
+                    </RadioGroup>
+                  )}
+                  {question.type == 'image' && (
+                    <Box sx={{ textAlign: 'center' }}>
+                      <ImageCropperWrapper
+                        croppedImage={questionState.value}
+                        setCroppedImage={(url: any) => {
+                          updateStateValue(questionState, url);
+                        }}
+                        subtitle={question.placeholder}
+                      ></ImageCropperWrapper>
+                    </Box>
+                  )}
+                </Box>
               </Box>
-            </Box>
-          );
-        })}
+            );
+          })}
       </LogoMessage>
     </Layout>
   );

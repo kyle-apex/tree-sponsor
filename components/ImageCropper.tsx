@@ -115,7 +115,7 @@ const ImageCropper = forwardRef(
         setCrop(centerAspectCrop(imageRef.current.width, imageRef.current.height, 1, 100));
       }
       setTimeout(() => {
-        console.log('width', imageRef?.current.width);
+        console.log('width', imageRef?.current?.width);
       }, 400);
     }, []);
 
@@ -289,7 +289,7 @@ export const ImageCropperWrapper = ({
           setImageUrl={setImageUrl}
           ref={imageCropperRef}
           imageRef={imageRef}
-          addSubtitleText='Tap to add a picture of a leaf or two for identification suggestions'
+          addSubtitleText={subtitle}
           previewSx={{ borderRadius: '50%', maxWidth: '100%', width: '200px', height: '200px', margin: '20px auto' }}
         ></ImageCropper>
       )}
@@ -304,6 +304,22 @@ export const ImageCropperWrapper = ({
       {!croppedImage && (
         <Button fullWidth variant='contained' color='primary' sx={{ mt: 3 }} onClick={doCrop} disabled={!imageUrl}>
           Crop
+        </Button>
+      )}
+      {croppedImage && (
+        <Button
+          fullWidth
+          variant='contained'
+          color='primary'
+          sx={{ mt: 3 }}
+          onClick={() => {
+            setCroppedImage(null);
+            setTimeout(() => {
+              imageCropperRef.current.openFileBrowser();
+            }, 1);
+          }}
+        >
+          Edit Image
         </Button>
       )}
     </Box>
