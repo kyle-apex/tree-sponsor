@@ -8,6 +8,7 @@ import ReactCrop, { centerCrop, makeAspectCrop, Crop, PixelCrop } from 'react-im
 
 import 'react-image-crop/dist/ReactCrop.css';
 import { SxProps, Theme } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 
 type CropResult = { base64Image: string; height: number; width: number };
 export type FileBrowserHandle = {
@@ -58,6 +59,7 @@ const ImageCropper = forwardRef(
     },
     ref: React.Ref<FileBrowserHandle>,
   ) => {
+    const [keepSelection, setKeepSelection] = useState(false);
     const [crop, setCrop] = useState<Crop>();
     const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
     const [isCropping, setIsCropping] = useState(false);
@@ -109,9 +111,12 @@ const ImageCropper = forwardRef(
     }));
 
     useEffect(() => {
-      if (imageUrl && imageRef.current?.width && !imageUrl.startsWith('http')) {
+      if (imageUrl && imageRef?.current?.width && !imageUrl.startsWith('http')) {
         setCrop(centerAspectCrop(imageRef.current.width, imageRef.current.height, 1, 100));
       }
+      setTimeout(() => {
+        console.log('width', imageRef?.current.width);
+      }, 400);
     }, []);
 
     useEffect(() => {
@@ -237,7 +242,7 @@ const ImageCropper = forwardRef(
                 if (c && onCrop) onCrop(c);
               }}
               aspect={1}
-              keepSelection={true}
+              keepSelection={keepSelection}
             >
               <img
                 src={imageUrl}
@@ -258,5 +263,51 @@ const ImageCropper = forwardRef(
     );
   },
 );
+
+export const ImageCropperWrapper = ({
+  subtitle,
+  croppedImage,
+  setCroppedImage,
+}: {
+  subtitle: string;
+  croppedImage: string;
+  setCroppedImage: (val: string) => void;
+}) => {
+  const [imageUrl, setImageUrl] = useState<string>();
+  const imageCropperRef = useRef<FileBrowserHandle>();
+  const imageRef = useRef<any>();
+
+  const doCrop = async () => {
+    const { base64Image } = imageCropperRef?.current?.doCrop();
+    setCroppedImage(base64Image);
+  };
+  return (
+    <Box sx={{ textAlign: 'center' }}>
+      {!croppedImage && (
+        <ImageCropper
+          imageUrl={imageUrl}
+          setImageUrl={setImageUrl}
+          ref={imageCropperRef}
+          imageRef={imageRef}
+          addSubtitleText='Tap to add a picture of a leaf or two for identification suggestions'
+          previewSx={{ borderRadius: '50%', maxWidth: '100%', width: '200px', height: '200px', margin: '20px auto' }}
+        ></ImageCropper>
+      )}
+      {croppedImage && (
+        <img
+          alt='Cropped Image'
+          src={croppedImage}
+          style={{ width: '200px', height: '200px', borderRadius: '50%', margin: '0 auto', flex: '1 0 200px' }}
+        ></img>
+      )}
+
+      {!croppedImage && (
+        <Button fullWidth variant='contained' color='primary' sx={{ mt: 3 }} onClick={doCrop} disabled={!imageUrl}>
+          Crop
+        </Button>
+      )}
+    </Box>
+  );
+};
 
 export default ImageCropper;

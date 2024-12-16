@@ -13,6 +13,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import ImageCropper from 'components/ImageCropper';
 import { useState } from 'react';
+import useLocalStorage from 'utils/hooks/use-local-storage';
 
 type FormQuestionType = 'text' | 'multiline' | 'checkbox' | 'radio' | 'image';
 class FormQuestion {
@@ -128,7 +129,7 @@ const exampleForm = {
 
 const FormPage = ({ form }: { form: PartialForm }) => {
   console.log('form', form);
-  const [formState, setFormState] = useState<FormState>({ questions: [] });
+  const [formState, setFormState] = useLocalStorage<FormState>('form:' + form.name?.replaceAll(' ', '_'), { questions: [] });
   return (
     <Layout title={form.name}>
       <LogoMessage justifyContent='start' maxWidth='sm'>
