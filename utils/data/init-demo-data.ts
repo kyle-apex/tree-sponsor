@@ -1,6 +1,112 @@
 import { prisma, Prisma } from 'utils/prisma/init';
 
 export default async function initDemoData(userId: number) {
+  const participationForm = {
+    name: 'Core Team Participation Agreement',
+    path: 'participation-agreement',
+    description: `<p>To complete the process of joining the Core Team, please complete the following to:</p><ul><li>Agree to the Core Team commitments</li><li>Setup your bio for the TreeFolksYP website</li></ul>`,
+    questions: [
+      {
+        question: 'Name',
+        description: 'hey',
+        type: 'text',
+        placeholder: '',
+        required: true,
+      },
+      {
+        question: 'Email',
+        description: '',
+        type: 'text',
+        placeholder: 'Your email',
+        required: true,
+      },
+      {
+        question: 'I agree to do my best to attend at least 50% of Core Team meetings.',
+        required: true,
+        options: ['I agree'],
+        type: 'checkbox',
+        description:
+          'Meetings will be 6:30-8pm on Wednesdays (typically the second Wednesday of the month).  Half will be virtual on Zoom, but the first two will be in person.',
+      },
+      {
+        question: 'I agree to assist in the planning of at least one event this year.',
+        required: true,
+        options: ['I agree'],
+        type: 'checkbox',
+        description: '',
+      },
+      {
+        question: 'I agree to provide my input by filling out surveys, etc.',
+        required: true,
+        options: ['I agree'],
+        type: 'checkbox',
+        description: '',
+      },
+      {
+        question: 'I agree to maintain active TreeFolksYP membership.',
+        required: true,
+        options: ['I agree'],
+        type: 'checkbox',
+        description:
+          'Signup at https://treefolks.org/yp with a membership donation level starting at $20/year directly to TreeFolks (tax-deductible)',
+      },
+      {
+        question: 'I agree to help promote TreeFolksYP events that I plan to attend to people in my network',
+        required: true,
+        options: ['I agree'],
+        type: 'checkbox',
+        description: '',
+      },
+      {
+        question: 'If I need to end my membership on the Core Team, I will communicate with the TFYP Executive Committee.',
+        required: true,
+        options: ['I agree'],
+        type: 'checkbox',
+        description: '',
+      },
+      {
+        question: 'Website Bio',
+        required: true,
+        options: ['Include my bio on the website', 'I do not want to be listed on the TreeFolks Core Team website'],
+        type: 'radio',
+        default: 'Include my bio on the website',
+        description: 'Please complete the following for the Core Team section on the TreeFolks website https://treefolks.org/yp',
+      },
+      {
+        question: 'Website Bio: Title/Occupation (Ex: Accountant, Engineer)',
+        required: false,
+        type: 'text',
+        description: '',
+      },
+      {
+        question: 'Website Bio: Short 2-3 sentence bio covering your interest in TreeFolks/environment',
+        required: false,
+        type: 'multiline',
+        description: `Ex: I spend my days working on my computer, so I love a chance to get outside, enjoy nature, and play sports (tennis, volleyball, flag football).  Unfortunately, I don't have a place to plant trees of my own, but TreeFolks gives me a chance to support planting trees all across Austin!`,
+      },
+      {
+        question: 'Website Bio: Headshot (square shaped picture would work best)',
+        required: false,
+        type: 'image',
+        description: `Don’t have one you like? Head outside and take a quick selfie with some greenery in the background!`,
+        placeholder: 'Add headshot',
+      },
+    ],
+  };
+
+  const existingForm = await prisma.form.findFirst({ where: { name: participationForm.name } });
+
+  if (!existingForm) {
+    await prisma.form.create({
+      data: {
+        name: participationForm.name,
+        path: participationForm.path,
+        description: participationForm.description,
+        questionsJson: participationForm.questions,
+      },
+    });
+  }
+
   const eventCount = await prisma.event.count();
   if (eventCount != 0) return;
 

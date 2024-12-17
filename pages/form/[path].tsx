@@ -1,10 +1,8 @@
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import axios from 'axios';
 import Layout from 'components/layout/Layout';
 import LogoMessage from 'components/layout/LogoMessage';
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
-import { PartialCategory } from 'interfaces';
 import { GetServerSidePropsContext } from 'next';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Typography from '@mui/material/Typography';
@@ -14,126 +12,26 @@ import RadioGroup from '@mui/material/RadioGroup';
 import ImageCropper, { ImageCropperWrapper } from 'components/ImageCropper';
 import { useCallback, useEffect, useState } from 'react';
 import useLocalStorage from 'utils/hooks/use-local-storage';
-import FormControl from '@mui/material/FormControl';
-
-type FormQuestionType = 'text' | 'multiline' | 'checkbox' | 'radio' | 'image';
-class FormQuestion {
-  question: string;
-  description: string;
-  type: FormQuestionType;
-  placeholder: string;
-  required: boolean;
-  options: string[];
-  default: any;
-  value: any;
-  delayedValue: any;
-}
-class FormState {
-  questions: Partial<FormQuestion>[];
-}
-class PartialForm {
-  name: string;
-  description: string;
-  id: number;
-  questions: FormQuestion[];
-}
-
-const exampleForm = {
-  name: 'Core Team Participation Agreement',
-  description: `<p>To complete the process of joining the Core Team, please complete the following to:</p><ul><li>Agree to the Core Team commitments</li><li>Setup your bio for the TreeFolksYP website</li></ul>`,
-  questions: [
-    {
-      question: 'Name',
-      description: 'hey',
-      type: 'text',
-      placeholder: '',
-      required: true,
-    },
-    {
-      question: 'Email',
-      description: '',
-      type: 'text',
-      placeholder: 'Your email',
-      required: true,
-    },
-    {
-      question: 'I agree to do my best to attend at least 50% of Core Team meetings.',
-      required: true,
-      options: ['I agree'],
-      type: 'checkbox',
-      description:
-        'Meetings will be 6:30-8pm on Wednesdays (typically the second Wednesday of the month).  Half will be virtual on Zoom, but the first two will be in person.',
-    },
-    {
-      question: 'I agree to assist in the planning of at least one event this year.',
-      required: true,
-      options: ['I agree'],
-      type: 'checkbox',
-      description: '',
-    },
-    {
-      question: 'I agree to provide my input by filling out surveys, etc.',
-      required: true,
-      options: ['I agree'],
-      type: 'checkbox',
-      description: '',
-    },
-    {
-      question: 'I agree to maintain active TreeFolksYP membership.',
-      required: true,
-      options: ['I agree'],
-      type: 'checkbox',
-      description:
-        'Signup at https://treefolks.org/yp with a membership donation level starting at $20/year directly to TreeFolks (tax-deductible)',
-    },
-    {
-      question: 'I agree to help promote TreeFolksYP events that I plan to attend to people in my network',
-      required: true,
-      options: ['I agree'],
-      type: 'checkbox',
-      description: '',
-    },
-    {
-      question: 'If I need to end my membership on the Core Team, I will communicate with the TFYP Executive Committee.',
-      required: true,
-      options: ['I agree'],
-      type: 'checkbox',
-      description: '',
-    },
-    {
-      question: 'Website Bio',
-      required: true,
-      options: ['Include my bio on the website', 'I do not want to be listed on the TreeFolks Core Team website'],
-      type: 'radio',
-      default: 'Include my bio on the website',
-      description: 'Please complete the following for the Core Team section on the TreeFolks website https://treefolks.org/yp',
-    },
-    {
-      question: 'Website Bio: Title/Occupation (Ex: Accountant, Engineer)',
-      required: false,
-      type: 'text',
-      description: '',
-    },
-    {
-      question: 'Website Bio: Short 2-3 sentence bio covering your interest in TreeFolks/environment',
-      required: false,
-      type: 'multiline',
-      description: `Ex: I spend my days working on my computer, so I love a chance to get outside, enjoy nature, and play sports (tennis, volleyball, flag football).  Unfortunately, I don't have a place to plant trees of my own, but TreeFolks gives me a chance to support planting trees all across Austin!`,
-    },
-    {
-      question: 'Website Bio: Headshot (square shaped picture would work best)',
-      required: false,
-      type: 'image',
-      description: `Don’t have one you like? Head outside and take a quick selfie with some greenery in the background!`,
-      placeholder: 'Add headshot',
-    },
-  ],
-};
+import formatServerProps from 'utils/api/format-server-props';
+import { prisma } from 'utils/prisma/init';
+import { FormQuestion, FormState, PartialForm } from 'interfaces';
+import Button from '@mui/material/Button';
 
 const FormPage = ({ form }: { form: PartialForm }) => {
+  if (!form)
+    return (
+      <Layout title={form?.name || 'Form not found'}>
+        <LogoMessage justifyContent='start' maxWidth='sm'>
+          Form not found
+        </LogoMessage>
+      </Layout>
+    );
+
   //const form = exampleForm;
   console.log('form', form);
   const [formState, setFormState] = useLocalStorage<FormState>('form:' + form.name?.replaceAll(' ', '_'), { questions: [] });
+
+  // helper function for updating a value
   const updateStateValue = useCallback(
     (questionState: Partial<FormQuestion>, value: any) => {
       questionState.value = value;
@@ -143,12 +41,12 @@ const FormPage = ({ form }: { form: PartialForm }) => {
     },
     [formState],
   );
+  // initialize and set defaults
   useEffect(() => {
     const initializedQuestionStates: Partial<FormQuestion>[] = [];
     form.questions.map((question, idx) => {
       let questionState = formState.questions?.find(q => q.question == question.question);
       if (!questionState) {
-        console.log('setting defaults', JSON.stringify(formState.questions));
         questionState = { question: question.question, type: question.type, value: question.default };
         if (!questionState.value && question.type == 'checkbox') questionState.value = [];
 
@@ -174,15 +72,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
         {process.browser &&
           form.questions.map((question, idx) => {
             const questionState = formState.questions?.find(q => q.question == question.question);
-            /*
-            if (!questionState) {
-              console.log('setting defaults', JSON.stringify(formState.questions));
-              questionState = { question: question.question, type: question.type, value: question.default };
-              setFormState(s => {
-                return { ...s, questions: [...s.questions, questionState] };
-              });
-            }
-            if (!questionState.value && question.type == 'checkbox') questionState.value = [];*/
+
             console.log('loading', question.question, typeof questionState?.value, questionState?.value);
 
             if (!questionState) return;
@@ -276,6 +166,18 @@ const FormPage = ({ form }: { form: PartialForm }) => {
               </Box>
             );
           })}
+        <Button
+          fullWidth
+          variant='contained'
+          color='primary'
+          size='large'
+          sx={{ mt: 2, mb: 12 }}
+          onClick={() => {
+            console.log('clicked');
+          }}
+        >
+          Submit
+        </Button>
       </LogoMessage>
     </Layout>
   );
@@ -283,14 +185,21 @@ const FormPage = ({ form }: { form: PartialForm }) => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { path } = context.query;
+  console.log('path', path);
+  try {
+    const form = (await prisma.form.findFirst({
+      where: { path: path + '' },
+    })) as PartialForm;
+    console.log('form', form);
+    form.questions = form.questionsJson as unknown as FormQuestion[];
+    console.log('form', form);
+    formatServerProps(form);
 
-  /*try {
-   // const results = await axios.get(process.env.URL + '/api/categories/' + path);
-    return { props: { form: results.data } };
+    return { props: { form: form } };
   } catch (err) {
     console.log('err', err);
-  }*/
-  return { props: { form: exampleForm } };
+  }
+  return { props: { form: null } };
 }
 
 export default FormPage;

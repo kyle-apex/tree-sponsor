@@ -302,14 +302,14 @@ export const ImageCropperWrapper = ({
       )}
 
       {!croppedImage && (
-        <Button fullWidth variant='contained' color='primary' sx={{ mt: 3 }} onClick={doCrop} disabled={!imageUrl}>
+        <Button fullWidth variant='outlined' color='primary' sx={{ mt: 3 }} onClick={doCrop} disabled={!imageUrl}>
           Crop
         </Button>
       )}
       {croppedImage && (
         <Button
           fullWidth
-          variant='contained'
+          variant='outlined'
           color='primary'
           sx={{ mt: 3 }}
           onClick={() => {

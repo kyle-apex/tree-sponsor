@@ -22,6 +22,7 @@ import {
   TreeGroup,
   SubscriptionWithDetails,
   StoreProduct,
+  Form,
 } from '@prisma/client';
 
 import { ViewportProps } from 'react-map-gl';
@@ -106,6 +107,23 @@ export type PartialSpeciesSuggestion = {
 };
 
 export type PartialDonation = Partial<Donation>;
+export type PartialForm = Partial<Form> & { questions: FormQuestion[] };
+
+export type FormQuestionType = 'text' | 'multiline' | 'checkbox' | 'radio' | 'image';
+export type FormQuestion = {
+  question: string;
+  description: string;
+  type: FormQuestionType;
+  placeholder: string;
+  required: boolean;
+  options: string[];
+  default: any;
+  value: any;
+  delayedValue: any;
+};
+export type FormState = {
+  questions: Partial<FormQuestion>[];
+};
 
 export type PartialComment = Partial<Comment & { user?: Partial<User> } & { reactions?: Partial<Reaction>[] }>;
 export type PartialReaction = Partial<Reaction & { user?: Partial<User> }>;

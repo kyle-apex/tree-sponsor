@@ -14,7 +14,7 @@
   "eslint.packageManager": "yarn", // change to npm if you use npm
   "eslint.quiet": true, // set to true to hide warnings
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "jest.enableInlineErrorMessages": true,
   "jest.showCoverageOnLoad": true,

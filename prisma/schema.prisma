@@ -81,6 +81,8 @@ model User {
   treeChangeLogs        TreeChangeLog[]
   lastChangedByTrees    Tree[]                @relation("lastChangedByUser")
   createdTrees          Tree[]                @relation("createdByUser")
+  createdForms          Form[]                @relation("createdByUser")
+  formResponses         FormResponse[]
   Event                 Event[]
   Category              Category[]
   eventCheckIns         EventCheckIn[]
@@ -536,4 +538,26 @@ model SubdomainRedirect {
   subdomain   String?   @db.VarChar(64)
   redirect    String?
   createdDate DateTime? @default(now())
+}
+
+model Form {
+  id          Int       @id @default(autoincrement())
+  name        String?   @db.VarChar(256)
+  path        String?   @db.VarChar(256)
+  description String?   @db.Text
+  questionsJson   Json?   
+  createdDate DateTime? @default(now())  
+  createdByUserId          Int?
+  createdByUser            User?                 @relation("createdByUser", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  formResponses         FormResponse[]           
+}
+
+model FormResponse {
+  id          Int       @id @default(autoincrement())
+  questionsJson    Json?   
+  createdDate DateTime? @default(now())  
+  userId          Int
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  formId          Int
+  form            Form    @relation(fields: [formId], references: [id], onDelete: Cascade)
 }
