@@ -553,11 +553,11 @@ model Form {
 }
 
 model FormResponse {
-  id          Int       @id @default(autoincrement())
-  questionsJson    Json?   
+  responsesJson    Json?   
   createdDate DateTime? @default(now())  
   userId          Int
   user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   formId          Int
   form            Form    @relation(fields: [formId], references: [id], onDelete: Cascade)
+  @@unique([userId, formId])
 }

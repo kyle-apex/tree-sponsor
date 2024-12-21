@@ -25,17 +25,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     let userId;
     const formBody = req.body as PartialForm;
-    const questions = formBody.questions;
+    const responsesJson = formBody.responsesJson;
     if (!formBody?.path) throwError(res, 'Invalid form');
 
-    const form = await prisma.form.findFirst({where:{path:formBody.path}});
+    const form = await prisma.form.findFirst({ where: { path: formBody.path } });
 
     if (!form.id) throwError(res, 'Form not found');
 
-    const emailQuestion = questions.find(q => q.question?.startsWith('Email'));
+    const emailQuestion = responsesJson.find(q => q.question?.startsWith('Email'));
     const email = emailQuestion.value;
 
-    const nameQuestion = questions.find(q => q.question?.startsWith('Name'));
+    const nameQuestion = responsesJson.find(q => q.question?.startsWith('Name'));
     const name = nameQuestion.value;
 
     let user;
@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!email) throwError(res, 'Email address not found');
     if (session?.user?.id) userId = session.user.id;
     else {
-      = await getUserByEmail(email);
+      user = await getUserByEmail(email);
       if (!user && name) {
         user = (await prisma.user.findFirst({
           where: { name },
@@ -58,9 +58,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })) as PartialUser;
     }
 
-    const response = prisma.
+    const response = await prisma.formResponse.upsert({
+      where: { userId_formId: { userId: userId, formId: form.id } },
+      create: { responsesJson: responsesJson, userId, formId: form.id },
+      update: { responsesJson: responsesJson },
+    });
     //const upsertedTree = await upsertTree(tree, userId, req.body.eventId);
-
-    res.status(200).json(upsertedTree);
   }
 }
