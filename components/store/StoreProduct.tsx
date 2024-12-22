@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -39,6 +39,7 @@ const useStyles = makeStyles({
 
 export const StoreProduct: React.FC<StoreProductProps> = ({ product, onEdit, onDelete }) => {
   const classes = useStyles();
+  const [isClicked, setIsClicked] = useState(false);
 
   return (
     <Card className={classes.card}>
@@ -66,11 +67,11 @@ export const StoreProduct: React.FC<StoreProductProps> = ({ product, onEdit, onD
             <DeleteIconButton itemType='Shirt' onDelete={onDelete} />
           </RestrictSection>
         </SplitRow>
-        <Link href={product.link}>
-          <Button variant='outlined' color='primary' fullWidth>
+        <a href={product.link} onClick={() => setIsClicked(true)}>
+          <LoadingButton isLoading={isClicked} variant='outlined' color='primary' sx={{ width: '100%' }}>
             Order
-          </Button>
-        </Link>
+          </LoadingButton>
+        </a>
       </CardContent>
     </Card>
   );
