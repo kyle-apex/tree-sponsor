@@ -1,3 +1,4 @@
+import { Form } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { getSession } from 'utils/auth/get-session';
@@ -28,5 +29,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } else if (req.method === 'GET') {
     const result = await prisma.form.findFirst({ where: { id: Number(req.query.id) } });
     res.status(200).json(result);
+  } else if (req.method === 'PATCH') {
+    let isAuthorized = await isCurrentUserAuthorized('isAdmin', req);
+
+    if (!isAuthorized && userId) {
+      const event = await prisma.form.findFirst({
+        where: { createdByUserId: id },
+      });
+      if (event) isAuthorized = true;
+    }
+    const formBody = req.body as Form;
+
+    const result = await prisma.form.update({ where: { id: formBody.id }, data: { ...formBody } });
+    if (isAuthorized) res.status(200).json(result);
   }
 }

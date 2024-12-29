@@ -8,6 +8,8 @@ import { useRouter } from 'next/router';
 import restrictPageAccess from 'utils/auth/restrict-page-access';
 import AdminLayout from 'components/layout/AdminLayout';
 import parsedGet from 'utils/api/parsed-get';
+import FormDetailsForm from 'components/forms/FormDetailsForm';
+import { update } from 'react-spring';
 
 const EditFormPage = ({ id }: { id: number }) => {
   const router = useRouter();
@@ -27,7 +29,7 @@ const EditFormPage = ({ id }: { id: number }) => {
   const saveForm = async () => {
     setIsSaving(true);
     console.log('formRef.current', formRef.current);
-    const savedForm = (await axios.patch('/api/forms', formRef.current)) as PartialForm;
+    const savedForm = (await axios.patch('/api/forms/formRef.current.id', formRef.current)) as PartialForm;
     router.push('/admin/forms');
     setIsSaving(false);
   };
@@ -42,8 +44,8 @@ const EditFormPage = ({ id }: { id: number }) => {
 
   return (
     <AdminLayout title='Edit Form'>
-      <CenteredSection backButtonText='Back' headerText='Edit Form'>
-        {formRef.current && !isLoading && <></>}
+      <CenteredSection backButtonText='Back' headerText='Edit Form' maxWidth='90%'>
+        {formRef.current && !isLoading && <FormDetailsForm form={formRef.current} updateAttribute={updateAttribute} />}
         <LoadingButton variant='contained' onClick={saveForm} isLoading={isLoading || isSaving} sx={{ mt: 5 }}>
           Save
         </LoadingButton>
