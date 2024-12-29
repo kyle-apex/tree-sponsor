@@ -7,9 +7,10 @@ import { v4 as uuidv4 } from 'uuid';
 import uploadTreeImages from 'utils/aws/upload-tree-images';
 import getTreeImagePath from 'utils/aws/get-tree-image-path';
 import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
-import { PartialForm, PartialUser, ReviewStatus } from 'interfaces';
+import { FormQuestion, PartialForm, PartialUser, ReviewStatus } from 'interfaces';
 import upsertTree from 'utils/tree/upsert';
 import { getUserByEmail } from 'utils/user/get-user-by-email';
+import { FormResponse } from '@prisma/client';
 
 export const config = {
   api: {
@@ -24,15 +25,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'POST') {
     let userId;
-    const formBody = req.body as PartialForm;
-    const responsesJson = formBody.responsesJson;
-    if (!formBody?.path) throwError(res, 'Invalid form');
+    const formBody = req.body as FormResponse;
+    const responsesJson = formBody.responsesJson as Prisma.JsonArray as FormQuestion[];
 
-    const form = await prisma.form.findFirst({ where: { path: formBody.path } });
+    const formId = Number(req.query.id);
 
-    if (!form.id) throwError(res, 'Form not found');
+    if (!formBody.formId) formBody.formId = formId;
 
-    const emailQuestion = responsesJson.find(q => q.question?.startsWith('Email'));
+    const emailQuestion = responsesJson.find((q: FormQuestion) => q.question?.startsWith('Email'));
     const email = emailQuestion.value;
 
     const nameQuestion = responsesJson.find(q => q.question?.startsWith('Name'));
@@ -59,8 +59,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const response = await prisma.formResponse.upsert({
-      where: { userId_formId: { userId: userId, formId: form.id } },
-      create: { responsesJson: responsesJson, userId, formId: form.id },
+      where: { userId_formId: { userId: userId, formId: formId } },
+      create: { responsesJson: responsesJson, userId, formId: formId },
       update: { responsesJson: responsesJson },
     });
     //const upsertedTree = await upsertTree(tree, userId, req.body.eventId);

@@ -43,9 +43,8 @@ const useStyles = makeStyles(theme => ({
 
 const headerCells = [
   { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-  { id: 'startDate', numeric: false, disablePadding: false, label: 'Date' },
-  { id: 'location', numeric: false, disablePadding: false, label: 'Location' },
   { id: 'path', numeric: false, disablePadding: false, label: 'Path' },
+  { id: 'responses', numeric: true, disablePadding: false, label: 'Responses' },
   { id: 'edit', numeric: false, disablePadding: false },
 ];
 
@@ -93,9 +92,8 @@ export default function FormsTable({
                 return (
                   <StyledTableRow tabIndex={-1} key={form.id}>
                     <TableCell scope='row'>{form.name}</TableCell>
-                    <TableCell scope='row'>{form.startDate?.toLocaleDateString() + ' ' + form.startDate?.toLocaleTimeString()}</TableCell>
-                    <TableCell scope='row'>{form.location?.name}</TableCell>
                     <TableCell scope='row'>{form.path}</TableCell>
+                    <TableCell scope='row'>{form.formResponses?.length}</TableCell>
                     <TableCell>
                       <IconButton
                         onClick={() => {

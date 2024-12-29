@@ -23,6 +23,7 @@ import {
   SubscriptionWithDetails,
   StoreProduct,
   Form,
+  FormResponse,
 } from '@prisma/client';
 
 import { ViewportProps } from 'react-map-gl';
@@ -107,7 +108,7 @@ export type PartialSpeciesSuggestion = {
 };
 
 export type PartialDonation = Partial<Donation>;
-export type PartialForm = Partial<Form> & { questions: FormQuestion[] };
+export type PartialForm = Partial<Form> & { questions: Partial<FormQuestion>[]; formResponses: Partial<FormResponse>[] };
 
 export type FormQuestionType = 'text' | 'multiline' | 'checkbox' | 'radio' | 'image';
 export type FormQuestion = {
