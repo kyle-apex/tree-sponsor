@@ -25,5 +25,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const result = await prisma.form.delete({ where: { id: id } });
       res.status(200).json(result);
     }
+  } else if (req.method === 'GET') {
+    const result = await prisma.form.findFirst({ where: { id: Number(req.query.id) } });
+    res.status(200).json(result);
   }
 }

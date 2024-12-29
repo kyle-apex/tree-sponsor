@@ -101,6 +101,7 @@ model Role {
   name                String?
   isAdmin             Boolean    @default(false)
   hasAuthManagement   Boolean    @default(false)
+  hasFormManagement   Boolean    @default(false)
   isReviewer          Boolean    @default(false)
   isTreeReviewer      Boolean    @default(false)
   hasMemberManagement Boolean    @default(false)

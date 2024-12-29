@@ -4,6 +4,7 @@ import throwError from 'utils/api/throw-error';
 import { prisma } from 'utils/prisma/init';
 import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
 import { Form } from '@prisma/client';
+import randomString from 'utils/data/random-string';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });
@@ -19,6 +20,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return throwError(res, 'Access denied');
     }
 
-    return await prisma.form.create({ data: { ...formBody, id: undefined } });
+    if (!formBody.path) formBody.path = randomString(8);
+
+    const newForm = await prisma.form.create({ data: { ...formBody, id: undefined } });
+    res.status(200).json(newForm);
+  } else if (req.method == 'GET') {
+    const forms = await prisma.form.findMany();
+    res.status(200).json(forms);
   }
 }

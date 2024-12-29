@@ -9,15 +9,15 @@ import restrictPageAccess from 'utils/auth/restrict-page-access';
 import AdminLayout from 'components/layout/AdminLayout';
 import parsedGet from 'utils/api/parsed-get';
 
-const EditFormPage = ({ path }: { path: string }) => {
+const EditFormPage = ({ id }: { id: number }) => {
   const router = useRouter();
   const formRef = useRef<PartialForm>();
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const readForm = async (path: string): Promise<PartialForm> => {
+  const readForm = async (id: number): Promise<PartialForm> => {
     setIsLoading(true);
-    const form = (await parsedGet(`/api/forms/by-path?path=${path}`)) as PartialForm;
+    const form = (await parsedGet(`/api/forms/${id}`)) as PartialForm;
 
     formRef.current = form;
     setIsLoading(false);
@@ -33,7 +33,7 @@ const EditFormPage = ({ path }: { path: string }) => {
   };
 
   useEffect(() => {
-    readForm(path);
+    readForm(id);
   }, []);
 
   const updateAttribute = (name: keyof PartialForm | string, value: unknown) => {
@@ -55,9 +55,8 @@ const EditFormPage = ({ path }: { path: string }) => {
 export default EditFormPage;
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  let { path } = ctx.query;
-  path = (path + '') as string;
+  const { id } = ctx.query;
   const response = await restrictPageAccess(ctx, 'hasFormManagement');
-  response['props'] = { path: path };
+  response['props'] = { id: id };
   return response;
 };

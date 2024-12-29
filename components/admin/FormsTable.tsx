@@ -65,9 +65,9 @@ export default function FormsTable({
 
   const router = useRouter();
 
-  const edit = (path: string) => {
-    if (!path) return;
-    router.push(`/admin/forms/${path}`);
+  const edit = (id: number) => {
+    if (!id) return;
+    router.push(`/admin/forms/${id}`);
   };
   const preview = (path: string) => {
     if (!path) return;
@@ -97,7 +97,7 @@ export default function FormsTable({
                     <TableCell>
                       <IconButton
                         onClick={() => {
-                          edit(form.path);
+                          edit(form.id);
                         }}
                         size='large'
                       >
