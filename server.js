@@ -43,6 +43,7 @@ app.prepare().then(() => {
       try {
         subdomainRedirect = await prisma.subdomainRedirect.findFirst({ where: { subdomain } });
         console.log('subdomainredirect', subdomainRedirect)
+        // eslint-disable-next-line no-empty
       } catch (err) {}
       if (subdomainRedirect?.redirect) res.redirect(subdomainRedirect.redirect);
       else next();

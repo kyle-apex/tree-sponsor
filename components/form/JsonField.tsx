@@ -7,6 +7,7 @@ const parseJSON = (str: string): any => {
     let obj;
     eval('obj=' + str);
     return obj;
+    // eslint-disable-next-line no-empty
   } catch (err) {}
   return;
 };

@@ -95,7 +95,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               : `${directory}/${form.path}-${userId}-${q.question
                   .toLowerCase()
                   .replaceAll(' ', '-')
-                  .replace(/[^a-z0-9\-]/gi, '')
+                  .replace(/[^a-z0-9-]/gi, '')
                   .substring(0, 20)}`;
 
           q.value = await uploadImage(fileContent, imageUrl.substring(imageUrl.indexOf(':') + 1, imageUrl.indexOf(';')), imagePath);
