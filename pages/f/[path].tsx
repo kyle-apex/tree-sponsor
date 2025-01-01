@@ -15,13 +15,11 @@ import useLocalStorage from 'utils/hooks/use-local-storage';
 import formatServerProps from 'utils/api/format-server-props';
 import { prisma } from 'utils/prisma/init';
 import { FormQuestion, FormState, PartialForm, PartialUser, Session } from 'interfaces';
-import Button from '@mui/material/Button';
 import axios from 'axios';
 import LoadingButton from 'components/LoadingButton';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import { useSession } from 'next-auth/client';
-import { get } from 'http';
 
 const FormPage = ({ form }: { form: PartialForm }) => {
   if (!form)
@@ -33,7 +31,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
       </Layout>
     );
 
-  const [formState, setFormState] = useLocalStorage<FormState>('form:' + form.name?.replaceAll(' ', '_'), { questions: [] });
+  const [formState, setFormState] = useLocalStorage<FormState>('form:' + form.name?.replaceAll(' ', '_'), { questions: [], isValid: true });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showError, setShowError] = useState(false);
   const [currentUser, setCurrentUser] = useState<PartialUser>(null);
@@ -147,6 +145,23 @@ const FormPage = ({ form }: { form: PartialForm }) => {
     getInitialUserData();
   }, [nextSession, formState, currentUser]);
 
+  useEffect(() => {
+    const isValid = form.questions?.reduce((isValidSoFar, currentQuestion) => {
+      const currentState = formState.questions.find(q => q.question == currentQuestion.question);
+      //console.log('currentQuestion', isValidSoFar, currentQuestion, currentState);
+      isValidSoFar =
+        !!(
+          !currentQuestion.required ||
+          (currentState?.value && currentQuestion.type != 'checkbox') ||
+          (currentState?.value?.length && currentQuestion.type == 'checkbox')
+        ) && isValidSoFar;
+      return isValidSoFar;
+    }, true);
+    setFormState(s => {
+      return { ...s, isValid };
+    });
+  }, [form.questions, formState.questions]);
+
   return (
     <Layout title={form.name}>
       <LogoMessage justifyContent='start' maxWidth='sm'>
@@ -157,7 +172,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
           {form.description && <SafeHTMLDisplay html={form.description}></SafeHTMLDisplay>}
         </Box>
         {process.browser &&
-          form.questions.map((question, idx) => {
+          form.questions.map(question => {
             const questionState = formState.questions?.find(q => q.question == question.question);
 
             if (!questionState) return;
@@ -214,7 +229,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
                         control={
                           <Checkbox
                             checked={questionState.value?.includes(option)}
-                            onChange={(event, checked) => {
+                            onChange={(_event, checked) => {
                               if (checked && !questionState.value.includes(option)) questionState.value.push(option);
                               else if (!checked && questionState.value.includes(option)) {
                                 questionState.value.splice(questionState.value.indexOf(option), 1);
@@ -259,7 +274,8 @@ const FormPage = ({ form }: { form: PartialForm }) => {
           variant='contained'
           color='primary'
           size='large'
-          sx={{ mt: 2, mb: 12 }}
+          disabled={!formState.isValid}
+          sx={{ mt: 2, mb: 6 }}
           onClick={() => {
             submit(formState.questions);
           }}

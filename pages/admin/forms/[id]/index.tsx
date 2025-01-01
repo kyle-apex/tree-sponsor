@@ -59,6 +59,6 @@ export default EditFormPage;
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { id } = ctx.query;
   const response = await restrictPageAccess(ctx, 'hasFormManagement');
-  response['props'] = { id: id };
+  response['props'] = { id: Number(id) };
   return response;
 };

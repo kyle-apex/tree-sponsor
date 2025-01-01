@@ -134,6 +134,7 @@ export type FormQuestion = {
 };
 export type FormState = {
   questions: Partial<FormQuestion>[];
+  isValid?: boolean;
 };
 
 export type PartialComment = Partial<Comment & { user?: Partial<User> } & { reactions?: Partial<Reaction>[] }>;
