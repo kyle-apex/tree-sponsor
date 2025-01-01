@@ -6,13 +6,13 @@ import { GetSessionOptions } from 'next-auth/client';
 import AddIcon from '@mui/icons-material/Add';
 import Box from '@mui/material/Box';
 import { useRouter } from 'next/router';
-import FormsTable from 'components/admin/FormsTable';
 import { useRemoveFromQuery } from 'utils/hooks/use-remove-from-query';
 import { useGet } from 'utils/hooks/use-get';
 import axios from 'axios';
 import Typography from '@mui/material/Typography';
 import LoadingButton from 'components/LoadingButton';
 import Link from 'next/link';
+import FormsTable from 'components/admin/FormsTable';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'hasFormManagement');

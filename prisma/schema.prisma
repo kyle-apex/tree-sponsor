@@ -13,6 +13,7 @@ generator client {
 model Profile {
   id              Int     @id @default(autoincrement())
   bio             String? @db.Text
+  title           String? @db.VarChar(75)
   instagramHandle String? @db.VarChar(50)
   linkedInLink    String? @db.VarChar(50)
   twitterHandle   String? @db.VarChar(50)
@@ -556,6 +557,7 @@ model Form {
 model FormResponse {
   responsesJson    Json?   
   createdDate DateTime? @default(now())  
+  updatedDate DateTime? @default(now()) 
   userId          Int
   user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   formId          Int

@@ -2,6 +2,7 @@
 CREATE TABLE `FormResponse` (
     `responsesJson` JSON NULL,
     `createdDate` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedDate` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
     `userId` INTEGER NOT NULL,
     `formId` INTEGER NOT NULL,
 

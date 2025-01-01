@@ -110,7 +110,17 @@ export type PartialSpeciesSuggestion = {
 export type PartialDonation = Partial<Donation>;
 export type PartialForm = Partial<Form> & { questions?: Partial<FormQuestion>[]; formResponses?: Partial<FormResponse>[] };
 
-export type FormQuestionType = 'text' | 'multiline' | 'checkbox' | 'radio' | 'image';
+export type FormQuestionType =
+  | 'text'
+  | 'multiline'
+  | 'checkbox'
+  | 'radio'
+  | 'image'
+  | 'user-image'
+  | 'user-name'
+  | 'user-email'
+  | 'profile-bio'
+  | 'profile-title';
 export type FormQuestion = {
   question: string;
   description: string;

@@ -14,8 +14,14 @@ import { useCallback, useEffect, useState } from 'react';
 import useLocalStorage from 'utils/hooks/use-local-storage';
 import formatServerProps from 'utils/api/format-server-props';
 import { prisma } from 'utils/prisma/init';
-import { FormQuestion, FormState, PartialForm } from 'interfaces';
+import { FormQuestion, FormState, PartialForm, PartialUser, Session } from 'interfaces';
 import Button from '@mui/material/Button';
+import axios from 'axios';
+import LoadingButton from 'components/LoadingButton';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
+import { useSession } from 'next-auth/client';
+import { get } from 'http';
 
 const FormPage = ({ form }: { form: PartialForm }) => {
   if (!form)
@@ -27,16 +33,28 @@ const FormPage = ({ form }: { form: PartialForm }) => {
       </Layout>
     );
 
-  //const form = exampleForm;
-  console.log('form', form);
   const [formState, setFormState] = useLocalStorage<FormState>('form:' + form.name?.replaceAll(' ', '_'), { questions: [] });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [currentUser, setCurrentUser] = useState<PartialUser>(null);
+  const [nextSession] = useSession();
+
+  const submit = async (responses: Partial<FormQuestion>[]) => {
+    setIsSubmitting(true);
+    try {
+      await axios.post('/api/forms/' + form.id + '/responses', { responsesJson: responses, formId: form.id });
+    } catch (err) {
+      setShowError(true);
+    }
+    setIsSubmitting(false);
+  };
 
   // helper function for updating a value
   const updateStateValue = useCallback(
     (questionState: Partial<FormQuestion>, value: any) => {
       questionState.value = value;
       setFormState(s => {
-        return { questions: [...s.questions] };
+        return { ...s, questions: [...s.questions] };
       });
     },
     [formState],
@@ -44,7 +62,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
   // initialize and set defaults
   useEffect(() => {
     const initializedQuestionStates: Partial<FormQuestion>[] = [];
-    form.questions.map((question, idx) => {
+    form.questions.map(question => {
       let questionState = formState.questions?.find(q => q.question == question.question);
       if (!questionState) {
         questionState = { question: question.question, type: question.type, value: question.default };
@@ -53,13 +71,82 @@ const FormPage = ({ form }: { form: PartialForm }) => {
         initializedQuestionStates.push(questionState);
       }
     });
-    console.log('initializedQuestionStates', initializedQuestionStates);
     if (initializedQuestionStates?.length)
       setFormState(s => {
         return { ...s, questions: [...s.questions, ...initializedQuestionStates] };
       });
   }, [formState]);
-  console.log('formState', formState?.questions?.length);
+
+  const getInitialUserData = async () => {
+    if (currentUser?.email) return;
+    const session = nextSession as Session;
+
+    let email = session?.user?.email;
+    let name = session?.user?.name;
+    let user = session?.user;
+
+    if (user?.id) {
+      const existingResponse = await axios.get('/api/forms/' + form.id + '/responses/me');
+
+      if (existingResponse?.data?.responsesJson?.length) {
+        setCurrentUser(user);
+        setTimeout(() => {
+          setFormState(s => {
+            return { ...s, questions: existingResponse.data.responsesJson };
+          });
+        }, 1);
+
+        formState.questions = existingResponse.data.responsesJson;
+      }
+    }
+
+    const emailQuestionState = formState?.questions?.find(q => q.type == 'user-email');
+
+    const nameQuestionState = formState?.questions?.find(q => q.type == 'user-name');
+
+    if (!emailQuestionState || !nameQuestionState || (emailQuestionState?.value && nameQuestionState?.value)) return;
+
+    if (!email) {
+      try {
+        email = JSON.parse(window.localStorage.getItem('signInEmail'));
+        // eslint-disable-next-line no-empty
+      } catch (err) {}
+    }
+
+    let hasChange;
+
+    if (email && !name) {
+      user = (await axios.get('/api/users/by-email?email=' + encodeURIComponent(email)))?.data as PartialUser;
+      if (user?.name) {
+        name = user?.name;
+        console.log('name', name);
+        hasChange = true;
+      }
+    }
+
+    if (email && !emailQuestionState.value) {
+      hasChange = true;
+      emailQuestionState.value = email;
+    }
+
+    if (name && !nameQuestionState.value) {
+      hasChange = true;
+      nameQuestionState.value = name;
+    }
+
+    if (hasChange)
+      setFormState(s => {
+        return { ...s, questions: [...s.questions] };
+      });
+
+    if (user?.email) setCurrentUser(user);
+  };
+
+  // get initial user data
+  useEffect(() => {
+    getInitialUserData();
+  }, [nextSession, formState, currentUser]);
+
   return (
     <Layout title={form.name}>
       <LogoMessage justifyContent='start' maxWidth='sm'>
@@ -72,8 +159,6 @@ const FormPage = ({ form }: { form: PartialForm }) => {
         {process.browser &&
           form.questions.map((question, idx) => {
             const questionState = formState.questions?.find(q => q.question == question.question);
-
-            console.log('loading', question.question, typeof questionState?.value, questionState?.value);
 
             if (!questionState) return;
 
@@ -101,11 +186,16 @@ const FormPage = ({ form }: { form: PartialForm }) => {
                   </Typography>
                 )}
                 <Box sx={{ mt: 1 }}>
-                  {(question.type == 'text' || question.type == 'multiline') && (
+                  {(question.type == 'text' ||
+                    question.type == 'multiline' ||
+                    question.type == 'user-email' ||
+                    question.type == 'user-name' ||
+                    question.type == 'profile-title' ||
+                    question.type == 'profile-bio') && (
                     <TextField
                       size='small'
                       fullWidth
-                      multiline={question.type == 'multiline'}
+                      multiline={question.type == 'multiline' || question.type == 'profile-bio'}
                       sx={{ '.MuiInputBase-multiline': { backgroundColor: 'transparent' } }}
                       placeholder={question.placeholder || 'Your answer'}
                       defaultValue={question.default}
@@ -125,8 +215,6 @@ const FormPage = ({ form }: { form: PartialForm }) => {
                           <Checkbox
                             checked={questionState.value?.includes(option)}
                             onChange={(event, checked) => {
-                              console.log('questionState.value', questionState.value);
-
                               if (checked && !questionState.value.includes(option)) questionState.value.push(option);
                               else if (!checked && questionState.value.includes(option)) {
                                 questionState.value.splice(questionState.value.indexOf(option), 1);
@@ -151,7 +239,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
                       ))}
                     </RadioGroup>
                   )}
-                  {question.type == 'image' && (
+                  {(question.type == 'image' || question.type == 'user-image') && (
                     <Box sx={{ textAlign: 'center' }}>
                       <ImageCropperWrapper
                         croppedImage={questionState.value}
@@ -166,18 +254,29 @@ const FormPage = ({ form }: { form: PartialForm }) => {
               </Box>
             );
           })}
-        <Button
-          fullWidth
+        <LoadingButton
+          isLoading={isSubmitting}
           variant='contained'
           color='primary'
           size='large'
           sx={{ mt: 2, mb: 12 }}
           onClick={() => {
-            console.log('clicked');
+            submit(formState.questions);
           }}
         >
           Submit
-        </Button>
+        </LoadingButton>
+        <Snackbar
+          open={showError}
+          autoHideDuration={10000}
+          onClose={() => {
+            setShowError(false);
+          }}
+        >
+          <Alert onClose={() => setShowError(false)} severity='error' color='error' sx={{ width: '100%' }}>
+            Error submitting form! Please try again
+          </Alert>
+        </Snackbar>
       </LogoMessage>
     </Layout>
   );
@@ -185,14 +284,11 @@ const FormPage = ({ form }: { form: PartialForm }) => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { path } = context.query;
-  console.log('path', path);
   try {
     const form = (await prisma.form.findFirst({
       where: { path: path + '' },
     })) as PartialForm;
-    console.log('form', form);
     form.questions = form.questionsJson as unknown as FormQuestion[];
-    console.log('form', form);
     formatServerProps(form);
 
     return { props: { form: form } };
