@@ -146,7 +146,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
         image = user?.image;
       }
       if (user?.profile?.bio) {
-        bio = user.profile.bio;
+        bio = user.profile.bio.replace(/<\/?[^>]+(>|$)/g, '');
       }
       if (user?.profile?.title) {
         title = user.profile.title;

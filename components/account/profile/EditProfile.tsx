@@ -34,6 +34,7 @@ const TextEditor = dynamic(() => import('components/TextEditor'), {
 const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const { data: user, isFetched } = useGet<PartialUser>('/api/me', 'me');
   const [name, setName] = useState('');
+  const [bio, setBio] = useState('');
   const [instagramHandle, setInstagramHandle] = useState('');
   const [twitterHandle, setTwitterHandle] = useState('');
   const [linkedInLink, setLinkedInLink] = useState('');
@@ -57,7 +58,6 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const userRef = useRef<PartialUser>();
-  const bioRef = useRef<string>();
 
   useEffect(() => {
     if (!isFetched || !user) return;
@@ -67,9 +67,8 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       if (profile.twitterHandle) setTwitterHandle(profile.twitterHandle);
       if (profile.instagramHandle) setInstagramHandle(profile.instagramHandle);
       if (profile.linkedInLink) setLinkedInLink(profile.linkedInLink);
+      if (profile.bio) setBio(profile.bio.replace(/<\/?[^>]+(>|$)/g, ''));
     }
-
-    bioRef.current = user?.profile?.bio;
 
     if (user.email2)
       setEmail2State(state => {
@@ -94,11 +93,6 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
     setIsChanged(true);
     setName(event.target.value);
   };
-
-  const handleBioChange = useCallback((newValue: string) => {
-    if (newValue != bioRef.current) setIsChanged(true);
-    bioRef.current = newValue;
-  }, []);
 
   const handleProfilePathChange = async (event: { target: { value: string } }) => {
     setIsChanged(true);
@@ -142,8 +136,6 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       profilePath: profilePathState.profilePath,
       email2: email2State.value,
     };
-
-    const bio = bioRef.current;
 
     if (
       bio !== user.profile?.bio ||
@@ -305,13 +297,19 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
           {profilePathState.hasPatternError && <ErrorText>Profile Path must only contain lower case letters and &quot;-&quot;</ErrorText>}
           {profilePathState.isDuplicate && <ErrorText>Profile Path is already in use</ErrorText>}
 
-          <Box sx={{ marginBottom: 3, minHeight: '110px', display: 'block' }}>
-            <TextEditor
+          <Box sx={{ marginBottom: 3, display: 'block' }}>
+            <TextField
+              size='small'
+              fullWidth
+              multiline={true}
               label='Bio'
-              placeholder='Enter a short bio to display on your profile...'
-              value={user?.profile?.bio}
-              onChange={handleBioChange}
-            />
+              value={bio}
+              minRows={2}
+              onChange={e => {
+                setIsChanged(true);
+                setBio(e.target.value);
+              }}
+            ></TextField>
           </Box>
         </>
       ) : (
