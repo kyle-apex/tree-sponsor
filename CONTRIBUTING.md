@@ -32,3 +32,7 @@ npx prisma generate
 npx primsa migrate deploy
 
 npm run server
+
+# After updating schema.prisma
+
+npx prisma migrate dev --name migration-name

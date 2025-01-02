@@ -22,6 +22,7 @@ export default async function initAdmin(): Promise<any> {
         hasMemberManagement: true,
         hasEventManagement: true,
         hasRedirectManagement: true,
+        hasFormManagement: true,
       },
     });
   let coreTeamRole = await prisma.role.findFirst({ where: { name: 'Core Team' } });

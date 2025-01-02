@@ -6,6 +6,7 @@ export type AccessType =
   | 'hasEventManagement'
   | 'hasMemberManagement'
   | 'hasShirtManagement'
+  | 'hasFormManagement'
   | 'hasRedirectManagement';
 export enum AccessTypes {
   isAdmin,
@@ -15,5 +16,6 @@ export enum AccessTypes {
   hasEventManagement,
   hasMemberManagement,
   hasShirtManagement,
+  hasFormManagement,
   hasRedirectManagement,
 }

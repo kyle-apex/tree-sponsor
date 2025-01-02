@@ -9,6 +9,7 @@ type AccessResponse = {
   };
   props?: {
     path?: string;
+    id?: number;
   };
 };
 

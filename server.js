@@ -34,15 +34,16 @@ app.prepare().then(() => {
   console.log('app prepared');
   const handleSubdomainRedirects = async (req, res, next) => {
     const host = req.headers.host;
-    console.log('host', host);
+    //console.log('host', host);
     const subdomain = host.split('.')[0]; // Extract subdomain
-    console.log('subdomain', subdomain);
+    //console.log('subdomain', subdomain);
     if (subdomain && subdomain != 'www') {
       // Redirect to another page or route
       let subdomainRedirect;
       try {
         subdomainRedirect = await prisma.subdomainRedirect.findFirst({ where: { subdomain } });
-        console.log('subdomainredirect', subdomainRedirect)
+        //console.log('subdomainredirect', subdomainRedirect)
+        // eslint-disable-next-line no-empty
       } catch (err) {}
       if (subdomainRedirect?.redirect) res.redirect(subdomainRedirect.redirect);
       else next();

@@ -129,7 +129,7 @@ const Selector = <T extends { id?: number }>({
   useEffect(() => {
     if (!defaultValue) prefetchData();
   }, []);
-  console.log('data2', data);
+
   return (
     <Box flexDirection='row' gap={1} sx={{ display: 'flex', ...sx }}>
       <Autocomplete

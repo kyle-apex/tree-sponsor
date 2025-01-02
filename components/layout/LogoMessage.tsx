@@ -8,17 +8,19 @@ const LogoMessage = ({
   hideLogo,
   justifyContent = 'center',
   isCheckin,
+  maxWidth = 'xs',
 }: {
   children: React.ReactNode;
   hideLogo?: boolean;
   justifyContent?: string;
   isCheckin?: boolean;
+  maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }) => {
   const [isQrMode, setIsQrMode] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   return (
     <Container
-      maxWidth='xs'
+      maxWidth={maxWidth}
       sx={{
         minHeight: 'calc(100vh - 185px)',
         marginBottom: 0,

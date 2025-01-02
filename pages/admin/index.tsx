@@ -170,6 +170,11 @@ export default function EnhancedTable(): JSX.Element {
               <Button variant='outlined'>Manage Redirects</Button>
             </Link>
           </RestrictSection>
+          <RestrictSection accessType='hasFormManagement'>
+            <Link href='/admin/forms'>
+              <Button variant='outlined'>Manage Forms</Button>
+            </Link>
+          </RestrictSection>
         </Box>
 
         <h1>Admin</h1>

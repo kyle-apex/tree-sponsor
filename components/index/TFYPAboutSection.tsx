@@ -26,7 +26,7 @@ const TFYPAboutSection = () => {
             Instagram
           </a>
           {' or our '}
-          <a href='https://www.meetup.com/TreeFolks-Young-Professionals/' target='_blank' rel='noreferrer'>
+          <a href='https://meetup.tfyp.org' target='_blank' rel='noreferrer'>
             Meetup.com
           </a>
           {' group and make new friends at group volunteer events and socials like Tree Mappy Hours and Solstice parties.'}

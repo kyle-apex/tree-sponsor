@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { SetStateAction, useState, Dispatch } from 'react';
 
-export default function useLocalStorage(key: string, initialValue: string, secondaryKey?: string) {
+export default function useLocalStorage<T>(
+  key: string,
+  initialValue: T,
+  secondaryKey?: string,
+): [T, (value: T | ((value?: T) => T), expirationDate?: Date) => void] {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
-  const [storedValue, setStoredValue] = useState(() => {
+  const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       // Get from local storage by key
       let item = window.localStorage.getItem(key);
@@ -32,15 +36,17 @@ export default function useLocalStorage(key: string, initialValue: string, secon
   });
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
-  const setValue = (value: string, expirationDate?: Date) => {
+  const setValue = (value: T | ((value?: T) => T), expirationDate?: Date) => {
     try {
       // Allow value to be a function so we have same API as useState
-      //const valueToStore = value instanceof Function ? value(storedValue) : value;
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
       // Save state
-      setStoredValue(value);
+      //if (typeof value == 'function') value(storedValue);
+      //console.log('setting here', value, JSON.stringify(valueToStore));
+      setStoredValue(valueToStore);
       // Save to local storage
-      window.localStorage.setItem(key, JSON.stringify(value));
-      if (!value && secondaryKey) window.localStorage.setItem(secondaryKey, JSON.stringify(value));
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      if (!valueToStore && secondaryKey) window.localStorage.setItem(secondaryKey, JSON.stringify(valueToStore));
       if (expirationDate) {
         window.localStorage.setItem(key + 'Expiration', JSON.stringify(expirationDate));
       }

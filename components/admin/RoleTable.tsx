@@ -48,6 +48,7 @@ const headCells: HeaderCellOptions[] = [
   { id: 'hasEventManagement', numeric: false, disablePadding: false, label: 'Can Manage Events?' },
   { id: 'hasShirtManagement', numeric: false, disablePadding: false, label: 'Can Manage Shirts?' },
   { id: 'hasRedirectManagement', numeric: false, disablePadding: false, label: 'Can Setup Redirects?' },
+  { id: 'hasFormManagement', numeric: false, disablePadding: false, label: 'Can Manage Forms?' },
 
   { id: 'delete', numeric: false, disablePadding: false },
 ];
@@ -143,6 +144,14 @@ export default function RoleTable({
                       checked={row.hasRedirectManagement}
                       onChange={event => {
                         handleAcessTypeChange(row.id, 'hasRedirectManagement', event.target.checked);
+                      }}
+                    ></Checkbox>
+                  </TableCell>
+                  <TableCell>
+                    <Checkbox
+                      checked={row.hasFormManagement}
+                      onChange={event => {
+                        handleAcessTypeChange(row.id, 'hasFormManagement', event.target.checked);
                       }}
                     ></Checkbox>
                   </TableCell>

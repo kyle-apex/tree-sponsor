@@ -9,10 +9,12 @@ const CenteredSection = ({
   children,
   backButtonText,
   headerText,
+  maxWidth,
 }: {
   children: ReactNode;
   backButtonText?: string;
   headerText?: string;
+  maxWidth?: string;
 }) => {
   const router = useRouter();
 
@@ -22,7 +24,7 @@ const CenteredSection = ({
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        maxWidth: '500px',
+        maxWidth: maxWidth || '500px',
         marginLeft: 'auto',
         marginRight: 'auto',
         borderColor: theme => theme.palette.primary.main,
