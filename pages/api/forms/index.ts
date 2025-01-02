@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const newForm = await prisma.form.create({ data: { ...formBody, id: undefined } });
     res.status(200).json(newForm);
   } else if (req.method == 'GET') {
-    const forms = await prisma.form.findMany();
+    const forms = await prisma.form.findMany({ include: { formResponses: { select: { userId: true } } } });
     res.status(200).json(forms);
   }
 }

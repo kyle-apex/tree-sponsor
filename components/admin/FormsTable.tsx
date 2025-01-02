@@ -17,6 +17,7 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import { PartialForm } from 'interfaces';
 import { Router } from '@mui/icons-material';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
+import Link from 'next/link';
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -93,8 +94,18 @@ export default function FormsTable({
                   <StyledTableRow tabIndex={-1} key={form.id}>
                     <TableCell scope='row'>{form.name}</TableCell>
                     <TableCell scope='row'>{form.path}</TableCell>
-                    <TableCell scope='row'>{form.formResponses?.length}</TableCell>
-                    <TableCell>
+                    <TableCell scope='row' align='right'>
+                      {form.formResponses?.length ? (
+                        <Link href={'/admin/forms/' + form.id + '/responses'}>
+                          <a>
+                            View {form.formResponses?.length} Response{form.formResponses?.length > 1 ? 's' : ''}
+                          </a>
+                        </Link>
+                      ) : (
+                        ''
+                      )}
+                    </TableCell>
+                    <TableCell align='right'>
                       <IconButton
                         onClick={() => {
                           edit(form.id);

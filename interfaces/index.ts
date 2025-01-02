@@ -108,7 +108,9 @@ export type PartialSpeciesSuggestion = {
 };
 
 export type PartialDonation = Partial<Donation>;
-export type PartialForm = Partial<Form> & { questions?: Partial<FormQuestion>[]; formResponses?: Partial<FormResponse>[] };
+export type PartialForm = Partial<Form> & { questions?: Partial<FormQuestion>[]; formResponses?: PartialFormResponse[] };
+
+export type PartialFormResponse = Partial<FormResponse> & { user?: PartialUser };
 
 export type FormQuestionType =
   | 'text'

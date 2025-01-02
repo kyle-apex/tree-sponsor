@@ -27,7 +27,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(200).json(result);
     }
   } else if (req.method === 'GET') {
-    const result = await prisma.form.findFirst({ where: { id: Number(req.query.id) } });
+    const isAuthorized = await isCurrentUserAuthorized('hasFormManagement', req);
+
+    const result = await prisma.form.findFirst({
+      where: { id: Number(req.query.id) },
+      include: { formResponses: isAuthorized ? { include: { user: {} } } : false },
+    });
     res.status(200).json(result);
   } else if (req.method === 'PATCH') {
     let isAuthorized = await isCurrentUserAuthorized('isAdmin', req);

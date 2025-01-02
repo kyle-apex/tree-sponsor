@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!email) throwError(res, 'Email address not found');
 
-    if (session?.user?.id) {
+    if (session?.user?.id && session?.user?.email == email) {
       userId = session.user.id;
       user = await prisma.user.findFirst({ where: { id: userId }, include: { profile: {} } });
     } else {
