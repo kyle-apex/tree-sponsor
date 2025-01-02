@@ -84,6 +84,7 @@ export default NextAuth({
         })) as PartialUser;
 
         if (userWithRoles.roles) session.user.roles = userWithRoles.roles;
+        if (userWithRoles.profile) session.user.profile = userWithRoles.profile;
         if (userWithRoles.subscriptions) session.user.subscriptions = userWithRoles.subscriptions;
         if (userWithRoles.eventCheckIns) {
           parseResponseDateStrings(userWithRoles.eventCheckIns);

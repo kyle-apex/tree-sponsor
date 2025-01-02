@@ -80,12 +80,16 @@ const FormPage = ({ form }: { form: PartialForm }) => {
   }, [formState]);
 
   const getInitialUserData = async () => {
+    console.log('currentUser?.email', currentUser?.email);
     if (currentUser?.email) return;
     const session = nextSession as Session;
 
-    let email = session?.user?.email;
-    let name = session?.user?.name;
     let user = session?.user;
+    let image = user?.image;
+    let email = user?.email;
+    let name = user?.name;
+    let title = user?.profile?.title;
+    let bio = user?.profile?.bio;
 
     if (user?.id) {
       const existingResponse = await axios.get('/api/forms/' + form.id + '/responses/me');
@@ -106,34 +110,72 @@ const FormPage = ({ form }: { form: PartialForm }) => {
 
     const nameQuestionState = formState?.questions?.find(q => q.type == 'user-name');
 
-    if (!emailQuestionState || !nameQuestionState || (emailQuestionState?.value && nameQuestionState?.value)) return;
+    const imageQuestionState = formState?.questions?.find(q => q.type == 'user-image');
+    const bioQuestionState = formState?.questions?.find(q => q.type == 'profile-bio');
+    const titleQuestionState = formState?.questions?.find(q => q.type == 'profile-title');
+
+    if (
+      !emailQuestionState ||
+      !nameQuestionState ||
+      (emailQuestionState?.value &&
+        nameQuestionState?.value &&
+        imageQuestionState?.value &&
+        bioQuestionState?.value &&
+        titleQuestionState?.value)
+    )
+      return;
 
     if (!email) {
       try {
-        email = JSON.parse(window.localStorage.getItem('signInEmail'));
+        email = JSON.parse(window.localStorage.getItem('signInEmail')) || JSON.parse(window.localStorage.getItem('checkinEmail'));
         // eslint-disable-next-line no-empty
       } catch (err) {}
     }
 
+    if (!email && emailQuestionState.value && emailQuestionState.value.includes('@') && emailQuestionState.value.includes('.'))
+      email = emailQuestionState.value;
+
     let hasChange;
 
-    if (email && !name) {
+    if (email && (!name || !image || !title || !bio)) {
       user = (await axios.get('/api/users/by-email?email=' + encodeURIComponent(email)))?.data as PartialUser;
       if (user?.name) {
         name = user?.name;
-        console.log('name', name);
-        hasChange = true;
+      }
+      if (user?.image) {
+        image = user?.image;
+      }
+      if (user?.profile?.bio) {
+        bio = user.profile.bio;
+      }
+      if (user?.profile?.title) {
+        title = user.profile.title;
       }
     }
 
-    if (email && !emailQuestionState.value) {
+    if (email && emailQuestionState && !emailQuestionState.value) {
       hasChange = true;
       emailQuestionState.value = email;
     }
 
-    if (name && !nameQuestionState.value) {
+    if (name && nameQuestionState && !nameQuestionState.value) {
       hasChange = true;
       nameQuestionState.value = name;
+    }
+
+    if (image && imageQuestionState && !imageQuestionState?.value) {
+      hasChange = true;
+      imageQuestionState.value = image;
+    }
+
+    if (bio && bioQuestionState && !bioQuestionState?.value) {
+      hasChange = true;
+      bioQuestionState.value = bio;
+    }
+
+    if (title && titleQuestionState && !titleQuestionState?.value) {
+      hasChange = true;
+      titleQuestionState.value = title;
     }
 
     if (hasChange)
@@ -168,7 +210,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
 
   return (
     <Layout title={form.name}>
-      <LogoMessage justifyContent='start' maxWidth='sm'>
+      <LogoMessage justifyContent='start' maxWidth='md'>
         <Box sx={{ mb: 3 }}>
           <Typography variant='h2' color='secondary' sx={{ mb: 1 }}>
             {form.name}
