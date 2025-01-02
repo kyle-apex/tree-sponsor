@@ -20,6 +20,8 @@ import LoadingButton from 'components/LoadingButton';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import { useSession } from 'next-auth/client';
+import Button from '@mui/material/Button';
+import Link from 'next/link';
 
 const FormPage = ({ form }: { form: PartialForm }) => {
   if (!form)
@@ -36,6 +38,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
   const [showError, setShowError] = useState(false);
   const [currentUser, setCurrentUser] = useState<PartialUser>(null);
   const [nextSession] = useSession();
+  const [isCompleted, setIsCompleted] = useState(true);
 
   const submit = async (responses: Partial<FormQuestion>[]) => {
     setIsSubmitting(true);
@@ -45,6 +48,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
       setShowError(true);
     }
     setIsSubmitting(false);
+    setIsCompleted(true);
   };
 
   // helper function for updating a value
@@ -169,9 +173,10 @@ const FormPage = ({ form }: { form: PartialForm }) => {
           <Typography variant='h2' color='secondary' sx={{ mb: 1 }}>
             {form.name}
           </Typography>
-          {form.description && <SafeHTMLDisplay html={form.description}></SafeHTMLDisplay>}
+          {form.description && !isCompleted && <SafeHTMLDisplay html={form.description}></SafeHTMLDisplay>}
         </Box>
-        {process.browser &&
+        {!isCompleted &&
+          process.browser &&
           form.questions.map(question => {
             const questionState = formState.questions?.find(q => q.question == question.question);
 
@@ -269,19 +274,48 @@ const FormPage = ({ form }: { form: PartialForm }) => {
               </Box>
             );
           })}
-        <LoadingButton
-          isLoading={isSubmitting}
-          variant='contained'
-          color='primary'
-          size='large'
-          disabled={!formState.isValid}
-          sx={{ mt: 2, mb: 6 }}
-          onClick={() => {
-            submit(formState.questions);
-          }}
-        >
-          Submit
-        </LoadingButton>
+        {!isCompleted && (
+          <LoadingButton
+            isLoading={isSubmitting}
+            variant='contained'
+            color='primary'
+            size='large'
+            disabled={!formState.isValid}
+            sx={{ mt: 2, mb: 6 }}
+            onClick={() => {
+              submit(formState.questions);
+            }}
+          >
+            Submit
+          </LoadingButton>
+        )}
+        {isCompleted && <SafeHTMLDisplay html={form.completedMessage || 'Thank you for your response.'}></SafeHTMLDisplay>}
+        {isCompleted && (
+          <Box sx={{ mt: 5 }}>
+            {!nextSession?.user?.email && (
+              <Link href='/signin'>
+                <Button fullWidth color='primary' variant='contained' sx={{ mb: 2 }}>
+                  Login with your E-mail
+                </Button>
+              </Link>
+            )}
+            <a href='https://meetup.tfyp.org' target='_meetup' rel='noreferrer' style={{ width: '100%', textDecoration: 'none' }}>
+              <Button variant='outlined' color='secondary' sx={{ mb: 2, width: '100%' }}>
+                Upcoming Events on Meetup
+              </Button>
+            </a>
+            <a
+              href='https://www.instagram.com/treefolks_yp/'
+              target='_instagram'
+              rel='noreferrer'
+              style={{ width: '100%', textDecoration: 'none' }}
+            >
+              <Button variant='outlined' sx={{ mb: 2, width: '100%' }}>
+                Follow @treefolks_yp on Instagram
+              </Button>
+            </a>
+          </Box>
+        )}
         <Snackbar
           open={showError}
           autoHideDuration={10000}

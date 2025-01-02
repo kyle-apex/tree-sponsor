@@ -7,6 +7,7 @@ CREATE TABLE `Form` (
     `name` VARCHAR(256) NULL,
     `path` VARCHAR(256) NULL,
     `description` TEXT NULL,
+    `completedMessage` TEXT NULL,
     `questionsJson` JSON NULL,
     `createdDate` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
     `createdByUserId` INTEGER NULL,

@@ -8,6 +8,11 @@ import { getUserByEmail } from 'utils/user/get-user-by-email';
 import { FormResponse } from '@prisma/client';
 import uploadImage from 'utils/aws/upload-image';
 import getProfileImagePath from 'utils/aws/get-profile-image-path';
+import addTagToMembersByName from 'utils/mailchimp/add-tag-to-members-by-name';
+import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
+import findOrCreateCheckinUser from 'utils/events/find-or-create-checkin-user';
+import addSubscriber from 'utils/mailchimp/add-subscriber';
+import addEventToMember from 'utils/mailchimp/add-event-to-member';
 
 export const config = {
   api: {
@@ -61,6 +66,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       user = (await prisma.user.create({
         data: { name, email },
       })) as PartialUser;
+      const splitName = name?.split(' ');
+      const firstName = splitName.shift();
+      const lastName = splitName?.length ? splitName.join(' ') : '';
+      user = await findOrCreateCheckinUser({
+        email,
+        firstName,
+        lastName,
+      });
+      await addSubscriber(email, { FNAME: firstName, LNAME: lastName }, false);
       userId = user.id;
     }
 
@@ -106,8 +120,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }),
     );
 
+    let existingResponse;
     if (userId && !session?.user?.id) {
-      const existingResponse = await prisma.formResponse.findFirst({ where: { userId: userId, formId: formId } });
+      existingResponse = await prisma.formResponse.findFirst({ where: { userId: userId, formId: formId } });
       if (existingResponse) throwUnauthenticated(res);
     }
 
@@ -116,6 +131,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       create: { responsesJson: responsesJson, userId, formId: formId },
       update: { responsesJson: responsesJson, updatedDate: new Date() },
     });
+
+    if (!existingResponse) {
+      const yearAsString = new Date().getFullYear() + '';
+      const yearPrefix = form.name.includes(yearAsString) ? '' : yearAsString + ' ';
+      const tagName = 'Form: ' + yearPrefix + form.name;
+      const emails = [];
+      if (user.email) emails.push(user.email);
+
+      if (user.email2) {
+        emails.push(user.email2);
+        addEventToMember(user.email2, 'Completed Form: ' + form.name);
+      }
+
+      if (email) {
+        // tag by event name
+        addTagToMembersByName(tagName, emails);
+        addEventToMember(email, 'Completed Form: ' + form.name);
+      }
+    }
 
     res.status(200).json(response);
   }

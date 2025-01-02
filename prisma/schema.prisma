@@ -547,6 +547,7 @@ model Form {
   name        String?   @db.VarChar(256)
   path        String?   @db.VarChar(256)
   description String?   @db.Text
+  completedMessage String? @db.Text
   questionsJson   Json?   
   createdDate DateTime? @default(now())  
   createdByUserId          Int?

@@ -50,6 +50,14 @@ const FormDetailsForm = ({
         />
       </Box>
       <JsonField label='Questions JSON' value={form?.questionsJson} onChange={val => updateAttribute('questionsJson', val)}></JsonField>
+      <Box sx={{ marginTop: 3, marginBottom: 2, minHeight: '110px', display: 'block' }}>
+        <TextEditor
+          label='Message to Show After Submit'
+          placeholder='Thank you for your response'
+          value={form?.completedMessage}
+          onChange={val => updateAttribute('completedMessage', val)}
+        />
+      </Box>
     </>
   );
 };
