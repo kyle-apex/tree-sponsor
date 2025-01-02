@@ -16,5 +16,6 @@ export enum AccessTypes {
   hasEventManagement,
   hasMemberManagement,
   hasShirtManagement,
+  hasFormManagement,
   hasRedirectManagement,
 }

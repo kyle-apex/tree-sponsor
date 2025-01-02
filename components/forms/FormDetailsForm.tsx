@@ -25,13 +25,15 @@ const FormDetailsForm = ({
   form: PartialForm;
   updateAttribute: (name: keyof PartialForm | string, value: unknown) => void;
 }) => {
+  const [name, setName] = useState(form.name);
   return (
     <>
       <TextField
-        value={form?.name}
+        value={name}
         onChange={e => {
           const newName = e.target.value;
           updateAttribute('name', newName);
+          setName(newName);
         }}
         label='Name'
         size='small'
