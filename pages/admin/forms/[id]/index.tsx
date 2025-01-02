@@ -29,7 +29,7 @@ const EditFormPage = ({ id }: { id: number }) => {
   const saveForm = async () => {
     setIsSaving(true);
     console.log('formRef.current', formRef.current);
-    const savedForm = (await axios.patch('/api/forms/formRef.current.id', formRef.current)) as PartialForm;
+    const savedForm = (await axios.patch('/api/forms/' + formRef.current.id, formRef.current)) as PartialForm;
     router.push('/admin/forms');
     setIsSaving(false);
   };
