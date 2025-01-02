@@ -21,7 +21,7 @@ const MembershipPerks = ({ isMember }: { isMember?: boolean }) => {
                 <li>Members only updates and events</li>
                 <li>Subscribing to our events calendar</li>
                 <li>Sharing event photos</li>
-                <li>Keep in touch with our weekly &quot;Ten [minutes] for the Trees&quot; post</li>
+                <li>Keep in touch with our weekly sharing posts</li>
               </ul>
             </li>
           </>

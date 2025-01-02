@@ -20,7 +20,7 @@ const EditFormPage = ({ id }: { id: number }) => {
   const readForm = async (id: number): Promise<PartialForm> => {
     setIsLoading(true);
     const form = (await parsedGet(`/api/forms/${id}`)) as PartialForm;
-
+    delete form.formResponses;
     formRef.current = form;
     setIsLoading(false);
     return form;
