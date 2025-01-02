@@ -38,7 +38,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
   const [showError, setShowError] = useState(false);
   const [currentUser, setCurrentUser] = useState<PartialUser>(null);
   const [nextSession] = useSession();
-  const [isCompleted, setIsCompleted] = useState(true);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   const submit = async (responses: Partial<FormQuestion>[]) => {
     setIsSubmitting(true);
