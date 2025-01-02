@@ -127,7 +127,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
 
     if (!email) {
       try {
-        email = JSON.parse(window.localStorage.getItem('signInEmail')) || JSON.parse(window.localStorage.getItem('checkinEmail'));
+        email = JSON.parse(window.localStorage.getItem('checkinEmail'));
         // eslint-disable-next-line no-empty
       } catch (err) {}
     }
