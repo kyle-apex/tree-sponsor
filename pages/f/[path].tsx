@@ -31,7 +31,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
       </Layout>
     );
 
-  const [formState, setFormState] = useLocalStorage<FormState>('form:' + form.name?.replaceAll(' ', '_'), { questions: [], isValid: true });
+  const [formState, setFormState] = useLocalStorage<FormState>('form:' + form.path, { questions: [], isValid: true });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showError, setShowError] = useState(false);
   const [currentUser, setCurrentUser] = useState<PartialUser>(null);
@@ -300,10 +300,12 @@ const FormPage = ({ form }: { form: PartialForm }) => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { path } = context.query;
+  console.log('path', path);
   try {
     const form = (await prisma.form.findFirst({
       where: { path: path + '' },
     })) as PartialForm;
+    console.log('form', form);
     form.questions = form.questionsJson as unknown as FormQuestion[];
     formatServerProps(form);
 
