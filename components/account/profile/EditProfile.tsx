@@ -67,7 +67,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       if (profile.twitterHandle) setTwitterHandle(profile.twitterHandle);
       if (profile.instagramHandle) setInstagramHandle(profile.instagramHandle);
       if (profile.linkedInLink) setLinkedInLink(profile.linkedInLink);
-      if (profile.bio) setBio(profile.bio.replace(/<\/?[^>]+(>|$)/g, ''));
+      if (profile.bio) setBio(profile.bio);
     }
 
     if (user.email2)
@@ -305,6 +305,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
               label='Bio'
               value={bio}
               minRows={2}
+              placeholder='Enter a short bio to display on your profile...'
               onChange={e => {
                 setIsChanged(true);
                 setBio(e.target.value);
