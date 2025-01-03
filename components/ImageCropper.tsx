@@ -9,11 +9,13 @@ import ReactCrop, { centerCrop, makeAspectCrop, Crop, PixelCrop } from 'react-im
 import 'react-image-crop/dist/ReactCrop.css';
 import { SxProps, Theme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import SplitRow from './layout/SplitRow';
 
 type CropResult = { base64Image: string; height: number; width: number };
 export type FileBrowserHandle = {
   openFileBrowser: () => void;
   doCrop: () => CropResult;
+  cancelCrop: () => void;
 };
 
 function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: number, percentage?: number) {
@@ -69,6 +71,9 @@ const ImageCropper = forwardRef(
     useImperativeHandle(ref, () => ({
       openFileBrowser() {
         fileInputRef?.current?.click();
+      },
+      cancelCrop() {
+        setIsCropping(false);
       },
       doCrop(): CropResult {
         // create a canvas element to draw the cropped image
@@ -268,10 +273,12 @@ export const ImageCropperWrapper = ({
   subtitle,
   croppedImage,
   setCroppedImage,
+  setIsInProgress,
 }: {
   subtitle: string;
   croppedImage: string;
   setCroppedImage: (val: string) => void;
+  setIsInProgress?: (val: boolean) => void;
 }) => {
   const [imageUrl, setImageUrl] = useState<string>();
   const imageCropperRef = useRef<FileBrowserHandle>();
@@ -281,6 +288,13 @@ export const ImageCropperWrapper = ({
     const { base64Image } = imageCropperRef?.current?.doCrop();
     setCroppedImage(base64Image);
   };
+
+  useEffect(() => {
+    if (!setIsInProgress) return;
+    if (imageUrl && !croppedImage) setIsInProgress(true);
+    else setIsInProgress(false);
+  }, [imageUrl, croppedImage]);
+
   return (
     <Box sx={{ textAlign: 'center' }}>
       {!croppedImage && (
@@ -302,9 +316,23 @@ export const ImageCropperWrapper = ({
       )}
 
       {!croppedImage && (
-        <Button fullWidth variant='outlined' color='primary' sx={{ mt: 3 }} onClick={doCrop} disabled={!imageUrl}>
-          Crop
-        </Button>
+        <SplitRow gap={2}>
+          <Button
+            fullWidth
+            variant='outlined'
+            sx={{ mt: 2 }}
+            disabled={!imageUrl}
+            onClick={() => {
+              setImageUrl(null);
+              imageCropperRef.current.cancelCrop();
+            }}
+          >
+            Cancel
+          </Button>
+          <Button fullWidth variant='contained' color='primary' sx={{ mt: 2 }} onClick={doCrop} disabled={!imageUrl}>
+            Crop
+          </Button>
+        </SplitRow>
       )}
       {croppedImage && (
         <Button

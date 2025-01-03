@@ -2,6 +2,7 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Image from 'next/image';
 import { useState } from 'react';
+import { SxProps, Theme } from '@mui/material/styles';
 
 const LogoMessage = ({
   children,
@@ -9,12 +10,14 @@ const LogoMessage = ({
   justifyContent = 'center',
   isCheckin,
   maxWidth = 'xs',
+  sx = {},
 }: {
   children: React.ReactNode;
   hideLogo?: boolean;
   justifyContent?: string;
   isCheckin?: boolean;
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  sx?: SxProps<Theme>;
 }) => {
   const [isQrMode, setIsQrMode] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -27,6 +30,7 @@ const LogoMessage = ({
         display: 'flex',
         paddingRight: 0,
         paddingLeft: 0,
+        ...sx,
       }}
     >
       <Box display='flex' justifyContent='center' alignItems='center' sx={{ width: '100%' }}>
