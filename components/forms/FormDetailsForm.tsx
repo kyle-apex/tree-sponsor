@@ -41,7 +41,7 @@ const FormDetailsForm = ({
         id='name-field'
       ></TextField>
 
-      <Box sx={{ marginTop: 3, marginBottom: 2, minHeight: '110px', display: 'block' }}>
+      <Box sx={{ marginBottom: 2, minHeight: '110px', display: 'block' }}>
         <TextEditor
           label='Description'
           placeholder='Enter a description to appear below the title of the form'
@@ -50,10 +50,10 @@ const FormDetailsForm = ({
         />
       </Box>
       <JsonField label='Questions JSON' value={form?.questionsJson} onChange={val => updateAttribute('questionsJson', val)}></JsonField>
-      <Box sx={{ marginTop: 3, marginBottom: 2, minHeight: '110px', display: 'block' }}>
+      <Box sx={{ marginTop: 4, marginBottom: 2, minHeight: '110px', display: 'block' }}>
         <TextEditor
           label='Message to Show After Submit'
-          placeholder='Thank you for your response'
+          placeholder='Thank you for your response.'
           value={form?.completedMessage}
           onChange={val => updateAttribute('completedMessage', val)}
         />

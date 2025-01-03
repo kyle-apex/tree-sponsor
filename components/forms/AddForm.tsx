@@ -12,7 +12,7 @@ tomorrow.setDate(new Date().getDate() + 1);
 
 const AddForm = ({ onAdd }: { onAdd: (newForm: PartialForm) => void }) => {
   const [session] = useSession();
-  const formRef = useRef<PartialForm>({});
+  const formRef = useRef<PartialForm>({ completedMessage: 'Thank you for your response.' });
   const [isLoading, setIsLoading] = useState(false);
   const [isValid, setIsValid] = useState(false);
 
