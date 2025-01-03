@@ -52,6 +52,7 @@ const AttendeeSettingsDialog = ({
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [imageUrl, setImageUrl] = useState(user?.image);
   const [displayName, setDisplayName] = useState(user?.displayName || user?.name);
+
   const imageUploadRef = useRef<React.ElementRef<typeof ImageUploadAndPreview>>(null);
 
   const [session] = useSession();
@@ -180,13 +181,21 @@ const AttendeeSettingsDialog = ({
                 id='name-field'
               ></TextField>
               <AttendeeContactForm profile={profile} setProfile={setProfile}></AttendeeContactForm>
-              <Box sx={{ marginBottom: 3, minHeight: '110px', display: 'block' }}>
-                <TextEditor
+              <Box sx={{ marginBottom: 3, display: 'block' }}>
+                <TextField
+                  size='small'
+                  fullWidth
+                  multiline={true}
                   label='Bio'
+                  value={profile.bio}
                   placeholder='Enter a short bio to display on your profile...'
-                  value={user?.profile?.bio}
-                  onChange={handleBioChange}
-                />
+                  minRows={2}
+                  onChange={e => {
+                    setProfile(prof => {
+                      return { ...prof, bio: e.target.value };
+                    });
+                  }}
+                ></TextField>
               </Box>
             </>
           )}

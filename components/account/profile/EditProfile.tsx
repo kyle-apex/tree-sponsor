@@ -34,6 +34,9 @@ const TextEditor = dynamic(() => import('components/TextEditor'), {
 const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const { data: user, isFetched } = useGet<PartialUser>('/api/me', 'me');
   const [name, setName] = useState('');
+  const [bio, setBio] = useState('');
+  const [title, setTitle] = useState('');
+
   const [instagramHandle, setInstagramHandle] = useState('');
   const [twitterHandle, setTwitterHandle] = useState('');
   const [linkedInLink, setLinkedInLink] = useState('');
@@ -57,7 +60,6 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const userRef = useRef<PartialUser>();
-  const bioRef = useRef<string>();
 
   useEffect(() => {
     if (!isFetched || !user) return;
@@ -67,9 +69,9 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       if (profile.twitterHandle) setTwitterHandle(profile.twitterHandle);
       if (profile.instagramHandle) setInstagramHandle(profile.instagramHandle);
       if (profile.linkedInLink) setLinkedInLink(profile.linkedInLink);
+      if (profile.bio) setBio(profile.bio);
+      if (profile.title) setTitle(profile.title);
     }
-
-    bioRef.current = user?.profile?.bio;
 
     if (user.email2)
       setEmail2State(state => {
@@ -94,11 +96,6 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
     setIsChanged(true);
     setName(event.target.value);
   };
-
-  const handleBioChange = useCallback((newValue: string) => {
-    if (newValue != bioRef.current) setIsChanged(true);
-    bioRef.current = newValue;
-  }, []);
 
   const handleProfilePathChange = async (event: { target: { value: string } }) => {
     setIsChanged(true);
@@ -143,13 +140,12 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       email2: email2State.value,
     };
 
-    const bio = bioRef.current;
-
     if (
       bio !== user.profile?.bio ||
       user.profile?.instagramHandle !== instagramHandle ||
       user.profile?.twitterHandle !== twitterHandle ||
-      user.profile?.linkedInLink !== linkedInLink
+      user.profile?.linkedInLink !== linkedInLink ||
+      user.profile?.title !== title
     ) {
       prismaUpdateQuery.profile = {
         upsert: {
@@ -158,12 +154,14 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
             linkedInLink,
             twitterHandle,
             instagramHandle,
+            title,
           },
           update: {
             bio,
             linkedInLink,
             twitterHandle,
             instagramHandle,
+            title,
           },
         },
       };
@@ -304,14 +302,32 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
           ></TextField>
           {profilePathState.hasPatternError && <ErrorText>Profile Path must only contain lower case letters and &quot;-&quot;</ErrorText>}
           {profilePathState.isDuplicate && <ErrorText>Profile Path is already in use</ErrorText>}
-
-          <Box sx={{ marginBottom: 3, minHeight: '110px', display: 'block' }}>
-            <TextEditor
+          <TextField
+            value={title}
+            onChange={e => {
+              setIsChanged(true);
+              setTitle(e.target.value);
+            }}
+            autoCapitalize='off'
+            label='Title/Occupation (Ex: Accountant, Engineer)'
+            size='small'
+            sx={{ marginBottom: 3 }}
+            id='title-field'
+          ></TextField>
+          <Box sx={{ marginBottom: 3, display: 'block' }}>
+            <TextField
+              size='small'
+              fullWidth
+              multiline={true}
               label='Bio'
+              value={bio}
+              minRows={2}
               placeholder='Enter a short bio to display on your profile...'
-              value={user?.profile?.bio}
-              onChange={handleBioChange}
-            />
+              onChange={e => {
+                setIsChanged(true);
+                setBio(e.target.value);
+              }}
+            ></TextField>
           </Box>
         </>
       ) : (

@@ -20,6 +20,11 @@ const CoreTeamBio = ({ user }: { user: PartialUser }) => {
       <Typography variant='h5' color='secondary' sx={{ textAlign: 'center', marginBottom: 2, marginTop: 1 }}>
         {user.displayName || user.name}
       </Typography>
+      {user.profile?.title && (
+        <Typography variant='h6' color='secondary' sx={{ fontSize: '16px', textAlign: 'center', marginBottom: 1.5, marginTop: -2 }}>
+          {user.profile?.title}
+        </Typography>
+      )}
       <Typography variant='body2' sx={{ fontStyle: 'italic', textAlign: 'left' }}>
         {user.profile?.bio
           ?.replace(/(<([^>]+)>)/gi, '')

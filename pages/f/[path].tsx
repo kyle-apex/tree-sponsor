@@ -39,6 +39,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
   const [currentUser, setCurrentUser] = useState<PartialUser>(null);
   const [nextSession] = useSession();
   const [isCompleted, setIsCompleted] = useState(false);
+  const [imageCropIsInProgress, setImageCropIsInProgress] = useState(false);
 
   const submit = async (responses: Partial<FormQuestion>[]) => {
     setIsSubmitting(true);
@@ -210,7 +211,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
 
   return (
     <Layout title={form.name}>
-      <LogoMessage justifyContent='start' maxWidth='md'>
+      <LogoMessage justifyContent='start' maxWidth='md' sx={{ maxWidth: '700px !important' }}>
         <Box sx={{ mb: 3 }}>
           <Typography variant='h2' color='secondary' sx={{ mb: 1 }}>
             {form.name}
@@ -309,6 +310,7 @@ const FormPage = ({ form }: { form: PartialForm }) => {
                           updateStateValue(questionState, url);
                         }}
                         subtitle={question.placeholder}
+                        setIsInProgress={setImageCropIsInProgress}
                       ></ImageCropperWrapper>
                     </Box>
                   )}
@@ -317,19 +319,26 @@ const FormPage = ({ form }: { form: PartialForm }) => {
             );
           })}
         {!isCompleted && (
-          <LoadingButton
-            isLoading={isSubmitting}
-            variant='contained'
-            color='primary'
-            size='large'
-            disabled={!formState.isValid}
-            sx={{ mt: 2, mb: 6 }}
-            onClick={() => {
-              submit(formState.questions);
-            }}
-          >
-            Submit
-          </LoadingButton>
+          <>
+            <LoadingButton
+              isLoading={isSubmitting}
+              variant='contained'
+              color='primary'
+              size='large'
+              disabled={!formState.isValid || imageCropIsInProgress}
+              sx={{ mt: 2, mb: 6 }}
+              onClick={() => {
+                submit(formState.questions);
+              }}
+            >
+              Submit
+            </LoadingButton>
+            {imageCropIsInProgress && (
+              <Typography variant='body2' sx={{ mt: -5 }}>
+                Unable to submit until image crop is completed. Click the &quot;Crop&quot; button above.
+              </Typography>
+            )}
+          </>
         )}
         {isCompleted && <SafeHTMLDisplay html={form.completedMessage || 'Thank you for your response.'}></SafeHTMLDisplay>}
         {isCompleted && (
