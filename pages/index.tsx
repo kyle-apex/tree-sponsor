@@ -194,7 +194,7 @@ export async function getStaticProps() {
       name: true,
       displayName: true,
       image: true,
-      profile: { select: { bio: true } },
+      profile: { select: { bio: true, title: true } },
       roles: { select: { name: true } },
       createdAt: true,
     },
