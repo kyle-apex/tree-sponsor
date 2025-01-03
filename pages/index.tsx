@@ -184,6 +184,7 @@ const IndexPage = ({
 
 export default IndexPage;
 export async function getStaticProps() {
+  console.log('revalidate?', new Date().getTime());
   const users = await prisma.user.findMany({
     where: {
       roles: { some: { name: 'Core Team' } },
@@ -217,5 +218,6 @@ export async function getStaticProps() {
       stripePriceIdHigh: process.env.STRIPE_PRICE_ID_HIGH || '',
       users,
     },
+    revalidate: 60,
   };
 }
