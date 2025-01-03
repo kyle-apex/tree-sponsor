@@ -184,7 +184,6 @@ const IndexPage = ({
 
 export default IndexPage;
 export async function getStaticProps() {
-  console.log('revalidate?', new Date().getTime());
   const users = await prisma.user.findMany({
     where: {
       roles: { some: { name: 'Core Team' } },
