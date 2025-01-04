@@ -14,6 +14,13 @@ import { Theme } from '@mui/material/styles';
 import { SxProps } from '@mui/system/styleFunctionSx';
 import LoadingButton from 'components/LoadingButton';
 import { useAddToQuery } from 'utils/hooks/use-add-to-query';
+import { styled } from '@mui/material/styles';
+import Popper from '@mui/material/Popper';
+
+const StyledPopper = styled(Popper)({
+  width: 'auto !important',
+  maxWidth: '400px',
+});
 
 const Selector = <T extends { id?: number }>({
   defaultValue,
@@ -27,6 +34,7 @@ const Selector = <T extends { id?: number }>({
   hasMatchingValue,
   label,
   sx,
+  autoWidth,
   isLoading,
   resetOnSelect,
   hasAdd,
@@ -42,6 +50,7 @@ const Selector = <T extends { id?: number }>({
   hasMatchingValue: (currentValue: T, searchText: string) => boolean;
   label?: string;
   sx?: SxProps<Theme>;
+  autoWidth?: boolean;
   isLoading?: boolean;
   resetOnSelect?: boolean;
   hasAdd?: boolean;
@@ -163,11 +172,10 @@ const Selector = <T extends { id?: number }>({
         autoHighlight={true}
         getOptionLabel={getOptionLabel}
         filterOptions={a => {
-          console.log('filter options', a);
           return a;
         }}
+        PopperComponent={autoWidth ? StyledPopper : Popper}
         renderOption={(props, option: T) => {
-          console.log('renderOption', option, props);
           return (
             <Box
               component='li'

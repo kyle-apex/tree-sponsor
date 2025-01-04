@@ -14,6 +14,7 @@ const UserSelector = ({
   size = 'small',
   label = 'User',
   sx,
+  autoWidth,
   isLoading,
   isEmailHidden,
   resetOnSelect = true,
@@ -24,6 +25,7 @@ const UserSelector = ({
   size?: FieldSize;
   label?: string;
   sx?: SxProps<Theme>;
+  autoWidth?: boolean;
   isLoading?: boolean;
   isEmailHidden?: boolean;
   resetOnSelect?: boolean;
@@ -62,6 +64,7 @@ const UserSelector = ({
         );
       }}
       sx={sx}
+      autoWidth={autoWidth}
       isLoading={isLoading}
     ></Selector>
   );
