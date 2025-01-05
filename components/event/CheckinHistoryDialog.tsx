@@ -7,6 +7,7 @@ import { PartialEventCheckIn } from 'interfaces';
 import { signOut, useSession, signIn } from 'next-auth/client';
 import CheckinHistory from './CheckinHistory';
 import DialogTitle from '@mui/material/DialogTitle';
+import { DialogActions } from '@mui/material';
 
 const CheckinHistoryDialog = ({
   isOpen,
@@ -31,7 +32,7 @@ const CheckinHistoryDialog = ({
           Event History
         </Typography>
       </DialogTitle>
-      <DialogContent className=''>
+      <DialogContent className='' sx={{ pb: 1 }}>
         {session && (
           <CheckinHistory
             checkins={checkins}
@@ -60,10 +61,12 @@ const CheckinHistoryDialog = ({
           </>
         )}
         <Divider sx={{ marginBottom: 1 }}></Divider>
-        <Button fullWidth color='inherit' sx={{ mt: 2 }} onClick={handleClose}>
+      </DialogContent>
+      <DialogActions>
+        <Button fullWidth color='inherit' onClick={handleClose}>
           Close
         </Button>
-      </DialogContent>
+      </DialogActions>
     </Dialog>
   );
 };
