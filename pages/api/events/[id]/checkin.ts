@@ -121,7 +121,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           myCheckin = checkin;
           return true;
         }
-        if (checkin.isPrivate) return false;
+        if (checkin.isPrivate || checkin.user?.hideFromCheckinPage) return false;
         return checkin.user;
       })
       .map(checkIn => {

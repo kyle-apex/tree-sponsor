@@ -189,6 +189,7 @@ export async function getStaticProps() {
       roles: { some: { name: 'Core Team' } },
       profile: { bio: { not: null } },
       image: { not: null },
+      hideFromIndexPage: { not: true },
     },
     select: {
       name: true,

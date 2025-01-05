@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(200).json([]);
     return;
   }
-  const leaders: LeaderRow[] = await listTopQuizResponders(req.query.year as string, eventId);
+  const leaders: LeaderRow[] = await listTopQuizResponders(req.query.year as string, eventId, email);
   const results: LeaderRow[] = [];
   let currentLeader = leaders.find(leader => leader.user?.email == email || leader.user?.email2 == email);
 

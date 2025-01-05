@@ -6,3 +6,7 @@ ALTER TABLE
   `Profile`
 ADD
   COLUMN `title` VARCHAR(75);
+
+ALTER TABLE `users` ADD COLUMN  `hideFromIndexPage` BOOLEAN DEFAULT false;
+
+ALTER TABLE `users` ADD COLUMN  `hideFromCheckinPage` BOOLEAN DEFAULT false;

@@ -5,7 +5,11 @@ import getYearStartDate from 'utils/get-year-start-date';
 import { prisma, Prisma } from 'utils/prisma/init';
 import listTreesForEvent from 'utils/tree/list-trees-for-event';
 
-export const listTopQuizResponders = async (yearFilter?: string | number, eventId?: number): Promise<LeaderRow[]> => {
+export const listTopQuizResponders = async (
+  yearFilter?: string | number,
+  eventId?: number,
+  currentUserEmail?: string,
+): Promise<LeaderRow[]> => {
   const currentYear = new Date().getFullYear();
   const year = yearFilter ? Number(yearFilter) : currentYear;
   const yearStart = getYearStartDate(year);
@@ -59,7 +63,11 @@ export const listTopQuizResponders = async (yearFilter?: string | number, eventI
       const row: LeaderRow = { position };
       row.count = response._count;
 
-      row.user = users.find(user => user.id == response.userId);
+      row.user = users.find(
+        user =>
+          user.id == response.userId &&
+          !(user.hideFromCheckinPage && (user.email != currentUserEmail || (user.email2 && user.email2 != currentUserEmail))),
+      );
       return row;
     })
     .filter(leader => !!leader.user);
