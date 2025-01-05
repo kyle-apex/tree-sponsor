@@ -45,21 +45,6 @@ const MembershipPerks = ({ isMember }: { isMember?: boolean }) => {
         </li>
       </ul>
       <Typography variant='h2' color='secondary'>
-        Fundraise for TreeFolks passively
-      </Typography>
-      <ul>
-        <li>
-          <a
-            href='https://www.bing.com/?publ=BINGIP&crea=MY01IK&form=MY01IK&ocid=MY01IK&programname=GwBShare&cid=840-742569827'
-            target='_blank'
-            rel='noreferrer'
-            style={{ textDecoration: 'none' }}
-          >
-            <Typography color='primary'>Support TreeFolks by setting your default search engine to Bing</Typography>
-          </a>
-        </li>
-      </ul>
-      <Typography variant='h2' color='secondary'>
         Upcoming events
       </Typography>
       <GoogleCalendar></GoogleCalendar>

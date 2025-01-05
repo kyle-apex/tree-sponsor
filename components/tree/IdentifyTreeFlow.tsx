@@ -36,11 +36,13 @@ const IdentifyTreeFlow = ({
   longitude,
   latitude,
   eventId,
+  preventSkipLeafPicture,
 }: {
   onComplete?: () => void;
   longitude?: number;
   latitude?: number;
   eventId?: number;
+  preventSkipLeafPicture?: boolean;
 }) => {
   const { leafImage, setLeafImage, tree, setTree, reset } = useContext(IdentifyTreeContext);
 
@@ -242,7 +244,7 @@ const IdentifyTreeFlow = ({
             <></>
           )}
 
-          {!isCropped && (
+          {!isCropped && !preventSkipLeafPicture && (
             <Button
               color='primary'
               onClick={() => {
@@ -253,6 +255,7 @@ const IdentifyTreeFlow = ({
               Skip
             </Button>
           )}
+          {!isCropped && preventSkipLeafPicture && <div></div>}
           {isCropped && (
             <Button
               color='primary'

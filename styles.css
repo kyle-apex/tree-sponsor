@@ -25,10 +25,7 @@ div.ReactCrop__drag-handle::after {
   border-radius: 0;
   visibility: inherit !important;
 }
-.MuiAutocomplete-popper {
-  width: auto !important;
-  max-width: 400px;
-}
+
 .checkin-floating-tabs {
   position: fixed;
   top: 0;

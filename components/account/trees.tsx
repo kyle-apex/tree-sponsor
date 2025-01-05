@@ -40,7 +40,12 @@ const AccountTrees = () => {
 
   return (
     <Box>
-      <IdentifyTreeFlowDialog setOpen={setIsDialogOpen} open={isDialogOpen} onComplete={refetchTrees}></IdentifyTreeFlowDialog>
+      <IdentifyTreeFlowDialog
+        setOpen={setIsDialogOpen}
+        open={isDialogOpen}
+        onComplete={refetchTrees}
+        preventSkipLeafPicture={true}
+      ></IdentifyTreeFlowDialog>
       {trees?.length == 0 && (
         <Box sx={{ textAlign: 'center' }}>
           <Typography mb={3}>Take a picture of a tree, then click below to add your first tree identification:</Typography>

@@ -10,6 +10,7 @@ const IdentifyTreeFlowDialog = ({
   longitude,
   latitude,
   eventId,
+  preventSkipLeafPicture,
 }: {
   open: boolean;
   setOpen: (isOpen: boolean) => void;
@@ -17,6 +18,7 @@ const IdentifyTreeFlowDialog = ({
   longitude?: number;
   latitude?: number;
   eventId?: number;
+  preventSkipLeafPicture?: boolean;
 }) => {
   const handleClose = () => {
     setOpen(false);
@@ -26,7 +28,13 @@ const IdentifyTreeFlowDialog = ({
   return (
     <Dialog open={open} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px', margin: 2 } }} onClose={handleClose}>
       <DialogContent>
-        <IdentifyTreeFlow onComplete={handleClose} latitude={latitude} longitude={longitude} eventId={eventId} />
+        <IdentifyTreeFlow
+          onComplete={handleClose}
+          latitude={latitude}
+          longitude={longitude}
+          eventId={eventId}
+          preventSkipLeafPicture={preventSkipLeafPicture}
+        />
       </DialogContent>
     </Dialog>
   );

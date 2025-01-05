@@ -23,6 +23,7 @@ import TablePagination from '@mui/material/TablePagination';
 import SplitRow from 'components/layout/SplitRow';
 import useEditTree from 'utils/hooks/use-edit-tree';
 import usePagination from 'utils/hooks/use-pagination';
+import IdentifyTreeFlowDialog from 'components/tree/IdentifyTreeFlowDialog';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'isTreeReviewer');
@@ -69,7 +70,12 @@ const ReviewTreesPage = () => {
           </Box>
         }
       >
-        <AddTreeDialog setIsOpen={setIsDialogOpen} isOpen={isDialogOpen} onComplete={refetchTrees}></AddTreeDialog>
+        <IdentifyTreeFlowDialog
+          setOpen={setIsDialogOpen}
+          open={isDialogOpen}
+          onComplete={refetchTrees}
+          preventSkipLeafPicture={true}
+        ></IdentifyTreeFlowDialog>
         <ReviewStatusSelect
           emptyLabel='All'
           value={reviewStatus}

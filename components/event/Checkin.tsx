@@ -466,6 +466,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               latitude={event.location ? Number(event.location.latitude) : null}
               longitude={event.location ? Number(event.location.longitude) : null}
               eventId={event.id}
+              preventSkipLeafPicture={true}
             ></IdentifyTreeFlowDialog>
           </Box>
           <Attendees

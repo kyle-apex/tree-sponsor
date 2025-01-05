@@ -255,6 +255,7 @@ export default function EnhancedTable(): JSX.Element {
                             updateReferralUserId(row.userId, { referralUserId });
                           }}
                           label='Referred By'
+                          autoWidth={true}
                         ></UserSelector>
                       </TableCell>
                     </StyledTableRow>
