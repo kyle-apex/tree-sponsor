@@ -78,7 +78,7 @@ export default NextAuth({
           include: {
             roles: {},
             subscriptions: {},
-            eventCheckIns: { include: { event: { include: { location: true } } } },
+            eventCheckIns: { include: { event: { include: { location: true } } }, where: { eventId: { not: null } } },
             profile: {},
           },
         })) as PartialUser;
