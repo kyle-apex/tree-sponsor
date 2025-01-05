@@ -13,6 +13,7 @@ import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-fo
 import findOrCreateCheckinUser from 'utils/events/find-or-create-checkin-user';
 import addSubscriber from 'utils/mailchimp/add-subscriber';
 import addEventToMember from 'utils/mailchimp/add-event-to-member';
+import hasAccess from 'utils/auth/has-access';
 
 export const config = {
   api: {
@@ -95,6 +96,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
+    // do not let someone update someone elses response unless they are logged in
+    let existingResponse;
+    if (userId && session?.user?.id != userId) {
+      existingResponse = await prisma.formResponse.findFirst({ where: { userId: userId, formId: formId } });
+      if (existingResponse?.userId) {
+        const isFormAdmin = await hasAccess(session?.user?.id, 'hasFormManagement');
+        if (!isFormAdmin) throwUnauthenticated(res);
+      }
+    }
+
     await Promise.all(
       imageQuestions.map(async q => {
         const imageUrl = q.value;
@@ -119,12 +130,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       }),
     );
-
-    let existingResponse;
-    if (userId && !session?.user?.id) {
-      existingResponse = await prisma.formResponse.findFirst({ where: { userId: userId, formId: formId } });
-      if (existingResponse) throwUnauthenticated(res);
-    }
 
     const response = await prisma.formResponse.upsert({
       where: { userId_formId: { userId: userId, formId: formId } },
