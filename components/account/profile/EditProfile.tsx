@@ -181,11 +181,13 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
     <CenteredSection>
       <SplitRow>
         {children}
-        <a href={'/u/' + profilePathState.profilePath} target='_blank' style={{ textDecoration: 'none' }} rel='noreferrer'>
-          <Button variant='text' size='small' sx={{ marginBottom: 2, display: 'flex', alignSelf: 'start' }}>
-            <span>Launch Profile</span> <LaunchIcon sx={{ marginLeft: 1, fontSize: '1rem' }} />
-          </Button>
-        </a>
+        {false && (
+          <a href={'/u/' + profilePathState.profilePath} target='_blank' style={{ textDecoration: 'none' }} rel='noreferrer'>
+            <Button variant='text' size='small' sx={{ marginBottom: 2, display: 'flex', alignSelf: 'start' }}>
+              <span>Launch Profile</span> <LaunchIcon sx={{ marginLeft: 1, fontSize: '1rem' }} />
+            </Button>
+          </a>
+        )}
       </SplitRow>
       {isFetched ? (
         <>
@@ -291,9 +293,18 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
             id='profile-path-field'
           ></TextField>
           <TextField
+            value={user.email}
+            label='Email'
+            size='small'
+            sx={{ marginBottom: 3 }}
+            spellCheck='false'
+            id='email-disabled-field'
+            disabled={true}
+          ></TextField>
+          <TextField
             value={email2State.value}
             onChange={handleEmail2Change}
-            label='Secondary Email'
+            label='Secondary Email for Checkin/Login'
             size='small'
             sx={{ marginBottom: 3 }}
             error={email2State.isDuplicate}
