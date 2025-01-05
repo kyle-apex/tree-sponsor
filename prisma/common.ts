@@ -9,6 +9,7 @@ export function getUserDisplaySelect() {
     profilePath: true,
     email: true,
     email2: true,
+    hideFromCheckinPage: true,
     roles: {},
     profile: { select: { instagramHandle: true, linkedInLink: true, twitterHandle: true, organization: true, bio: true } },
     subscriptions: { where: { lastPaymentDate: { gt: oneYearAgo } }, select: { lastPaymentDate: true } },

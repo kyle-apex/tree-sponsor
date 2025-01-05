@@ -20,6 +20,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import dynamic from 'next/dynamic';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import Checkbox from '@mui/material/Checkbox';
+import RestrictSection from 'components/RestrictSection';
 const TextEditor = dynamic(() => import('components/TextEditor'), {
   ssr: false,
   // eslint-disable-next-line react/display-name
@@ -36,6 +38,8 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
   const [title, setTitle] = useState('');
+  const [hideFromCheckinPage, setHideFromCheckinPage] = useState(false);
+  const [hideFromIndexPage, setHideFromIndexPage] = useState(false);
 
   const [instagramHandle, setInstagramHandle] = useState('');
   const [twitterHandle, setTwitterHandle] = useState('');
@@ -65,6 +69,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
     if (!isFetched || !user) return;
     if (user.name) setName(user.name);
     const profile = user.profile;
+
     if (profile) {
       if (profile.twitterHandle) setTwitterHandle(profile.twitterHandle);
       if (profile.instagramHandle) setInstagramHandle(profile.instagramHandle);
@@ -72,6 +77,9 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       if (profile.bio) setBio(profile.bio);
       if (profile.title) setTitle(profile.title);
     }
+
+    if (user.hideFromCheckinPage) setHideFromCheckinPage(true);
+    if (user.hideFromIndexPage) setHideFromIndexPage(true);
 
     if (user.email2)
       setEmail2State(state => {
@@ -138,6 +146,8 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
       image: imageUrl,
       profilePath: profilePathState.profilePath,
       email2: email2State.value,
+      hideFromCheckinPage: hideFromCheckinPage,
+      hideFromIndexPage: hideFromIndexPage,
     };
 
     if (
@@ -340,6 +350,28 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
               }}
             ></TextField>
           </Box>
+          <Box sx={{ marginBottom: 1 }}>
+            <Checkbox
+              checked={hideFromCheckinPage}
+              onChange={e => {
+                setHideFromCheckinPage(e.target.checked);
+                setIsChanged(true);
+              }}
+            ></Checkbox>{' '}
+            Hide my name when I check-in to events
+          </Box>
+          <RestrictSection accessType='isAdmin'>
+            <Box sx={{ marginBottom: 2 }}>
+              <Checkbox
+                checked={hideFromIndexPage}
+                onChange={e => {
+                  setHideFromIndexPage(e.target.checked);
+                  setIsChanged(true);
+                }}
+              ></Checkbox>{' '}
+              Hide my name from the index page
+            </Box>
+          </RestrictSection>
         </>
       ) : (
         <Box sx={{ marginBottom: 3 }}>

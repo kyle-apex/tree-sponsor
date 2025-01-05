@@ -66,6 +66,8 @@ model User {
   updatedAt                DateTime                  @default(now()) @map(name: "updated_at")
   stripeCustomerId         String?                   @db.VarChar(32)
   profilePath              String?                   @db.VarChar(256)
+  hideFromIndexPage        Boolean    @default(false)
+  hideFromCheckinPage      Boolean    @default(false)
   subscriptions            Subscription[]
   profile                  Profile?
   subscriptionsWithDetails SubscriptionWithDetails[]
