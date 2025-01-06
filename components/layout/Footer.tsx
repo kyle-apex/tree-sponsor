@@ -17,6 +17,9 @@ const Footer = () => {
           <Link href='/legal/terms'>
             <a className='legal-link'>Terms</a>
           </Link>
+          <a href='https://github.com/kyle-apex/tree-sponsor' target='_github' className='legal-link' rel='noreferrer'>
+            GitHub
+          </a>
         </div>
       </div>
       <style jsx>{`
