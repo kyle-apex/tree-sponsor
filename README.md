@@ -16,4 +16,4 @@ Hidden/Deprecated Functionality:
 
 ## Contributing
 
-Get starting developing fixes and features at [CONTRIBUTING.md](CONTRIBUTING.md):
+Get starting developing fixes and features at [CONTRIBUTING.md](CONTRIBUTING.md)
