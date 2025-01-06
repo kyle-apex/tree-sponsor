@@ -1,3 +1,4 @@
+import { prisma } from 'utils/prisma/init';
 export async function getCoreTeamBios() {
   const users = await prisma.user.findMany({
     where: {
