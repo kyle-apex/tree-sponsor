@@ -115,9 +115,10 @@ export default function EnhancedTable(): JSX.Element {
         if (!state.userName) state.userName = state.email;
 
         return (
-          state.userName.toLowerCase().includes(nameFilter.toLowerCase()) ||
-          (state.email && state.email.replace('.com', '').toLowerCase().includes(nameFilter.toLowerCase())) ||
-          state.email.toLowerCase().includes(nameFilter.toLowerCase())
+          state.userName.toLowerCase().includes(nameFilter?.toLowerCase()) ||
+          (state.email && state.email.replace('.com', '').toLowerCase().includes(nameFilter?.toLowerCase())) ||
+          state.email?.toLowerCase().includes(nameFilter?.toLowerCase()) ||
+          state.email2?.toLowerCase().includes(nameFilter?.toLowerCase())
         );
       });
 
@@ -245,7 +246,10 @@ export default function EnhancedTable(): JSX.Element {
                         {lastPaymentDate.toLocaleDateString()}
                       </TableCell>
                       <TableCell>{createdDate.toLocaleDateString()}</TableCell>
-                      <TableCell>{row.email}</TableCell>
+                      <TableCell>
+                        {row.email}
+                        {row.email2 && <div>{row.email2}</div>}
+                      </TableCell>
                       <TableCell sx={{ minWidth: '200px' }}>
                         <UserSelector
                           defaultValue={row.referralUserId}
