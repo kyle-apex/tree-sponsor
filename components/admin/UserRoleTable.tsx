@@ -13,6 +13,7 @@ import { StyledTableRow } from 'components/StyledTableRow';
 import axios from 'axios';
 import { PartialUser } from 'interfaces';
 import { useUpdateQueryById } from 'utils/hooks/use-update-query-by-id';
+import SearchBox from 'components/form/SearchBox';
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -20,6 +21,8 @@ const useStyles = makeStyles(theme => ({
   },
   tableContainer: {
     marginBottom: theme.spacing(3),
+    paddingTop: theme.spacing(1),
+    marginTop: theme.spacing(-2),
   },
   visuallyHidden: {
     border: 0,
@@ -64,6 +67,8 @@ export default function UserRoleTable({
 }) {
   const classes = useStyles();
   const [headCells, setHeadCells] = useState(defaultHeadCells);
+  const [filteredRows, setFilteredRows] = useState<PartialUser[]>();
+  const [searchText, setSearchText] = useState('');
 
   const { updateById } = useUpdateQueryById('users', handleRoleChange);
 
@@ -89,47 +94,62 @@ export default function UserRoleTable({
     getHeaderCells();
   }, [roles]);
 
+  useEffect(() => {
+    setFilteredRows(
+      users?.filter(
+        row =>
+          !searchText ||
+          row.name?.toLowerCase()?.includes(searchText.toLowerCase()) ||
+          row.email?.toLowerCase()?.includes(searchText.toLowerCase()) ||
+          row.email2?.toLowerCase()?.includes(searchText.toLowerCase()),
+      ) || [],
+    );
+  }, [users, searchText]);
+
   return (
     <TableContainer className={classes.tableContainer}>
       {roles && (
-        <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
-          <TableHeader classes={classes} headCells={headCells} />
-          {users && (
-            <TableBody>
-              {isFetching && (
-                <TableRow>
-                  <TableCell colSpan={6} className='compressed'>
-                    <LinearProgress />
-                  </TableCell>
-                </TableRow>
-              )}
-              {users.map(user => {
-                return (
-                  <StyledTableRow tabIndex={-1} key={user.id}>
-                    <TableCell scope='row'>{user.name}</TableCell>
-                    <TableCell scope='row'>
-                      {user.email}
-                      {user.email2 ? ' | ' + user.email2 : ''}
+        <>
+          {users?.length && <SearchBox label='Filter Users' onChange={setSearchText} defaultValue={searchText} mb={2}></SearchBox>}
+          <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
+            <TableHeader classes={classes} headCells={headCells} />
+            {users && (
+              <TableBody>
+                {isFetching && (
+                  <TableRow>
+                    <TableCell colSpan={6} className='compressed'>
+                      <LinearProgress />
                     </TableCell>
+                  </TableRow>
+                )}
+                {filteredRows?.map(user => {
+                  return (
+                    <StyledTableRow tabIndex={-1} key={user.id}>
+                      <TableCell scope='row'>{user.name}</TableCell>
+                      <TableCell scope='row'>
+                        {user.email}
+                        {user.email2 ? ' | ' + user.email2 : ''}
+                      </TableCell>
 
-                    {roles.map(role => {
-                      return (
-                        <TableCell key={role.name}>
-                          <Checkbox
-                            checked={userHasRole(user, role.id)}
-                            onChange={event => {
-                              toggleUserRole(user, role, event.target.checked);
-                            }}
-                          ></Checkbox>
-                        </TableCell>
-                      );
-                    })}
-                  </StyledTableRow>
-                );
-              })}
-            </TableBody>
-          )}
-        </Table>
+                      {roles.map(role => {
+                        return (
+                          <TableCell key={role.name}>
+                            <Checkbox
+                              checked={userHasRole(user, role.id)}
+                              onChange={event => {
+                                toggleUserRole(user, role, event.target.checked);
+                              }}
+                            ></Checkbox>
+                          </TableCell>
+                        );
+                      })}
+                    </StyledTableRow>
+                  );
+                })}
+              </TableBody>
+            )}
+          </Table>
+        </>
       )}
     </TableContainer>
   );
