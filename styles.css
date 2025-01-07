@@ -25,6 +25,10 @@ div.ReactCrop__drag-handle::after {
   border-radius: 0;
   visibility: inherit !important;
 }
+/* needed to override global style from MapBoxSearchBox */
+.MuiInputBase-input {
+  box-sizing: content-box !important;
+}
 
 .checkin-floating-tabs {
   position: fixed;

@@ -7,6 +7,11 @@ import RoomSharpIcon from '@mui/icons-material/RoomSharp';
 import makeStyles from '@mui/styles/makeStyles';
 import { MAP_STYLE } from 'consts';
 import { MapStyle } from 'interfaces';
+//import MapSearchBox from './MapSearchBox';
+import dynamic from 'next/dynamic';
+const MapSearchBox = dynamic(() => import('./MapSearchBox'), {
+  ssr: false,
+});
 
 const geolocateControlStyle = {
   right: 10,
@@ -27,7 +32,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const SEARCH_LOCATION = { longitude: -97.7405213210974, latitude: 30.27427678853506 };
-
+const LONGLAT = [-97.7405213210974, 30.27427678853506];
 const LocationSelector = ({
   onViewportChange,
   latitude,
@@ -35,6 +40,7 @@ const LocationSelector = ({
   zoomToLocation,
   mapStyle = 'STREET',
   zoom = 16,
+  onSelectedName,
 }: {
   onViewportChange: (viewport: { longitude: number; latitude: number; zoom: number }) => void;
   longitude?: number;
@@ -42,6 +48,7 @@ const LocationSelector = ({
   zoomToLocation?: boolean;
   mapStyle?: MapStyle;
   zoom?: number;
+  onSelectedName?: (name: string) => void;
 }) => {
   const mapRef = useRef<MapRef>();
   const geolocatedRef = useRef<boolean>();
@@ -85,6 +92,16 @@ const LocationSelector = ({
   const classes = useStyles();
   return (
     <div className='box-shadow'>
+      <MapSearchBox
+        mapRef={mapRef}
+        mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+        onViewportChange={handleViewportChange}
+        proximity={LONGLAT}
+        countries='US'
+        zoom={viewport.zoom}
+        onSelectedName={onSelectedName}
+      />
+
       <MapGL
         {...viewport}
         ref={mapRef}
@@ -92,6 +109,7 @@ const LocationSelector = ({
         height='50vh'
         onViewportChange={(e: { longitude: number; latitude: number; zoom: number }) => {
           setViewport(e);
+          console.log('e', e);
 
           onViewportChange({ latitude: e.latitude, longitude: e.longitude, zoom: e.zoom });
         }}
@@ -114,14 +132,16 @@ const LocationSelector = ({
           fitBoundsOptions={{ maxZoom: 20, zoom }}
         />
 
-        <Geocoder
-          mapRef={mapRef}
-          mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-          position='top-left'
-          onViewportChange={handleViewportChange}
-          proximity={SEARCH_LOCATION}
-          countries='us'
-        />
+        {false && (
+          <Geocoder
+            mapRef={mapRef}
+            mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+            position='top-left'
+            onViewportChange={handleViewportChange}
+            proximity={SEARCH_LOCATION}
+            countries='us'
+          />
+        )}
 
         <Marker latitude={viewport.latitude} longitude={viewport.longitude} className={classes.markerContainer}>
           <RoomSharpIcon style={{ fontSize: 50 }} className={classes.marker}></RoomSharpIcon>
