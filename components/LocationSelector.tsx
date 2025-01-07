@@ -62,7 +62,10 @@ const LocationSelector = ({
     zoom: zoom,
   });
 
-  const handleViewportChange = useCallback(newViewport => setViewport(newViewport), []);
+  const handleViewportChange = useCallback(newViewport => {
+    setViewport(newViewport);
+    onViewportChange(newViewport);
+  }, []);
 
   useEffect(() => {
     const map = mapRef?.current?.getMap();
@@ -109,7 +112,6 @@ const LocationSelector = ({
         height='50vh'
         onViewportChange={(e: { longitude: number; latitude: number; zoom: number }) => {
           setViewport(e);
-          console.log('e', e);
 
           onViewportChange({ latitude: e.latitude, longitude: e.longitude, zoom: e.zoom });
         }}

@@ -187,7 +187,10 @@ const EventDetailsForm = ({
         longitude={longitude ? Number(longitude) : null}
         zoomToLocation={!latitude}
         onSelectedName={name => {
-          if (!locationName && name) setLocationName(name);
+          if (!locationName && name) {
+            setLocationName(name);
+            updateAttribute('location.name', name);
+          }
         }}
       ></LocationSelector>
       <TextField
