@@ -62,7 +62,7 @@ const ReviewTreesPage = () => {
               }}
               startIcon={<AddIcon />}
               variant='contained'
-              sx={{ width: '120px', height: '36.5px' }}
+              sx={{ width: '120px', height: 'fit-content' }}
               size='small'
             >
               Add Tree
