@@ -29,6 +29,8 @@ import RestrictSection from 'components/RestrictSection';
 import { capitalCase } from 'change-case';
 import usePagination from 'utils/hooks/use-pagination';
 import UserSelector from 'components/UserSelector';
+import NavigationMenu from 'components/admin/NavigationMenu';
+import SplitRow from 'components/layout/SplitRow';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'isAdmin');
@@ -137,48 +139,10 @@ export default function EnhancedTable(): JSX.Element {
   return (
     <Layout title='Admin'>
       <div className={classes.root}>
-        <Box sx={{ flexDirection: 'row', display: 'flex', flexWrap: 'wrap' }} gap={2}>
-          <RestrictSection accessType='hasAuthManagement'>
-            <Link href='/admin/roles'>
-              <Button variant='outlined'>Manage Roles</Button>
-            </Link>
-          </RestrictSection>
-          <Link href='/admin/membership-dashboard'>
-            <Button variant='outlined'>Membership Dashboard</Button>
-          </Link>
-          <Link href='/admin/fundraising-dashboard'>
-            <Button variant='outlined'>Fundraising Dashboard</Button>
-          </Link>
-          {false && (
-            <RestrictSection accessType='isReviewer'>
-              <Link href='/admin/review/sponsorships'>
-                <Button variant='outlined'>Review Thank-a-Trees</Button>
-              </Link>
-            </RestrictSection>
-          )}
-          <RestrictSection accessType='isTreeReviewer'>
-            <Link href='/admin/review/trees'>
-              <Button variant='outlined'>Manage Trees</Button>
-            </Link>
-          </RestrictSection>
-          <RestrictSection accessType='hasEventManagement'>
-            <Link href='/admin/events'>
-              <Button variant='outlined'>Manage Events</Button>
-            </Link>
-          </RestrictSection>
-          <RestrictSection accessType='hasRedirectManagement'>
-            <Link href='/admin/redirects'>
-              <Button variant='outlined'>Manage Redirects</Button>
-            </Link>
-          </RestrictSection>
-          <RestrictSection accessType='hasFormManagement'>
-            <Link href='/admin/forms'>
-              <Button variant='outlined'>Manage Forms</Button>
-            </Link>
-          </RestrictSection>
-        </Box>
-
-        <h1>Admin</h1>
+        <SplitRow>
+          <h1>Admin</h1>
+          <NavigationMenu></NavigationMenu>
+        </SplitRow>
         <SearchBox label='Find a Member' onChange={setNameFilter} defaultValue={nameFilter}></SearchBox>
 
         <TablePagination

@@ -53,11 +53,6 @@ const ManageEventsPage = () => {
         </Box>
       }
     >
-      <Box mb={2} mt={-2}>
-        <Link href='/admin/events/checkins'>
-          <a>Manage Checkins</a>
-        </Link>
-      </Box>
       <Typography mb={3} color='secondary' variant='h2'>
         Upcoming Events
       </Typography>
