@@ -47,6 +47,7 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
   const [isChanged, setIsChanged] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [profilePathState, setProfilePathState] = useState({
     profilePath: '',
@@ -178,11 +179,14 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
     }
     try {
       await axios.patch('/api/me', prismaUpdateQuery);
+      setSuccessMessage('Save successful!');
+      setErrorMessage('');
     } catch (error: unknown) {
       const err = error as AxiosError;
       setErrorMessage(err?.response?.data?.message || err?.message);
-      setSnackbarOpen(true);
+      setSuccessMessage('');
     }
+    setSnackbarOpen(true);
     setIsLoading(false);
     setIsChanged(false);
   };
@@ -424,9 +428,16 @@ const EditProfile = ({ children }: { children?: ReactNode }): JSX.Element => {
         onClose={() => {
           setSnackbarOpen(false);
         }}
+        autoHideDuration={8000}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity='error' color='error' sx={{ width: '100%' }}>
-          {errorMessage}
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={errorMessage ? 'error' : 'success'}
+          color={errorMessage ? 'error' : 'success'}
+          sx={{ width: '100%' }}
+        >
+          {errorMessage || successMessage}
         </Alert>
       </Snackbar>
     </CenteredSection>
