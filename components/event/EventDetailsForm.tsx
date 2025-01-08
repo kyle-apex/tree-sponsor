@@ -253,13 +253,15 @@ const EventDetailsForm = ({
           }}
         ></UserMultiSelect>
       </Box>
-      <CategoryMultiSelect
-        label='Add a Category'
-        selectedCategories={event?.categories}
-        onUpdated={categories => {
-          updateAttribute('categories', categories);
-        }}
-      ></CategoryMultiSelect>
+      {false && (
+        <CategoryMultiSelect
+          label='Add a Category'
+          selectedCategories={event?.categories}
+          onUpdated={categories => {
+            updateAttribute('categories', categories);
+          }}
+        ></CategoryMultiSelect>
+      )}
     </>
   );
 };

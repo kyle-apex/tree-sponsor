@@ -258,7 +258,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
       {status && event?.checkInDetails && event.checkInDetails != '<p><br></p>' && (
         <>
           <Typography variant='body2' component='div' mt={-2}>
-            <SafeHTMLDisplay html={event?.checkInDetails}></SafeHTMLDisplay>
+            <SafeHTMLDisplay html={event?.checkInDetails.replaceAll('<a ', '<a target="_blank" ')}></SafeHTMLDisplay>
           </Typography>
           <hr style={{ width: '100%', marginTop: '10px', marginBottom: '20px' }} />
         </>
