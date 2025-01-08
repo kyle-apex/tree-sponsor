@@ -48,7 +48,7 @@ const AccountTrees = () => {
       ></IdentifyTreeFlowDialog>
       {trees?.length == 0 && (
         <Box sx={{ textAlign: 'center' }}>
-          <Typography mb={3}>Take a picture of a tree, then click below to add your first tree identification:</Typography>
+          <Typography mb={3}>Click below to take or upload a picture for your first tree identification:</Typography>
           <Button
             onClick={() => {
               setIsDialogOpen(true);
