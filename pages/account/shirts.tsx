@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { StoreProduct } from 'components/store/StoreProduct';
 import { PartialStoreProduct } from 'interfaces';
-import { Grid, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import Layout from 'components/layout/Layout';
 import RestrictSection from 'components/RestrictSection';
 import EditIcon from '@mui/icons-material/Edit';
@@ -14,6 +14,7 @@ import { useGet } from 'utils/hooks/use-get';
 import SplitRow from 'components/layout/SplitRow';
 import Link from 'next/link';
 import axios from 'axios';
+import Typography from '@mui/material/Typography';
 
 const MemberStore = () => {
   const [isEditMode, setIsEditMode] = React.useState(false);

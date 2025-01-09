@@ -68,8 +68,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         data: { name, email },
       })) as PartialUser;
       const splitName = name?.split(' ');
-      const firstName = splitName.shift();
-      const lastName = splitName?.length ? splitName.join(' ') : '';
+      const firstName = splitName.shift()?.trim();
+      const lastName = splitName?.length ? splitName.join(' ')?.trim() : '';
       user = await findOrCreateCheckinUser({
         email,
         firstName,

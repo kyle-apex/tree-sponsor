@@ -12,7 +12,6 @@ import { useGet } from 'utils/hooks/use-get';
 import axios from 'axios';
 import Typography from '@mui/material/Typography';
 import LoadingButton from 'components/LoadingButton';
-import Link from 'next/link';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'hasEventManagement');

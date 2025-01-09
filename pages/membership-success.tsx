@@ -100,8 +100,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
       if (customer?.name) {
         const customerNameSplit = customer.name.split(' ');
-        firstName = customerNameSplit.shift();
-        lastName = customerNameSplit.join(' ');
+        firstName = customerNameSplit.shift()?.trim();
+        lastName = customerNameSplit.join(' ')?.trim();
       }
 
       if (stripeSession?.metadata?.['Email Subscribe'] == 'Yes')

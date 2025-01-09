@@ -7,7 +7,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { PartialTree } from 'interfaces';
 import Image from 'next/image';
-import { ListItemAvatar } from '@mui/material';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
 
 interface DragItem {
   index: number;

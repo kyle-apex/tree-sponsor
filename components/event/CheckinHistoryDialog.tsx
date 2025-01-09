@@ -7,7 +7,7 @@ import { PartialEventCheckIn } from 'interfaces';
 import { signOut, useSession, signIn } from 'next-auth/client';
 import CheckinHistory from './CheckinHistory';
 import DialogTitle from '@mui/material/DialogTitle';
-import { DialogActions } from '@mui/material';
+import DialogActions from '@mui/material/DialogActions';
 
 const CheckinHistoryDialog = ({
   isOpen,
