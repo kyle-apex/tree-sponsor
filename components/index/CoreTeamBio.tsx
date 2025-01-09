@@ -22,7 +22,13 @@ const CoreTeamBio = ({ user }: { user: PartialUser }) => {
       </Typography>
       {user.profile?.title && (
         <Typography variant='h6' color='secondary' sx={{ fontSize: '16px', textAlign: 'center', marginBottom: 1.5, marginTop: -2 }}>
-          {user.profile?.title}
+          {user.profile?.title == 'Click here to apply' ? (
+            <a href='https://apply.tfyp.org' target='_blank' rel='noreferrer'>
+              Click here to apply
+            </a>
+          ) : (
+            user.profile?.title
+          )}
         </Typography>
       )}
       <Typography variant='body2' sx={{ fontStyle: 'italic', textAlign: 'left' }}>
