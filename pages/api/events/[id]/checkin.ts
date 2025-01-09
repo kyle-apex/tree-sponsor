@@ -17,9 +17,9 @@ import { sortUsersByRole } from 'utils/user/sort-users-by-role';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const eventId = Number(req.query.id);
-  const email = String(req.query.email);
-  const firstName = String(req.query.firstName);
-  const lastName = String(req.query.lastName);
+  const email = String(req.query.email)?.trim();
+  const firstName = String(req.query.firstName)?.trim();
+  const lastName = String(req.query.lastName)?.trim();
   const discoveredFrom = String(req.query.discoveredFrom);
   const emailOptIn = req.query.emailOptIn === 'true';
 

@@ -71,9 +71,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   let email = session?.user?.email;
 
-  console.log('query %j', query);
-
-  console.log('queryObj %j', queryObj);
   let stripeSessionId;
   if (queryObj) {
     stripeSessionId = queryObj.session_id as string;
@@ -101,8 +98,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
       if (customer?.name) {
         const customerNameSplit = customer.name.split(' ');
-        firstName = customerNameSplit.shift();
-        lastName = customerNameSplit.join(' ');
+        firstName = customerNameSplit.shift()?.trim();
+        lastName = customerNameSplit.join(' ')?.trim();
       }
 
       if (stripeSession?.metadata?.['Email Subscribe'] == 'Yes')

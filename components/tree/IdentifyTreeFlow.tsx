@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useContext, useEffect } from 'react';
-import { PartialSpecies, PartialTree, PartialTreeImage } from 'interfaces';
+import { PartialTree, PartialTreeImage } from 'interfaces';
 import SplitRow from 'components/layout/SplitRow';
 import LoadingButton from 'components/LoadingButton';
 import Button from '@mui/material/Button';
@@ -8,12 +8,10 @@ import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 
 import axios from 'axios';
-import AddTreeFormFields from './AddTreeFormFields';
 import Box from '@mui/material/Box';
 import LocationSelector from 'components/LocationSelector';
 import getImageDimensions from 'utils/aws/get-image-dimensions';
 import { IdentifyTreeContext } from './IdentifyTreeProvider';
-import UploadLeaf from './UploadLeaf';
 import ImageCropper, { FileBrowserHandle } from 'components/ImageCropper';
 import SpeciesSelector from './SpeciesSelector';
 import SuggestSpecies from './SuggestSpecies';
@@ -21,11 +19,8 @@ import { Crop } from 'react-image-crop';
 import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 import Typography from '@mui/material/Typography';
 import useLocalStorage from 'utils/hooks/use-local-storage';
-import Selector from 'components/Selector';
-import UserSelector from 'components/UserSelector';
 import { CheckinSessionContext } from 'components/event/CheckinSessionProvider';
 import TextField from '@mui/material/TextField';
-import { useMediaQuery, useTheme } from '@mui/material';
 
 const steps = [{ label: 'Identify' }, { label: 'Photograph' }, { label: 'Location' }];
 const tomorrow = new Date();
