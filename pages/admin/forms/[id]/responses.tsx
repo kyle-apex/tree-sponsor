@@ -63,7 +63,7 @@ const ResponsesPage = ({ id }: { id: number }) => {
 
   return (
     <AdminLayout title='Form Responses'>
-      <CenteredSection backButtonText='Back' headerText={form?.name} maxWidth='90%'>
+      <CenteredSection backButtonText='Back' headerText={form?.name} maxWidth='100%' sx={{ marginLeft: 0, marginRight: 0, width: '100%' }}>
         {form?.name && (
           <Box sx={{ mb: 3 }}>
             <FormControl fullWidth={true}>
