@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const result = await prisma.form.findFirst({
       where: { id: Number(req.query.id) },
-      include: { formResponses: isAuthorized ? { include: { user: {} } } : false },
+      include: { formResponses: isAuthorized ? { include: { user: {} }, orderBy: { createdDate: 'asc' } } : false },
     });
     res.status(200).json(result);
   } else if (req.method === 'PATCH') {

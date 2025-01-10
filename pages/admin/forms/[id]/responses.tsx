@@ -28,6 +28,7 @@ import restrictPageAccess from 'utils/auth/restrict-page-access';
 const ResponsesPage = ({ id }: { id: number }) => {
   const [form, setForm] = useState<PartialForm>();
   const [currentResponse, setCurrentResponse] = useState<PartialFormResponse>();
+  const [currentResponseNumber, setCurrentResponseNumber] = useState<number>(0);
   const [currentResponseUserId, setCurrentResponseUserId] = useState<string>('');
 
   const readForm = async (id: number) => {
@@ -54,6 +55,8 @@ const ResponsesPage = ({ id }: { id: number }) => {
         return response.userId + '' == currentResponseUserId + '';
       });
       if (response) setCurrentResponse(response);
+      const currentReponseIndex = form?.formResponses?.indexOf(response);
+      setCurrentResponseNumber(currentReponseIndex !== undefined ? currentReponseIndex + 1 : 0);
     }
     readForm(id);
   }, [currentResponseUserId]);
@@ -64,13 +67,15 @@ const ResponsesPage = ({ id }: { id: number }) => {
         {form?.name && (
           <Box sx={{ mb: 3 }}>
             <FormControl fullWidth={true}>
-              <InputLabel>Responses ({form?.formResponses?.length || 0})</InputLabel>
+              <InputLabel>
+                Responses ({currentResponseNumber || 0}/{form?.formResponses?.length || 0})
+              </InputLabel>
               <Select
                 value={currentResponseUserId}
                 onChange={event => {
                   setCurrentResponseUserId(event.target.value);
                 }}
-                label={'Responses (' + form?.formResponses?.length + ')'}
+                label={'Responses (' + currentResponseNumber + '/' + form?.formResponses?.length + ')'}
               >
                 {form.formResponses?.map(response => {
                   return (
