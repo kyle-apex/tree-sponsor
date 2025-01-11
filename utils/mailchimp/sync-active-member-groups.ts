@@ -3,6 +3,7 @@ import addGroupToMembers from './add-group-to-members';
 import getActiveGroups from './get-active-groups';
 import listMembersForGroup from './list-members-for-group';
 import removeGroupFromMembers from './remove-group-from-members';
+import getOneYearAgo from 'utils/data/get-one-year-ago';
 
 const syncActiveMemberGroups = async () => {
   const { activeGroupId, inactiveGroupId, groupingId } = await getActiveGroups();
@@ -17,8 +18,7 @@ const syncActiveMemberGroups = async () => {
   const activeEmails: string[] = [];
   const inactiveEmails: string[] = [];
 
-  const calendarYear = new Date();
-  calendarYear.setDate(calendarYear.getDate() - 365);
+  const calendarYear = getOneYearAgo();
 
   members.forEach(member => {
     if (member.lastPaymentDate > calendarYear) {

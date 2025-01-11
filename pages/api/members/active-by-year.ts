@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import getOneYearAgo from 'utils/data/get-one-year-ago';
 import { prisma } from 'utils/prisma/init';
 
 type ChartDataResult = {
@@ -17,8 +18,7 @@ export default async function handler(_req: NextApiRequest, res: NextApiResponse
   const years: number[] = [];
   const dataMap: any = {};
 
-  const calendarYear = new Date();
-  calendarYear.setDate(calendarYear.getDate() - 365);
+  const calendarYear = getOneYearAgo();
 
   subscriptionWithDetails.forEach(item => {
     const firstYear = item.createdDate.getFullYear();
