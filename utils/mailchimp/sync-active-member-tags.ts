@@ -3,6 +3,7 @@ import { prisma } from 'utils/prisma/init';
 import listMembersForTag from './list-members-for-tag';
 import removeTagFromMembers from './remove-tag-from-members';
 import addTagToMembers from './add-tag-to-members';
+import getOneYearAgo from 'utils/data/get-one-year-ago';
 
 const syncActiveMemberTags = async () => {
   const activeTagId = await getTagId(process.env.activeMemberTag || 'Active Member [AUTO]');
@@ -20,8 +21,7 @@ const syncActiveMemberTags = async () => {
   const activeEmails: string[] = [];
   const inactiveEmails: string[] = [];
 
-  const calendarYear = new Date();
-  calendarYear.setDate(calendarYear.getDate() - 365);
+  const calendarYear = getOneYearAgo();
 
   members.forEach(member => {
     if (member.lastPaymentDate > calendarYear) activeEmails.push(member.email);

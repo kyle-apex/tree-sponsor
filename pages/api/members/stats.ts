@@ -1,6 +1,7 @@
 import { SubscriptionWithDetails } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
+import getOneYearAgo from 'utils/data/get-one-year-ago';
 import { prisma } from 'utils/prisma/init';
 
 type Stats = {
@@ -30,8 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     percentageByYear: [],
   };
 
-  const calendarYear = new Date();
-  calendarYear.setDate(calendarYear.getDate() - 365);
+  const calendarYear = getOneYearAgo();
 
   const calendarYearPlusWindow = new Date(
     new Date().getTime() - (new Date().getTime() - calendarYear.getTime()) + (dateFilter.getTime() - new Date().getTime()),

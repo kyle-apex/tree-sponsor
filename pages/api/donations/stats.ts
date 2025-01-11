@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const calendarYear = new Date();
   calendarYear.setFullYear(year);
 
-  calendarYear.setDate(calendarYear.getDate() - 365);
+  calendarYear.setFullYear(calendarYear.getFullYear() - 1);
 
   const startDateString = req.query.startDate ? String(req.query.startDate) : null;
   const endDateString = req.query.endDate ? String(req.query.endDate) : null;
