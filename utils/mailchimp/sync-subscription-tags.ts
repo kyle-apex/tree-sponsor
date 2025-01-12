@@ -42,6 +42,7 @@ const syncSubscriptionTags = async () => {
   const tagNameToEmailsMap: Record<string, string[]> = {};
 
   function addTagToMap(tag: string, sub: SubscriptionWithDetails) {
+    if (!tag) return;
     if (!tagNameToEmailsMap[tag]) tagNameToEmailsMap[tag] = [];
     if (sub.email && !tagNameToEmailsMap[tag].includes(sub.email)) tagNameToEmailsMap[tag].push(sub.email);
     if (sub.email2 && !tagNameToEmailsMap[tag].includes(sub.email2)) tagNameToEmailsMap[tag].push(sub.email2);
@@ -49,8 +50,12 @@ const syncSubscriptionTags = async () => {
 
   for (const sub of subscriptionDetails) {
     if (sub.statusDetails) {
-      const tag = sub.statusDetails.replaceAll('_', ' ');
-      addTagToMap(tag, sub);
+      try {
+        const tag = sub.statusDetails.toString().replaceAll('_', ' ');
+        addTagToMap(tag, sub);
+      } catch (err) {
+        console.log('failed for statusDetails', sub.statusDetails);
+      }
     }
     if (sub.cancellationDetails) {
       const tag = capitalCase(sub.cancellationDetails.replaceAll('_', ' '));
