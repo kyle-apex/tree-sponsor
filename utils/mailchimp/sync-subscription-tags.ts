@@ -66,7 +66,7 @@ const syncSubscriptionTags = async () => {
   console.log('tagNameToEmailsMap', tagNameToEmailsMap);
 
   for (const tag in tagNameToEmailsMap || []) {
-    //await addTagToMembersByName(tag, tagNameToEmailsMap[tag]);
+    await addTagToMembersByName(tag, tagNameToEmailsMap[tag]);
   }
 };
 export default syncSubscriptionTags;
