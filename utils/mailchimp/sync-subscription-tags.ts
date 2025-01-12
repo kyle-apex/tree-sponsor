@@ -51,14 +51,14 @@ const syncSubscriptionTags = async () => {
   for (const sub of subscriptionDetails) {
     if (sub.statusDetails) {
       try {
-        const tag = sub.statusDetails.toString().replaceAll('_', ' ');
+        const tag = sub.statusDetails.replace(/_/g, ' ');
         addTagToMap(tag, sub);
       } catch (err) {
         console.log('failed for statusDetails', sub.statusDetails);
       }
     }
     if (sub.cancellationDetails) {
-      const tag = capitalCase(sub.cancellationDetails.replaceAll('_', ' '));
+      const tag = capitalCase(sub.cancellationDetails.replace(/_/g, ' '));
       addTagToMap(tag, sub);
     }
   }
