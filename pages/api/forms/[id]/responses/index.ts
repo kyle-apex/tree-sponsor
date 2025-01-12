@@ -119,7 +119,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               ? getProfileImagePath(email)
               : `${directory}/${form.path}-${userId}-${q.question
                   .toLowerCase()
-                  .replaceAll(' ', '-')
+                  .replace(/ /g, '-')
                   .replace(/[^a-z0-9-]/gi, '')
                   .substring(0, 20)}`;
 
