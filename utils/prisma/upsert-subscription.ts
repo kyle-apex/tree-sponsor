@@ -16,6 +16,8 @@ export const upsertSubscription = async (subscription: PartialSubscription): Pro
         status: subscription.status,
         createdDate: subscription.createdDate,
         lastPaymentDate: subscription.lastPaymentDate,
+        statusDetails: subscription.statusDetails,
+        cancellationDetails: subscription.cancellationDetails,
         product: {
           connectOrCreate: {
             where: { stripeId: subscription.product.stripeId },
@@ -42,6 +44,8 @@ export const upsertSubscription = async (subscription: PartialSubscription): Pro
         status: subscription.status,
         createdDate: subscription.createdDate,
         lastPaymentDate: subscription.lastPaymentDate,
+        statusDetails: subscription.statusDetails,
+        cancellationDetails: subscription.cancellationDetails,
         product: {
           connectOrCreate: {
             where: { stripeId: subscription.product.stripeId },
