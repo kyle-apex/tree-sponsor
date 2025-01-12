@@ -1,4 +1,4 @@
-DROP Table SubscriptionWithDetails;
+DROP TABLE IF EXISTS SubscriptionWithDetails;
 
 CREATE OR REPLACE VIEW SubscriptionWithDetails AS
 SELECT
@@ -19,7 +19,10 @@ SELECT
     u.referralUserId,
     s.createdDate,
     s.lastPaymentDate,
-    s.expirationDate
+    s.expirationDate,
+    s.statusDetails,
+    s.cancellationReason,
+    s.cancellationDetails
 FROM
     Subscription s,
     users u,

@@ -27,7 +27,10 @@ export default async function fixSubscriptionWithDetailsView() {
       u.referralUserId,
       s.createdDate,
       s.lastPaymentDate,
-      s.expirationDate
+      s.expirationDate,
+      s.statusDetails,
+      s.cancellationReason,
+      s.cancellationDetails
   FROM
       Subscription s,
       users u,

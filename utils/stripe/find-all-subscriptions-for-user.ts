@@ -4,12 +4,12 @@ import { getLastPaymentDateForSubscription } from './get-last-payment-date-for-s
 import { Stripe, stripe } from './init';
 import getProductIdToNameMap from './get-product-id-to-name-map';
 import { prisma } from 'utils/prisma/init';
+import { SubscriptionStatusDetails } from '@prisma/client';
 
 export const findAllSubscriptionsForUser = async (email: string): Promise<PartialSubscription[]> => {
   const customers: Stripe.ApiList<Stripe.Customer> = await stripe.customers.list({
     limit: 150,
     email: email,
-    expand: ['data.subscriptions'],
   });
 
   const subscriptions: PartialSubscription[] = [];
@@ -17,23 +17,45 @@ export const findAllSubscriptionsForUser = async (email: string): Promise<Partia
 
   await Promise.all(
     customers.data.map(async (customer: Stripe.Customer) => {
-      const canceledSubs = await stripe.subscriptions.list({
+      const subs = await stripe.subscriptions.list({
         customer: customer.id,
-        status: 'canceled',
+        expand: ['data.latest_invoice.payment_intent'],
       });
 
-      if (canceledSubs?.data?.length > 0 && customer?.subscriptions) {
+      const customerSubscriptions = subs?.data;
+
+      // canceledSubs.data[0].latest_invoice.
+
+      /*if (canceledSubs?.data?.length > 0 && customer?.subscriptions) {
         if (!customer?.subscriptions.data) customer.subscriptions.data = [];
         customer.subscriptions.data = customer.subscriptions.data.concat(canceledSubs?.data);
-      }
+      }*/
 
-      if (customer?.subscriptions) {
+      if (customerSubscriptions?.length) {
         await Promise.all(
-          customer.subscriptions.data.map(async (sub: StripeSubscription) => {
+          customerSubscriptions.map(async (sub: StripeSubscription) => {
             const productId = sub.plan.product;
 
             const customerName: string = getCustomerName(customer);
             const lastPaymentDate: Date = await getLastPaymentDateForSubscription(sub);
+
+            let statusDetails;
+            let cancellationDetails;
+
+            const latest_invoice = sub?.latest_invoice;
+            if (latest_invoice && typeof latest_invoice != 'string') {
+              const payment_intent = latest_invoice.payment_intent;
+              if (payment_intent && typeof payment_intent != 'string' && payment_intent.last_payment_error.code == 'card_declined') {
+                statusDetails = SubscriptionStatusDetails.Payment_Failed;
+                cancellationDetails = payment_intent.last_payment_error.decline_code;
+              }
+            }
+            if (!statusDetails && (sub.cancel_at || sub.canceled_at)) {
+              sub.status = 'canceled';
+              statusDetails = SubscriptionStatusDetails.Cancelled_Manually;
+            }
+            // sub.latest_invoice.payment_intent.last_payment_error.code == 'card_declined',
+            // .latest_invoice.payment_intent.last_payment_error.decline_code == 'stolen_card'
 
             const subscription: PartialSubscription = {
               product: { stripeId: productId, amount: Math.round(sub.plan.amount / 100) },
@@ -41,6 +63,8 @@ export const findAllSubscriptionsForUser = async (email: string): Promise<Partia
               stripeCustomerId: sub.customer as string,
               user: { email: customer.email, name: customerName },
               status: sub.status,
+              statusDetails, // Payment Failed, Manually Canceled
+              cancellationDetails, // from stripe... Stolen Card, Expired, etc
               createdDate: new Date(sub.created * 1000),
               lastPaymentDate: lastPaymentDate,
               stripeCustomer: customer,

@@ -133,6 +133,9 @@ model Subscription {
   expirationDate   DateTime?
   lastPaymentDate  DateTime?
   status           String?       @db.VarChar(32)
+  statusDetails    SubscriptionStatusDetails?
+  cancellationDetails String?       @db.VarChar(64)
+  cancellationReason String? @db.Text
   stripeCustomerId String?       @db.VarChar(32)
   stripeId         String?       @unique @db.VarChar(32)
   user             User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
@@ -142,12 +145,20 @@ model Subscription {
   sponsorships     Sponsorship[]
 }
 
+enum SubscriptionStatusDetails {
+  Payment_Failed
+  Cancelled_Manually
+}
+
 model SubscriptionWithDetails {
   id               Int       @unique
   createdDate      DateTime?
   expirationDate   DateTime?
   lastPaymentDate  DateTime?
   status           String?
+  statusDetails    SubscriptionStatusDetails?
+  cancellationDetails String?
+  cancellationReason String?
   stripeId         String?
   stripeCustomerId String?
   stripeProductId  String?
