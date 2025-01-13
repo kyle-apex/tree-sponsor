@@ -45,7 +45,7 @@ export const findAllSubscriptionsForUser = async (email: string): Promise<Partia
             const latest_invoice = sub?.latest_invoice;
             if (latest_invoice && typeof latest_invoice != 'string') {
               const payment_intent = latest_invoice.payment_intent;
-              if (payment_intent && typeof payment_intent != 'string' && payment_intent.last_payment_error.code == 'card_declined') {
+              if (payment_intent && typeof payment_intent != 'string' && payment_intent.last_payment_error?.code == 'card_declined') {
                 statusDetails = SubscriptionStatusDetails.Payment_Failed;
                 cancellationDetails = payment_intent.last_payment_error.decline_code;
               }
