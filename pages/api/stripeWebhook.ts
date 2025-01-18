@@ -27,7 +27,9 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
     } catch (err: unknown) {
-      res.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : ''}`);
+      const errorMessage = `Webhook Error: ${err instanceof Error ? err.message : ''}`;
+      console.log(errorMessage);
+      res.status(400).send(errorMessage);
       return;
     }
     let email: string;
@@ -47,11 +49,13 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       email = invoice.customer_email;
     }
 
+    console.log('received webhook for email: ', email);
+
     await updateSubscriptionsForUser(email);
 
     setTimeout(() => {
       updateSubscriptionsForUser(email);
-    }, 10000);
+    }, 60000);
 
     res.json({ received: true });
   } else {
