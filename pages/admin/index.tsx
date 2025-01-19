@@ -99,6 +99,10 @@ export default function EnhancedTable(): JSX.Element {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const { data: users, isFetching } = useGet<SubscriptionWithDetails[]>('/api/members', 'members');
 
+  for (const row of users || []) {
+    row.status = row.statusDetails ? capitalCase(row.statusDetails) : row.status ? capitalCase(row.status) : '';
+  }
+
   const debounceMilliseconds = 1;
 
   const updateUser = async (userId: number, attributes: Record<string, unknown>) => {
@@ -193,7 +197,7 @@ export default function EnhancedTable(): JSX.Element {
                           },
                         }}
                       >
-                        {row.status ? capitalCase(row.status) : ''}
+                        {row.status}
                       </TableCell>
                       <TableCell className={classes.condensedCell}>
                         {row.amount >= 60 && (
