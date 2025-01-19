@@ -25,6 +25,7 @@ import parsedGet from 'utils/api/parsed-get';
 import { ReferralStats } from 'interfaces';
 import DeleteConfirmationDialog from 'components/DeleteConfirmationDialog';
 import axios from 'axios';
+import { capitalCase } from 'change-case';
 
 export const getServerSideProps = serverSideIsAuthenticated;
 
@@ -205,7 +206,7 @@ const AccountPage = () => {
                 {activeReferrals?.length > 0 && (
                   <Box mt={1} sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
                     <Typography color='secondary'>Active Referrals:</Typography>
-                    <Typography variant='body1'>{activeReferrals.map(ref => ref.name).join(', ')}</Typography>
+                    <Typography variant='body1'>{activeReferrals.map(row => row.userName).join(', ')}</Typography>
                   </Box>
                 )}
                 {inactiveReferrals?.length > 0 && (
@@ -213,8 +214,13 @@ const AccountPage = () => {
                     <Typography color='secondary'>Inactive Referrals:</Typography>
                     <Typography variant='body1'>
                       {inactiveReferrals
-                        .map(ref => {
-                          return ref.name + ` (${ref.status.replace('_', ' ')})`;
+                        .map(row => {
+                          return (
+                            row.userName +
+                            ` (${row.statusDetails ? capitalCase(row.statusDetails) : row.status ? capitalCase(row.status) : ''}${
+                              row.cancellationDetails ? ' - ' + capitalCase(row.cancellationDetails) : ''
+                            })`
+                          );
                         })
                         .join(', ')}
                     </Typography>
