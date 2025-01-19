@@ -27,8 +27,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const referralNames: string[] = [];
 
     stats.amountOfDonations = subscriptionWithDetails.reduce((previous, current) => {
-      if (!stats.referrals.find(ref => ref.name == current.userName))
-        stats.referrals.push({ name: current.userName, status: current.status });
+      if (!stats.referrals.find(ref => ref.userName == current.userName))
+        stats.referrals.push({
+          userName: current.userName,
+          status: current.status,
+          statusDetails: current.statusDetails,
+          cancellationDetails: current.cancellationDetails,
+        });
 
       const latestYear = current.lastPaymentDate?.getFullYear();
       const firstYear = current.createdDate?.getFullYear();
