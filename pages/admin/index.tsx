@@ -31,6 +31,7 @@ import usePagination from 'utils/hooks/use-pagination';
 import UserSelector from 'components/UserSelector';
 import NavigationMenu from 'components/admin/NavigationMenu';
 import SplitRow from 'components/layout/SplitRow';
+import { Typography } from '@mui/material';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'isAdmin');
@@ -98,6 +99,10 @@ export default function EnhancedTable(): JSX.Element {
   const [nameFilter, setNameFilter] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
   const { data: users, isFetching } = useGet<SubscriptionWithDetails[]>('/api/members', 'members');
+
+  for (const row of users || []) {
+    row.status = row.statusDetails ? capitalCase(row.statusDetails) : row.status ? capitalCase(row.status) : '';
+  }
 
   const debounceMilliseconds = 1;
 
@@ -193,7 +198,8 @@ export default function EnhancedTable(): JSX.Element {
                           },
                         }}
                       >
-                        {row.status ? capitalCase(row.status) : ''}
+                        <div>{row.status}</div>
+                        {row.cancellationDetails && <Typography variant='caption'>{capitalCase(row.cancellationDetails)}</Typography>}
                       </TableCell>
                       <TableCell className={classes.condensedCell}>
                         {row.amount >= 60 && (

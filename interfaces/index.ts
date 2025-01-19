@@ -203,4 +203,6 @@ export type CheckinFields = {
   isEmailOptIn?: boolean;
 };
 
-export type ReferralStats = { numberOfDonations: number; amountOfDonations: number; referrals: { name: string; status: string }[] };
+export type PartialSubscriptionWithDetails = Partial<SubscriptionWithDetails>;
+
+export type ReferralStats = { numberOfDonations: number; amountOfDonations: number; referrals: PartialSubscriptionWithDetails[] };
