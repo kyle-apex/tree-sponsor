@@ -12,7 +12,7 @@ const UserAvatar = ({
   link,
   sx,
 }: {
-  image: string;
+  image?: string;
   name: string;
   size?: number;
   link?: string;
