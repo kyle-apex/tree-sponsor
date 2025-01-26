@@ -145,7 +145,7 @@ const EventInvite = ({ event }: { event?: PartialEvent }) => {
         </Box>
         <hr />
         <Box flexDirection='row' alignItems='center' style={{ display: 'flex', gap: '10px' }}>
-          <UserBubbles ml={-1.4} users={testUsers} maxLength={8} size={24} />
+          <UserBubbles ml={-1.4} users={testUsers} maxLength={6} size={24} />
           <Typography color='gray' variant='body2'>
             {testUsers[0].name}, {testUsers[1].name}
             {testUsers?.length > 2 ? `, and ${testUsers?.length - 2} others` : ''}
