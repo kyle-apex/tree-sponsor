@@ -98,7 +98,7 @@ const EventInvite = ({ event }: { event?: PartialEvent }) => {
             borderTopLeftRadius: '5px',
             borderTopRightRadius: '5px',
           }}
-          src='https://secure.meetupstatic.com/photos/event/c/5/2/b/600_523730475.webp?w=750'
+          src='https://secure.meetupstatic.com/photos/event/4/3/1/f/600_521177183.webp?w=750'
         ></img>
         {false && (
           <Box flexDirection='row' alignItems='center' style={{ display: 'flex', gap: '5px' }} mb={1}>

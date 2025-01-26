@@ -14,10 +14,10 @@ const InvitePage = ({ event }: { event: PartialEvent }) => {
 
   return (
     <Layout
-      title='Event Invite'
+      title={event.name}
       header='TreeFolksYP'
-      ogImage='https://tfyp-images.s3.amazonaws.com/Event+Check-in.png'
-      description={'TreeFolks Young Professionals welcomes you to our ' + event.name}
+      ogImage='https://secure.meetupstatic.com/photos/event/4/3/1/f/600_521177183.webp?w=750'
+      description={'Kyle Hoskins invites you to join for the ' + event.name}
     >
       <CenteredSection maxWidth='400px'>
         <Invite event={parsedEvent} />
