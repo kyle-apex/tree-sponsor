@@ -14,6 +14,7 @@ import InsertInvitationIcon from '@mui/icons-material/InsertInvitation';
 import PlaceIcon from '@mui/icons-material/Place';
 import { Place } from '@mui/icons-material';
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
+import ExpandCollapseSection from 'components/layout/ExpandCollapseSection';
 
 const testUsers: PartialUser[] = [
   {
@@ -169,7 +170,9 @@ const EventInvite = ({ event }: { event?: PartialEvent }) => {
         <Box sx={{ mt: 3 }}>
           <Typography>Event Details:</Typography>
           <Typography variant='body2' color='gray'>
-            <SafeHTMLDisplay html={event.checkInDetails}></SafeHTMLDisplay>
+            <ExpandCollapseSection maxHeight={200}>
+              <SafeHTMLDisplay html={event.checkInDetails}></SafeHTMLDisplay>
+            </ExpandCollapseSection>
           </Typography>
         </Box>
       )}
