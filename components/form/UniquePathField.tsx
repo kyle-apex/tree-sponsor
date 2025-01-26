@@ -3,6 +3,13 @@ import TextField from '@mui/material/TextField';
 import { useState, useEffect } from 'react';
 import parsedGet from 'utils/api/parsed-get';
 import ErrorText from './ErrorText';
+
+function toPath(baseString: string): string {
+  if (!baseString) return '';
+  const suggestedPath = baseString.replace(/ /g, '-').replace(/\./g, '-');
+  return suggestedPath.toLowerCase();
+}
+
 const UniquePathField = ({
   initialValue,
   isFetched,
@@ -10,6 +17,8 @@ const UniquePathField = ({
   label,
   onChange,
   disabled,
+  dependendentValue,
+  linkPreviewPrefix,
 }: {
   initialValue: string;
   isFetched?: boolean;
@@ -17,6 +26,8 @@ const UniquePathField = ({
   label: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  dependendentValue?: string;
+  linkPreviewPrefix?: string;
 }) => {
   const [state, setState] = useState({
     value: '',
@@ -25,6 +36,8 @@ const UniquePathField = ({
     initialValue: '',
     hasPatternError: false,
   });
+  const [priorDependentValue, setPriorDependentValue] = useState('');
+
   useEffect(() => {
     if (isFetched === false) return;
 
@@ -34,6 +47,21 @@ const UniquePathField = ({
       });
   }, [initialValue, isFetched]);
 
+  useEffect(() => {
+    if (!dependendentValue) return;
+    // update the path if it hasn't been customized
+    if (
+      !priorDependentValue ||
+      (toPath(priorDependentValue) == state.value && toPath(dependendentValue) != state.value && priorDependentValue != dependendentValue)
+    ) {
+      setPriorDependentValue(dependendentValue);
+      setState(state => {
+        return { ...state, value: toPath(dependendentValue) };
+      });
+      handleChange({ target: { value: toPath(dependendentValue) } });
+    } else setPriorDependentValue(dependendentValue);
+  }, [dependendentValue, state, priorDependentValue]);
+
   const handleChange = async (event: { target: { value: string } }) => {
     //setIsChanged(true);
     const value = event.target.value;
@@ -42,7 +70,7 @@ const UniquePathField = ({
       return { ...state, value, hasPatternError };
     });
     if (value != state.initialValue && !hasPatternError) {
-      const isDuplicate = (await parsedGet(`/api${validatorPath}${state.value}`)) as boolean;
+      const isDuplicate = (await parsedGet(`/api${validatorPath}${value}`)) as boolean;
       if (!isDuplicate) onChange(value);
       setState(state => {
         return { ...state, isDuplicate };
@@ -63,6 +91,7 @@ const UniquePathField = ({
         id='profile-path-field'
         fullWidth={true}
         disabled={disabled}
+        helperText={linkPreviewPrefix && state.value ? `${linkPreviewPrefix}${state.value}` : ''}
       ></TextField>
       {state.hasPatternError && <ErrorText>{label} must only contain lower case letters, numbers, and &quot;-&quot;</ErrorText>}
       {state.isDuplicate && <ErrorText>{label} is already in use</ErrorText>}

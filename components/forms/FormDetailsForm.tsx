@@ -6,6 +6,7 @@ import Skeleton from '@mui/material/Skeleton';
 import React, { useState } from 'react';
 import { paramCase } from 'change-case';
 import JsonField from 'components/form/JsonField';
+import UniquePathField from 'components/form/UniquePathField';
 
 const TextEditor = dynamic(() => import('components/TextEditor'), {
   ssr: false,
@@ -26,6 +27,7 @@ const FormDetailsForm = ({
   updateAttribute: (name: keyof PartialForm | string, value: unknown) => void;
 }) => {
   const [name, setName] = useState(form.name);
+  const [path, setPath] = useState(form?.path);
   return (
     <>
       <TextField
@@ -40,7 +42,20 @@ const FormDetailsForm = ({
         sx={{ marginBottom: 3 }}
         id='name-field'
       ></TextField>
-
+      <Box sx={{ mb: 0 }}>
+        <UniquePathField
+          label='Form Link Path'
+          initialValue={path}
+          validatorPath={'/forms/is-duplicate-path?id=' + (form?.id || 0) + '&path='}
+          onChange={newValue => {
+            updateAttribute('path', newValue);
+            setPath(newValue);
+          }}
+          disabled={!name}
+          dependendentValue={name}
+          linkPreviewPrefix='Form will be available at: tfyp.org/f/'
+        ></UniquePathField>
+      </Box>
       <Box sx={{ marginBottom: 2, minHeight: '110px', display: 'block' }}>
         <TextEditor
           label='Description'
