@@ -12,7 +12,7 @@ tomorrow.setDate(new Date().getDate() + 1);
 
 const AddForm = ({ onAdd }: { onAdd: (newForm: PartialForm) => void }) => {
   const [session] = useSession();
-  const formRef = useRef<PartialForm>({ completedMessage: 'Thank you for your response.' });
+  const formRef = useRef<PartialForm>({ completedMessage: 'Thank you for your response.', questionsJson: [] });
   const [isLoading, setIsLoading] = useState(false);
   const [isValid, setIsValid] = useState(false);
 
@@ -30,7 +30,7 @@ const AddForm = ({ onAdd }: { onAdd: (newForm: PartialForm) => void }) => {
   };
 
   const validate = (form: PartialForm) => {
-    setIsValid(!!form.name);
+    setIsValid(!!form.name && !!form.questionsJson);
   };
 
   return (
