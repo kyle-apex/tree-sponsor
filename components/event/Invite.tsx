@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { LeaderRow, MembershipStatus, PartialEvent, CheckinFields, PartialUser } from 'interfaces';
-import { useEffect, useRef, useState } from 'react';
+import { LeaderRow, MembershipStatus, PartialEvent, CheckinFields, PartialUser, PartialEventRSVP } from 'interfaces';
+import { SetStateAction, useEffect, useRef, useState } from 'react';
 import formatDateString from 'utils/formatDateString';
 import useLocalStorage from 'utils/hooks/use-local-storage';
 import EventNameDisplay from './EventNameDisplay';
@@ -15,6 +15,10 @@ import PlaceIcon from '@mui/icons-material/Place';
 import { Place } from '@mui/icons-material';
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
 import ExpandCollapseSection from 'components/layout/ExpandCollapseSection';
+import { useGet } from 'utils/hooks/use-get';
+import { useAddToQuery } from 'utils/hooks/use-add-to-query';
+import axios from 'axios';
+import InviteRSVPDialog from './InviteRSVPDialog';
 
 const testUsers: PartialUser[] = [
   {
@@ -83,9 +87,42 @@ const testUsers: PartialUser[] = [
 ];
 const hosts = testUsers.slice(0, 6).reverse();
 
-const EventInvite = ({ event }: { event?: PartialEvent }) => {
+const EventInvite = ({
+  event,
+  invitedByUser,
+  name,
+  email,
+}: {
+  event?: PartialEvent;
+  invitedByUser?: PartialUser;
+  name?: string;
+  email?: string;
+}) => {
   const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
+  const [storedUser, setStoredUser] = useState<PartialUser>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [eventRSVP, setEventRSVP] = useState<PartialEventRSVP>();
+  const [isRSVPDialogOpen, setIsRSVPDialogOpen] = useState(false);
+  const {
+    data: rsvps,
+    isFetching,
+    refetch,
+    isFetched,
+  } = useGet<PartialEventRSVP[]>(`/api/events/${event.id}/rsvps`, `events/${event.id}/rsvps`, null);
+
+  const getUserData = async (email: string) => {
+    const results: any = await axios.get(`/api/events/${event.id}/rsvps?email=${email}`);
+    const { rsvp, user }: { rsvp: PartialEventRSVP; user: PartialUser } = results?.data;
+
+    setEventRSVP(rsvp);
+    setStoredUser(user);
+  };
+
+  useEffect(() => {
+    if (storedEmail) {
+      getUserData(storedEmail);
+    }
+  }, [storedEmail]);
 
   return (
     <>
@@ -108,7 +145,9 @@ const EventInvite = ({ event }: { event?: PartialEvent }) => {
             </Typography>
           </Box>
         )}
-        <EventNameDisplay isRecap={false} name={event?.name} />
+        <Typography variant='subtitle1' color='secondary' sx={{ lineHeight: 'normal', fontWeight: 600, fontSize: '1.4rem' }} mb={2} mt={1}>
+          {event.name}
+        </Typography>
         <Box flexDirection='row' alignItems='center' style={{ display: 'flex', gap: '5px', marginTop: '8px', marginBottom: '4px' }}>
           <InsertInvitationIcon sx={{ fontSize: '14x', color: 'gray' }}></InsertInvitationIcon>
           <Typography variant='subtitle2' sx={{ fontSize: '1rem' }}>
@@ -152,13 +191,29 @@ const EventInvite = ({ event }: { event?: PartialEvent }) => {
           </Typography>
         </Box>
         <Typography sx={{ mt: 2, mb: 2 }}>
-          Kyle Hoskins invited you to {event.name} on {formatDateString(event?.startDate)} 6:30-8pm:
+          {invitedByUser?.name ? invitedByUser.name : 'TreeFolksYP'} invited you to {event.name} on {formatDateString(event?.startDate)}{' '}
+          6:30-8pm:
         </Typography>
-        <Button fullWidth variant='contained' color='primary' sx={{ mb: 1.5 }}>
+        <Button
+          fullWidth
+          variant='contained'
+          color='primary'
+          sx={{ mb: 1.5 }}
+          onClick={() => {
+            setIsRSVPDialogOpen(true);
+          }}
+        >
           Accept Invite
         </Button>
         <SplitRow gap={1}>
-          <Button fullWidth variant='outlined' color='primary'>
+          <Button
+            fullWidth
+            variant='outlined'
+            color='primary'
+            onClick={() => {
+              setIsRSVPDialogOpen(true);
+            }}
+          >
             Maybe
           </Button>
           <Button fullWidth variant='outlined' color='secondary'>
@@ -176,6 +231,14 @@ const EventInvite = ({ event }: { event?: PartialEvent }) => {
           </Typography>
         </Box>
       )}
+      <InviteRSVPDialog
+        event={event}
+        initialEmail={storedEmail}
+        initialName={storedUser?.name}
+        isOpen={isRSVPDialogOpen}
+        setIsOpen={setIsRSVPDialogOpen}
+        invitedByUser={invitedByUser}
+      />
     </>
   );
 };
