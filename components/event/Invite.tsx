@@ -135,7 +135,7 @@ const EventInvite = ({
             borderTopLeftRadius: '5px',
             borderTopRightRadius: '5px',
           }}
-          src='https://secure.meetupstatic.com/photos/event/4/3/1/f/600_521177183.webp?w=750'
+          src={event.pictureUrl}
         ></img>
         {false && (
           <Box flexDirection='row' alignItems='center' style={{ display: 'flex', gap: '5px' }} mb={1}>
@@ -221,12 +221,12 @@ const EventInvite = ({
           </Button>
         </SplitRow>
       </Box>
-      {event.checkInDetails && (
+      {event.description && (
         <Box sx={{ mt: 3 }}>
           <Typography>Event Details:</Typography>
           <Typography variant='body2' color='gray'>
             <ExpandCollapseSection maxHeight={200}>
-              <SafeHTMLDisplay html={event.checkInDetails}></SafeHTMLDisplay>
+              <SafeHTMLDisplay html={event.description}></SafeHTMLDisplay>
             </ExpandCollapseSection>
           </Typography>
         </Box>

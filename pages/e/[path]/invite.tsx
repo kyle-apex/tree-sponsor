@@ -26,7 +26,7 @@ const InvitePage = ({
     <Layout
       title={event.name}
       header='TreeFolksYP'
-      ogImage='https://secure.meetupstatic.com/photos/event/4/3/1/f/600_521177183.webp?w=750'
+      ogImage={event.pictureUrl}
       description={`${invitedByUser?.name || 'TreeFolksYP'} invites you to join for the ${event.name}`}
     >
       <CenteredSection maxWidth='400px'>

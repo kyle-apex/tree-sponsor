@@ -17,6 +17,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import UserMultiSelect from './UserMultiSelect';
 import DragDropTreeOrder from './DragDropTreeOrder';
 import Typography from '@mui/material/Typography';
+import ImageUploadAndPreview from 'components/ImageUploadAndPreview';
 
 const TextEditor = dynamic(() => import('components/TextEditor'), {
   ssr: false,
@@ -53,6 +54,7 @@ const EventDetailsForm = ({
     updateAttribute('location.latitude', latitude);
     updateAttribute('location.longitude', longitude);
   }, 200);
+  const [pictureUrl, setPictureUrl] = useState(event.pictureUrl);
 
   const [endDate, setEndDate] = useState(event.endDate);
   const [activeStartDate, setActiveStartDate] = useState(event.activeStartDate);
@@ -161,13 +163,30 @@ const EventDetailsForm = ({
       )}
       <Box sx={{ marginTop: 3, marginBottom: 2, minHeight: '110px', display: 'block' }}>
         <TextEditor
-          label='Check-in Details'
+          label='Check-in Page Details'
           placeholder='Enter details to appear on the check-in page'
           value={event?.checkInDetails}
           onChange={val => updateAttribute('checkInDetails', val)}
         />
       </Box>
-      <Box sx={{ marginBottom: 3 }}>
+      <Box sx={{ marginTop: 3, marginBottom: 2, minHeight: '110px', display: 'block' }}>
+        <TextEditor
+          label='RSVP Page Description'
+          placeholder='Enter details to appear on the RSVP page'
+          value={event?.description}
+          onChange={val => updateAttribute('description', val)}
+        />
+      </Box>
+      <ImageUploadAndPreview
+        addSubtitleText='Click to add event image'
+        imageUrl={pictureUrl}
+        setImageUrl={(imageUrl: string) => {
+          console.log('imageUrl', imageUrl);
+          updateAttribute('pictureUrl', imageUrl);
+          setPictureUrl(imageUrl);
+        }}
+      />
+      <Box sx={{ marginBottom: 3, mt: 2 }}>
         <Checkbox defaultChecked={event?.isPrivate} onChange={e => updateAttribute('isPrivate', e.target.checked)}></Checkbox> Hide event
         from public view (test or private event)
       </Box>
