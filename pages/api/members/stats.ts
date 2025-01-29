@@ -9,6 +9,7 @@ type Stats = {
   newActive: number;
   newInactive: number;
   percentageByYear: { percentage: number; bestPercentage: number }[];
+  predictedByEndOfYear: number;
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -24,11 +25,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     distinct: ['email'],
   });
 
+  const results = (await prisma.$queryRaw`WITH PreviousYearsData AS (
+    SELECT 
+        YEAR(createdDate) AS year,
+        SUM(CASE WHEN DATE_FORMAT(createdDate, '%m-%d') >= DATE_FORMAT(NOW(), '%m-%d') THEN 1 ELSE 0 END) AS after_today
+    FROM SubscriptionWithDetails
+    WHERE YEAR(createdDate) BETWEEN YEAR(NOW()) - 2 AND YEAR(NOW()) - 1
+    GROUP BY YEAR(createdDate)
+)
+SELECT ROUND(AVG(after_today), 0) AS expected_users_after_today
+FROM PreviousYearsData;`) as any[];
+
   const stats: Stats = {
     active: 0,
     newActive: 0,
     newInactive: 0,
     percentageByYear: [],
+    predictedByEndOfYear: results ? Number(results[0]?.expected_users_after_today || 0) : 0,
   };
 
   const calendarYear = getOneYearAgo();
