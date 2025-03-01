@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { ErrorInfo, ReactNode } from 'react';
 
-class ErrorBoundary extends React.Component {
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state = { hasError: false };
-  constructor(props: any) {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
 
     // Define a state variable to track whether is an error or not
@@ -13,7 +21,7 @@ class ErrorBoundary extends React.Component {
     console.log('got error here');
     return { hasError: true };
   }
-  componentDidCatch(error: any, errorInfo: any) {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // You can use your own error logging service here
     console.log('da err', { error, errorInfo });
   }

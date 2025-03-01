@@ -4,7 +4,6 @@ import DialogContent from '@mui/material/DialogContent';
 import makeStyles from '@mui/styles/makeStyles';
 import ClearIcon from '@mui/icons-material/Clear';
 import IconButton from '@mui/material/IconButton';
-import Image from 'next/image';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
