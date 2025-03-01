@@ -36,8 +36,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
     }
 
     // Return children components in case of no error
-    // eslint-disable-next-line
-    return this.props.children; // eslint-disable-line
+    return this.props.children;
   }
 }
 

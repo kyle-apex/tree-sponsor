@@ -14,7 +14,6 @@ const LoadingButton = ({
   isLoading,
   disabled,
   startIcon,
-  //isLoadingOnClick,
   sx,
 }: {
   children?: React.ReactNode;
@@ -26,16 +25,8 @@ const LoadingButton = ({
   isLoading?: boolean;
   disabled?: boolean;
   startIcon?: React.ReactNode;
-  //isLoadingOnClick?: boolean;
   sx?: SxProps<Theme>;
 }): JSX.Element => {
-  /*const handleClick = useCallback(
-    a => {
-      onClick(a);
-      isLoading = true;
-    },
-    [onClick],
-  );*/
   return (
     <Button
       size={size}
