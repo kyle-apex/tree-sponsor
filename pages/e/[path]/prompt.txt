@@ -1,0 +1,13 @@
+I need a new event welcome page that is optimized for landscape ipad format.  
+
+The path to the page should be e/[path]/welcome.tsx
+
+It should load the event information and display the event name as the page header in white text over the primary green background color.
+
+The page should contain a QR Code on the left side that directs to checkin.tfyp.org.  This QR code should be the primary green color in this app.
+
+When someone creates a new EventCheckin for the event using e/[path]/checkin.tsx, socket.io should notify this welcome page and display a message.
+
+The message should be "Welcome " plus the name of the user that just checked in.  This message should show for 5 seconds.  If there are simulaneous checkins, it should wait until the first one is expired to show the next welcome message.
+
+On the right side of the page it should show a list of users that have checked in with the most recent on top.  This should display in the same manner as users are displayed on the Checkin page

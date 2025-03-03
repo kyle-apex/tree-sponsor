@@ -1,8 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSidePropsContext } from 'next';
-import { io, Socket } from 'socket.io-client';
-import { Box, Typography, Container, Paper, List, ListItem, ListItemText, Divider, CircularProgress } from '@mui/material';
+import { Box, Typography, Container, Paper, List, ListItem, ListItemText, Divider, CircularProgress, Button } from '@mui/material';
 import Image from 'next/image';
 import { prisma } from 'utils/prisma/init';
 import formatServerProps from 'utils/api/format-server-props';
@@ -16,9 +15,9 @@ interface WelcomeProps {
 }
 
 interface CheckinNotification {
-  userName: string;
-  timestamp: string;
-  eventPath: string;
+  id: string;
+  name: string;
+  isSupporter?: boolean;
 }
 
 interface CheckinData {
@@ -28,6 +27,7 @@ interface CheckinData {
     name?: string;
     firstName?: string;
     lastName?: string;
+    roles?: { name: string }[];
   };
   createdAt?: string;
 }
@@ -35,254 +35,30 @@ interface CheckinData {
 const WelcomePage = ({ event }: WelcomeProps) => {
   const router = useRouter();
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
-  const [socket, setSocket] = useState<Socket | null>(null);
   const [welcomeMessage, setWelcomeMessage] = useState<string>('');
   const [isShowingWelcome, setIsShowingWelcome] = useState<boolean>(false);
   const [recentCheckins, setRecentCheckins] = useState<CheckinNotification[]>([]);
   const [attendees, setAttendees] = useState<PartialUser[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [lastCheckTime, setLastCheckTime] = useState<string>('');
+  const [correctQuizResponses, setCorrectQuizResponses] = useState<number>(0);
   const welcomeQueueRef = useRef<CheckinNotification[]>([]);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const socketRef = useRef<Socket | null>(null);
-
-  // Fetch existing check-ins when the page loads
-  useEffect(() => {
-    const fetchExistingCheckins = async () => {
-      try {
-        setIsLoading(true);
-        console.log('Fetching attendees for event:', event.id);
-        console.log('Event organizers:', event.organizers);
-
-        // Use the same endpoint as the checkin page to get complete user data with roles
-        const response = await axios.get(`/api/events/${event.id}/attendees`);
-
-        if (response.data && Array.isArray(response.data)) {
-          console.log('Received attendees data:', response.data);
-
-          // Process the attendees to ensure organizer roles are properly set
-          const processedAttendees = response.data.map((user: PartialUser) => {
-            // Create a copy of the user to avoid modifying the original
-            const processedUser = { ...user };
-
-            // Initialize roles array if it doesn't exist
-            if (!processedUser.roles) {
-              processedUser.roles = [];
-            }
-
-            // Check if user is an organizer and add the role if not already present
-            const isOrganizer = event.organizers?.some(organizer => organizer.id === user.id);
-            if (isOrganizer && !processedUser.roles.some(role => role.name === 'Organizer')) {
-              processedUser.roles.push({ name: 'Organizer' });
-            }
-
-            // Check if user is staff (email ends with @treefolks.org)
-            const isStaff =
-              (user.email && user.email.endsWith('@treefolks.org')) || (user.email2 && user.email2.endsWith('@treefolks.org'));
-
-            if (isStaff && !processedUser.roles.some(role => role.name === 'Staff')) {
-              processedUser.roles.push({ name: 'Staff' });
-            }
-
-            return processedUser;
-          });
-
-          // The attendees endpoint already returns properly formatted users with roles
-          setAttendees(processedAttendees.slice(0, 20));
-
-          // Also format for the welcome message display
-          const formattedCheckins = processedAttendees.map((user: PartialUser) => ({
-            userName: user.displayName || user.name || '',
-            timestamp: new Date().toISOString(), // We don't have timestamp in this response
-            eventPath: event.path,
-          }));
-          setRecentCheckins(formattedCheckins.slice(0, 20));
-        } else {
-          // Fallback to the checkin-list endpoint if attendees endpoint fails
-          console.log('Attendees endpoint returned invalid data, falling back to checkin-list');
-          const fallbackResponse = await axios.get(`/api/events/${event.id}/checkin-list`);
-          if (fallbackResponse.data && Array.isArray(fallbackResponse.data.checkins)) {
-            // Format for the welcome message display
-            const formattedCheckins = fallbackResponse.data.checkins.map((checkin: CheckinData) => ({
-              userName: `${checkin.user.firstName || ''} ${checkin.user.lastName || ''}`.trim(),
-              timestamp: checkin.createdAt || new Date().toISOString(),
-              eventPath: event.path,
-            }));
-            setRecentCheckins(formattedCheckins.slice(0, 20));
-
-            // Format for the attendee component display
-            const formattedAttendees: PartialUser[] = fallbackResponse.data.checkins.map((checkin: CheckinData) => {
-              // Create a basic user object
-              const user: PartialUser = {
-                id: checkin.user.id,
-                name: `${checkin.user.firstName || ''} ${checkin.user.lastName || ''}`.trim(),
-                displayName: `${checkin.user.firstName || ''} ${checkin.user.lastName || ''}`.trim(),
-                roles: [],
-              };
-
-              // Check if user is an organizer
-              if (event.organizers?.some(organizer => organizer.id === user.id)) {
-                user.roles.push({ name: 'Organizer' });
-              }
-
-              return user;
-            });
-            setAttendees(formattedAttendees.slice(0, 20));
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching existing check-ins:', error);
-        // Try the fallback endpoint if the first one fails
-        try {
-          console.log('Error with attendees endpoint, falling back to checkin-list');
-          const fallbackResponse = await axios.get(`/api/events/${event.id}/checkin-list`);
-          if (fallbackResponse.data && Array.isArray(fallbackResponse.data.checkins)) {
-            // Process as in the fallback case above
-            const formattedCheckins = fallbackResponse.data.checkins.map((checkin: CheckinData) => ({
-              userName: `${checkin.user.firstName || ''} ${checkin.user.lastName || ''}`.trim(),
-              timestamp: checkin.createdAt || new Date().toISOString(),
-              eventPath: event.path,
-            }));
-            setRecentCheckins(formattedCheckins.slice(0, 20));
-
-            const formattedAttendees: PartialUser[] = fallbackResponse.data.checkins.map((checkin: CheckinData) => {
-              const user: PartialUser = {
-                id: checkin.user.id,
-                name: `${checkin.user.firstName || ''} ${checkin.user.lastName || ''}`.trim(),
-                displayName: `${checkin.user.firstName || ''} ${checkin.user.lastName || ''}`.trim(),
-                roles: [],
-              };
-
-              // Check if user is an organizer
-              if (event.organizers?.some(organizer => organizer.id === user.id)) {
-                user.roles.push({ name: 'Organizer' });
-              }
-
-              return user;
-            });
-            setAttendees(formattedAttendees.slice(0, 20));
-          }
-        } catch (fallbackError) {
-          console.error('Error with fallback fetch:', fallbackError);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (event?.id) {
-      fetchExistingCheckins();
-    }
-  }, [event]);
-
-  // Connect to socket.io server
-  useEffect(() => {
-    // Initialize socket connection
-    const socketInitializer = async () => {
-      try {
-        console.log('Initializing socket connection...');
-        // Make sure the socket server is running
-        await fetch('/api/socket');
-
-        // Connect to the socket server with the correct path
-        const socketInstance = io({
-          path: '/api/socket',
-          reconnectionAttempts: 5,
-          reconnectionDelay: 1000,
-        });
-
-        socketInstance.on('connect', () => {
-          console.log('Socket connected successfully with ID:', socketInstance.id);
-        });
-
-        socketInstance.on('connect_error', err => {
-          console.error('Socket connection error:', err);
-        });
-
-        socketRef.current = socketInstance;
-        setSocket(socketInstance);
-      } catch (error) {
-        console.error('Error initializing socket:', error);
-      }
-    };
-
-    socketInitializer();
-
-    // Clean up on unmount
-    return () => {
-      if (socketRef.current) {
-        console.log('Disconnecting socket...');
-        socketRef.current.disconnect();
-      }
-    };
-  }, []);
-
-  // Handle new check-ins
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleNewCheckin = (data: CheckinNotification) => {
-      console.log('New check-in received:', data);
-
-      // Only process check-ins for this event
-      if (data.eventPath === router.query.path) {
-        console.log('Check-in is for this event, processing...');
-        welcomeQueueRef.current.push(data);
-
-        // Add to recent checkins list
-        setRecentCheckins(prev => {
-          const newCheckins = [data, ...prev];
-          // Keep only the most recent 20 check-ins
-          return newCheckins.slice(0, 20);
-        });
-
-        // Add to attendees list for Attendee component
-        setAttendees(prev => {
-          const newAttendee: PartialUser = {
-            id: Date.now(), // Use timestamp as temporary ID
-            name: data.userName,
-            displayName: data.userName,
-            // Check if this might be an organizer based on name matching
-            // This is a simplistic approach - ideally we'd have the user ID to check properly
-            roles: event.organizers?.some(
-              organizer =>
-                organizer.name?.toLowerCase() === data.userName.toLowerCase() ||
-                organizer.displayName?.toLowerCase() === data.userName.toLowerCase(),
-            )
-              ? [{ name: 'Organizer' }]
-              : [],
-          };
-          const newAttendees = [newAttendee, ...prev];
-          // Keep only the most recent 20 attendees
-          return newAttendees.slice(0, 20);
-        });
-
-        // If we're not currently showing a welcome message, show this one
-        if (!isShowingWelcome) {
-          showNextWelcome();
-        }
-      } else {
-        console.log('Check-in is for a different event, ignoring.');
-      }
-    };
-
-    console.log('Setting up new-checkin event listener');
-    socket.on('new-checkin', handleNewCheckin);
-
-    return () => {
-      console.log('Removing new-checkin event listener');
-      socket.off('new-checkin', handleNewCheckin);
-    };
-  }, [socket, isShowingWelcome, router.query.path, event.organizers]);
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const quizStatsIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const attendeesRef = useRef<PartialUser[]>([]);
 
   // Function to show the next welcome message in the queue
   const showNextWelcome = () => {
     if (welcomeQueueRef.current.length === 0) {
+      console.log('No welcome messages in queue');
       setIsShowingWelcome(false);
       return;
     }
 
     const nextWelcome = welcomeQueueRef.current.shift();
-    setWelcomeMessage(`Welcome ${nextWelcome.userName}`);
+    console.log(`Showing welcome message for: ${nextWelcome.name}`);
+    setWelcomeMessage(`Welcome ${nextWelcome.name}`);
     setIsShowingWelcome(true);
 
     // Clear any existing timeout
@@ -292,15 +68,171 @@ const WelcomePage = ({ event }: WelcomeProps) => {
 
     // Set timeout to clear the message after 5 seconds
     timeoutRef.current = setTimeout(() => {
+      console.log('Welcome message timeout expired');
       setIsShowingWelcome(false);
       setWelcomeMessage('');
 
       // Check if there are more messages in the queue
       if (welcomeQueueRef.current.length > 0) {
+        console.log(`${welcomeQueueRef.current.length} more welcome messages in queue`);
         showNextWelcome();
       }
     }, 5000);
   };
+
+  // Fetch check-ins data
+  const fetchCheckins = async () => {
+    try {
+      console.log('Fetching attendees for event:', event.id);
+      setIsLoading(true); // Set loading state at the beginning of the fetch
+
+      // Use the attendees endpoint without providing an email to get all check-ins sorted by time
+      const response = await axios.get(`/api/events/${event.id}/attendees`);
+
+      console.log('API response:', response.data);
+
+      if (response.data && response.data.attendees && Array.isArray(response.data.attendees)) {
+        const attendeesList = response.data.attendees;
+        console.log('Received attendees data, count:', attendeesList.length);
+
+        // Ensure each attendee has the required properties for the Attendee component
+        const processedAttendees = attendeesList.map((user: PartialUser) => {
+          // Make sure each user has at least an empty roles array to prevent errors
+          if (!user.roles) {
+            user.roles = [];
+            console.log(`User ${user.name || user.id} had no roles array, created empty one`);
+          } else {
+            console.log(`User ${user.name || user.id} roles:`, user.roles.map(r => r.name).join(', '));
+          }
+          return user;
+        });
+
+        // Update attendees state - attendees are already sorted by check-in time from the API
+        setAttendees(processedAttendees);
+
+        // Also format for the welcome message display
+        const formattedCheckins = processedAttendees.map((user: PartialUser) => ({
+          id: user.id.toString(),
+          name: user.displayName || user.name || '',
+        }));
+        setRecentCheckins(formattedCheckins.slice(0, 20));
+        setLastCheckTime(new Date().toISOString());
+
+        // Check for new attendees
+        if (attendees.length > 0) {
+          const existingIds = new Set(attendees.map(a => a.id));
+          const newAttendees = processedAttendees.filter((a: PartialUser) => !existingIds.has(a.id));
+
+          console.log(`Found ${newAttendees.length} new attendees since last check`);
+
+          // Process new check-ins for welcome messages
+          newAttendees.forEach((newUser: PartialUser) => {
+            const userName = newUser.displayName || newUser.name || '';
+            console.log(`Adding new check-in to welcome queue: ${userName}`);
+
+            // Check if user is a supporter
+            const isSupporter = newUser.roles?.some(role => role.name === 'Supporter') || false;
+            if (isSupporter) {
+              console.log(`${userName} is a supporting member!`);
+            }
+
+            const newCheckin: CheckinNotification = {
+              id: newUser.id.toString(),
+              name: userName,
+              isSupporter,
+            };
+
+            // Add to welcome queue
+            welcomeQueueRef.current.push(newCheckin);
+          });
+
+          // If we have new attendees and we're not currently showing a welcome message, show one
+          if (newAttendees.length > 0 && !isShowingWelcome) {
+            console.log('Triggering welcome message display');
+            showNextWelcome();
+          }
+        } else {
+          console.log('First load - no existing attendees to compare against');
+        }
+      } else {
+        console.error('Attendees endpoint returned invalid data structure:', response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching check-ins:', error);
+    } finally {
+      // Always set loading to false when done, regardless of success or failure
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch quiz stats
+  const fetchQuizStats = async () => {
+    try {
+      console.log('Fetching quiz stats for event:', event.id);
+      const response = await axios.get(`/api/events/${event.id}/quiz-stats`);
+
+      if (response.data && typeof response.data.correctResponsesCount === 'number') {
+        console.log('Received quiz stats:', response.data);
+        setCorrectQuizResponses(response.data.correctResponsesCount);
+      } else {
+        console.error('Quiz stats endpoint returned invalid data structure:', response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching quiz stats:', error);
+    }
+  };
+
+  // Initial fetch of check-ins when the page loads
+  useEffect(() => {
+    if (event?.id) {
+      console.log('Initial fetch of check-ins');
+      fetchCheckins();
+    }
+  }, [event]);
+
+  // Initial fetch of quiz stats when the page loads
+  useEffect(() => {
+    if (event?.id) {
+      console.log('Initial fetch of quiz stats');
+      fetchQuizStats();
+    }
+  }, [event]);
+
+  // Set up polling interval
+  useEffect(() => {
+    // Start polling for new check-ins every 3 seconds
+    pollingIntervalRef.current = setInterval(() => {
+      if (event?.id) {
+        console.log('Polling for new check-ins...');
+        fetchCheckins();
+      }
+    }, 3000);
+
+    // Clean up on unmount
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+    };
+  }, [event]);
+
+  // Set up polling interval for quiz stats
+  useEffect(() => {
+    // Start polling for quiz stats every 10 seconds
+    quizStatsIntervalRef.current = setInterval(() => {
+      if (event?.id) {
+        console.log('Polling for quiz stats...');
+        fetchQuizStats();
+      }
+    }, 10000);
+
+    // Clean up on unmount
+    return () => {
+      if (quizStatsIntervalRef.current) {
+        clearInterval(quizStatsIntervalRef.current);
+      }
+    };
+  }, [event]);
 
   // Clean up timeout on unmount
   useEffect(() => {
@@ -317,6 +249,168 @@ const WelcomePage = ({ event }: WelcomeProps) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  // Function to simulate a new check-in for testing
+  const simulateNewCheckin = () => {
+    console.log('Simulating a new check-in');
+    const testUser: PartialUser = {
+      id: Date.now(), // Use timestamp as a unique ID
+      name: 'Test User',
+      displayName: 'Test User',
+      roles: [{ name: 'Supporter' }],
+    };
+
+    // Add to attendees list
+    setAttendees(prev => [testUser, ...prev.slice(0, 19)]);
+
+    // Create check-in notification
+    const newCheckin: CheckinNotification = {
+      id: testUser.id.toString(),
+      name: testUser.displayName,
+      isSupporter: true,
+    };
+
+    // Add to welcome queue
+    welcomeQueueRef.current.push(newCheckin);
+    console.log('Added test user to welcome queue');
+
+    // Show welcome message if not already showing one
+    if (!isShowingWelcome) {
+      console.log('Triggering welcome message for test user');
+      showNextWelcome();
+    }
+  };
+
+  // Function to simulate a new member check-in for testing
+  const simulateMemberCheckin = () => {
+    console.log('Simulating a new member check-in');
+    const memberUser: PartialUser = {
+      id: Date.now() + 1, // Use timestamp+1 as a unique ID
+      name: 'Member User',
+      displayName: 'Member User',
+      roles: [{ name: 'Supporter' }],
+    };
+
+    // Add to attendees list
+    setAttendees(prev => [memberUser, ...prev.slice(0, 19)]);
+
+    // Create check-in notification
+    const newCheckin: CheckinNotification = {
+      id: memberUser.id.toString(),
+      name: memberUser.displayName,
+      isSupporter: true,
+    };
+
+    // Add to welcome queue
+    welcomeQueueRef.current.push(newCheckin);
+    console.log('Added member user to welcome queue');
+
+    // Show welcome message if not already showing one
+    if (!isShowingWelcome) {
+      console.log('Triggering welcome message for member user');
+      showNextWelcome();
+    }
+  };
+
+  // Update the processNewCheckins function to correctly check for supporter role
+  const processNewCheckins = (newCheckins: CheckinData[]) => {
+    console.log(`Processing ${newCheckins.length} new check-ins`);
+
+    newCheckins.forEach((newCheckin: CheckinData) => {
+      // Check if this is a new attendee (not in our current list)
+      if (!attendeesRef.current.some(a => a.id === newCheckin.user.id)) {
+        console.log(`New attendee detected: ${newCheckin.user.name} (${newCheckin.user.id})`);
+
+        // Add to attendees list
+        attendeesRef.current = [...attendeesRef.current, newCheckin.user];
+
+        // Check if user has Supporter role
+        const isSupporter = newCheckin.user?.roles?.some(role => role.name === 'Supporter') || false;
+        console.log(`Is ${newCheckin.user.name} a supporter? ${isSupporter}`);
+
+        // Add to welcome queue
+        welcomeQueueRef.current.push({
+          id: newCheckin.user.id.toString(),
+          name: newCheckin.user.name || '',
+          isSupporter: isSupporter,
+        });
+
+        // If we're not currently showing a welcome, show one
+        if (!isShowingWelcome) {
+          console.log('No welcome currently showing, triggering welcome message');
+          showNextWelcome();
+        }
+      }
+    });
+  };
+
+  // Add keyboard shortcut for test check-in
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Check if Shift+T is pressed
+      if (event.shiftKey && event.key === 'T') {
+        simulateNewCheckin();
+      }
+      // Check if Shift+M is pressed
+      if (event.shiftKey && event.key === 'M') {
+        simulateMemberCheckin();
+      }
+    };
+
+    // Add event listener
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Clean up
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  // For debugging
+  useEffect(() => {
+    console.log('isLoading state changed:', isLoading);
+    console.log('Current attendees count:', attendees.length);
+  }, [isLoading, attendees]);
+
+  // Function to render an attendee with fallback
+  const renderAttendee = (attendee: PartialUser) => {
+    try {
+      return <Attendee user={attendee} />;
+    } catch (error) {
+      console.error('Error rendering Attendee component:', error);
+      // Fallback UI
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box
+            sx={{
+              width: 30,
+              height: 30,
+              borderRadius: '50%',
+              bgcolor: '#486e62',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontSize: '14px',
+              fontWeight: 'bold',
+            }}
+          >
+            {(attendee.displayName || attendee.name || '?').charAt(0).toUpperCase()}
+          </Box>
+          <Box>
+            <Typography variant='body1' sx={{ fontWeight: 500 }}>
+              {attendee.displayName || attendee.name || 'Unknown User'}
+            </Typography>
+            {attendee.roles && attendee.roles.length > 0 && (
+              <Typography variant='body2' color='text.secondary' sx={{ fontSize: '0.8rem' }}>
+                {attendee.roles[0].name}
+              </Typography>
+            )}
+          </Box>
+        </Box>
+      );
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -330,20 +424,102 @@ const WelcomePage = ({ event }: WelcomeProps) => {
         boxSizing: 'border-box', // Ensure padding is included in height calculation
       }}
     >
-      {/* Header */}
-      <Typography
-        variant='h2'
-        component='h1'
+      {/* Header - Shows either the event name or welcome message */}
+      <Box
         sx={{
-          color: 'white',
-          textAlign: 'center',
+          height: { xs: '80px', sm: '100px', md: '120px' }, // Fixed height to prevent layout shift
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
           mb: { xs: 2, md: 4 },
-          fontWeight: 'bold',
-          fontSize: { xs: '2rem', sm: '3rem', md: '4rem' },
+          mt: { xs: 3, sm: 4, md: 5 }, // Added top margin for spacing
+          position: 'relative', // For absolute positioning of messages
         }}
       >
-        {parsedEvent.name}
-      </Typography>
+        {/* Event name - always present but hidden when welcome message is shown */}
+        <Typography
+          variant='h2'
+          component='h1'
+          sx={{
+            color: 'white',
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: { xs: '2rem', sm: '3rem', md: '4rem' },
+            opacity: isShowingWelcome ? 0 : 1,
+            transition: 'opacity 0.5s ease-in-out',
+            position: 'absolute',
+            width: '100%',
+          }}
+        >
+          {parsedEvent.name}
+        </Typography>
+
+        {/* Welcome message - only visible when active */}
+        {isShowingWelcome && (
+          <Typography
+            variant='h2'
+            sx={{
+              color: 'white',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              fontSize: { xs: '2rem', sm: '3rem', md: '4rem' },
+              animation: 'fadeIn 1s ease-in-out',
+              '@keyframes fadeIn': {
+                '0%': { opacity: 0, transform: 'translateY(20px)' },
+                '100%': { opacity: 1, transform: 'translateY(0)' },
+              },
+              position: 'absolute',
+              width: '100%',
+              zIndex: 2,
+            }}
+          >
+            {welcomeMessage}
+          </Typography>
+        )}
+      </Box>
+
+      {/* Stats Display - Either Quiz Stats or Supporting Member Message */}
+      <Box
+        sx={{
+          mb: { xs: 2, md: 3 },
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        {isShowingWelcome && welcomeQueueRef.current.length > 0 && welcomeQueueRef.current[0].isSupporter ? (
+          <Typography
+            variant='h5'
+            sx={{
+              color: 'white',
+              textAlign: 'center',
+              fontWeight: 'medium',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: 2,
+              px: 3,
+              py: 1,
+              animation: 'fadeIn 1s ease-in-out',
+            }}
+          >
+            Thanks for being a supporting member!
+          </Typography>
+        ) : (
+          <Typography
+            variant='h5'
+            sx={{
+              color: 'white',
+              textAlign: 'center',
+              fontWeight: 'medium',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: 2,
+              px: 3,
+              py: 1,
+            }}
+          >
+            Correct Tree ID Responses: {correctQuizResponses}
+          </Typography>
+        )}
+      </Box>
 
       <Container
         maxWidth='xl'
@@ -351,22 +527,23 @@ const WelcomePage = ({ event }: WelcomeProps) => {
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
           alignItems: 'center',
-          justifyContent: 'space-between',
-          flex: 1, // Take up remaining space
-          height: { xs: 'auto', md: 'calc(100vh - 150px)' }, // Adjust for header and padding
-          gap: { xs: 4, md: 2 },
+          justifyContent: 'space-around',
+          flex: 1,
+          height: { xs: 'auto', md: 'calc(100vh - 200px)' },
+          gap: { xs: 4, md: 4 },
         }}
       >
         {/* QR Code Section */}
         <Box
           sx={{
-            flex: 1,
+            flex: { xs: 1, md: 2 },
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             height: { xs: 'auto', md: '100%' },
             mb: { xs: 4, md: 0 },
+            maxWidth: { xs: '100%', md: '40%' },
           }}
         >
           <Paper
@@ -422,46 +599,17 @@ const WelcomePage = ({ event }: WelcomeProps) => {
           </Paper>
         </Box>
 
-        {/* Center Section - Welcome Message */}
+        {/* Who's Here Section */}
         <Box
           sx={{
-            flex: 2,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: { xs: '200px', md: '100%' },
-          }}
-        >
-          {isShowingWelcome && (
-            <Typography
-              variant='h2'
-              sx={{
-                color: 'white',
-                fontWeight: 'bold',
-                textAlign: 'center',
-                animation: 'fadeIn 1s ease-in-out',
-                '@keyframes fadeIn': {
-                  '0%': { opacity: 0, transform: 'translateY(20px)' },
-                  '100%': { opacity: 1, transform: 'translateY(0)' },
-                },
-                fontSize: { xs: '2rem', sm: '3rem', md: '4rem', lg: '5rem' },
-              }}
-            >
-              {welcomeMessage}
-            </Typography>
-          )}
-        </Box>
-
-        {/* Recent Check-ins Section */}
-        <Box
-          sx={{
-            flex: 1,
+            flex: { xs: 1, md: 3 },
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             height: { xs: 'auto', md: '100%' },
             mt: { xs: 4, md: 0 },
+            maxWidth: { xs: '100%', md: '55%' },
           }}
         >
           <Paper
@@ -471,11 +619,11 @@ const WelcomePage = ({ event }: WelcomeProps) => {
               bgcolor: 'white',
               borderRadius: 2,
               width: '100%',
-              maxWidth: '350px',
-              height: { md: '80%' }, // Use most of the available height
+              maxWidth: { xs: '350px', md: '500px', lg: '600px' },
+              height: { md: '80%' },
               display: 'flex',
               flexDirection: 'column',
-              overflow: 'hidden', // Hide overflow at the paper level
+              overflow: 'hidden',
             }}
           >
             <Typography
@@ -486,9 +634,38 @@ const WelcomePage = ({ event }: WelcomeProps) => {
                 textAlign: 'center',
                 mb: 3,
                 fontSize: { xs: '1.75rem', sm: '2rem', md: '2.25rem' },
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 1,
               }}
             >
-              Recent Check-ins
+              Who's Here{' '}
+              {isLoading ? (
+                <Typography
+                  component='span'
+                  sx={{
+                    fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem' },
+                    fontWeight: 'normal',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  (Loading...)
+                </Typography>
+              ) : (
+                <Typography
+                  component='span'
+                  sx={{
+                    fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem' },
+                    fontWeight: 'normal',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  ({attendees.length})
+                </Typography>
+              )}
             </Typography>
 
             {isLoading ? (
@@ -510,12 +687,22 @@ const WelcomePage = ({ event }: WelcomeProps) => {
               </Typography>
             ) : (
               <Box sx={{ width: '100%', px: 1, flex: 1, overflow: 'auto' }}>
-                {attendees.map((attendee, index) => (
-                  <Box key={attendee.id || index} sx={{ mb: 2 }}>
-                    <Attendee user={attendee} hideContactPageIcon={true} />
-                    {index < attendees.length - 1 && <Divider sx={{ my: 1 }} />}
-                  </Box>
-                ))}
+                {console.log('Rendering attendees list:', attendees)}
+                {attendees.map((attendee, index) => {
+                  // Debug log for each attendee's roles
+                  console.log(
+                    `Rendering attendee ${attendee.name || attendee.id}:`,
+                    attendee.roles ? `Has ${attendee.roles.length} roles: ${attendee.roles.map(r => r.name).join(', ')}` : 'No roles array',
+                  );
+
+                  return (
+                    <Box key={attendee.id || index} sx={{ mb: 2 }}>
+                      {/* Use the Attendee component with fallback */}
+                      {renderAttendee(attendee)}
+                      {index < attendees.length - 1 && <Divider sx={{ my: 1 }} />}
+                    </Box>
+                  );
+                })}
               </Box>
             )}
           </Paper>
