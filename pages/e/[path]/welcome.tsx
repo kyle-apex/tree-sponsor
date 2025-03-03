@@ -171,8 +171,36 @@ const WelcomePage = ({ event }: WelcomeProps) => {
           return user;
         });
 
-        // Update attendees state - attendees are already sorted by check-in time from the API
+        // Check for new attendees before updating state
+        const existingIds = new Set(attendeesRef.current.map(a => a.id));
+        const newAttendees = processedAttendees.filter((a: PartialUser) => !existingIds.has(a.id));
+
+        console.log(`Found ${newAttendees.length} new attendees since last check`);
+
+        // Process new check-ins for welcome messages
+        newAttendees.forEach((newUser: PartialUser) => {
+          const userName = newUser.displayName || newUser.name || '';
+          console.log(`Adding new check-in to welcome queue: ${userName}`);
+
+          // Check if user is a supporter
+          const isSupporter = newUser.roles?.some(role => role.name === 'Supporter') || false;
+          if (isSupporter) {
+            console.log(`${userName} is a supporting member!`);
+          }
+
+          const newCheckin: CheckinNotification = {
+            id: newUser.id.toString(),
+            name: userName,
+            isSupporter,
+          };
+
+          // Add to welcome queue
+          welcomeQueueRef.current.push(newCheckin);
+        });
+
+        // Update attendees state and ref
         setAttendees(processedAttendees);
+        attendeesRef.current = processedAttendees;
         groupAttendees(processedAttendees);
 
         // Also format for the welcome message display
@@ -183,41 +211,10 @@ const WelcomePage = ({ event }: WelcomeProps) => {
         setRecentCheckins(formattedCheckins.slice(0, 20));
         setLastCheckTime(new Date().toISOString());
 
-        // Check for new attendees
-        if (attendees.length > 0) {
-          const existingIds = new Set(attendees.map(a => a.id));
-          const newAttendees = processedAttendees.filter((a: PartialUser) => !existingIds.has(a.id));
-
-          console.log(`Found ${newAttendees.length} new attendees since last check`);
-
-          // Process new check-ins for welcome messages
-          newAttendees.forEach((newUser: PartialUser) => {
-            const userName = newUser.displayName || newUser.name || '';
-            console.log(`Adding new check-in to welcome queue: ${userName}`);
-
-            // Check if user is a supporter
-            const isSupporter = newUser.roles?.some(role => role.name === 'Supporter') || false;
-            if (isSupporter) {
-              console.log(`${userName} is a supporting member!`);
-            }
-
-            const newCheckin: CheckinNotification = {
-              id: newUser.id.toString(),
-              name: userName,
-              isSupporter,
-            };
-
-            // Add to welcome queue
-            welcomeQueueRef.current.push(newCheckin);
-          });
-
-          // If we have new attendees and we're not currently showing a welcome message, show one
-          if (newAttendees.length > 0 && !isShowingWelcome) {
-            console.log('Triggering welcome message display');
-            showNextWelcome();
-          }
-        } else {
-          console.log('First load - no existing attendees to compare against');
+        // If we have new attendees and we're not currently showing a welcome message, show one
+        if (newAttendees.length > 0 && !isShowingWelcome) {
+          console.log('Triggering welcome message display');
+          showNextWelcome();
         }
       } else {
         console.error('Attendees endpoint returned invalid data structure:', response.data);
@@ -434,46 +431,6 @@ const WelcomePage = ({ event }: WelcomeProps) => {
     console.log('Current attendees count:', attendees.length);
   }, [attendees]);
 
-  // Function to render an attendee with fallback
-  const renderAttendee = (attendee: PartialUser) => {
-    try {
-      return <Attendee user={attendee} />;
-    } catch (error) {
-      console.error('Error rendering Attendee component:', error);
-      // Fallback UI
-      return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Box
-            sx={{
-              width: 30,
-              height: 30,
-              borderRadius: '50%',
-              bgcolor: '#486e62',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontSize: '14px',
-              fontWeight: 'bold',
-            }}
-          >
-            {(attendee.displayName || attendee.name || '?').charAt(0).toUpperCase()}
-          </Box>
-          <Box>
-            <Typography variant='body1' sx={{ fontWeight: 500 }}>
-              {attendee.displayName || attendee.name || 'Unknown User'}
-            </Typography>
-            {attendee.roles && attendee.roles.length > 0 && (
-              <Typography variant='body2' color='text.secondary' sx={{ fontSize: '0.8rem' }}>
-                {attendee.roles[0].name}
-              </Typography>
-            )}
-          </Box>
-        </Box>
-      );
-    }
-  };
-
   return (
     <Box
       sx={{
@@ -559,25 +516,14 @@ const WelcomePage = ({ event }: WelcomeProps) => {
               px: 3,
               py: 1,
               animation: 'fadeIn 1s ease-in-out',
+              position: 'absolute',
+              top: '130px',
             }}
           >
             Thanks for being a supporting member!
           </Typography>
         ) : (
-          <Typography
-            variant='h5'
-            sx={{
-              color: 'white',
-              textAlign: 'center',
-              fontWeight: 'medium',
-              backgroundColor: 'rgba(255, 255, 255, 0.2)',
-              borderRadius: 2,
-              px: 3,
-              py: 1,
-            }}
-          >
-            Correct Tree ID Responses: {correctQuizResponses}
-          </Typography>
+          <></>
         )}
       </Box>
 
