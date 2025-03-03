@@ -9,6 +9,7 @@ import { PartialEvent, PartialUser } from 'interfaces';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 import axios from 'axios';
 import Attendee from 'components/event/Attendee';
+import UserAvatarsRowWithLabel from 'components/UserAvatarsRowWithLabel';
 
 interface WelcomeProps {
   event: PartialEvent;
@@ -32,6 +33,31 @@ interface CheckinData {
   createdAt?: string;
 }
 
+interface GroupedAttendees {
+  execTeam: PartialUser[];
+  coreTeam: PartialUser[];
+  newSupporters: PartialUser[];
+  supporters: PartialUser[];
+  friends: PartialUser[];
+}
+
+const INITIAL_GROUPS: GroupedAttendees = {
+  execTeam: [],
+  coreTeam: [],
+  newSupporters: [],
+  supporters: [],
+  friends: [],
+};
+
+// Add these constants at the top of the file after imports
+const GROUP_COLORS = {
+  execTeam: '#7B1FA2', // Deep Purple
+  coreTeam: '#1976D2', // Blue
+  newSupporters: '#2E7D32', // Green
+  supporters: '#D32F2F', // Red
+  friends: '#F57C00', // Orange
+};
+
 const WelcomePage = ({ event }: WelcomeProps) => {
   const router = useRouter();
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
@@ -47,7 +73,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
   const quizStatsIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const attendeesRef = useRef<PartialUser[]>([]);
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
-  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const [groupedAttendees, setGroupedAttendees] = useState<GroupedAttendees>(INITIAL_GROUPS);
 
   // Function to show the next welcome message in the queue
   const showNextWelcome = () => {
@@ -81,15 +107,52 @@ const WelcomePage = ({ event }: WelcomeProps) => {
     }, 5000);
   };
 
+  // Add this function to group attendees
+  const groupAttendees = (attendeesList: PartialUser[]) => {
+    const groups: GroupedAttendees = {
+      execTeam: [],
+      coreTeam: [],
+      newSupporters: [],
+      supporters: [],
+      friends: [],
+    };
+
+    const eventStartDate = parsedEvent.startDate ? new Date(parsedEvent.startDate) : new Date();
+
+    attendeesList.forEach(user => {
+      if (user.roles?.some(role => role.name === 'Exec Team')) {
+        groups.execTeam.push(user);
+      } else if (user.roles?.some(role => role.name === 'Core Team')) {
+        groups.coreTeam.push(user);
+      } else if (
+        user.subscriptions?.some(sub => {
+          const createdDate = new Date(sub.createdDate);
+          return createdDate >= eventStartDate;
+        })
+      ) {
+        groups.newSupporters.push(user);
+      } else if (
+        user.subscriptions?.some(sub => {
+          const lastPaymentDate = new Date(sub.lastPaymentDate);
+          const oneYearAgo = new Date();
+          oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+          return lastPaymentDate >= oneYearAgo;
+        })
+      ) {
+        groups.supporters.push(user);
+      } else {
+        groups.friends.push(user);
+      }
+    });
+
+    setGroupedAttendees(groups);
+  };
+
   // Fetch check-ins data
   const fetchCheckins = async () => {
     try {
       console.log('Fetching attendees for event:', event.id);
-      if (isInitialLoading) {
-        setIsInitialLoading(true);
-      } else {
-        setIsRefreshing(true);
-      }
+      // Only set loading state on initial load, no loading state for refreshes
 
       // Use the attendees endpoint without providing an email to get all check-ins sorted by time
       const response = await axios.get(`/api/events/${event.id}/attendees`);
@@ -110,6 +173,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
 
         // Update attendees state - attendees are already sorted by check-in time from the API
         setAttendees(processedAttendees);
+        groupAttendees(processedAttendees);
 
         // Also format for the welcome message display
         const formattedCheckins = processedAttendees.map((user: PartialUser) => ({
@@ -162,7 +226,6 @@ const WelcomePage = ({ event }: WelcomeProps) => {
       console.error('Error fetching check-ins:', error);
     } finally {
       setIsInitialLoading(false);
-      setIsRefreshing(false);
     }
   };
 
@@ -432,8 +495,6 @@ const WelcomePage = ({ event }: WelcomeProps) => {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          mb: { xs: 2, md: 4 },
-          mt: { xs: 3, sm: 4, md: 5 }, // Added top margin for spacing
           position: 'relative', // For absolute positioning of messages
         }}
       >
@@ -482,7 +543,6 @@ const WelcomePage = ({ event }: WelcomeProps) => {
       {/* Stats Display - Either Quiz Stats or Supporting Member Message */}
       <Box
         sx={{
-          mb: { xs: 2, md: 3 },
           display: 'flex',
           justifyContent: 'center',
         }}
@@ -664,8 +724,8 @@ const WelcomePage = ({ event }: WelcomeProps) => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
-                minHeight: '200px', // Ensure minimum height even when empty
-                position: 'relative', // For overlay positioning
+                minHeight: '200px',
+                position: 'relative',
               }}
             >
               {isInitialLoading ? (
@@ -694,12 +754,19 @@ const WelcomePage = ({ event }: WelcomeProps) => {
                     overflow: 'auto',
                   }}
                 >
-                  {attendees.map((attendee, index) => (
-                    <Box key={attendee.id || index} sx={{ mb: 2, minHeight: '48px' }}>
-                      {renderAttendee(attendee)}
-                      {index < attendees.length - 1 && <Divider sx={{ my: 1 }} />}
-                    </Box>
-                  ))}
+                  <UserAvatarsRowWithLabel
+                    users={groupedAttendees.newSupporters}
+                    label='New Supporting Members'
+                    baseColor={GROUP_COLORS.newSupporters}
+                  />
+                  <UserAvatarsRowWithLabel users={groupedAttendees.friends} label='Friends and Allies' baseColor={GROUP_COLORS.friends} />
+                  <UserAvatarsRowWithLabel
+                    users={groupedAttendees.supporters}
+                    label='Supporting Members'
+                    baseColor={GROUP_COLORS.supporters}
+                  />
+                  <UserAvatarsRowWithLabel users={groupedAttendees.coreTeam} label='Core Team' baseColor={GROUP_COLORS.coreTeam} />
+                  <UserAvatarsRowWithLabel users={groupedAttendees.execTeam} label='Exec Team' baseColor={GROUP_COLORS.execTeam} />
                 </Box>
               )}
             </Box>

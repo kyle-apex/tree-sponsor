@@ -1,0 +1,59 @@
+Create a Next.js welcome page for a tree identification event that serves as a digital welcome board for attendees. The page should be optimized for landscape iPad format and include the following features:
+
+Core Layout:
+1. Full viewport height page with primary green background (#486e62)
+2. Header section with:
+   - Event name displayed in large white text
+   - Welcome messages that fade in/out when new attendees check in
+   - Top padding that increases responsively (24px mobile, 32px tablet, 40px desktop)
+
+Stats Display:
+1. Centered below header showing either:
+   - "Correct Tree ID Responses: [count]" in white text on semi-transparent white background
+   - "Thanks for being a supporting member!" message when a supporter checks in
+
+Main Content:
+1. Two-column layout (vertical on mobile, horizontal on desktop):
+   Left Column:
+   - QR Code section in white card
+   - "Scan to Check In" header
+   - QR code image linking to checkin.tfyp.org
+   - Responsive sizing (300px mobile, 350px tablet, 400px desktop)
+
+   Right Column:
+   - "Who's Here" section in white card
+   - Header with vertically centered attendee count
+   - Scrollable list of attendees
+   - Each attendee shows:
+     * Avatar with first initial
+     * Display name or full name
+     * Role (if any)
+     * Divider between entries (except last)
+
+Functionality:
+1. Real-time Updates:
+   - Poll for new check-ins every 3 seconds
+   - Poll for quiz stats every 10 seconds
+   - Show welcome message for 5 seconds when new attendee checks in
+   - Queue multiple welcome messages if simultaneous check-ins
+
+2. Special Features:
+   - Support for private check-ins (not shown in list)
+   - Special handling for supporter roles
+   - Fallback UI for failed attendee renders
+   - Loading states with spinner
+   - Empty state message when no check-ins
+
+3. Testing Features:
+   - Shift+T shortcut to simulate regular check-in
+   - Shift+M shortcut to simulate member check-in
+
+Technical Requirements:
+1. Use Material-UI components
+2. Implement responsive design for mobile, tablet, and desktop
+3. Handle loading states and errors gracefully
+4. Use WebSocket or polling for real-time updates
+5. Maintain proper TypeScript interfaces
+6. Include proper cleanup of intervals and timeouts
+
+The page should feel welcoming and professional, with smooth animations for welcome messages and proper spacing between elements. All text should be clearly readable on the green background, and the layout should adjust smoothly between different screen sizes. 
