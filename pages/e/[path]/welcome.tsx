@@ -21,18 +21,6 @@ interface CheckinNotification {
   isSupporter?: boolean;
 }
 
-interface CheckinData {
-  id: number;
-  user: {
-    id: number;
-    name?: string;
-    firstName?: string;
-    lastName?: string;
-    roles?: { name: string }[];
-  };
-  createdAt?: string;
-}
-
 interface GroupedAttendees {
   execTeam: PartialUser[];
   coreTeam: PartialUser[];
@@ -59,32 +47,34 @@ const GROUP_COLORS = {
 };
 
 const WelcomePage = ({ event }: WelcomeProps) => {
-  const router = useRouter();
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
   const [welcomeMessage, setWelcomeMessage] = useState<string>('');
   const [isShowingWelcome, setIsShowingWelcome] = useState<boolean>(false);
-  const [recentCheckins, setRecentCheckins] = useState<CheckinNotification[]>([]);
   const [attendees, setAttendees] = useState<PartialUser[]>([]);
-  const [lastCheckTime, setLastCheckTime] = useState<string>('');
-  const [correctQuizResponses, setCorrectQuizResponses] = useState<number>(0);
   const welcomeQueueRef = useRef<CheckinNotification[]>([]);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const quizStatsIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const attendeesRef = useRef<PartialUser[]>([]);
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
   const [groupedAttendees, setGroupedAttendees] = useState<GroupedAttendees>(INITIAL_GROUPS);
 
   // Function to show the next welcome message in the queue
   const showNextWelcome = () => {
+    //console.log('showNextWelcome called, queue length:', welcomeQueueRef.current.length);
     if (welcomeQueueRef.current.length === 0) {
-      console.log('No welcome messages in queue');
+      //console.log('No welcome messages in queue');
       setIsShowingWelcome(false);
       return;
     }
 
     const nextWelcome = welcomeQueueRef.current.shift();
-    console.log(`Showing welcome message for: ${nextWelcome.name}`);
+    if (!nextWelcome) {
+      //console.log('No welcome message to show');
+      setIsShowingWelcome(false);
+      return;
+    }
+
+    //console.log(`Showing welcome message for: ${nextWelcome.name}`);
     setWelcomeMessage(`Welcome ${nextWelcome.name}`);
     setIsShowingWelcome(true);
 
@@ -95,13 +85,13 @@ const WelcomePage = ({ event }: WelcomeProps) => {
 
     // Set timeout to clear the message after 5 seconds
     timeoutRef.current = setTimeout(() => {
-      console.log('Welcome message timeout expired');
+      //console.log('Welcome message timeout expired');
       setIsShowingWelcome(false);
       setWelcomeMessage('');
 
       // Check if there are more messages in the queue
       if (welcomeQueueRef.current.length > 0) {
-        console.log(`${welcomeQueueRef.current.length} more welcome messages in queue`);
+        //console.log(`${welcomeQueueRef.current.length} more welcome messages in queue`);
         showNextWelcome();
       }
     }, 5000);
@@ -151,17 +141,15 @@ const WelcomePage = ({ event }: WelcomeProps) => {
   // Fetch check-ins data
   const fetchCheckins = async () => {
     try {
-      console.log('Fetching attendees for event:', event.id);
-      // Only set loading state on initial load, no loading state for refreshes
+      //console.log('Fetching attendees for event:', event.id);
 
-      // Use the attendees endpoint without providing an email to get all check-ins sorted by time
       const response = await axios.get(`/api/events/${event.id}/attendees`);
 
-      console.log('API response:', response.data);
+      //console.log('API response:', response.data);
 
       if (response.data && response.data.attendees && Array.isArray(response.data.attendees)) {
         const attendeesList = response.data.attendees;
-        console.log('Received attendees data, count:', attendeesList.length);
+        //console.log('Received attendees data, count:', attendeesList.length);
 
         // Ensure each attendee has the required properties for the Attendee component
         const processedAttendees = attendeesList.map((user: PartialUser) => {
@@ -175,87 +163,64 @@ const WelcomePage = ({ event }: WelcomeProps) => {
         const existingIds = new Set(attendeesRef.current.map(a => a.id));
         const newAttendees = processedAttendees.filter((a: PartialUser) => !existingIds.has(a.id));
 
-        console.log(`Found ${newAttendees.length} new attendees since last check`);
+        //console.log(`Found ${newAttendees.length} new attendees since last check`);
+        //console.log('isInitialLoading', isInitialLoading);
+        //console.log('isShowingWelcome', isShowingWelcome);
 
         // Process new check-ins for welcome messages
-        newAttendees.forEach((newUser: PartialUser) => {
-          const userName = newUser.displayName || newUser.name || '';
-          console.log(`Adding new check-in to welcome queue: ${userName}`);
+        if (newAttendees.length > 0 && !isInitialLoading) {
+          //console.log('Processing new attendees for welcome messages');
+          newAttendees.forEach((newUser: PartialUser) => {
+            const userName = newUser.displayName || newUser.name || '';
+            //console.log(`Adding new check-in to welcome queue: ${userName}`);
 
-          // Check if user is a supporter
-          const isSupporter = newUser.roles?.some(role => role.name === 'Supporter') || false;
-          if (isSupporter) {
-            console.log(`${userName} is a supporting member!`);
+            // Check if user is a supporter
+            const isSupporter = newUser.roles?.some(role => role.name === 'Supporter') || false;
+            if (isSupporter) {
+              //console.log(`${userName} is a supporting member!`);
+            }
+
+            const newCheckin: CheckinNotification = {
+              id: newUser.id.toString(),
+              name: userName,
+              isSupporter,
+            };
+
+            // Add to welcome queue
+            welcomeQueueRef.current.push(newCheckin);
+            //console.log(`Added ${userName} to welcome queue. Queue length: ${welcomeQueueRef.current.length}`);
+          });
+
+          // If we have new attendees and we're not currently showing a welcome message, show one
+          if (!isShowingWelcome && !isInitialLoading) {
+            //console.log('Triggering welcome message display');
+            showNextWelcome();
           }
-
-          const newCheckin: CheckinNotification = {
-            id: newUser.id.toString(),
-            name: userName,
-            isSupporter,
-          };
-
-          // Add to welcome queue
-          welcomeQueueRef.current.push(newCheckin);
-        });
+        }
 
         // Update attendees state and ref
         setAttendees(processedAttendees);
         attendeesRef.current = processedAttendees;
         groupAttendees(processedAttendees);
 
-        // Also format for the welcome message display
-        const formattedCheckins = processedAttendees.map((user: PartialUser) => ({
-          id: user.id.toString(),
-          name: user.displayName || user.name || '',
-        }));
-        setRecentCheckins(formattedCheckins.slice(0, 20));
-        setLastCheckTime(new Date().toISOString());
-
-        // If we have new attendees and we're not currently showing a welcome message, show one
-        if (newAttendees.length > 0 && !isShowingWelcome) {
-          console.log('Triggering welcome message display');
-          showNextWelcome();
+        // Mark initial load as complete after first successful fetch
+        if (isInitialLoading) {
+          //console.log('Marking initial load as complete');
+          setIsInitialLoading(false);
         }
       } else {
         console.error('Attendees endpoint returned invalid data structure:', response.data);
       }
     } catch (error) {
       console.error('Error fetching check-ins:', error);
-    } finally {
-      setIsInitialLoading(false);
-    }
-  };
-
-  // Fetch quiz stats
-  const fetchQuizStats = async () => {
-    try {
-      console.log('Fetching quiz stats for event:', event.id);
-      const response = await axios.get(`/api/events/${event.id}/quiz-stats`);
-
-      if (response.data && typeof response.data.correctResponsesCount === 'number') {
-        console.log('Received quiz stats:', response.data);
-        setCorrectQuizResponses(response.data.correctResponsesCount);
-      } else {
-        console.error('Quiz stats endpoint returned invalid data structure:', response.data);
-      }
-    } catch (error) {
-      console.error('Error fetching quiz stats:', error);
     }
   };
 
   // Initial fetch of check-ins when the page loads
   useEffect(() => {
     if (event?.id) {
-      console.log('Initial fetch of check-ins');
+      //console.log('Initial fetch of check-ins');
       fetchCheckins();
-    }
-  }, [event]);
-
-  // Initial fetch of quiz stats when the page loads
-  useEffect(() => {
-    if (event?.id) {
-      console.log('Initial fetch of quiz stats');
-      fetchQuizStats();
     }
   }, [event]);
 
@@ -264,7 +229,6 @@ const WelcomePage = ({ event }: WelcomeProps) => {
     // Start polling for new check-ins every 3 seconds
     pollingIntervalRef.current = setInterval(() => {
       if (event?.id) {
-        console.log('Polling for new check-ins...');
         fetchCheckins();
       }
     }, 3000);
@@ -275,161 +239,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
         clearInterval(pollingIntervalRef.current);
       }
     };
-  }, [event]);
-
-  // Set up polling interval for quiz stats
-  useEffect(() => {
-    // Start polling for quiz stats every 10 seconds
-    quizStatsIntervalRef.current = setInterval(() => {
-      if (event?.id) {
-        console.log('Polling for quiz stats...');
-        fetchQuizStats();
-      }
-    }, 10000);
-
-    // Clean up on unmount
-    return () => {
-      if (quizStatsIntervalRef.current) {
-        clearInterval(quizStatsIntervalRef.current);
-      }
-    };
-  }, [event]);
-
-  // Clean up timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  // Format timestamp for display
-  const formatTimestamp = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
-  // Function to simulate a new check-in for testing
-  const simulateNewCheckin = () => {
-    console.log('Simulating a new check-in');
-    const testUser: PartialUser = {
-      id: Date.now(),
-      name: 'Test User',
-      displayName: 'Test User',
-      roles: [{ name: 'Supporter' }],
-    };
-
-    // Add to attendees list
-    setAttendees(prev => [testUser, ...prev.slice(0, 19)]);
-
-    // Create check-in notification
-    const newCheckin: CheckinNotification = {
-      id: testUser.id.toString(),
-      name: testUser.displayName,
-      isSupporter: true,
-    };
-
-    // Add to welcome queue
-    welcomeQueueRef.current.push(newCheckin);
-    console.log('Added test user to welcome queue');
-
-    // Show welcome message if not already showing one
-    if (!isShowingWelcome) {
-      console.log('Triggering welcome message for test user');
-      showNextWelcome();
-    }
-  };
-
-  // Function to simulate a new member check-in for testing
-  const simulateMemberCheckin = () => {
-    console.log('Simulating a new member check-in');
-    const memberUser: PartialUser = {
-      id: Date.now() + 1, // Use timestamp+1 as a unique ID
-      name: 'Member User',
-      displayName: 'Member User',
-      roles: [{ name: 'Supporter' }],
-    };
-
-    // Add to attendees list
-    setAttendees(prev => [memberUser, ...prev.slice(0, 19)]);
-
-    // Create check-in notification
-    const newCheckin: CheckinNotification = {
-      id: memberUser.id.toString(),
-      name: memberUser.displayName,
-      isSupporter: true,
-    };
-
-    // Add to welcome queue
-    welcomeQueueRef.current.push(newCheckin);
-    console.log('Added member user to welcome queue');
-
-    // Show welcome message if not already showing one
-    if (!isShowingWelcome) {
-      console.log('Triggering welcome message for member user');
-      showNextWelcome();
-    }
-  };
-
-  // Update the processNewCheckins function to correctly check for supporter role
-  const processNewCheckins = (newCheckins: CheckinData[]) => {
-    console.log(`Processing ${newCheckins.length} new check-ins`);
-
-    newCheckins.forEach((newCheckin: CheckinData) => {
-      // Check if this is a new attendee (not in our current list)
-      if (!attendeesRef.current.some(a => a.id === newCheckin.user.id)) {
-        console.log(`New attendee detected: ${newCheckin.user.name} (${newCheckin.user.id})`);
-
-        // Add to attendees list
-        attendeesRef.current = [...attendeesRef.current, newCheckin.user];
-
-        // Check if user has Supporter role
-        const isSupporter = newCheckin.user?.roles?.some(role => role.name === 'Supporter') || false;
-        console.log(`Is ${newCheckin.user.name} a supporter? ${isSupporter}`);
-
-        // Add to welcome queue
-        welcomeQueueRef.current.push({
-          id: newCheckin.user.id.toString(),
-          name: newCheckin.user.name || '',
-          isSupporter: isSupporter,
-        });
-
-        // If we're not currently showing a welcome, show one
-        if (!isShowingWelcome) {
-          console.log('No welcome currently showing, triggering welcome message');
-          showNextWelcome();
-        }
-      }
-    });
-  };
-
-  // Add keyboard shortcut for test check-in
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Check if Shift+T is pressed
-      if (event.shiftKey && event.key === 'T') {
-        simulateNewCheckin();
-      }
-      // Check if Shift+M is pressed
-      if (event.shiftKey && event.key === 'M') {
-        simulateMemberCheckin();
-      }
-    };
-
-    // Add event listener
-    window.addEventListener('keydown', handleKeyDown);
-
-    // Clean up
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
-
-  // For debugging
-  useEffect(() => {
-    console.log('Current attendees count:', attendees.length);
-  }, [attendees]);
+  }, [event, isInitialLoading, isShowingWelcome]);
 
   return (
     <Box
@@ -737,8 +547,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             id: true,
             name: true,
             displayName: true,
-            email: true,
-            email2: true,
+            email: false,
+            email2: false,
             roles: true,
           },
         },
@@ -755,7 +565,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     return { props: { event } };
   } catch (err) {
-    console.log('err', err);
+    //console.log('err', err);
     return {
       props: {
         event: null,
