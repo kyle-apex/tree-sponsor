@@ -39,7 +39,6 @@ const WelcomePage = ({ event }: WelcomeProps) => {
   const [isShowingWelcome, setIsShowingWelcome] = useState<boolean>(false);
   const [recentCheckins, setRecentCheckins] = useState<CheckinNotification[]>([]);
   const [attendees, setAttendees] = useState<PartialUser[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [lastCheckTime, setLastCheckTime] = useState<string>('');
   const [correctQuizResponses, setCorrectQuizResponses] = useState<number>(0);
   const welcomeQueueRef = useRef<CheckinNotification[]>([]);
@@ -47,6 +46,8 @@ const WelcomePage = ({ event }: WelcomeProps) => {
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const quizStatsIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const attendeesRef = useRef<PartialUser[]>([]);
+  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
   // Function to show the next welcome message in the queue
   const showNextWelcome = () => {
@@ -84,7 +85,11 @@ const WelcomePage = ({ event }: WelcomeProps) => {
   const fetchCheckins = async () => {
     try {
       console.log('Fetching attendees for event:', event.id);
-      setIsLoading(true); // Set loading state at the beginning of the fetch
+      if (isInitialLoading) {
+        setIsInitialLoading(true);
+      } else {
+        setIsRefreshing(true);
+      }
 
       // Use the attendees endpoint without providing an email to get all check-ins sorted by time
       const response = await axios.get(`/api/events/${event.id}/attendees`);
@@ -97,12 +102,8 @@ const WelcomePage = ({ event }: WelcomeProps) => {
 
         // Ensure each attendee has the required properties for the Attendee component
         const processedAttendees = attendeesList.map((user: PartialUser) => {
-          // Make sure each user has at least an empty roles array to prevent errors
           if (!user.roles) {
             user.roles = [];
-            console.log(`User ${user.name || user.id} had no roles array, created empty one`);
-          } else {
-            console.log(`User ${user.name || user.id} roles:`, user.roles.map(r => r.name).join(', '));
           }
           return user;
         });
@@ -160,8 +161,8 @@ const WelcomePage = ({ event }: WelcomeProps) => {
     } catch (error) {
       console.error('Error fetching check-ins:', error);
     } finally {
-      // Always set loading to false when done, regardless of success or failure
-      setIsLoading(false);
+      setIsInitialLoading(false);
+      setIsRefreshing(false);
     }
   };
 
@@ -253,7 +254,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
   const simulateNewCheckin = () => {
     console.log('Simulating a new check-in');
     const testUser: PartialUser = {
-      id: Date.now(), // Use timestamp as a unique ID
+      id: Date.now(),
       name: 'Test User',
       displayName: 'Test User',
       roles: [{ name: 'Supporter' }],
@@ -367,9 +368,8 @@ const WelcomePage = ({ event }: WelcomeProps) => {
 
   // For debugging
   useEffect(() => {
-    console.log('isLoading state changed:', isLoading);
     console.log('Current attendees count:', attendees.length);
-  }, [isLoading, attendees]);
+  }, [attendees]);
 
   // Function to render an attendee with fallback
   const renderAttendee = (attendee: PartialUser) => {
@@ -638,73 +638,71 @@ const WelcomePage = ({ event }: WelcomeProps) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 1,
+                minHeight: '2.5rem',
               }}
             >
               Who's Here{' '}
-              {isLoading ? (
-                <Typography
-                  component='span'
-                  sx={{
-                    fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem' },
-                    fontWeight: 'normal',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  (Loading...)
-                </Typography>
-              ) : (
-                <Typography
-                  component='span'
-                  sx={{
-                    fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem' },
-                    fontWeight: 'normal',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  ({attendees.length})
-                </Typography>
-              )}
-            </Typography>
-
-            {isLoading ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center', py: 4, flex: 1 }}>
-                <CircularProgress size={40} sx={{ color: '#486e62' }} />
-              </Box>
-            ) : attendees.length === 0 ? (
               <Typography
-                variant='body2'
+                component='span'
                 sx={{
-                  textAlign: 'center',
-                  color: 'gray',
-                  fontStyle: 'italic',
-                  py: 2,
-                  flex: 1,
+                  fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem' },
+                  fontWeight: 'normal',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  minWidth: '100px',
                 }}
               >
-                No check-ins yet
+                ({attendees.length})
               </Typography>
-            ) : (
-              <Box sx={{ width: '100%', px: 1, flex: 1, overflow: 'auto' }}>
-                {console.log('Rendering attendees list:', attendees)}
-                {attendees.map((attendee, index) => {
-                  // Debug log for each attendee's roles
-                  console.log(
-                    `Rendering attendee ${attendee.name || attendee.id}:`,
-                    attendee.roles ? `Has ${attendee.roles.length} roles: ${attendee.roles.map(r => r.name).join(', ')}` : 'No roles array',
-                  );
+            </Typography>
 
-                  return (
-                    <Box key={attendee.id || index} sx={{ mb: 2 }}>
-                      {/* Use the Attendee component with fallback */}
+            <Box
+              sx={{
+                width: '100%',
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                minHeight: '200px', // Ensure minimum height even when empty
+                position: 'relative', // For overlay positioning
+              }}
+            >
+              {isInitialLoading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                  <CircularProgress size={40} sx={{ color: '#486e62' }} />
+                </Box>
+              ) : attendees.length === 0 ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                  <Typography
+                    variant='body2'
+                    sx={{
+                      textAlign: 'center',
+                      color: 'gray',
+                      fontStyle: 'italic',
+                    }}
+                  >
+                    No check-ins yet
+                  </Typography>
+                </Box>
+              ) : (
+                <Box
+                  sx={{
+                    width: '100%',
+                    px: 1,
+                    flex: 1,
+                    overflow: 'auto',
+                  }}
+                >
+                  {attendees.map((attendee, index) => (
+                    <Box key={attendee.id || index} sx={{ mb: 2, minHeight: '48px' }}>
                       {renderAttendee(attendee)}
                       {index < attendees.length - 1 && <Divider sx={{ my: 1 }} />}
                     </Box>
-                  );
-                })}
-              </Box>
-            )}
+                  ))}
+                </Box>
+              )}
+            </Box>
           </Paper>
         </Box>
       </Container>
