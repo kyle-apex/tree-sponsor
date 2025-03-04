@@ -342,6 +342,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
             elevation={6}
             sx={{
               p: { xs: 3, md: 4 },
+              pt: 4,
               bgcolor: 'white',
               borderRadius: 2,
               display: 'flex',
@@ -434,7 +435,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
                 minHeight: '2.5rem',
               }}
             >
-              Who's Here{' '}
+              Who&apos;s Here{' '}
               <Typography
                 component='span'
                 sx={{
