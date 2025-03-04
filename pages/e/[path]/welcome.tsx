@@ -60,21 +60,17 @@ const WelcomePage = ({ event }: WelcomeProps) => {
 
   // Function to show the next welcome message in the queue
   const showNextWelcome = () => {
-    //console.log('showNextWelcome called, queue length:', welcomeQueueRef.current.length);
     if (welcomeQueueRef.current.length === 0) {
-      //console.log('No welcome messages in queue');
       setIsShowingWelcome(false);
       return;
     }
 
     const nextWelcome = welcomeQueueRef.current.shift();
     if (!nextWelcome) {
-      //console.log('No welcome message to show');
       setIsShowingWelcome(false);
       return;
     }
 
-    //console.log(`Showing welcome message for: ${nextWelcome.name}`);
     setWelcomeMessage(`Welcome ${nextWelcome.name}`);
     setIsShowingWelcome(true);
 
@@ -85,13 +81,11 @@ const WelcomePage = ({ event }: WelcomeProps) => {
 
     // Set timeout to clear the message after 5 seconds
     timeoutRef.current = setTimeout(() => {
-      //console.log('Welcome message timeout expired');
       setIsShowingWelcome(false);
       setWelcomeMessage('');
 
       // Check if there are more messages in the queue
       if (welcomeQueueRef.current.length > 0) {
-        //console.log(`${welcomeQueueRef.current.length} more welcome messages in queue`);
         showNextWelcome();
       }
     }, 5000);
@@ -141,15 +135,10 @@ const WelcomePage = ({ event }: WelcomeProps) => {
   // Fetch check-ins data
   const fetchCheckins = async () => {
     try {
-      //console.log('Fetching attendees for event:', event.id);
-
       const response = await axios.get(`/api/events/${event.id}/attendees`);
-
-      //console.log('API response:', response.data);
 
       if (response.data && response.data.attendees && Array.isArray(response.data.attendees)) {
         const attendeesList = response.data.attendees;
-        //console.log('Received attendees data, count:', attendeesList.length);
 
         // Ensure each attendee has the required properties for the Attendee component
         const processedAttendees = attendeesList.map((user: PartialUser) => {
@@ -163,22 +152,13 @@ const WelcomePage = ({ event }: WelcomeProps) => {
         const existingIds = new Set(attendeesRef.current.map(a => a.id));
         const newAttendees = processedAttendees.filter((a: PartialUser) => !existingIds.has(a.id));
 
-        //console.log(`Found ${newAttendees.length} new attendees since last check`);
-        //console.log('isInitialLoading', isInitialLoading);
-        //console.log('isShowingWelcome', isShowingWelcome);
-
         // Process new check-ins for welcome messages
         if (newAttendees.length > 0 && !isInitialLoading) {
-          //console.log('Processing new attendees for welcome messages');
           newAttendees.forEach((newUser: PartialUser) => {
             const userName = newUser.displayName || newUser.name || '';
-            //console.log(`Adding new check-in to welcome queue: ${userName}`);
 
             // Check if user is a supporter
             const isSupporter = newUser.roles?.some(role => role.name === 'Supporter') || false;
-            if (isSupporter) {
-              //console.log(`${userName} is a supporting member!`);
-            }
 
             const newCheckin: CheckinNotification = {
               id: newUser.id.toString(),
@@ -188,12 +168,10 @@ const WelcomePage = ({ event }: WelcomeProps) => {
 
             // Add to welcome queue
             welcomeQueueRef.current.push(newCheckin);
-            //console.log(`Added ${userName} to welcome queue. Queue length: ${welcomeQueueRef.current.length}`);
           });
 
           // If we have new attendees and we're not currently showing a welcome message, show one
           if (!isShowingWelcome && !isInitialLoading) {
-            //console.log('Triggering welcome message display');
             showNextWelcome();
           }
         }
@@ -205,7 +183,6 @@ const WelcomePage = ({ event }: WelcomeProps) => {
 
         // Mark initial load as complete after first successful fetch
         if (isInitialLoading) {
-          //console.log('Marking initial load as complete');
           setIsInitialLoading(false);
         }
       } else {
@@ -219,7 +196,6 @@ const WelcomePage = ({ event }: WelcomeProps) => {
   // Initial fetch of check-ins when the page loads
   useEffect(() => {
     if (event?.id) {
-      //console.log('Initial fetch of check-ins');
       fetchCheckins();
     }
   }, [event]);
@@ -565,7 +541,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     return { props: { event } };
   } catch (err) {
-    //console.log('err', err);
     return {
       props: {
         event: null,
