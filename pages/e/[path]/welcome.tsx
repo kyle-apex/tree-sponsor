@@ -322,7 +322,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
           justifyContent: 'space-around',
           flex: 1,
           height: { xs: 'auto', md: 'calc(100vh - 200px)' },
-          gap: { xs: 4, md: 4 },
+          gap: { xs: 3, md: 3 },
         }}
       >
         {/* QR Code Section */}
@@ -416,6 +416,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',
+              pt: 4,
             }}
           >
             <Typography
