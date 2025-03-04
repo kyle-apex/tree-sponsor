@@ -8,7 +8,6 @@ const addEventToMember = async (email: string, eventName: string) => {
     });
   } catch (err) {
     console.error('Unable to add event to ', email, eventName);
-    console.error(err);
   }
 };
 export default addEventToMember;

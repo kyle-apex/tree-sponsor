@@ -11,12 +11,14 @@ const UserAvatar = ({
   size = 40,
   link,
   sx,
+  'data-testid': dataTestId,
 }: {
   image: string;
   name: string;
   size?: number;
   link?: string;
   sx?: SxProps<Theme>;
+  'data-testid'?: string;
 }): JSX.Element => {
   const [abbreviation, setAbbreviation] = useState('AN');
   const router = useRouter();
@@ -47,6 +49,7 @@ const UserAvatar = ({
   return (
     <Avatar
       aria-label='recipe'
+      data-testid={dataTestId}
       sx={{
         backgroundColor: theme => theme.palette.primary.main,
         color: theme => theme.palette.primary.contrastText,
