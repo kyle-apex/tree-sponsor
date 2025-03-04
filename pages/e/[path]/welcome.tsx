@@ -71,7 +71,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
       return;
     }
 
-    setWelcomeMessage(`Welcome ${nextWelcome.name}`);
+    setWelcomeMessage(`Welcome ${nextWelcome.name}!`);
     setIsShowingWelcome(true);
 
     // Clear any existing timeout
