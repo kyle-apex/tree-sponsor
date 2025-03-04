@@ -322,7 +322,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
           justifyContent: 'space-around',
           flex: 1,
           height: { xs: 'auto', md: 'calc(100vh - 200px)' },
-          gap: { xs: 3, md: 3 },
+          gap: { xs: 2, md: 2 },
         }}
       >
         {/* QR Code Section */}
@@ -351,7 +351,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
               justifyContent: 'center',
               maxHeight: { md: '90%' },
               width: { xs: '300px', md: '350px', lg: '400px' },
-              height: { xs: 'auto', md: '80%' },
+              height: { xs: 'auto', md: '82%' },
             }}
           >
             <Typography
@@ -413,7 +413,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
               borderRadius: 2,
               width: '100%',
               maxWidth: { xs: '350px', md: '500px', lg: '600px' },
-              height: { md: '80%' },
+              height: { md: '82%' },
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',

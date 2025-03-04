@@ -101,7 +101,7 @@ const UserAvatarsRowWithLabel = ({ users, label, baseColor, maxDisplayedAvatars 
           >
             <UserAvatar
               name={user.displayName || user.name || '?'}
-              image=''
+              image={user.image}
               size={avatarSize}
               sx={{ bgcolor: baseColor }}
               data-testid={`user-avatar-${user.id}`}
