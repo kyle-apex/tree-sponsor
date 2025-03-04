@@ -88,7 +88,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
       if (welcomeQueueRef.current.length > 0) {
         showNextWelcome();
       }
-    }, 5000);
+    }, 15000);
   };
 
   // Add this function to group attendees
