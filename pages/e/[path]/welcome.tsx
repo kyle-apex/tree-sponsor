@@ -375,7 +375,7 @@ const WelcomePage = ({ event, previousEvent }: WelcomeProps) => {
             justifyContent: 'center',
             height: { xs: 'auto', md: '100%' },
             mb: { xs: 4, md: 0 },
-            maxWidth: { xs: '100%', md: '40%' },
+            maxWidth: { xs: '100%', md: '45%' },
           }}
         >
           <Paper
@@ -401,7 +401,7 @@ const WelcomePage = ({ event, previousEvent }: WelcomeProps) => {
                 fontWeight: 'bold',
                 textAlign: 'center',
                 mb: 3,
-                fontSize: { xs: '1.75rem', sm: '2rem', md: '2.20rem' },
+                fontSize: { xs: '1.75rem', sm: '2rem', md: '2.1rem' },
               }}
             >
               Scan to Check In
@@ -467,7 +467,7 @@ const WelcomePage = ({ event, previousEvent }: WelcomeProps) => {
                 fontWeight: 'bold',
                 textAlign: 'center',
                 mb: 3,
-                fontSize: { xs: '1.75rem', sm: '2rem', md: '2.20rem' },
+                fontSize: { xs: '1.75rem', sm: '2rem', md: '2.1rem' },
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
