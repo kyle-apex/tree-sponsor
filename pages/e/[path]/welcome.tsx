@@ -333,7 +333,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
           justifyContent: 'space-around',
           flex: 1,
           height: { xs: 'auto', md: 'calc(100vh - 200px)' },
-          gap: { xs: 1, md: 1 },
+          gap: { xs: 0, md: 0 },
         }}
       >
         {/* QR Code Section */}
