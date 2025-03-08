@@ -9,7 +9,7 @@ interface UserAvatarsRowWithLabelProps {
   maxDisplayedAvatars?: number;
 }
 
-const UserAvatarsRowWithLabel = ({ users, label, baseColor, maxDisplayedAvatars = 12 }: UserAvatarsRowWithLabelProps) => {
+const UserAvatarsRowWithLabel = ({ users, label, baseColor, maxDisplayedAvatars = 10 }: UserAvatarsRowWithLabelProps) => {
   // Convert baseColor to RGB and create a semi-transparent version
   const rgbaBackground = `${baseColor}33`; // 20% opacity
   const avatarSize = 40;
@@ -20,8 +20,8 @@ const UserAvatarsRowWithLabel = ({ users, label, baseColor, maxDisplayedAvatars 
     // Use the displayed count for overlap calculation
     const displayedCount = Math.min(userCount, maxDisplayedAvatars);
 
-    if (displayedCount <= 3) return { xs: 20, sm: 20, md: 20 }; // minimal overlap for few users
-    if (displayedCount <= 5) return { xs: 25, sm: 25, md: 20 }; // medium overlap
+    if (displayedCount <= 3) return { xs: 10, sm: 10, md: 10 }; // minimal overlap for few users
+    if (displayedCount <= 5) return { xs: 20, sm: 20, md: 20 }; // medium overlap
     if (displayedCount <= 10) return { xs: 30, sm: 28, md: 25 }; // increased overlap for more users
 
     // For large numbers of users, increase overlap significantly
