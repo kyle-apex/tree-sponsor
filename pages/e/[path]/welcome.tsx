@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSidePropsContext } from 'next';
 import { Box, Typography, Container, Paper, List, ListItem, ListItemText, Divider, CircularProgress, Button } from '@mui/material';
@@ -10,6 +10,8 @@ import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 import axios from 'axios';
 import Attendee from 'components/event/Attendee';
 import UserAvatarsRowWithLabel from 'components/UserAvatarsRowWithLabel';
+import Confetti from 'react-confetti';
+import { useWindowSize } from 'react-use';
 
 interface WelcomeProps {
   event: PartialEvent;
@@ -46,6 +48,18 @@ const GROUP_COLORS = {
   friends: '#F57C00', // Orange
 };
 
+// Helper function to determine if a user is an active supporter
+const isActiveSupporter = (user: PartialUser): boolean => {
+  return (
+    user.subscriptions?.some(sub => {
+      const lastPaymentDate = new Date(sub.lastPaymentDate);
+      const oneYearAgo = new Date();
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+      return lastPaymentDate >= oneYearAgo;
+    }) ?? false
+  );
+};
+
 const WelcomePage = ({ event }: WelcomeProps) => {
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
   const [welcomeMessage, setWelcomeMessage] = useState<string>('');
@@ -57,6 +71,8 @@ const WelcomePage = ({ event }: WelcomeProps) => {
   const attendeesRef = useRef<PartialUser[]>([]);
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
   const [groupedAttendees, setGroupedAttendees] = useState<GroupedAttendees>(INITIAL_GROUPS);
+  const [isSupporter, setIsSupporter] = useState<boolean>(false);
+  const { width, height } = useWindowSize();
 
   // Function to show the next welcome message in the queue
   const showNextWelcome = () => {
@@ -72,6 +88,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
     }
 
     setWelcomeMessage(`Welcome ${nextWelcome.name}!`);
+    setIsSupporter(nextWelcome.isSupporter);
     setIsShowingWelcome(true);
 
     // Clear any existing timeout
@@ -115,14 +132,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
         })
       ) {
         groups.newSupporters.push(user);
-      } else if (
-        user.subscriptions?.some(sub => {
-          const lastPaymentDate = new Date(sub.lastPaymentDate);
-          const oneYearAgo = new Date();
-          oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-          return lastPaymentDate >= oneYearAgo;
-        })
-      ) {
+      } else if (isActiveSupporter(user)) {
         groups.supporters.push(user);
       } else {
         groups.friends.push(user);
@@ -156,9 +166,10 @@ const WelcomePage = ({ event }: WelcomeProps) => {
         if (newAttendees.length > 0 && !isInitialLoading) {
           newAttendees.forEach((newUser: PartialUser) => {
             const userName = newUser.displayName || newUser.name || '';
-
+            console.log('newUser', newUser);
             // Check if user is a supporter
-            const isSupporter = newUser.roles?.some(role => role.name === 'Supporter') || false;
+            const isSupporter = isActiveSupporter(newUser);
+            console.log('isSupporter', isSupporter);
 
             const newCheckin: CheckinNotification = {
               id: newUser.id.toString(),
@@ -290,7 +301,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
           justifyContent: 'center',
         }}
       >
-        {isShowingWelcome && welcomeQueueRef.current.length > 0 && welcomeQueueRef.current[0].isSupporter ? (
+        {isShowingWelcome && isSupporter ? (
           <Typography
             variant='h5'
             sx={{
@@ -507,6 +518,10 @@ const WelcomePage = ({ event }: WelcomeProps) => {
           </Paper>
         </Box>
       </Container>
+
+      {isShowingWelcome && (
+        <Confetti width={width} height={height} recycle={true} numberOfPieces={200} gravity={0.1} tweenDuration={10000} />
+      )}
     </Box>
   );
 };
