@@ -15,6 +15,7 @@ import { useWindowSize } from 'utils/hooks';
 
 interface WelcomeProps {
   event: PartialEvent;
+  previousEvent: PartialEvent | null;
 }
 
 interface CheckinNotification {
@@ -60,7 +61,8 @@ const isActiveSupporter = (user: PartialUser): boolean => {
   );
 };
 
-const WelcomePage = ({ event }: WelcomeProps) => {
+const WelcomePage = ({ event, previousEvent }: WelcomeProps) => {
+  console.log('previousEvent', previousEvent);
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
   const [welcomeMessage, setWelcomeMessage] = useState<string>('');
   const [isShowingWelcome, setIsShowingWelcome] = useState<boolean>(false);
@@ -118,7 +120,9 @@ const WelcomePage = ({ event }: WelcomeProps) => {
       friends: [],
     };
 
-    const eventStartDate = parsedEvent.startDate ? new Date(parsedEvent.startDate) : new Date();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const eventStartDate = previousEvent?.startDate ? new Date(previousEvent.startDate) : yesterday;
 
     attendeesList.forEach(user => {
       if (user.roles?.some(role => role.name === 'Exec Team')) {
@@ -596,11 +600,19 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     formatServerProps(event);
 
-    return { props: { event } };
+    const previousEvent = await prisma.event.findFirst({
+      where: { id: { not: event.id }, startDate: { lt: event.startDate } },
+      orderBy: { startDate: 'desc' },
+    });
+    if (previousEvent) {
+      formatServerProps(previousEvent);
+    }
+    return { props: { event, previousEvent } };
   } catch (err) {
     return {
       props: {
         event: null,
+        previousEvent: null,
       },
     };
   }
