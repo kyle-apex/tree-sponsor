@@ -237,19 +237,22 @@ const WelcomePage = ({ event }: WelcomeProps) => {
         display: 'flex',
         flexDirection: 'column',
         padding: { xs: 2, sm: 3, md: 4 },
-        overflow: 'hidden',
+        overflow: { xs: 'auto', sm: 'hidden' }, // Allow scrolling on xs screens, hide overflow on larger screens
         boxSizing: 'border-box', // Ensure padding is included in height calculation
       }}
     >
       {/* Header - Shows either the event name or welcome message */}
       <Box
         sx={{
-          height: { xs: '80px', sm: '100px', md: '120px' }, // Fixed height to prevent layout shift
+          height: { xs: 'auto', sm: '100px', md: '120px' },
+          minHeight: '80px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          position: 'relative', // For absolute positioning of messages
+          position: 'relative',
+          mt: { xs: 2, sm: 6, md: 0 },
+          mb: { xs: 2, sm: 0 },
         }}
       >
         {/* Event name - always present but hidden when welcome message is shown */}
@@ -333,6 +336,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
           justifyContent: 'space-around',
           flex: 1,
           height: { xs: 'auto', md: 'calc(100vh - 200px)' },
+          marginTop: { xs: 10, md: 0 },
           gap: { xs: 0, md: 0 },
         }}
       >
@@ -460,16 +464,15 @@ const WelcomePage = ({ event }: WelcomeProps) => {
               </Typography>
             </Typography>
 
+            {/* Content Area - Attendees List */}
             <Box
               sx={{
-                width: '100%',
                 flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                minHeight: '200px',
-                position: 'relative',
+                mt: { xs: 2, sm: 3 },
+                overflowY: { xs: 'visible', sm: 'auto' }, // Allow content to extend on xs, scroll on larger screens
+                minHeight: { xs: 'auto', sm: 0 }, // Auto height on xs, controlled by flex on larger screens
               }}
             >
               {isInitialLoading ? (
