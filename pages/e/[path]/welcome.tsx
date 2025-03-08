@@ -11,7 +11,7 @@ import axios from 'axios';
 import Attendee from 'components/event/Attendee';
 import UserAvatarsRowWithLabel from 'components/UserAvatarsRowWithLabel';
 import Confetti from 'react-confetti';
-import { useWindowSize } from 'react-use';
+import { useWindowSize } from 'utils/hooks';
 
 interface WelcomeProps {
   event: PartialEvent;
@@ -519,7 +519,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
         </Box>
       </Container>
 
-      {isShowingWelcome && (
+      {isShowingWelcome && isSupporter && (
         <Confetti width={width} height={height} recycle={true} numberOfPieces={200} gravity={0.1} tweenDuration={10000} />
       )}
     </Box>
