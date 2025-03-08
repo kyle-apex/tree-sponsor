@@ -333,7 +333,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
           justifyContent: 'space-around',
           flex: 1,
           height: { xs: 'auto', md: 'calc(100vh - 200px)' },
-          gap: { xs: 2, md: 2 },
+          gap: { xs: 1, md: 1 },
         }}
       >
         {/* QR Code Section */}
@@ -372,7 +372,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
                 fontWeight: 'bold',
                 textAlign: 'center',
                 mb: 3,
-                fontSize: { xs: '1.75rem', sm: '2rem', md: '2.25rem' },
+                fontSize: { xs: '1.75rem', sm: '2rem', md: '2.20rem' },
               }}
             >
               Scan to Check In
@@ -438,7 +438,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
                 fontWeight: 'bold',
                 textAlign: 'center',
                 mb: 3,
-                fontSize: { xs: '1.75rem', sm: '2rem', md: '2.25rem' },
+                fontSize: { xs: '1.75rem', sm: '2rem', md: '2.20rem' },
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -454,7 +454,6 @@ const WelcomePage = ({ event }: WelcomeProps) => {
                   fontWeight: 'normal',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  minWidth: '100px',
                 }}
               >
                 ({attendees.length})
