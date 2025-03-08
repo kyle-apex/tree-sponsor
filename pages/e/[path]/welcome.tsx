@@ -142,6 +142,27 @@ const WelcomePage = ({ event }: WelcomeProps) => {
     setGroupedAttendees(groups);
   };
 
+  // Add this function to handle user avatar clicks
+  const handleUserClick = (user: PartialUser) => {
+    // Create a check-in notification for the clicked user
+    const userName = user.displayName || user.name || '';
+    const isUserSupporter = isActiveSupporter(user);
+
+    const clickedUserCheckin: CheckinNotification = {
+      id: user.id.toString(),
+      name: userName,
+      isSupporter: isUserSupporter,
+    };
+
+    // Add to welcome queue
+    welcomeQueueRef.current.push(clickedUserCheckin);
+
+    // If we're not currently showing a welcome message, show one
+    if (!isShowingWelcome) {
+      showNextWelcome();
+    }
+  };
+
   // Fetch check-ins data
   const fetchCheckins = async () => {
     try {
@@ -505,15 +526,32 @@ const WelcomePage = ({ event }: WelcomeProps) => {
                     users={groupedAttendees.newSupporters}
                     label='New Supporting Members'
                     baseColor={GROUP_COLORS.newSupporters}
+                    onUserClick={handleUserClick}
                   />
-                  <UserAvatarsRowWithLabel users={groupedAttendees.friends} label='Friends and Allies' baseColor={GROUP_COLORS.friends} />
+                  <UserAvatarsRowWithLabel
+                    users={groupedAttendees.friends}
+                    label='Friends and Allies'
+                    baseColor={GROUP_COLORS.friends}
+                    onUserClick={handleUserClick}
+                  />
                   <UserAvatarsRowWithLabel
                     users={groupedAttendees.supporters}
                     label='Supporting Members'
                     baseColor={GROUP_COLORS.supporters}
+                    onUserClick={handleUserClick}
                   />
-                  <UserAvatarsRowWithLabel users={groupedAttendees.coreTeam} label='Core Team' baseColor={GROUP_COLORS.coreTeam} />
-                  <UserAvatarsRowWithLabel users={groupedAttendees.execTeam} label='Exec Team' baseColor={GROUP_COLORS.execTeam} />
+                  <UserAvatarsRowWithLabel
+                    users={groupedAttendees.coreTeam}
+                    label='Core Team'
+                    baseColor={GROUP_COLORS.coreTeam}
+                    onUserClick={handleUserClick}
+                  />
+                  <UserAvatarsRowWithLabel
+                    users={groupedAttendees.execTeam}
+                    label='Exec Team'
+                    baseColor={GROUP_COLORS.execTeam}
+                    onUserClick={handleUserClick}
+                  />
                 </Box>
               )}
             </Box>

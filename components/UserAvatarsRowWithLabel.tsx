@@ -7,9 +7,10 @@ interface UserAvatarsRowWithLabelProps {
   label: string;
   baseColor: string;
   maxDisplayedAvatars?: number;
+  onUserClick?: (user: PartialUser) => void;
 }
 
-const UserAvatarsRowWithLabel = ({ users, label, baseColor, maxDisplayedAvatars = 10 }: UserAvatarsRowWithLabelProps) => {
+const UserAvatarsRowWithLabel = ({ users, label, baseColor, maxDisplayedAvatars = 10, onUserClick }: UserAvatarsRowWithLabelProps) => {
   // Convert baseColor to RGB and create a semi-transparent version
   const rgbaBackground = `${baseColor}33`; // 20% opacity
   const avatarSize = 40;
@@ -97,7 +98,14 @@ const UserAvatarsRowWithLabel = ({ users, label, baseColor, maxDisplayedAvatars 
               zIndex: index,
               top: '50%', // Center vertically
               transform: 'translateY(-50%)', // Center vertically
+              cursor: onUserClick ? 'pointer' : 'default', // Add cursor pointer when clickable
+              '&:hover': {
+                zIndex: 10, // Ensure hovered avatar appears on top
+                transform: onUserClick ? 'translateY(-50%) scale(1.1)' : 'translateY(-50%)', // Add slight zoom effect on hover
+                transition: 'transform 0.2s ease-in-out',
+              },
             }}
+            onClick={() => onUserClick && onUserClick(user)} // Call onUserClick with the user object
           >
             <UserAvatar
               name={user.displayName || user.name || '?'}
