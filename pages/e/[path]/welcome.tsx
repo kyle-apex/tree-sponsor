@@ -87,7 +87,7 @@ const WelcomePage = ({ event }: WelcomeProps) => {
       return;
     }
 
-    setWelcomeMessage(`Welcome ${nextWelcome.name}!`);
+    setWelcomeMessage(`Welcome ${nextWelcome.name?.split(' ')[0]}!`);
     setIsSupporter(nextWelcome.isSupporter);
     setIsShowingWelcome(true);
 
