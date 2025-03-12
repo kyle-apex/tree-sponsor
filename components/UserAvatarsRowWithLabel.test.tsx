@@ -68,9 +68,9 @@ describe('UserAvatarsRowWithLabel', () => {
     // Should show all 20 users in the count
     expect(screen.getByText('20 Test Users')).toBeInTheDocument();
 
-    // But only render default number (12) of avatar elements
+    // But only render default number (10) of avatar elements
     const avatars = container.querySelectorAll('[data-testid^="user-avatar"]');
-    expect(avatars.length).toBe(12);
+    expect(avatars.length).toBe(10);
   });
 
   it('uses displayName over name for avatar', () => {

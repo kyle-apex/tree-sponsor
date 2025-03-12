@@ -133,7 +133,7 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
             color='primary'
           ></StatisticIconDisplay>
         </Grid>
-        {startDate.getMonth() == 0 && startDate.getDate() == 1 && (
+        {startDate?.getMonth() == 0 && startDate?.getDate() == 1 && (
           <>
             <Grid item xs={6} sx={{ textAlign: 'center' }}>
               <StatisticIconDisplay
