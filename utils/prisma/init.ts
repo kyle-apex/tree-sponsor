@@ -5,13 +5,11 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 console.log('ts global.prisma', !!global.prisma);
-const prisma =
+export const prisma =
   global.prisma ||
   new PrismaClient({
     //log: ['query'],
   });
-
-export default prisma;
 
 export { Prisma } from '@prisma/client';
 
