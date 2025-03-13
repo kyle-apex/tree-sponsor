@@ -4,13 +4,16 @@ declare global {
   // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined;
 }
-
-export const prisma =
+console.log('ts global.prisma', !!global.prisma);
+const prisma =
   global.prisma ||
   new PrismaClient({
     //log: ['query'],
   });
 
+export default prisma;
+
 export { Prisma } from '@prisma/client';
 
-if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
+//if (process.env.NODE_ENV !== 'production')
+global.prisma = prisma;
