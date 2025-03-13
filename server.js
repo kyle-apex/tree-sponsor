@@ -4,8 +4,7 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const axios = require('axios');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const { prisma } = require('./utils/prisma/init.js');
 
 const ports = {
   http: 3080,
