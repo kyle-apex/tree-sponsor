@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const eventId = Number(req.query.id);
   const email = req.query.email ? String(req.query.email) : null;
 
-  console.log(`API request for event ${eventId}, email: ${email || 'none'}`);
+  //console.log(`API request for event ${eventId}, email: ${email || 'none'}`);
 
   // Only get user if email is provided
   const user = email ? await getUserByEmail(email) : null;
@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const event = await prisma.event.findFirst({ where: { id: eventId }, include: { organizers: {} } });
 
     if (!event) {
-      console.log(`Event ${eventId} not found`);
+      //console.log(`Event ${eventId} not found`);
       return res.status(404).json({ error: 'Event not found' });
     }
 
@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     })) as PartialEventCheckIn[];
 
-    console.log(`Found ${checkins.length} check-ins for event ${eventId}`);
+    //console.log(`Found ${checkins.length} check-ins for event ${eventId}`);
 
     const checkInCount = checkins?.length || 0;
 
@@ -71,7 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return user;
       });
 
-    console.log(`Returning ${attendees.length} attendees after filtering`);
+    //console.log(`Returning ${attendees.length} attendees after filtering`);
 
     // Sort by role if email is provided (for the checkin page)
     // Otherwise sort by check-in time (for the welcome page)

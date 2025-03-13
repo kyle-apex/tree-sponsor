@@ -62,7 +62,6 @@ const isActiveSupporter = (user: PartialUser): boolean => {
 };
 
 const WelcomePage = ({ event, previousEvent }: WelcomeProps) => {
-  console.log('previousEvent', previousEvent);
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
   const [welcomeMessage, setWelcomeMessage] = useState<string>('');
   const [isShowingWelcome, setIsShowingWelcome] = useState<boolean>(false);
