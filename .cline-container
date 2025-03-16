@@ -7,7 +7,7 @@ This file provides guidance for Cline (Claude) when assisting with development o
 - You are running in a containerized environment with restricted access
 - Your access is limited to the files within this project directory
 - The container is based on Node.js 20.x
-- MariaDB 10.6 is available at host 'db' (internal) or localhost:3307 (external)
+- MariaDB 10.6 is available at host 'db' on port 3306 within the container network
 - The database name is 'treefolksyp', username is 'root', password is 'treefolks'
 
 ## Project Overview

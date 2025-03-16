@@ -10,10 +10,11 @@ services:
       - node_modules:/workspace/node_modules
       - ./.env.template:/workspace/.env
     environment:
-      - DATABASE_URL=mysql://root:treefolks@localhost:3307/treefolksyp
+      - DATABASE_URL=mysql://root:treefolks@db:3306/treefolksyp
       - NODE_ENV=development
     command: sleep infinity
-    network_mode: service:db
+    ports:
+      - "3000:3000"
     depends_on:
       - db
 
