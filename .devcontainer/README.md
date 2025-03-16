@@ -39,7 +39,7 @@ When using this dev container:
 
 The MariaDB database is automatically set up with:
 
-> **Note:** The database is exposed on port 3307 to avoid conflicts with any local MySQL/MariaDB installations, but within the container network, it's accessible at host 'db' on the standard port 3306
+> **Note:** The database is exposed on port 3308 to avoid conflicts with any local MySQL/MariaDB installations, but within the container network, it's accessible at host 'db' on the standard port 3306
 
 - Database name: `treefolksyp`
 - Username: `root`

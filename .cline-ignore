@@ -1,0 +1,106 @@
+# Cline Ignore File - Best Practices
+# This file tells Cline which files and directories to ignore when analyzing the codebase
+
+# Dependencies and package management
+/node_modules
+/.pnp
+.pnp.js
+package-lock.json
+yarn.lock
+
+# Build outputs and artifacts
+/.next/
+/out/
+/build/
+/dist/
+/.vercel/
+/coverage/
+
+# Environment variables and secrets (sensitive information)
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local.backup
+.env.prod
+.env.stg
+*.pem
+localhost.crt
+localhost.key
+
+# Cache and temporary files
+.cache/
+.temp/
+.tmp/
+.history/
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor and IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Database files and backups
+*.sql
+*.sqlite
+*.db
+/prisma/treefolksyp_restore_dev_data.sql
+
+# Docker and container related
+.devcontainer/
+.devcontainer/.mysql-data
+.docker/
+
+# Test snapshots and fixtures that are large or change frequently
+__snapshots__/
+test/fixtures/
+
+# Binary and media files
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.ico
+*.svg
+*.pdf
+*.zip
+*.tar
+*.gz
+*.mp3
+*.mp4
+*.avi
+*.mov
+
+# Generated TypeScript files
+*.d.ts
+next-env.d.ts
+
+# Large JSON data files
+*.large.json
+
+# Cline specific files (to avoid recursive analysis)
+.cline-container
+
+# CI/CD configuration (optional, include if you want Cline to analyze these)
+# .github/
+# .circleci/
+# .gitlab-ci.yml
+
+# Documentation files (optional, include if you want Cline to analyze these)
+# *.md
+# /docs/

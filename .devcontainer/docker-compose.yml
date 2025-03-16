@@ -9,8 +9,9 @@ services:
       - ..:/workspace:cached
       - node_modules:/workspace/node_modules
       - ./.env.template:/workspace/.env
+    user: node
     environment:
-      - DATABASE_URL=mysql://root:treefolks@db:3306/treefolksyp
+      - DATABASE_URL=mysql://root:treefolks@db:3308/treefolksyp
       - NODE_ENV=development
     command: sleep infinity
     ports:
@@ -28,8 +29,8 @@ services:
       - MYSQL_ROOT_PASSWORD=treefolks
       - MYSQL_DATABASE=treefolksyp
     ports:
-      - "3307:3306"
-    command: --default-authentication-plugin=mysql_native_password
+      - "3308:3308"
+    command: --default-authentication-plugin=mysql_native_password --port=3308
 
 volumes:
   node_modules:

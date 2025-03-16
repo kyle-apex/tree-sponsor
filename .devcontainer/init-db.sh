@@ -3,18 +3,18 @@ set -e
 
 # Wait for MariaDB to be ready
 echo "Waiting for MariaDB to be ready..."
-until mysql -h db -u root -ptreefolks -e "SELECT 1"; do
+until mysql -h db -P 3308 -u root -ptreefolks -e "SELECT 1"; do
   sleep 1
 done
 
 echo "MariaDB is ready!"
 
 # Check if the database exists
-if mysql -h db -u root -ptreefolks -e "USE treefolksyp"; then
+if mysql -h db -P 3308 -u root -ptreefolks -e "USE treefolksyp"; then
   echo "Database treefolksyp already exists."
 else
   echo "Creating database treefolksyp..."
-  mysql -h db -u root -ptreefolks -e "CREATE DATABASE treefolksyp;"
+  mysql -h db -P 3308 -u root -ptreefolks -e "CREATE DATABASE treefolksyp;"
   echo "Database created!"
 fi
 
