@@ -7,7 +7,7 @@ This file provides guidance for Cline (Claude) when assisting with development o
 - You are running in a containerized environment with restricted access
 - Your access is limited to the files within this project directory
 - The container is based on Node.js 20.x
-- MySQL 5.7 is available at host 'db', port 3306
+- MariaDB 10.6 is available at host 'db', port 3306
 - The database name is 'treefolksyp', username is 'root', password is 'treefolks'
 
 ## Project Overview
@@ -27,7 +27,7 @@ This file provides guidance for Cline (Claude) when assisting with development o
 - Next.js 12.x
 - React 17.x
 - TypeScript
-- Prisma ORM with MySQL database
+- Prisma ORM with MariaDB database
 - Material UI (MUI) 5.x
 - Jest for testing
 - ESLint and Prettier for code formatting

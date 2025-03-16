@@ -5,7 +5,7 @@ This directory contains configuration files for setting up a development contain
 ## What's Included
 
 - Node.js 20.x environment (actively supported LTS version)
-- MySQL 5.7 database
+- MariaDB 10.6 database (MySQL compatible)
 - Development tools and extensions
 - Isolated environment for Cline
 
@@ -37,7 +37,7 @@ When using this dev container:
 
 ## Database Setup
 
-The MySQL database is automatically set up with:
+The MariaDB database is automatically set up with:
 
 - Database name: `treefolksyp`
 - Username: `root`

@@ -1,13 +1,13 @@
 #!/bin/bash
 set -e
 
-# Wait for MySQL to be ready
-echo "Waiting for MySQL to be ready..."
+# Wait for MariaDB to be ready
+echo "Waiting for MariaDB to be ready..."
 until mysql -h db -u root -ptreefolks -e "SELECT 1"; do
   sleep 1
 done
 
-echo "MySQL is ready!"
+echo "MariaDB is ready!"
 
 # Check if the database exists
 if mysql -h db -u root -ptreefolks -e "USE treefolksyp"; then
