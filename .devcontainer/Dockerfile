@@ -1,4 +1,4 @@
-FROM node:20
+FROM --platform=linux/arm64 node:20
 
 # Install basic development tools
 RUN apt-get update && apt-get install -y \

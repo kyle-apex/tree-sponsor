@@ -19,6 +19,7 @@ services:
 
   db:
     image: mysql:5.7
+    platform: linux/arm64
     restart: unless-stopped
     volumes:
       - mysql-data:/var/lib/mysql
