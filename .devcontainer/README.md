@@ -39,6 +39,8 @@ When using this dev container:
 
 The MariaDB database is automatically set up with:
 
+> **Note:** The database runs on port 3307 to avoid conflicts with any local MySQL/MariaDB installations
+
 - Database name: `treefolksyp`
 - Username: `root`
 - Password: `treefolks`
