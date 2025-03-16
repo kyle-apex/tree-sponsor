@@ -105,8 +105,9 @@ This file provides guidance for Cline (Claude) when assisting with development o
    - Include screenshots for UI changes if applicable
 
 5. After PR approval:
-   - Merge to main branch using `gh pr merge <PR-NUMBER> --merge --admin` to bypass branch protection rules
-   - Delete the feature branch
+   - Merge to main branch using `gh pr merge <PR-NUMBER> --merge --admin --delete-branch` to bypass branch protection rules
+   - Do not attempt to approve your own PRs (use `gh pr merge` directly without `gh pr review`)
+   - The feature branch will be automatically deleted when using the `--delete-branch` flag
 
 ## Common Tasks
 
