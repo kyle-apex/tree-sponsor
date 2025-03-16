@@ -1,0 +1,165 @@
+# Tree Sponsor Project Rules for Cline
+
+This file provides guidance for Cline (Claude) when assisting with development on the TreeFolks Young Professionals project.
+
+## Project Overview
+
+- This is a Next.js application with TypeScript that powers https://tfyp.org
+- Primary functionality includes:
+  - Event Check-in Page
+  - Tree Identification and Tree ID quizzes
+  - Member management
+  - Member referral pages
+  - Custom forms/surveys
+- Hidden/Deprecated Functionality:
+  - Tree Sponsorship/Thank-a-Tree
+
+## Tech Stack
+
+- Next.js 12.x
+- React 17.x
+- TypeScript
+- Prisma ORM with MySQL database
+- Material UI (MUI) 5.x
+- Jest for testing
+- ESLint and Prettier for code formatting
+
+## Project Structure
+
+- `/pages`: Next.js pages and API routes
+- `/components`: React components organized by feature
+- `/prisma`: Database schema and migrations
+- `/utils`: Utility functions and helpers
+- `/public`: Static assets
+- `/test`: Test files
+
+## Development Guidelines
+
+### Code Style
+
+1. Follow TypeScript best practices:
+   - Use proper typing for all variables, parameters, and return values
+   - Avoid using `any` type when possible
+   - Use interfaces for object shapes
+   - Use type guards when necessary
+
+2. React Component Guidelines:
+   - Use functional components with hooks
+   - Keep components focused on a single responsibility
+   - Extract reusable logic into custom hooks in `/utils/hooks`
+   - Use proper prop typing with TypeScript interfaces
+
+3. State Management:
+   - Use React Query for server state
+   - Use React Context for global UI state when necessary
+   - Prefer local component state when possible
+
+4. Styling:
+   - Use MUI components and styling system
+   - Follow the project's theme configuration in `/utils/theme.ts`
+   - Use emotion for custom styling when needed
+
+### Database Operations
+
+1. Always use Prisma client for database operations
+2. Follow the schema defined in `/prisma/schema.prisma`
+3. When creating migrations:
+   - Use `npx prisma migrate dev --name migration-name`
+   - Keep migrations focused on specific changes
+   - Document complex migrations
+
+### API Development
+
+1. Place API routes in `/pages/api`
+2. Follow RESTful principles
+3. Implement proper error handling and status codes
+4. Use TypeScript interfaces for request and response types
+
+### Testing
+
+1. Write tests for new functionality
+2. Use Jest and React Testing Library
+3. Focus on testing user behavior rather than implementation details
+4. Mock external dependencies appropriately
+
+### Git Workflow
+
+1. For each new task or feature:
+   - Create a feature branch from main: `git checkout -b feature/descriptive-name`
+   - Use a naming convention like `feature/`, `bugfix/`, `hotfix/`, or `refactor/` prefix
+
+2. Commit changes with meaningful messages:
+   - Use present tense ("Add feature" not "Added feature")
+   - Be descriptive but concise
+   - Reference issue numbers if applicable: "Add user profile page (#123)"
+
+3. Before creating a PR:
+   - Ensure all tests pass: `npm test`
+   - Run linting: `npm run lint`
+   - Verify the feature works as expected
+
+4. Create a Pull Request:
+   - Provide a clear title and description
+   - Reference any related issues
+   - Add appropriate reviewers
+   - Include screenshots for UI changes if applicable
+
+5. After PR approval:
+   - Merge to main branch
+   - Delete the feature branch
+
+## Common Tasks
+
+### Adding a New Feature
+
+1. Create a feature branch: `git checkout -b feature/descriptive-name`
+2. Plan the feature and identify affected components
+3. Update database schema if necessary
+4. Create or modify API endpoints
+5. Implement UI components
+6. Add tests
+7. Update documentation
+8. Commit changes with meaningful messages
+9. Create a pull request for review and merge
+
+### Fixing Bugs
+
+1. Create a bugfix branch: `git checkout -b bugfix/issue-description`
+2. Reproduce the issue
+3. Write a test that fails due to the bug
+4. Fix the implementation
+5. Verify the test passes
+6. Document the fix
+7. Commit changes with meaningful messages
+8. Create a pull request for review and merge
+
+### Database Schema Changes
+
+1. Create a feature branch: `git checkout -b feature/db-schema-change-description`
+2. Modify `/prisma/schema.prisma`
+3. Generate a migration with `npx prisma migrate dev --name descriptive-name`
+4. Update affected API routes and components
+5. Test the changes thoroughly
+6. Commit changes with meaningful messages
+7. Create a pull request for review and merge
+
+## Deployment
+
+- The application is deployed to production at https://tfyp.org
+- Node.js 14.x is required for deployment
+- Heroku is used for hosting
+
+## Local Development Setup
+
+1. Install MySQL
+2. Create a database named `treefolksyp`
+3. Run `npm install`
+4. Run `npx prisma generate`
+5. Run `npx prisma migrate deploy`
+6. Start the development server with `npm run server`
+
+## Important Notes
+
+- The codebase uses Node.js 14.x
+- Some features like Tree Sponsorship are deprecated but still in the codebase
+- The project follows ESLint and Prettier configurations defined in the root files
