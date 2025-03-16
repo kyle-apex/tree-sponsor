@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - node_modules:/workspace/node_modules
+      - ./.env.template:/workspace/.env
+    environment:
+      - DATABASE_URL=mysql://root:treefolks@db:3306/treefolksyp
+      - NODE_ENV=development
+    command: sleep infinity
+    network_mode: service:db
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    restart: unless-stopped
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=treefolks
+      - MYSQL_DATABASE=treefolksyp
+    ports:
+      - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password
+
+volumes:
+  node_modules:
+  mysql-data:
