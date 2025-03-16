@@ -11,6 +11,14 @@ import { PartialEvent, PartialUser } from 'interfaces';
 import React from 'react';
 import { Typography } from '@mui/material';
 
+// Mock the Confetti component to prevent Canvas API issues in tests
+jest.mock('react-confetti', () => {
+  return {
+    __esModule: true,
+    default: () => <div data-testid='mock-confetti' />,
+  };
+});
+
 // Mock the useRouter hook
 jest.mock('next/router', () => ({
   useRouter: () => ({
@@ -91,7 +99,7 @@ describe('WelcomePage', () => {
     mockedAxios.get.mockResolvedValueOnce({ data: { attendees: [] } });
 
     // Initial render with no attendees
-    const { rerender } = render(<WelcomePage event={mockEvent} />);
+    const { rerender } = render(<WelcomePage event={mockEvent} previousEvent={null} />);
 
     // Verify loading state
     expect(screen.getByText(/Test Event/i)).toBeInTheDocument();
@@ -113,7 +121,7 @@ describe('WelcomePage', () => {
 
     // Wait for welcome message to appear
     await waitFor(() => {
-      expect(screen.getByText(/Welcome John D./i)).toBeInTheDocument();
+      expect(screen.getByText(/Welcome John!/i)).toBeInTheDocument();
     });
 
     // Advance timer to clear welcome message
@@ -131,7 +139,7 @@ describe('WelcomePage', () => {
     // Setup axios mock to return attendees
     mockedAxios.get.mockResolvedValueOnce({ data: { attendees: mockAttendees } });
 
-    render(<WelcomePage event={mockEvent} />);
+    render(<WelcomePage event={mockEvent} previousEvent={null} />);
 
     // Wait for attendees to load
     await waitFor(() => {
@@ -188,7 +196,7 @@ describe('WelcomePage', () => {
     // Setup initial empty attendees
     mockedAxios.get.mockResolvedValueOnce({ data: { attendees: [] } });
 
-    render(<WelcomePage event={mockEvent} />);
+    render(<WelcomePage event={mockEvent} previousEvent={null} />);
 
     // Wait for initial loading to complete
     await waitFor(() => {
@@ -205,27 +213,27 @@ describe('WelcomePage', () => {
 
     // Wait for first welcome message to appear
     await waitFor(() => {
-      expect(screen.getByText(/Welcome John D./i)).toBeInTheDocument();
+      expect(screen.getByText(/Welcome John!/i)).toBeInTheDocument();
     });
 
     // Advance timer to clear first welcome message
     act(() => {
-      jest.advanceTimersByTime(5000);
+      jest.advanceTimersByTime(15000);
     });
 
     // Wait for second welcome message to appear
     await waitFor(() => {
-      expect(screen.getByText(/Welcome Jane S./i)).toBeInTheDocument();
+      expect(screen.getByText(/Welcome Jane!/i)).toBeInTheDocument();
     });
 
     // Advance timer to clear second welcome message
     act(() => {
-      jest.advanceTimersByTime(5000);
+      jest.advanceTimersByTime(15000);
     });
 
     // Wait for third welcome message to appear
     await waitFor(() => {
-      expect(screen.getByText(/Welcome Bob J./i)).toBeInTheDocument();
+      expect(screen.getByText(/Welcome Bob!/i)).toBeInTheDocument();
     });
   });
 });
