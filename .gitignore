@@ -43,6 +43,8 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Dev Container
+.devcontainer/.mysql-data
 
 /prisma/treefolksyp_restore_dev_data.sql
 

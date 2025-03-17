@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - node_modules:/workspace/node_modules
+      - ./.env.template:/workspace/.env
+    # Start as root to fix permissions, then switch to node user
+    user: root
+    environment:
+      - DATABASE_URL=mysql://root:treefolks@db:3308/treefolksyp
+      - NODE_ENV=development
+    # Fix permissions on node_modules and then switch to node user
+    command: >
+      bash -c "
+        mkdir -p /workspace/node_modules &&
+        chown -R node:node /workspace/node_modules &&
+        su node -c 'sleep infinity'
+      "
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.6
+    platform: linux/arm64
+    restart: unless-stopped
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=treefolks
+      - MYSQL_DATABASE=treefolksyp
+    ports:
+      - "3308:3308"
+    command: --default-authentication-plugin=mysql_native_password --port=3308
+
+volumes:
+  node_modules:
+  mysql-data:
