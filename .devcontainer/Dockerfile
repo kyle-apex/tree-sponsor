@@ -15,6 +15,24 @@ RUN apt-get update && apt-get install -y \
     default-mysql-client \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Chromium browser and dependencies for browser automation
+RUN apt-get update && apt-get install -y \
+    chromium \
+    libgbm1 \
+    libnss3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm-dev \
+    libasound2 \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install GitHub CLI
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
     && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
@@ -27,7 +45,7 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | s
 WORKDIR /workspace
 
 # Install global node packages
-RUN npm install -g npm@latest next typescript prisma
+RUN npm install -g npm@latest next typescript prisma puppeteer
 
 # Ensure correct permissions
 RUN mkdir -p /home/node/.npm && chown -R node:node /home/node/.npm
