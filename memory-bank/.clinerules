@@ -1,0 +1,44 @@
+# Cline Rules
+
+This file captures important patterns, preferences, and project intelligence that help me work more effectively with this project. It will evolve as I learn more about the project and your preferences.
+
+## Project Patterns
+
+1. **Component Organization**: Components are organized by feature/domain in separate directories
+2. **TypeScript Usage**: The project uses TypeScript for type safety
+3. **Testing Approach**: Jest and React Testing Library for component testing
+4. **Docker Development**: Development environment is containerized with Docker
+
+## Implementation Paths
+
+1. **Tree Functionality**: Components for tree display and identification are in the `components/tree` directory
+2. **Event System**: Event-related components are in the `components/event` directory
+3. **Maps Integration**: Map components are in the `components/maps` directory
+4. **User Management**: User-related functionality is in the `components/account` directory
+
+## Database Structure
+
+The project appears to use Prisma with PostgreSQL. Key database elements include:
+
+- SQL views and triggers (based on SQL files in the prisma directory)
+- Species data for trees
+- Change log tracking
+
+## Development Environment
+
+1. **DevContainer Setup**: The project uses VSCode DevContainers for development
+2. **Database Initialization**: Database setup scripts are in the `.devcontainer` directory
+3. **Permissions Handling**: There appears to be special handling for NPM permissions (NPM_PERMISSIONS_FIX.md)
+
+## Testing Patterns
+
+1. **Component Mocking**: Mock components are in the `__mocks__` directory
+2. **Test Organization**: Tests are organized by component/page in the `test` directory
+
+## User Interface Patterns
+
+1. **Material-UI**: The project appears to use Material-UI components
+2. **Rich Text Editing**: MUI-RTE for rich text editing
+3. **Map Components**: Custom map components for location selection and display
+
+This file will be updated as I learn more about the project and your preferences.
