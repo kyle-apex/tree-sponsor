@@ -57,9 +57,21 @@ The project uses Prisma with MySQL. Key database elements include:
 
 ## Development Environment
 
-1. **DevContainer Setup**: The project uses VSCode DevContainers for development
+1. **DevContainer Setup**:
+   - The project uses VSCode DevContainers for development
+   - Container rebuilds require special handling for persistent data
+   - The docker-compose.yml and rebuild-devcontainer.sh files have been configured to preserve Cline's Recent Tasks history across container rebuilds
 2. **Database Initialization**: Database setup scripts are in the `.devcontainer` directory
 3. **Permissions Handling**: There appears to be special handling for NPM permissions (NPM_PERMISSIONS_FIX.md)
+4. **Container Persistence**:
+   - VSCode extensions data (including Cline data) is stored in a persistent volume called vscode-server
+   - The docker-compose.yml file includes this volume mounted at /home/node/.vscode-server
+   - The rebuild-devcontainer.sh script preserves this volume during rebuilds with a grep -v vscode-server filter
+5. **Memory Bank Usage**:
+   - The `read-memory-bank.sh` script should be run at the start of each task
+   - This script reads all memory bank files in the recommended order
+   - It provides a comprehensive view of the project context
+   - Usage: `./read-memory-bank.sh` from the project root
 
 ## Testing Patterns
 
@@ -214,5 +226,6 @@ The project uses Prisma with MySQL. Key database elements include:
 - The codebase uses Node.js 14.x
 - Some features like Tree Sponsorship are deprecated but still in the codebase
 - The project follows ESLint and Prettier configurations defined in the root files
+- The dev container configuration has been permanently modified to preserve Cline's Recent Tasks history across rebuilds
 
 This file will be updated as I learn more about the project and your preferences.

@@ -34,6 +34,7 @@ Based on the project structure, the following features appear to be implemented:
 5. **Development Environment**:
    - Docker container setup
    - Database configuration
+   - Browser automation support
 
 ## In Progress
 
@@ -43,6 +44,7 @@ Based on open files and project structure, these areas appear to be in active de
 
    - Docker compose setup
    - Container rebuild process
+   - Browser integration for testing and automation
 
 2. **Database Initialization**:
 
@@ -85,12 +87,13 @@ Without specific requirements documentation, potential areas for future developm
 
 ## Known Issues
 
-Without specific issue tracking information, potential challenges might include:
+Current known issues include:
 
 1. **Development Environment**:
 
    - Container setup and permissions
    - Database initialization
+   - ✅ Fixed: Cline Recent Tasks history lost after dev container rebuilds (solution: added persistent volume for VSCode extensions data)
 
 2. **Testing**:
 
@@ -100,5 +103,13 @@ Without specific issue tracking information, potential challenges might include:
 3. **Feature Implementation**:
    - Edge cases in tree identification
    - Check-in process reliability
+
+## Recent Fixes
+
+1. **Development Environment**:
+   - ✅ Fixed: Cline Recent Tasks history persistence across container rebuilds
+   - Permanently modified docker-compose.yml to include a vscode-server volume
+   - Permanently updated rebuild-devcontainer.sh to preserve the vscode-server volume during rebuilds
+   - ✅ Added: read-memory-bank.sh script for improved memory bank reading performance
 
 This document will be updated as we gain more specific information about the project's progress and status.

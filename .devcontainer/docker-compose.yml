@@ -2,18 +2,22 @@ version: '3.8'
 
 services:
   app:
-    build: 
+    build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
     volumes:
       - ..:/workspace:cached
       - node_modules:/workspace/node_modules
       - ./.env.template:/workspace/.env
+      - vscode-server:/home/node/.vscode-server
     # Start as root to fix permissions, then switch to node user
     user: root
     environment:
       - DATABASE_URL=mysql://root:treefolks@db:3308/treefolksyp
       - NODE_ENV=development
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+      - DISPLAY=:0
     # Fix permissions on node_modules and then switch to node user
     command: >
       bash -c "
@@ -22,7 +26,7 @@ services:
         su node -c 'sleep infinity'
       "
     ports:
-      - "3000:3000"
+      - '3000:3000'
     depends_on:
       - db
 
@@ -36,9 +40,10 @@ services:
       - MYSQL_ROOT_PASSWORD=treefolks
       - MYSQL_DATABASE=treefolksyp
     ports:
-      - "3308:3308"
+      - '3308:3308'
     command: --default-authentication-plugin=mysql_native_password --port=3308
 
 volumes:
+  vscode-server:
   node_modules:
   mysql-data:
