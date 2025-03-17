@@ -9,7 +9,7 @@
     "node_modules"
   ],
   "scripts": {
-    "dev": "next",
+    "dev": "node server.js",
     "server": "node server.js",
     "build": "next build",
     "start": "node server-prod.js",
