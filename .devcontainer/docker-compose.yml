@@ -18,11 +18,14 @@ services:
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
       - DISPLAY=:0
-    # Fix permissions on node_modules and then switch to node user
+    # Fix permissions on node_modules and vscode-server, then switch to node user
     command: >
       bash -c "
         mkdir -p /workspace/node_modules &&
         chown -R node:node /workspace/node_modules &&
+        mkdir -p /home/node/.vscode-server/bin &&
+        chown -R node:node /home/node/.vscode-server &&
+        chmod -R 755 /home/node/.vscode-server &&
         su node -c 'sleep infinity'
       "
     ports:
