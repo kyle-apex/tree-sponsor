@@ -1,74 +1,94 @@
-# Dev Container for Tree Sponsor Project
+# Development Container Setup
 
-This directory contains configuration files for setting up a development container that isolates the project environment and restricts Cline's access to only the files within this project.
+This directory contains configuration files for the VS Code Development Container. The dev container provides a consistent development environment with all necessary dependencies pre-installed.
 
-## What's Included
+## Setup Process
 
-- Node.js 20.x environment (actively supported LTS version)
-- MariaDB 10.6 database (MySQL compatible)
-- Development tools and extensions
-- Isolated environment for Cline
+When the dev container is created, the following steps are automatically performed:
 
-## Getting Started
+1. The container is built using the Dockerfile in this directory
+2. Node.js dependencies are installed via `npm install`
+3. The MariaDB database is initialized
+4. Prisma migrations are applied to create the database schema
+5. The Prisma client is generated
 
-### Prerequisites
+## Troubleshooting
 
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
-2. Install [Visual Studio Code](https://code.visualstudio.com/)
-3. Install the [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension for VS Code
+### Missing Database Tables
 
-### Opening the Project in a Dev Container
+If you encounter errors like "The table `users` does not exist", it means the database initialization process didn't complete successfully. Here's how to fix it:
 
-1. Open the project folder in VS Code
-2. Click on the green icon in the bottom-left corner of VS Code
-3. Select "Reopen in Container" from the menu
-4. Wait for the container to build and start (this may take a few minutes the first time)
+1. Open a terminal in VS Code and run:
 
-VS Code will reload and connect to the development container. The terminal in VS Code will now run inside the container.
+   ```bash
+   chmod +x .devcontainer/init-db.sh && .devcontainer/init-db.sh
+   ```
 
-## How This Helps with Cline
+2. This will:
+   - Wait for the MariaDB database to be ready
+   - Create the database if it doesn't exist
+   - Run all Prisma migrations to create the tables
+   - Generate the Prisma client
 
-When using this dev container:
+### Database Connection Issues
 
-1. Cline will only have access to files within the container
-2. The container isolates the project from your host system
-3. All development dependencies are contained within the container
-4. The container provides a consistent environment for development
+If you're having trouble connecting to the database:
 
-## Database Setup
+1. Ensure the database container is running:
 
-The MariaDB database is automatically set up with:
+   ```bash
+   docker ps | grep db
+   ```
 
-> **Note:** The database is exposed on port 3308 to avoid conflicts with any local MySQL/MariaDB installations, but within the container network, it's accessible at host 'db' on the standard port 3306
+2. Check if you can connect to the database directly:
 
-- Database name: `treefolksyp`
-- Username: `root`
-- Password: `treefolks`
+   ```bash
+   mysql -h db -P 3308 -u root -ptreefolks -e "SHOW DATABASES;"
+   ```
 
-After the container starts, you'll need to run:
+3. Verify the DATABASE_URL environment variable is set correctly:
+   ```bash
+   echo $DATABASE_URL
+   ```
+   It should be: `mysql://root:treefolks@db:3308/treefolksyp`
+
+### Rebuilding the Dev Container
+
+If you need to completely rebuild the dev container:
+
+1. Run the rebuild script:
+
+   ```bash
+   ./rebuild-devcontainer.sh
+   ```
+
+2. After rebuilding, reopen the project in VS Code and select "Reopen in Container" when prompted.
+
+## Manual Database Setup
+
+If you need to manually set up the database:
+
+1. Ensure npm dependencies are installed:
+
+   ```bash
+   npm install
+   ```
+
+2. Run Prisma migrations:
+
+   ```bash
+   npx prisma migrate deploy
+   ```
+
+3. Generate the Prisma client:
+   ```bash
+   npx prisma generate
+   ```
+
+## Testing Database Connection
+
+You can test the database connection with:
 
 ```bash
-npx prisma migrate deploy
+node -e "const { PrismaClient } = require('@prisma/client'); const prisma = new PrismaClient(); async function main() { try { const userCount = await prisma.user.count(); console.log('User count:', userCount); } catch (error) { console.error('Error:', error.message); } finally { await prisma.\$disconnect(); } } main()"
 ```
-
-This will apply all migrations to the database.
-
-## Running the Application
-
-To start the development server:
-
-```bash
-npm run server
-```
-
-The application will be available at http://localhost:3000
-
-## Customizing the Container
-
-You can modify the container configuration by editing:
-
-- `devcontainer.json` - VS Code settings and extensions
-- `Dockerfile` - Container environment and dependencies
-- `docker-compose.yml` - Services and networking
-
-After making changes, rebuild the container by clicking the green icon in the bottom-left corner and selecting "Rebuild Container".

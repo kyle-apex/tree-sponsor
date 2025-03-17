@@ -39,7 +39,7 @@
   "forwardPorts": [3000, 3308],
   
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "sudo chown -R node:node /workspace && npm install && chmod +x .devcontainer/init-db.sh && .devcontainer/init-db.sh",
+  "postCreateCommand": "mkdir -p /workspace/node_modules && chown -R node:node /workspace/node_modules && su node -c 'npm install' && echo 'npm install completed' && chmod +x .devcontainer/init-db.sh && bash -c 'cd /workspace && .devcontainer/init-db.sh'",
   
   // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
   "remoteUser": "node",

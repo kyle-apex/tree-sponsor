@@ -9,11 +9,18 @@ services:
       - ..:/workspace:cached
       - node_modules:/workspace/node_modules
       - ./.env.template:/workspace/.env
-    user: node
+    # Start as root to fix permissions, then switch to node user
+    user: root
     environment:
       - DATABASE_URL=mysql://root:treefolks@db:3308/treefolksyp
       - NODE_ENV=development
-    command: sleep infinity
+    # Fix permissions on node_modules and then switch to node user
+    command: >
+      bash -c "
+        mkdir -p /workspace/node_modules &&
+        chown -R node:node /workspace/node_modules &&
+        su node -c 'sleep infinity'
+      "
     ports:
       - "3000:3000"
     depends_on:
