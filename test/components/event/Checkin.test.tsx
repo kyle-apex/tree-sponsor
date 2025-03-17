@@ -307,6 +307,12 @@ describe('Checkin Component', () => {
       expect(parsedGet).toHaveBeenCalledWith(expect.stringContaining('firstName=New'));
       expect(parsedGet).toHaveBeenCalledWith(expect.stringContaining('lastName=User'));
     });
+
+    // Check for the success message after check-in
+    await waitFor(() => {
+      expect(screen.getByText(/Thanks for joining for today's event/i)).toBeInTheDocument();
+      expect(screen.getByText(/New User/i)).toBeInTheDocument();
+    });
   });
 
   it('handles existing user with active membership check-in flow', async () => {
@@ -380,6 +386,14 @@ describe('Checkin Component', () => {
       expect(parsedGet).toHaveBeenCalledWith(expect.stringContaining('email=member%40example.com'));
     });
 
+    // Check for the success message after check-in
+    await waitFor(() => {
+      expect(screen.getByText(/Thanks for continuing to support the urban forest/i)).toBeInTheDocument();
+      expect(screen.getByText(/Active Member/i)).toBeInTheDocument();
+      // Check for membership status acknowledgment
+      expect(screen.getByText(/Your.*Membership anniversary donation/i)).toBeInTheDocument();
+    });
+
     // Test privacy toggle functionality
     (axios.patch as jest.Mock).mockResolvedValueOnce({});
 
@@ -450,6 +464,14 @@ describe('Checkin Component', () => {
       expect(parsedGet).toHaveBeenCalledWith(expect.stringContaining('/api/events/1/checkin'));
       expect(parsedGet).toHaveBeenCalledWith(expect.stringContaining('email=expired%40example.com'));
     });
+
+    // Check for the success message after check-in
+    await waitFor(() => {
+      expect(screen.getByText(/Thank you for your support/i)).toBeInTheDocument();
+      expect(screen.getByText(/Expired Member/i)).toBeInTheDocument();
+      // Check for membership renewal prompt
+      expect(screen.getByText(/your supporting membership is no longer active/i)).toBeInTheDocument();
+    });
   });
 
   it('allows resetting the form to add another check-in', async () => {
@@ -506,10 +528,35 @@ describe('Checkin Component', () => {
     const submitButton = screen.getByTestId('check-in-button');
     fireEvent.click(submitButton);
 
+    // Check for the success message after check-in
+    await waitFor(() => {
+      expect(screen.getByText(/Thanks for joining for today's event/i)).toBeInTheDocument();
+      expect(screen.getByText(/Delete User/i)).toBeInTheDocument();
+    });
+
+    // Mock the response after deletion
+    (parsedGet as jest.Mock).mockImplementationOnce(async url => {
+      if (url.includes('/api/events/1/checkin')) {
+        return {
+          isFound: false,
+          email: 'delete@example.com',
+          myCheckin: null,
+          attendees: [],
+          checkInCount: 0,
+        };
+      }
+      return null;
+    });
+
     // Directly call the delete API to simulate clicking the delete button
     await axios.delete('/api/events/delete-checkin?userId=5&eventId=1');
 
     // Verify the delete API was called with the correct parameters
     expect(axios.delete).toHaveBeenCalledWith('/api/events/delete-checkin?userId=5&eventId=1');
+
+    // Check for the form reset after deletion
+    await waitFor(() => {
+      expect(screen.getByText(/Welcome! Please check in below/i)).toBeInTheDocument();
+    });
   });
 });
