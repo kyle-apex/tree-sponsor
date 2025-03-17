@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -32,6 +32,7 @@ import UserSelector from 'components/UserSelector';
 import NavigationMenu from 'components/admin/NavigationMenu';
 import SplitRow from 'components/layout/SplitRow';
 import { Typography } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
 
 export const getServerSideProps = (ctx: GetSessionOptions) => {
   return restrictPageAccess(ctx, 'isAdmin');
@@ -141,12 +142,95 @@ export default function EnhancedTable(): JSX.Element {
     setOrderBy(property);
   };
 
+  // Function to convert data to CSV format
+  const convertToCSV = useCallback((data: SubscriptionWithDetails[]) => {
+    if (!data || data.length === 0) return '';
+
+    // Extract column headers from headCells
+    const headers = headCells.map(cell => cell.label);
+
+    // Create CSV header row
+    let csvContent = headers.join(',') + '\n';
+
+    // Add data rows
+    data.forEach((row: SubscriptionWithDetails) => {
+      const createdDate = new Date(row.createdDate);
+      const lastPaymentDate = new Date(row.lastPaymentDate || row.createdDate);
+
+      // Map row data to match headers order
+      const rowData = [
+        // Name
+        row.userName ? `"${row.userName.replace(/"/g, '""')}"` : '',
+        // Status
+        row.status ? `"${row.status.replace(/"/g, '""')}"` : '',
+        // Has Shirt
+        row.hasShirt ? 'Yes' : 'No',
+        // Last Donation
+        lastPaymentDate.toLocaleDateString(),
+        // Member Since
+        createdDate.toLocaleDateString(),
+        // Email
+        row.email ? `"${row.email.replace(/"/g, '""')}"` : '',
+        // Referred By (we don't have the name here, just the ID)
+        row.referralUserId || '',
+      ];
+
+      csvContent += rowData.join(',') + '\n';
+    });
+
+    return csvContent;
+  }, []);
+
+  // Function to export data to CSV
+  const exportToCSV = useCallback(() => {
+    // Get the sorted and filtered data
+    const dataToExport = stableSort(filteredUsers, getComparator(order, orderBy));
+
+    // Convert to CSV
+    const csvContent = convertToCSV(dataToExport);
+
+    // Create a Blob with the CSV data
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+    // Create a URL for the Blob
+    const url = URL.createObjectURL(blob);
+
+    // Create a temporary link element
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'members.csv');
+
+    // Append the link to the body
+    document.body.appendChild(link);
+
+    // Trigger the download
+    link.click();
+
+    // Clean up
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, [filteredUsers, order, orderBy, convertToCSV]);
+
   return (
     <Layout title='Admin'>
       <div className={classes.root}>
         <SplitRow>
           <h1>Admin</h1>
-          <NavigationMenu></NavigationMenu>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <RestrictSection accessType='hasAuthManagement'>
+              <Button
+                variant='contained'
+                color='primary'
+                sx={{ whiteSpace: 'nowrap' }}
+                size='medium'
+                startIcon={<DownloadIcon />}
+                onClick={exportToCSV}
+              >
+                Export to CSV
+              </Button>
+            </RestrictSection>
+            <NavigationMenu></NavigationMenu>
+          </div>
         </SplitRow>
         <SearchBox label='Find a Member' onChange={setNameFilter} defaultValue={nameFilter}></SearchBox>
 
