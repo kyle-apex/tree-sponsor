@@ -112,5 +112,8 @@ Current known issues include:
    - Permanently updated rebuild-devcontainer.sh to preserve the vscode-server volume during rebuilds
    - ✅ Added: read-memory-bank.sh script for improved memory bank reading performance
    - ✅ Fixed: VSCode formatter configuration issue by setting Prettier as the default formatter
+   - ✅ Added: GitHub CLI authentication persistence across container rebuilds
+   - Permanently modified docker-compose.yml to include a github-cli-config volume
+   - Permanently updated rebuild-devcontainer.sh to preserve the github-cli-config volume during rebuilds
 
 This document will be updated as we gain more specific information about the project's progress and status.

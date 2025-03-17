@@ -10,6 +10,7 @@ services:
       - node_modules:/workspace/node_modules
       - ./.env.template:/workspace/.env
       - vscode-server:/home/node/.vscode-server
+      - github-cli-config:/home/node/.config/gh
     # Start as root to fix permissions, then switch to node user
     user: root
     environment:
@@ -26,6 +27,9 @@ services:
         mkdir -p /home/node/.vscode-server/bin &&
         chown -R node:node /home/node/.vscode-server &&
         chmod -R 755 /home/node/.vscode-server &&
+        mkdir -p /home/node/.config/gh &&
+        chown -R node:node /home/node/.config/gh &&
+        chmod -R 700 /home/node/.config/gh &&
         su node -c 'sleep infinity'
       "
     ports:
@@ -50,3 +54,4 @@ volumes:
   vscode-server:
   node_modules:
   mysql-data:
+  github-cli-config:

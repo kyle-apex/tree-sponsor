@@ -12,6 +12,7 @@ As this is the initial setup of the memory bank, we're establishing baseline doc
 - Added browser support to the dev container for browser automation capabilities
 - Fixed issue with Cline Recent Tasks history persistence after dev container rebuilds
 - Fixed VSCode formatter configuration by setting Prettier as the default formatter
+- Added GitHub CLI authentication persistence across container rebuilds
 
 ## Active Development Areas
 
@@ -58,6 +59,7 @@ Potential next steps based on the current state:
    - Consider other development tools that may need persistence volumes
    - ✅ Completed: Fixed Cline data persistence across container rebuilds
    - ✅ Completed: Added read-memory-bank.sh script for improved memory bank reading
+   - ✅ Completed: Added GitHub CLI authentication persistence across container rebuilds
 2. **Testing**: Complete test coverage for critical components
 3. **Feature Development**: Continue work on tree identification and event check-in
 4. **Documentation**: Enhance code documentation and user guides
