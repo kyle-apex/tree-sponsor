@@ -65,8 +65,11 @@ The project uses Prisma with MySQL. Key database elements include:
 3. **Permissions Handling**: There appears to be special handling for NPM permissions (NPM_PERMISSIONS_FIX.md)
 4. **Container Persistence**:
    - VSCode extensions data (including Cline data) is stored in a persistent volume called vscode-server
-   - The docker-compose.yml file includes this volume mounted at /home/node/.vscode-server
-   - The rebuild-devcontainer.sh script preserves this volume during rebuilds with a grep -v vscode-server filter
+   - GitHub CLI authentication data is stored in a persistent volume called github-cli-config
+   - The docker-compose.yml file includes these volumes mounted at:
+     - /home/node/.vscode-server (for VSCode extensions)
+     - /home/node/.config/gh (for GitHub CLI authentication)
+   - The rebuild-devcontainer.sh script preserves these volumes during rebuilds with grep -v filters
 5. **Memory Bank Usage**:
    - The `read-memory-bank.sh` script should be run at the start of each task
    - This script reads all memory bank files in the recommended order
