@@ -111,5 +111,6 @@ Current known issues include:
    - Permanently modified docker-compose.yml to include a vscode-server volume
    - Permanently updated rebuild-devcontainer.sh to preserve the vscode-server volume during rebuilds
    - ✅ Added: read-memory-bank.sh script for improved memory bank reading performance
+   - ✅ Fixed: VSCode formatter configuration issue by setting Prettier as the default formatter
 
 This document will be updated as we gain more specific information about the project's progress and status.

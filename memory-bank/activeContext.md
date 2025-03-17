@@ -11,6 +11,7 @@ As this is the initial setup of the memory bank, we're establishing baseline doc
 - Identified key technologies and patterns
 - Added browser support to the dev container for browser automation capabilities
 - Fixed issue with Cline Recent Tasks history persistence after dev container rebuilds
+- Fixed VSCode formatter configuration by setting Prettier as the default formatter
 
 ## Active Development Areas
 

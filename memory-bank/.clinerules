@@ -72,6 +72,11 @@ The project uses Prisma with MySQL. Key database elements include:
    - This script reads all memory bank files in the recommended order
    - It provides a comprehensive view of the project context
    - Usage: `./read-memory-bank.sh` from the project root
+6. **VSCode Configuration**:
+   - The project uses Prettier as the default formatter
+   - ESLint is configured to run on save with the "source.fixAll.eslint" code action
+   - Specific formatter settings are defined for JavaScript, TypeScript, and TypeScript React files
+   - The .prettierrc file defines formatting rules (140 character line length, 2 space indentation, etc.)
 
 ## Testing Patterns
 
