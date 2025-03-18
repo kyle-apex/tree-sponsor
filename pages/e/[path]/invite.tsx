@@ -62,5 +62,5 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   } catch (err) {
     console.log('err', err);
   }
-  return { props: { event: null } };
+  return { props: { event: null as PartialEvent | null } };
 }

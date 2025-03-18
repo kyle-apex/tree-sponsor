@@ -45,7 +45,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const userId = user?.id;
 
-    if (!userId || new Date() < eventCompletedDate) return res.status(200).json({});
+    if (!userId || new Date() < eventCompletedDate) {
+      res.status(200).json({});
+      return;
+    }
 
     const updateRSVP: Prisma.EventRSVPUncheckedUpdateInput = {
       userId,
@@ -85,8 +88,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const email = req.query.email ? req.query.email + '' : '';
     if (email) {
       const user = await getUserByEmail(email, { select: { id: true, email: true, image: true, name: true } });
-      if (!user?.id || !eventId) return [];
-
+      if (!user?.id || !eventId) {
+        res.status(200).json([]);
+        return;
+      }
       const rsvp = await prisma.eventRSVP.findFirst({
         where: { eventId: eventId, userId: user?.id },
         include: { user: { select: { name: true, image: true, id: true } } },

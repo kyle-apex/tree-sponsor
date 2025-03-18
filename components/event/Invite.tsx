@@ -98,6 +98,7 @@ const EventInvite = ({
   name?: string;
   email?: string;
 }) => {
+  console.log('name', name, 'email', email);
   const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
   const [storedUser, setStoredUser] = useState<PartialUser>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
