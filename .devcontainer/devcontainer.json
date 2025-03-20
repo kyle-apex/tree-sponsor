@@ -3,7 +3,7 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspace",
-  
+
   // Set *default* container specific settings.json values on container create.
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash",
@@ -13,18 +13,13 @@
     },
     "typescript.tsdk": "node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
-    "eslint.validate": [
-      "javascript",
-      "javascriptreact",
-      "typescript",
-      "typescriptreact"
-    ],
+    "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
     "files.exclude": {
       "node_modules": true,
       ".next": true
     }
   },
-  
+
   // Add the IDs of extensions you want installed when the container is created.
   "extensions": [
     "dbaeumer.vscode-eslint",
@@ -32,25 +27,26 @@
     "ms-vscode.vscode-typescript-next",
     "prisma.prisma",
     "github.copilot",
-    "saoudrizwan.claude-dev"
+    "saoudrizwan.claude-dev",
+    "rooveterinaryinc.roo-cline"
   ],
-  
+
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [3000, 3308],
-  
+
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "mkdir -p /workspace/node_modules && chown -R node:node /workspace/node_modules && npm install && echo 'npm install completed' && chmod +x .devcontainer/init-db.sh && bash -c 'cd /workspace && .devcontainer/init-db.sh'",
-  
+
   // Set environment variables for Puppeteer and browser automation
   "containerEnv": {
     "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true",
     "PUPPETEER_EXECUTABLE_PATH": "/usr/bin/chromium",
     "DISPLAY": ":0"
   },
-  
+
   // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
   "remoteUser": "node",
-  
+
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
@@ -62,8 +58,8 @@
         }
       }
     }
-  },
-  
+  }
+
   // Uncomment to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
   // "remoteUser": "root"
 }

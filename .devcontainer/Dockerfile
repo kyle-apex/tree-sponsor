@@ -62,6 +62,8 @@ USER node
 # Set environment variables
 ENV NODE_ENV=development
 ENV PATH=/workspace/node_modules/.bin:$PATH
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/lib/chromium/chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 # Command to run when starting the container
 CMD ["sleep", "infinity"]

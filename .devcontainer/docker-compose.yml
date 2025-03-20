@@ -17,7 +17,7 @@ services:
       - DATABASE_URL=mysql://root:treefolks@db:3308/treefolksyp
       - NODE_ENV=development
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+      - PUPPETEER_EXECUTABLE_PATH=/usr/lib/chromium/chromium
       - DISPLAY=:0
     # Fix permissions on node_modules and vscode-server, then switch to node user
     command: >
