@@ -14,6 +14,9 @@ import findOrCreateCheckinUser from 'utils/events/find-or-create-checkin-user';
 import addSubscriber from 'utils/mailchimp/add-subscriber';
 import addEventToMember from 'utils/mailchimp/add-event-to-member';
 import hasAccess from 'utils/auth/has-access';
+//import getUsersByRoles from 'utils/user/get-users-by-roles';
+import formatFormResponseNotification from 'utils/email/format-form-response-notification';
+import sendEmail from 'utils/aws/send-email';
 
 export const config = {
   api: {
@@ -136,6 +139,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       create: { responsesJson: responsesJson, userId, formId: formId },
       update: { responsesJson: responsesJson, updatedDate: new Date() },
     });
+
+    // Send email notification to Exec Team and Owner users
+    try {
+      //console.log('Starting email notification process for form submission');
+      //const recipients = await getUsersByRoles(['Exec Team', 'Owner']);
+      //console.log(`Found ${recipients.length} recipients with Exec Team or Owner roles`);
+
+      const recipientEmails = [process.env.SUPPORT_EMAIL]; //recipients.map(user => user.email).filter(email => !!email); // Ensure emails exist
+      //console.log(`Filtered to ${recipientEmails.length} valid recipient emails:`, recipientEmails);
+
+      if (recipientEmails.length > 0) {
+        const emailContent = await formatFormResponseNotification(form, response, user); // 'user' is defined earlier in the handler
+        const emailResult = await sendEmail(recipientEmails, emailContent.subject, emailContent.body, emailContent.html);
+
+        if (!emailResult) {
+          console.error('Failed to send form submission notification email.'); // Log the error
+        }
+      }
+    } catch (error) {
+      console.error('Error sending form submission notification:', error); // Log any errors
+    }
 
     if (!existingResponse) {
       const yearAsString = new Date().getFullYear() + '';

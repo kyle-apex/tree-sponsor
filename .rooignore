@@ -1,0 +1,15 @@
+!memory-bank/
+
+# Environment variables and secrets (sensitive information)
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local.backup
+.env.prod
+.env.stg
+*.pem
+localhost.crt
+localhost.key
