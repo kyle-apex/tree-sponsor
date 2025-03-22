@@ -40,7 +40,7 @@
   // Set environment variables for Puppeteer and browser automation
   "containerEnv": {
     "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true",
-    "PUPPETEER_EXECUTABLE_PATH": "/usr/bin/chromium",
+    "PUPPETEER_EXECUTABLE_PATH": "/usr/lib/chromium/chromium",
     "DISPLAY": ":0"
   },
 
@@ -55,7 +55,8 @@
           "mcpServers": {
             // Add any MCP servers you want to use here
           }
-        }
+        },
+        "roo-cline.browserConfig": "/workspace/.devcontainer/roo-cline-browser-config.js"
       }
     }
   }
