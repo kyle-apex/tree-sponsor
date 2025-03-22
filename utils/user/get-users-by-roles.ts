@@ -9,26 +9,21 @@ import { User } from '@prisma/client';
 export default async function getUsersByRoles(roleNames: string[]): Promise<User[]> {
   //console.log(`[getUsersByRoles] Searching for users with roles: ${roleNames.join(', ')}`);
 
-  try {
-    const users = await prisma.user.findMany({
-      where: {
-        roles: {
-          some: {
-            name: {
-              in: roleNames,
-            },
+  const users = await prisma.user.findMany({
+    where: {
+      roles: {
+        some: {
+          name: {
+            in: roleNames,
           },
         },
       },
-      include: {
-        roles: true,
-      },
-    });
+    },
+    include: {
+      roles: true,
+    },
+  });
 
-    //console.log(`[getUsersByRoles] Found ${users.length} users with the specified roles`);
-    return users;
-  } catch (error) {
-    //console.error('[getUsersByRoles] Error fetching users by roles:', error);
-    throw error;
-  }
+  //console.log(`[getUsersByRoles] Found ${users.length} users with the specified roles`);
+  return users;
 }
