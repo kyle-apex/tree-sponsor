@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import dynamic from 'next/dynamic'; // Import dynamic
 import { useRouter } from 'next/router';
 import { GetServerSidePropsContext } from 'next';
 import { Box, Typography, Container, Paper, List, ListItem, ListItemText, Divider, CircularProgress, Button } from '@mui/material';
@@ -75,6 +76,7 @@ const WelcomePage = ({ event, previousEvent }: WelcomeProps) => {
   const [groupedAttendees, setGroupedAttendees] = useState<GroupedAttendees>(INITIAL_GROUPS);
   const [isSupporter, setIsSupporter] = useState<boolean>(false);
   const { width, height } = useWindowSize();
+  const audioRef = useRef<HTMLAudioElement | null>(null); // Ref for the audio element
 
   // Function to show the next welcome message in the queue
   const showNextWelcome = () => {
@@ -93,12 +95,27 @@ const WelcomePage = ({ event, previousEvent }: WelcomeProps) => {
     setIsSupporter(nextWelcome.isSupporter);
     setIsShowingWelcome(true);
 
+    // Play applause sound only for supporters
+    if (nextWelcome.isSupporter && audioRef.current) {
+      audioRef.current.play();
+    }
+
     // Clear any existing timeout
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
-    // Set timeout to clear the message after 5 seconds
+    // Set timeout to stop sound after 10 seconds
+    if (nextWelcome.isSupporter && audioRef.current) {
+      setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0; // Reset audio to start
+        }
+      }, 10000);
+    }
+
+    // Set timeout to clear the message after 15 seconds
     timeoutRef.current = setTimeout(() => {
       setIsShowingWelcome(false);
       setWelcomeMessage('');
@@ -107,7 +124,7 @@ const WelcomePage = ({ event, previousEvent }: WelcomeProps) => {
       if (welcomeQueueRef.current.length > 0) {
         showNextWelcome();
       }
-    }, 15000);
+    }, 15000); // Keep message for 15 seconds, applause will stop after 10 within this time.
   };
 
   // Add this function to group attendees
@@ -321,7 +338,6 @@ const WelcomePage = ({ event, previousEvent }: WelcomeProps) => {
           </Typography>
         )}
       </Box>
-
       {/* Stats Display - Either Quiz Stats or Supporting Member Message */}
       <Box
         sx={{
@@ -351,7 +367,6 @@ const WelcomePage = ({ event, previousEvent }: WelcomeProps) => {
           <></>
         )}
       </Box>
-
       <Container
         maxWidth='xl'
         sx={{
@@ -562,10 +577,10 @@ const WelcomePage = ({ event, previousEvent }: WelcomeProps) => {
           </Paper>
         </Box>
       </Container>
-
       {isShowingWelcome && isSupporter && (
         <Confetti width={width} height={height} recycle={true} numberOfPieces={200} gravity={0.1} tweenDuration={10000} />
       )}
+      <audio ref={audioRef} src='/applause.mp3' /> {/* Audio element */}
     </Box>
   );
 };

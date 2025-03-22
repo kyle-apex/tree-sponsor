@@ -30,6 +30,8 @@ Based on the project structure, the following features appear to be implemented:
 
    - Event check-in functionality
    - Calendar views
+   - Welcome page with applause sound for supporting members
+   - Confetti animation for supporting members
 
 5. **Development Environment**:
    - Docker container setup
@@ -107,6 +109,7 @@ Current known issues include:
 ## Recent Fixes
 
 1. **Development Environment**:
+
    - ✅ Fixed: Cline Recent Tasks history persistence across container rebuilds
    - Permanently modified docker-compose.yml to include a vscode-server volume
    - Permanently updated rebuild-devcontainer.sh to preserve the vscode-server volume during rebuilds
@@ -115,5 +118,10 @@ Current known issues include:
    - ✅ Added: GitHub CLI authentication persistence across container rebuilds
    - Permanently modified docker-compose.yml to include a github-cli-config volume
    - Permanently updated rebuild-devcontainer.sh to preserve the github-cli-config volume during rebuilds
+
+2. **Event System**:
+   - ✅ Added: Applause sound effect for supporting members when they check in
+   - The sound plays for 10 seconds while the welcome message displays for 15 seconds
+   - Sound only plays for users identified as supporting members
 
 This document will be updated as we gain more specific information about the project's progress and status.
