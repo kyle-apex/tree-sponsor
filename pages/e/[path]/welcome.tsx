@@ -169,6 +169,14 @@ const WelcomePage = ({ event, previousEvent }: WelcomeProps) => {
     const userName = user.displayName || user.name || '';
     const isUserSupporter = isActiveSupporter(user);
 
+    // Clear existing queue and timeout
+    welcomeQueueRef.current = [];
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setIsShowingWelcome(false);
+    setWelcomeMessage('');
+
     const clickedUserCheckin: CheckinNotification = {
       id: user.id.toString(),
       name: userName,
@@ -178,10 +186,8 @@ const WelcomePage = ({ event, previousEvent }: WelcomeProps) => {
     // Add to welcome queue
     welcomeQueueRef.current.push(clickedUserCheckin);
 
-    // If we're not currently showing a welcome message, show one
-    if (!isShowingWelcome) {
-      showNextWelcome();
-    }
+    // Show the welcome message for the clicked user
+    showNextWelcome();
   };
 
   // Fetch check-ins data
