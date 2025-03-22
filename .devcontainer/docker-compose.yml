@@ -12,7 +12,6 @@ services:
       - ./.env.template:/workspace/.env
       - vscode-server:/home/node/.vscode-server
       - github-cli-config:/home/node/.config/gh
-      - ./roo-cline-browser-config.js:/workspace/.devcontainer/roo-cline-browser-config.js
     # Start as root to fix permissions, then switch to node user
     user: root
     environment:

@@ -55,8 +55,7 @@
           "mcpServers": {
             // Add any MCP servers you want to use here
           }
-        },
-        "roo-cline.browserConfig": "/workspace/.devcontainer/roo-cline-browser-config.js"
+        }
       }
     }
   }
