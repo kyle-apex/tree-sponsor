@@ -28,7 +28,7 @@ fi
 
 # Wait for MariaDB to be ready
 echo "Waiting for MariaDB to be ready..."
-until mysql -h db -P 3308 -u root -ptreefolks -e "SELECT 1"; do
+until mysql -h db -P 3309 -u root -ptreefolks -e "SELECT 1"; do
   echo "Waiting for database connection..."
   sleep 2
 done
@@ -36,11 +36,11 @@ done
 echo "MariaDB is ready!"
 
 # Check if the database exists
-if mysql -h db -P 3308 -u root -ptreefolks -e "USE treefolksyp"; then
+if mysql -h db -P 3309 -u root -ptreefolks -e "USE treefolksyp"; then
   echo "Database treefolksyp already exists."
 else
   echo "Creating database treefolksyp..."
-  mysql -h db -P 3308 -u root -ptreefolks -e "CREATE DATABASE treefolksyp;"
+  mysql -h db -P 3309 -u root -ptreefolks -e "CREATE DATABASE treefolksyp;"
   echo "Database created!"
 fi
 
@@ -55,7 +55,7 @@ npx prisma generate
 
 # Verify database has tables
 echo "Verifying database setup..."
-TABLE_COUNT=$(mysql -h db -P 3308 -u root -ptreefolks -e "USE treefolksyp; SHOW TABLES;" | wc -l)
+TABLE_COUNT=$(mysql -h db -P 3309 -u root -ptreefolks -e "USE treefolksyp; SHOW TABLES;" | wc -l)
 
 if [ $TABLE_COUNT -le 1 ]; then
   echo "Warning: Database appears to be empty. Tables may not have been created properly."

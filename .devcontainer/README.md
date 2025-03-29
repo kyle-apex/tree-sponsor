@@ -43,14 +43,14 @@ If you're having trouble connecting to the database:
 2. Check if you can connect to the database directly:
 
    ```bash
-   mysql -h db -P 3308 -u root -ptreefolks -e "SHOW DATABASES;"
+   mysql -h db -P 3309 -u root -ptreefolks -e "SHOW DATABASES;"
    ```
 
 3. Verify the DATABASE_URL environment variable is set correctly:
    ```bash
    echo $DATABASE_URL
    ```
-   It should be: `mysql://root:treefolks@db:3308/treefolksyp`
+   It should be: `mysql://root:treefolks@db:3309/treefolksyp`
 
 ### Rebuilding the Dev Container
 

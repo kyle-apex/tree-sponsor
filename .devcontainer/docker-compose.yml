@@ -12,10 +12,11 @@ services:
       - ./.env.template:/workspace/.env
       - vscode-server:/home/node/.vscode-server
       - github-cli-config:/home/node/.config/gh
+      - /Users/khoskins/Development/roo-history:/workspace/roo-history:cached
     # Start as root to fix permissions, then switch to node user
     user: root
     environment:
-      - DATABASE_URL=mysql://root:treefolks@db:3308/treefolksyp
+      - DATABASE_URL=mysql://root:treefolks@db:3309/treefolksyp
       - NODE_ENV=development
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - PUPPETEER_EXECUTABLE_PATH=/usr/lib/chromium/chromium
@@ -33,8 +34,10 @@ services:
         chmod -R 700 /home/node/.config/gh &&
         su node -c 'sleep infinity'
       "
+    environment:
+      - APP_PORT=3001
     ports:
-      - '3000:3000'
+      - '${APP_PORT:-3001}:3001'
     depends_on:
       - db
 
@@ -47,9 +50,11 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=treefolks
       - MYSQL_DATABASE=treefolksyp
+    environment:
+      - DB_PORT=3309
     ports:
-      - '3308:3308'
-    command: --default-authentication-plugin=mysql_native_password --port=3308
+      - '${DB_PORT:-3309}:3309'
+    command: --default-authentication-plugin=mysql_native_password --port=3309
 
 volumes:
   vscode-server:
