@@ -21,6 +21,7 @@ services:
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - PUPPETEER_EXECUTABLE_PATH=/usr/lib/chromium/chromium
       - DISPLAY=:0
+      - APP_PORT=3001
     # Fix permissions on node_modules and vscode-server, then switch to node user
     command: >
       bash -c "
@@ -34,8 +35,6 @@ services:
         chmod -R 700 /home/node/.config/gh &&
         su node -c 'sleep infinity'
       "
-    environment:
-      - APP_PORT=3001
     ports:
       - '${APP_PORT:-3001}:3001'
     depends_on:
@@ -50,7 +49,6 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=treefolks
       - MYSQL_DATABASE=treefolksyp
-    environment:
       - DB_PORT=3309
     ports:
       - '${DB_PORT:-3309}:3309'
