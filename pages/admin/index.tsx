@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import Table from '@mui/material/Table';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
@@ -93,6 +95,8 @@ const headCells = [
 
 export default function EnhancedTable(): JSX.Element {
   const classes = useStyles();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [order, setOrder] = useState('asc' as 'asc' | 'desc');
   const [orderBy, setOrderBy] = useState('createdDate');
   const { page, rowsPerPage, handleChangePage, handleChangeRowsPerPage } = usePagination(100);
@@ -221,12 +225,12 @@ export default function EnhancedTable(): JSX.Element {
               <Button
                 variant='contained'
                 color='primary'
-                sx={{ whiteSpace: 'nowrap' }}
+                sx={{ whiteSpace: 'nowrap', minWidth: 'auto' }}
                 size='medium'
                 startIcon={<DownloadIcon />}
                 onClick={exportToCSV}
               >
-                Export to CSV
+                {!isMobile && 'Export to CSV'}
               </Button>
             </RestrictSection>
             <NavigationMenu></NavigationMenu>

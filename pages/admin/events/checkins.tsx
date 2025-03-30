@@ -36,6 +36,8 @@ import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import EventsTable from 'components/admin/EventsTable';
 import { useRemoveFromQuery } from 'utils/hooks/use-remove-from-query';
@@ -95,6 +97,8 @@ function exportToExcel(attendees: PartialAttendee[]) {
 // TODO: Paginate
 const CheckinsPage = () => {
   const router = useRouter();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [searchString, setSearchString] = useState('');
   const debouncedSetSearchText = useDebouncedCallback((value: string) => {
     setSearchString(value);
@@ -119,7 +123,7 @@ const CheckinsPage = () => {
           disabled={!attendees || attendees.length === 0}
           sx={{ whiteSpace: 'nowrap', minWidth: 'auto' }}
         >
-          Export to Excel
+          {!isMobile && 'Export to Excel'}
         </Button>
       </Box>
 
