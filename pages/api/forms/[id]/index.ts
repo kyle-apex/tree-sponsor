@@ -23,7 +23,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (event) isAuthorized = true;
     }
     if (isAuthorized) {
-      const result = await prisma.form.delete({ where: { id: id } });
+      // Implement soft delete by setting deletedAt instead of deleting the record
+      const result = await prisma.form.update({
+        where: { id: id },
+        data: { deletedAt: new Date() } as any,
+      });
       res.status(200).json(result);
     }
   } else if (req.method === 'GET') {

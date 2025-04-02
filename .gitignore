@@ -51,3 +51,5 @@ yarn-error.log*
 .package-lock.json
 prisma/treefolksyp_restore_dev_data.sql
 pages/api/testStripe.ts
+
+/roo-history

@@ -29,5 +29,6 @@
   "jest.enableInlineErrorMessages": true,
   "jest.showCoverageOnLoad": true,
   "jest.runAllTestsFirst": false,
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "roo-cline.customStoragePath": "/workspace/roo-history"
 }
