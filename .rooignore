@@ -13,3 +13,5 @@
 *.pem
 localhost.crt
 localhost.key
+
+/roo-history

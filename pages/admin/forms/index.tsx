@@ -25,11 +25,26 @@ const ManageFormsPage = () => {
   const router = useRouter();
   const [isNavigating, setIsNavigating] = useState(false);
 
-  const { data: pastForms, isFetching: pastIsFetching } = useGet<PartialForm[]>('/api/forms', 'pastForms', {});
-  const { data: forms, isFetching } = useGet<PartialForm[]>('/api/forms', 'forms', {});
+  const [showDeleted, setShowDeleted] = useState(false);
 
-  const { remove: removePast } = useRemoveFromQuery(['forms', {}], handleDelete);
-  const { remove } = useRemoveFromQuery(['forms', {}], handleDelete);
+  const {
+    data: forms,
+    isFetching,
+    refetch,
+  } = useGet<PartialForm[]>('/api/forms', ['forms', { includeDeleted: showDeleted }], {
+    includeDeleted: showDeleted,
+  });
+
+  const { remove } = useRemoveFromQuery(['forms', { includeDeleted: showDeleted }], handleDelete, true);
+
+  async function handleRestore(id: number) {
+    await axios.put(`/api/forms/${id}/restore`);
+    refetch();
+  }
+
+  const handleToggleShowDeleted = (newValue: boolean) => {
+    setShowDeleted(newValue);
+  };
 
   return (
     <AdminLayout
@@ -55,7 +70,16 @@ const ManageFormsPage = () => {
       <Typography mb={3} color='secondary' variant='h2'>
         Forms
       </Typography>
-      {forms?.length > 0 && <FormsTable forms={forms} isFetching={isFetching} onDelete={remove}></FormsTable>}
+      {forms?.length > 0 && (
+        <FormsTable
+          forms={forms}
+          isFetching={isFetching}
+          onDelete={remove}
+          onRestore={handleRestore}
+          onToggleShowDeleted={handleToggleShowDeleted}
+          showDeleted={showDeleted}
+        />
+      )}
       {forms?.length <= 0 && (
         <Typography mb={3} variant='body1'>
           No forms found

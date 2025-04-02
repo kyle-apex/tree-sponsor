@@ -56,7 +56,8 @@
           "mcpServers": {
             // Add any MCP servers you want to use here
           }
-        }
+        },
+        "roo-cline.customStoragePath": "/workspace/roo-history"
       }
     }
   }

@@ -11,8 +11,12 @@ import { StyledTableRow } from 'components/StyledTableRow';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
 import { useRouter } from 'next/router';
 import LaunchIcon from '@mui/icons-material/Launch';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Box from '@mui/material/Box';
 
 import { PartialForm } from 'interfaces';
 import { Router } from '@mui/icons-material';
@@ -40,6 +44,15 @@ const useStyles = makeStyles(theme => ({
   white: {
     color: theme.palette.common.white + '!important',
   },
+  deletedRow: {
+    opacity: 0.6,
+    backgroundColor: theme.palette.action.hover,
+  },
+  toggleContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 const headerCells = [
@@ -53,15 +66,21 @@ export default function FormsTable({
   forms,
   isFetching,
   onDelete,
-  isPastForm,
+  onRestore,
+  onToggleShowDeleted,
+  showDeleted = false,
 }: {
   forms: PartialForm[];
   isFetching: boolean;
   onDelete?: (formId: number) => void;
-  isPastForm?: boolean;
+  onRestore?: (formId: number) => void;
+  onToggleShowDeleted?: (showDeleted: boolean) => void;
+  showDeleted?: boolean;
 }) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isRestoreConfirmOpen, setIsRestoreConfirmOpen] = useState(false);
   const [currentId, setCurrentId] = useState(0);
+  const [includeDeleted, setIncludeDeleted] = useState(showDeleted);
   const classes = useStyles();
 
   const router = useRouter();
@@ -75,8 +94,23 @@ export default function FormsTable({
     window.open(`/f/${path}/`);
   };
 
+  const handleToggleDeleted = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('toggle');
+    const newValue = event.target.checked;
+    setIncludeDeleted(newValue);
+    if (onToggleShowDeleted) {
+      onToggleShowDeleted(newValue);
+    }
+  };
+
   return (
     <>
+      <Box className={classes.toggleContainer}>
+        <FormControlLabel
+          control={<Switch checked={includeDeleted} onChange={handleToggleDeleted} color='primary' />}
+          label='Show deleted forms'
+        />
+      </Box>
       <TableContainer className={classes.tableContainer}>
         <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
           <TableHeader classes={classes} headCells={headerCells} />
@@ -90,9 +124,13 @@ export default function FormsTable({
                 </TableRow>
               )}
               {forms.map((form: PartialForm) => {
+                const isDeleted = !!form.deletedAt;
                 return (
-                  <StyledTableRow tabIndex={-1} key={form.id}>
-                    <TableCell scope='row'>{form.name}</TableCell>
+                  <StyledTableRow tabIndex={-1} key={form.id} className={isDeleted ? classes.deletedRow : ''}>
+                    <TableCell scope='row'>
+                      {form.name}
+                      {isDeleted && <span> (Deleted)</span>}
+                    </TableCell>
                     <TableCell scope='row'>{form.path}</TableCell>
                     <TableCell scope='row' align='right'>
                       {form.formResponses?.length ? (
@@ -122,18 +160,29 @@ export default function FormsTable({
                       >
                         <LaunchIcon></LaunchIcon>
                       </IconButton>
-                      {!isPastForm && (
-                        <>
-                          <IconButton
-                            onClick={() => {
-                              setCurrentId(form.id);
-                              setIsConfirmOpen(true);
-                            }}
-                            size='large'
-                          >
-                            <DeleteIcon></DeleteIcon>
-                          </IconButton>
-                        </>
+
+                      {isDeleted ? (
+                        <IconButton
+                          onClick={() => {
+                            setCurrentId(form.id);
+                            setIsRestoreConfirmOpen(true);
+                          }}
+                          size='large'
+                          title='Restore form'
+                        >
+                          <RestoreFromTrashIcon></RestoreFromTrashIcon>
+                        </IconButton>
+                      ) : (
+                        <IconButton
+                          onClick={() => {
+                            setCurrentId(form.id);
+                            setIsConfirmOpen(true);
+                          }}
+                          size='large'
+                          title='Delete form'
+                        >
+                          <DeleteIcon></DeleteIcon>
+                        </IconButton>
                       )}
                     </TableCell>
                   </StyledTableRow>
@@ -150,6 +199,15 @@ export default function FormsTable({
         title='Remove Form'
         onConfirm={() => onDelete(currentId)}
       ></DeleteConfirmationDialog>
+      <DeleteConfirmationDialog
+        open={isRestoreConfirmOpen}
+        setOpen={setIsRestoreConfirmOpen}
+        itemType='form'
+        title='Restore Form'
+        confirmText='Restore'
+        bodyText='Are you sure you want to restore this form?'
+        onConfirm={() => onRestore(currentId)}
+      />
     </>
   );
 }
