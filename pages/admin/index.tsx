@@ -225,7 +225,7 @@ export default function EnhancedTable(): JSX.Element {
               <Button
                 variant='contained'
                 color='primary'
-                sx={{ whiteSpace: 'nowrap', minWidth: 'auto' }}
+                sx={{ whiteSpace: 'nowrap', minWidth: 'auto', pr: isMobile ? '4px' : 2 }}
                 size='medium'
                 startIcon={<DownloadIcon />}
                 onClick={exportToCSV}

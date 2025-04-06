@@ -121,9 +121,9 @@ const CheckinsPage = () => {
           startIcon={<FileDownloadIcon />}
           onClick={() => exportToExcel(attendees)}
           disabled={!attendees || attendees.length === 0}
-          sx={{ whiteSpace: 'nowrap', minWidth: 'auto' }}
+          sx={{ whiteSpace: 'nowrap', minWidth: 'auto', pr: isMobile ? '4px' : 2 }}
         >
-          {!isMobile && 'Export to Excel'}
+          {!isMobile && 'Export to CSV'}
         </Button>
       </Box>
 
