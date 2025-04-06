@@ -66,6 +66,9 @@ const NavigationMenu = () => {
         <RestrictSection accessType='hasFormManagement'>
           <MenuItem onClick={() => navigateTo('/admin/forms')}>Manage Forms</MenuItem>
         </RestrictSection>
+        <RestrictSection accessType='hasShirtManagement'>
+          <MenuItem onClick={() => navigateTo('/account/shirts')}>Manage Shirts</MenuItem>
+        </RestrictSection>
       </Menu>
     </>
   );
