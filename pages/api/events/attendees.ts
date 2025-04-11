@@ -18,16 +18,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!searchString)
       result = await prisma.$queryRaw<PartialAttendee[]>`
-        SELECT  e.name as eventName, c.eventId, c.userId, c.emailOptIn as "emailOptIn", u.name, u.email, c.discoveredFrom, c.id as "checkinId", c.createdDate, CASE WHEN s.lastPaymentDate >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) THEN true ELSE false END as "isMember" 
-        FROM Event e,EventCheckIn c, users u 
-        LEFT OUTER JOIN (SELECT userId, MAX(lastPaymentDate) as lastpaymentdate FROM Subscription GROUP BY userId) s on u.id=s.userId 
+        SELECT  e.name as eventName, CAST(c.eventId AS CHAR) as eventId, CAST(c.userId AS CHAR) as userId, c.emailOptIn as "emailOptIn", u.name, u.email, c.discoveredFrom, CAST(c.id AS CHAR) as "checkinId", c.createdDate, CASE WHEN s.lastPaymentDate >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) THEN true ELSE false END as "isMember"
+        FROM Event e,EventCheckIn c, users u
+        LEFT OUTER JOIN (SELECT userId, MAX(lastPaymentDate) as lastpaymentdate FROM Subscription GROUP BY userId) s on u.id=s.userId
         WHERE  c.userId=u.id and e.id=c.eventId order by c.createdDate desc`;
     else {
       searchString = '%' + searchString + '%';
       result = await prisma.$queryRaw<PartialAttendee[]>`
-            SELECT  e.name as eventName, c.eventId, c.userId, c.emailOptIn as "emailOptIn", u.name, u.email, c.discoveredFrom, c.id as "checkinId", c.createdDate, CASE WHEN s.lastPaymentDate >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) THEN true ELSE false END as "isMember" 
-            FROM Event e,EventCheckIn c, users u 
-            LEFT OUTER JOIN (SELECT userId, MAX(lastPaymentDate) as lastpaymentdate FROM Subscription GROUP BY userId) s on u.id=s.userId 
+            SELECT  e.name as eventName, CAST(c.eventId AS CHAR) as eventId, CAST(c.userId AS CHAR) as userId, c.emailOptIn as "emailOptIn", u.name, u.email, c.discoveredFrom, CAST(c.id AS CHAR) as "checkinId", c.createdDate, CASE WHEN s.lastPaymentDate >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) THEN true ELSE false END as "isMember"
+            FROM Event e,EventCheckIn c, users u
+            LEFT OUTER JOIN (SELECT userId, MAX(lastPaymentDate) as lastpaymentdate FROM Subscription GROUP BY userId) s on u.id=s.userId
             WHERE  c.userId=u.id and e.id=c.eventId and (e.name LIKE ${searchString} or u.name LIKE ${searchString} or u.email LIKE ${searchString})  order by c.createdDate desc`;
     }
 
