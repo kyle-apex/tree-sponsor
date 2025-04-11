@@ -35,6 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     for (const row of (result as any[]) || []) {
       for (const nam in row) {
         if (typeof row[nam as keyof PartialAttendee] === 'bigint') {
+          console.log('BigInt found in row:', nam, row[nam]);
           row[nam] = row[nam as keyof PartialAttendee].toString();
         }
       }
