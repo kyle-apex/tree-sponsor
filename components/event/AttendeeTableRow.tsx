@@ -38,7 +38,11 @@ const AttendeeTableRow = ({
       </TableCell>
       <TableCell scope='row'>{attendee.email}</TableCell>
       <TableCell scope='row'>{attendee.isMember ? 'Yes' : 'No'}</TableCell>
-      <TableCell scope='row'>{attendee.createdDate?.toLocaleDateString() + ' ' + attendee.createdDate?.toLocaleTimeString()}</TableCell>
+      <TableCell scope='row'>
+        {attendee.createdDate?.toLocaleDateString
+          ? attendee.createdDate?.toLocaleDateString() + ' ' + attendee.createdDate?.toLocaleTimeString()
+          : attendee.createdDate}
+      </TableCell>
       <TableCell scope='row'>{attendee.discoveredFrom}</TableCell>
       <TableCell sx={{ whiteSpace: 'nowrap' }}>
         {!isEditMode && (
