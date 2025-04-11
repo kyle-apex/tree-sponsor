@@ -37,7 +37,7 @@ const AttendeeTableRow = ({
         )}
       </TableCell>
       <TableCell scope='row'>{attendee.email}</TableCell>
-      <TableCell scope='row'>{attendee.isMember ? 'Yes' : 'No'}</TableCell>
+      <TableCell scope='row'>{attendee.isMember == 1 ? 'Yes' : 'No'}</TableCell>
       <TableCell scope='row'>
         {attendee.createdDate?.toLocaleDateString
           ? attendee.createdDate?.toLocaleDateString() + ' ' + attendee.createdDate?.toLocaleTimeString()

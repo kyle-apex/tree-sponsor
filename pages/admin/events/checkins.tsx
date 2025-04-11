@@ -69,7 +69,7 @@ function exportToExcel(attendees: PartialAttendee[]) {
 
   // Convert attendees data to CSV rows
   const csvRows = attendees.map(attendee => {
-    const isMember = attendee.isMember ? 'Yes' : 'No';
+    const isMember = attendee.isMember == 1 ? 'Yes' : 'No';
     const date = attendee.createdDate ? new Date(attendee.createdDate).toLocaleDateString() : '';
 
     return [attendee.eventName || '', attendee.name || '', attendee.email || '', isMember, date, attendee.discoveredFrom || '']
