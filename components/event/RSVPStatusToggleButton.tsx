@@ -21,10 +21,10 @@ const RSVPStatusToggleButton: FC<RSVPStatusToggleButtonProps> = ({ value, select
       {...otherProps}
       sx={{
         flexDirection: 'column',
-        height: '80px', // Fixed height regardless of selection state
+        height: '70px', // Fixed height regardless of selection state
         width: '33%',
         position: 'relative',
-        fontSize: selected ? '2rem' : '1.8rem', // Keep font size change as a selection indicator
+        fontSize: '1.6rem', // Keep font size change as a selection indicator
         ...(selected && {
           // Add visual selection indicators while keeping size consistent
           backgroundColor: theme => `${theme.palette.primary.main}10`, // Light tint of primary color
@@ -33,7 +33,6 @@ const RSVPStatusToggleButton: FC<RSVPStatusToggleButtonProps> = ({ value, select
         }),
         '& .MuiTypography-root': {
           fontSize: '0.8rem',
-          mt: 1,
         },
       }}
     >
@@ -49,7 +48,9 @@ const RSVPStatusToggleButton: FC<RSVPStatusToggleButtonProps> = ({ value, select
         />
       )}
       {emoji}
-      <Typography>{label}</Typography>
+      <Typography sx={{ marginTop: '0pm !important' }} mb={1}>
+        {label}
+      </Typography>
     </ToggleButton>
   );
 };

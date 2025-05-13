@@ -148,7 +148,7 @@ const InviteRSVPDialog = ({
             sx={{ mb: 2, mt: isSignIn ? 1 : 0 }}
           ></TextField>
         )}
-        {status === 'Declined' && !isSignIn && (
+        {status === 'Declined False' && !isSignIn && (
           <>
             <TextField
               fullWidth
