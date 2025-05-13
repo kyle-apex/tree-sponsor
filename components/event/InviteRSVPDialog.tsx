@@ -106,7 +106,7 @@ const InviteRSVPDialog = ({
             </ToggleButtonGroup>
           </Box>
         )}
-        {!isSignIn && status !== 'Declined' && (
+        {!isSignIn && (
           <TextField
             fullWidth
             label='Name'
@@ -114,40 +114,18 @@ const InviteRSVPDialog = ({
             onChange={e => setName(e.target.value)}
             size='small'
             sx={{ mb: 2, mt: 1 }}
-            required
+            required={status !== 'Declined'}
           ></TextField>
         )}
-        {!isSignIn && status === 'Declined' && (
-          <TextField
-            fullWidth
-            label='Name'
-            value={name}
-            onChange={e => setName(e.target.value)}
-            size='small'
-            sx={{ mb: 2, mt: 1 }}
-          ></TextField>
-        )}
-        {status !== 'Declined' && (
-          <TextField
-            fullWidth
-            label='Email'
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            size='small'
-            sx={{ mb: 2, mt: isSignIn ? 1 : 0 }}
-            required
-          ></TextField>
-        )}
-        {status === 'Declined' && (
-          <TextField
-            fullWidth
-            label='Email'
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            size='small'
-            sx={{ mb: 2, mt: isSignIn ? 1 : 0 }}
-          ></TextField>
-        )}
+        <TextField
+          fullWidth
+          label='Email'
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          size='small'
+          sx={{ mb: 2, mt: isSignIn ? 1 : 0 }}
+          required={status !== 'Declined'}
+        ></TextField>
         {status === 'Declined False' && !isSignIn && (
           <>
             <TextField
@@ -255,7 +233,7 @@ const InviteRSVPDialog = ({
             color='primary'
             onClick={rsvp}
           >
-            {isSignIn ? 'Sign In' : `Submit ${status === 'Going' ? 'RSVP' : status === 'Maybe' ? 'Maybe' : 'Decline'}`}
+            {isSignIn ? 'Sign In' : `${status === 'Going' ? 'Submit RSVP' : status === 'Maybe' ? ' Submit Maybe' : 'Decline Invite'}`}
           </LoadingButton>
         </SplitRow>
       </DialogActions>
