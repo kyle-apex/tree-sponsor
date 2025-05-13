@@ -88,6 +88,12 @@ const InviteRSVPDialog = ({
     setName(initialName);
   }, [initialName]);
 
+  useEffect(() => {
+    if (initialStatus) {
+      setStatus(initialStatus);
+    }
+  }, [initialStatus]);
+
   const [session] = useSession();
   return (
     <Dialog open={isOpen} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px', margin: '0px' } }} onClose={handleClose}>
@@ -126,7 +132,7 @@ const InviteRSVPDialog = ({
           sx={{ mb: 2, mt: isSignIn ? 1 : 0 }}
           required={status !== 'Declined'}
         ></TextField>
-        {status === 'Declined False' && !isSignIn && (
+        {status === 'Declined' && !isSignIn && (
           <>
             <TextField
               fullWidth
