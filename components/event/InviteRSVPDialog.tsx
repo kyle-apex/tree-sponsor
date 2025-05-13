@@ -17,6 +17,9 @@ import TextField from '@mui/material/TextField';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Box from '@mui/material/Box';
+import RSVPStatusToggleButton from './RSVPStatusToggleButton';
 
 const InviteRSVPDialog = ({
   isOpen,
@@ -27,6 +30,7 @@ const InviteRSVPDialog = ({
   initialEmail,
   onRSVP,
   isSignIn = false,
+  initialStatus,
 }: {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>> | ((val: boolean) => void);
@@ -36,6 +40,7 @@ const InviteRSVPDialog = ({
   initialEmail?: string;
   onRSVP?: () => void;
   isSignIn?: boolean;
+  initialStatus?: string;
 }) => {
   const { add } = useAddToQuery<any>(`events/${event.id}/rsvps`, addToDatabase);
   const [name, setName] = useState(initialName);
@@ -43,6 +48,9 @@ const InviteRSVPDialog = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isEmailOptIn, setIsEmailOptIn] = useState(false);
   const [detailsEmailOptIn, setDetailsEmailOptIn] = useState(true);
+  const [status, setStatus] = useState(initialStatus || 'Going');
+  const [comment, setComment] = useState('');
+  const [notifyInviter, setNotifyInviter] = useState(true);
 
   async function addToDatabase(rsvp: any) {
     const result = await axios.post(`/api/events/${event.id}/rsvps`, rsvp);
@@ -51,11 +59,26 @@ const InviteRSVPDialog = ({
 
   const rsvp = async () => {
     setIsLoading(true);
-    await add({ email, name, detailsEmailOptIn, emailOptIn: isEmailOptIn, invitedByUserId: invitedByUser?.id });
+    await add({
+      email,
+      name,
+      detailsEmailOptIn,
+      emailOptIn: isEmailOptIn,
+      invitedByUserId: invitedByUser?.id,
+      status,
+      comment: status === 'Declined' ? comment : undefined,
+      notifyInviter: status === 'Declined' ? notifyInviter : undefined,
+    });
 
     setIsLoading(false);
     if (onRSVP) onRSVP();
     handleClose();
+  };
+
+  const handleStatusChange = (event: React.MouseEvent<HTMLElement>, newStatus: string | null) => {
+    if (newStatus !== null) {
+      setStatus(newStatus);
+    }
   };
   const handleClose = () => {
     setIsOpen(false);
@@ -75,6 +98,15 @@ const InviteRSVPDialog = ({
       </DialogTitle>
       <DialogContent className='' sx={{ pb: 1 }}>
         {!isSignIn && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+            <ToggleButtonGroup value={status} exclusive onChange={handleStatusChange} aria-label='RSVP status' sx={{ width: '100%' }}>
+              <RSVPStatusToggleButton value='Going' selected={status === 'Going'} emoji='🎉' label='Going' />
+              <RSVPStatusToggleButton value='Maybe' selected={status === 'Maybe'} emoji='🤷' label='Maybe' />
+              <RSVPStatusToggleButton value='Declined' selected={status === 'Declined'} emoji='😔' label='Decline' />
+            </ToggleButtonGroup>
+          </Box>
+        )}
+        {!isSignIn && status !== 'Declined' && (
           <TextField
             fullWidth
             label='Name'
@@ -85,16 +117,78 @@ const InviteRSVPDialog = ({
             required
           ></TextField>
         )}
-        <TextField
-          fullWidth
-          label='Email'
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          size='small'
-          sx={{ mb: 2, mt: isSignIn ? 1 : 0 }}
-          required
-        ></TextField>
-        {!isSignIn && (
+        {!isSignIn && status === 'Declined' && (
+          <TextField
+            fullWidth
+            label='Name'
+            value={name}
+            onChange={e => setName(e.target.value)}
+            size='small'
+            sx={{ mb: 2, mt: 1 }}
+          ></TextField>
+        )}
+        {status !== 'Declined' && (
+          <TextField
+            fullWidth
+            label='Email'
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            size='small'
+            sx={{ mb: 2, mt: isSignIn ? 1 : 0 }}
+            required
+          ></TextField>
+        )}
+        {status === 'Declined' && (
+          <TextField
+            fullWidth
+            label='Email'
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            size='small'
+            sx={{ mb: 2, mt: isSignIn ? 1 : 0 }}
+          ></TextField>
+        )}
+        {status === 'Declined' && !isSignIn && (
+          <>
+            <TextField
+              fullWidth
+              label='Message (optional)'
+              value={comment}
+              onChange={e => setComment(e.target.value)}
+              size='small'
+              multiline
+              rows={3}
+              sx={{ mb: 2 }}
+            ></TextField>
+            {invitedByUser && (
+              <FormGroup sx={{ marginBottom: 2 }}>
+                <FormControlLabel
+                  sx={{
+                    '.MuiSvgIcon-root': { color: 'rgba(0, 0, 0, 0.4)' },
+                    '& .MuiFormControlLabel-label': {
+                      fontSize: '.75rem',
+                      color: 'var(--secondary-text-color)',
+                      fontStyle: 'italic',
+                    },
+                    marginRight: '0px',
+                  }}
+                  control={
+                    <Checkbox
+                      checked={notifyInviter}
+                      onChange={e => {
+                        setNotifyInviter(e.target.checked);
+                      }}
+                      color='default'
+                      size='small'
+                    />
+                  }
+                  label={`Let ${invitedByUser.name} know that I won't be able to make it`}
+                />
+              </FormGroup>
+            )}
+          </>
+        )}
+        {!isSignIn && status !== 'Declined' && (
           <>
             <FormGroup sx={{ marginBottom: 1 }}>
               <FormControlLabel
@@ -154,14 +248,14 @@ const InviteRSVPDialog = ({
             Cancel
           </Button>
           <LoadingButton
-            disabled={(!name && !isSignIn) || !email}
+            disabled={(!name && !isSignIn && status !== 'Declined') || (!email && status !== 'Declined')}
             sx={{ width: '100%' }}
             isLoading={isLoading}
             variant='contained'
             color='primary'
             onClick={rsvp}
           >
-            {isSignIn ? 'Sign In' : 'Submit RSVP'}
+            {isSignIn ? 'Sign In' : `Submit ${status === 'Going' ? 'RSVP' : status === 'Maybe' ? 'Maybe' : 'Decline'}`}
           </LoadingButton>
         </SplitRow>
       </DialogActions>

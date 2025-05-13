@@ -107,6 +107,7 @@ const EventInvite = ({
   const [isRSVPDialogOpen, setIsRSVPDialogOpen] = useState(false);
   const [isGuestListDialogOpen, setIsGuestListDialogOpen] = useState(false);
   const [isSignInMode, setIsSignInMode] = useState(false);
+  const [rsvpStatus, setRsvpStatus] = useState('Going');
   const {
     data: rsvps,
     isFetching,
@@ -206,6 +207,7 @@ const EventInvite = ({
           color='primary'
           sx={{ mb: 1.5 }}
           onClick={() => {
+            setRsvpStatus('Going');
             setIsRSVPDialogOpen(true);
           }}
         >
@@ -217,12 +219,21 @@ const EventInvite = ({
             variant='outlined'
             color='primary'
             onClick={() => {
+              setRsvpStatus('Maybe');
               setIsRSVPDialogOpen(true);
             }}
           >
             Maybe
           </Button>
-          <Button fullWidth variant='outlined' color='secondary'>
+          <Button
+            fullWidth
+            variant='outlined'
+            color='secondary'
+            onClick={() => {
+              setRsvpStatus('Declined');
+              setIsRSVPDialogOpen(true);
+            }}
+          >
             Decline
           </Button>
         </SplitRow>
@@ -250,6 +261,7 @@ const EventInvite = ({
         }}
         invitedByUser={invitedByUser}
         isSignIn={isSignInMode}
+        initialStatus={eventRSVP?.status || rsvpStatus}
       />
       <GuestListDialog
         open={isGuestListDialogOpen}
