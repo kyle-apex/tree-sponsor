@@ -106,6 +106,7 @@ const EventInvite = ({
   const [eventRSVP, setEventRSVP] = useState<PartialEventRSVP>();
   const [isRSVPDialogOpen, setIsRSVPDialogOpen] = useState(false);
   const [isGuestListDialogOpen, setIsGuestListDialogOpen] = useState(false);
+  const [isSignInMode, setIsSignInMode] = useState(false);
   const {
     data: rsvps,
     isFetching,
@@ -241,8 +242,14 @@ const EventInvite = ({
         initialEmail={storedEmail}
         initialName={storedUser?.name}
         isOpen={isRSVPDialogOpen}
-        setIsOpen={setIsRSVPDialogOpen}
+        setIsOpen={(open: boolean) => {
+          setIsRSVPDialogOpen(open);
+          if (!open) {
+            setIsSignInMode(false);
+          }
+        }}
         invitedByUser={invitedByUser}
+        isSignIn={isSignInMode}
       />
       <GuestListDialog
         open={isGuestListDialogOpen}
@@ -253,6 +260,11 @@ const EventInvite = ({
         maybeCount={testUsers.length - 7}
         onRSVP={() => {
           setIsGuestListDialogOpen(false);
+          setIsRSVPDialogOpen(true);
+        }}
+        onSignIn={() => {
+          setIsGuestListDialogOpen(false);
+          setIsSignInMode(true);
           setIsRSVPDialogOpen(true);
         }}
       />

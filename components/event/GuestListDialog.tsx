@@ -19,6 +19,7 @@ interface GuestListDialogProps {
   goingCount?: number;
   maybeCount?: number;
   onRSVP?: () => void;
+  onSignIn?: () => void;
 }
 
 const GuestListDialog: React.FC<GuestListDialogProps> = ({
@@ -29,6 +30,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
   goingCount = 0,
   maybeCount = 0,
   onRSVP,
+  onSignIn,
 }) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
@@ -77,7 +79,10 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
               RSVP for access
             </Button>
             <Typography variant='body2' color='text.secondary'>
-              Already RSVP&apos;d? <Button color='primary'>Sign in</Button>
+              Already RSVP&apos;d?{' '}
+              <Button color='primary' onClick={onSignIn}>
+                Sign in
+              </Button>
             </Typography>
           </Box>
         )}
