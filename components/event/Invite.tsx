@@ -19,6 +19,7 @@ import { useGet } from 'utils/hooks/use-get';
 import { useAddToQuery } from 'utils/hooks/use-add-to-query';
 import axios from 'axios';
 import InviteRSVPDialog from './InviteRSVPDialog';
+import GuestListDialog from './GuestListDialog';
 
 const testUsers: PartialUser[] = [
   {
@@ -104,6 +105,7 @@ const EventInvite = ({
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [eventRSVP, setEventRSVP] = useState<PartialEventRSVP>();
   const [isRSVPDialogOpen, setIsRSVPDialogOpen] = useState(false);
+  const [isGuestListDialogOpen, setIsGuestListDialogOpen] = useState(false);
   const {
     data: rsvps,
     isFetching,
@@ -180,7 +182,9 @@ const EventInvite = ({
             <Typography>
               {testUsers?.length - 5} Going {testUsers?.length - 7} Maybe
             </Typography>
-            <a style={{ textDecoration: 'none', cursor: 'pointer', fontWeight: 600 }}>View Guest List</a>
+            <a style={{ textDecoration: 'none', cursor: 'pointer', fontWeight: 600 }} onClick={() => setIsGuestListDialogOpen(true)}>
+              View Guest List
+            </a>
           </SplitRow>
         </Box>
         <hr />
@@ -239,6 +243,18 @@ const EventInvite = ({
         isOpen={isRSVPDialogOpen}
         setIsOpen={setIsRSVPDialogOpen}
         invitedByUser={invitedByUser}
+      />
+      <GuestListDialog
+        open={isGuestListDialogOpen}
+        onClose={() => setIsGuestListDialogOpen(false)}
+        hasRSVP={!!eventRSVP}
+        users={testUsers}
+        goingCount={testUsers.length - 5}
+        maybeCount={testUsers.length - 7}
+        onRSVP={() => {
+          setIsGuestListDialogOpen(false);
+          setIsRSVPDialogOpen(true);
+        }}
       />
     </>
   );
