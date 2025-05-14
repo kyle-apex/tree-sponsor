@@ -27,7 +27,11 @@ const InvitePage = ({
     <Layout
       title={event.name}
       header='TreeFolksYP'
-      ogImage={event.pictureUrl}
+      ogImage={
+        event.pictureUrl && invitedByUser?.image
+          ? `https://sponsortrees.s3.amazonaws.com/event-invite/${event.id}-${invitedByUser.id}`
+          : event.pictureUrl
+      }
       description={`${invitedByUser?.name || 'TreeFolksYP'} invites you to join for the ${event.name}`}
     >
       <CenteredSection maxWidth='400px'>

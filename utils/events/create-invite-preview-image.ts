@@ -117,11 +117,12 @@ export default async function createInvitePreviewImage(imageUrl: string, key: st
           }
 
           // Size for the headshot
-          const headshotSize = 150;
-          const borderSize = headshotSize + 4; // 2px border on each side
+          const borderWidth = 4;
+          const headshotSize = 220;
+          const borderSize = headshotSize + borderWidth * 2; // 2px border on each side
 
           // Position calculations
-          const headshotLeft = 600 - borderSize - 30;
+          const headshotLeft = 600 - borderSize - 20;
           const headshotTop = totalHeight - borderSize - 20;
 
           // Create a circular headshot using a simpler approach
@@ -163,18 +164,23 @@ export default async function createInvitePreviewImage(imageUrl: string, key: st
             ])
             .toBuffer();
 
-          // Create a white circle for the border
+          // Create a white circle border (transparent background with white ring)
           const whiteBorder = await sharp({
             create: {
               width: borderSize,
               height: borderSize,
               channels: 4,
-              background: { r: 255, g: 255, b: 255, alpha: 1 },
+              background: { r: 0, g: 0, b: 0, alpha: 0 }, // Transparent background
             },
           })
             .composite([
               {
-                input: Buffer.from(`<svg><circle cx="${borderSize / 2}" cy="${borderSize / 2}" r="${borderSize / 2}" fill="white"/></svg>`),
+                input: Buffer.from(
+                  `<svg>
+                    <circle cx="${borderSize / 2}" cy="${borderSize / 2}" r="${borderSize / 2}" fill="white"/>
+                    <circle cx="${borderSize / 2}" cy="${borderSize / 2}" r="${headshotSize / 2}" fill="transparent"/>
+                  </svg>`,
+                ),
               },
             ])
             .png()
@@ -189,8 +195,8 @@ export default async function createInvitePreviewImage(imageUrl: string, key: st
 
           compositeInputs.push({
             input: circularHeadshot,
-            top: headshotTop + 2, // 2px offset for the border
-            left: headshotLeft + 2, // 2px offset for the border
+            top: headshotTop + borderWidth, // 2px offset for the border
+            left: headshotLeft + borderWidth, // 2px offset for the border
           });
 
           hasHeadshot = true;

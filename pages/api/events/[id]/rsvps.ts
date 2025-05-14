@@ -25,6 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const invitedByUserId = req.body.invitedByUserId ? Number(req.body.invitedByUserId) : null;
   const detailsEmailOptIn = req.body.detailsEmailOptIn === true;
   const emailOptIn = req.body.emailOptIn === true;
+  const status = req.body.status || 'Going';
   console.log('in rsvps', req.method);
 
   const event = await prisma.event.findFirst({ where: { id: eventId } });
@@ -55,6 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       emailOptIn,
       eventDetailsEmailOptIn: detailsEmailOptIn,
       invitedByUserId,
+      status,
     };
     const createRSVP: Prisma.EventRSVPUncheckedCreateInput = {
       eventId,
@@ -63,6 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       invitedByUserId,
       emailOptIn,
       eventDetailsEmailOptIn: detailsEmailOptIn,
+      status,
     };
 
     if (emailOptIn && firstName && email) {
