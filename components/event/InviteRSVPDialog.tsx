@@ -75,7 +75,7 @@ const InviteRSVPDialog = ({
     handleClose();
   };
 
-  const handleStatusChange = (event: React.MouseEvent<HTMLElement>, newStatus: string | null) => {
+  const handleStatusChange = (_event: React.MouseEvent<HTMLElement>, newStatus: string | null) => {
     if (newStatus !== null) {
       setStatus(newStatus);
     }
