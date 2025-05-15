@@ -31,6 +31,7 @@ const InviteRSVPDialog = ({
   onRSVP,
   isSignIn = false,
   initialStatus,
+  onRSVPSubmit,
 }: {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>> | ((val: boolean) => void);
@@ -41,6 +42,7 @@ const InviteRSVPDialog = ({
   onRSVP?: () => void;
   isSignIn?: boolean;
   initialStatus?: string;
+  onRSVPSubmit?: (rsvpData: PartialEventRSVP) => void;
 }) => {
   const { add } = useAddToQuery<any>(`events/${event.id}/rsvps`, addToDatabase);
   const [name, setName] = useState(initialName);
@@ -59,7 +61,7 @@ const InviteRSVPDialog = ({
 
   const rsvp = async () => {
     setIsLoading(true);
-    await add({
+    const rsvpData = {
       email,
       name,
       detailsEmailOptIn,
@@ -68,10 +70,23 @@ const InviteRSVPDialog = ({
       status,
       comment: status === 'Declined' ? comment : undefined,
       notifyInviter: status === 'Declined' ? notifyInviter : undefined,
-    });
+    };
+
+    await add(rsvpData);
+
+    // Create RSVP data object to pass to parent component
+    const submittedRSVP: PartialEventRSVP = {
+      email,
+      status: status as any, // Cast to any to avoid TypeScript error with EventRSVPStatus enum
+      eventId: event.id,
+      event: event,
+      // Include user info in a format that matches the expected structure
+      user: name ? { name } : undefined,
+    };
 
     setIsLoading(false);
     if (onRSVP) onRSVP();
+    if (onRSVPSubmit) onRSVPSubmit(submittedRSVP);
     handleClose();
   };
 

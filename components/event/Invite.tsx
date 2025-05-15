@@ -108,6 +108,9 @@ const EventInvite = ({
   const [isGuestListDialogOpen, setIsGuestListDialogOpen] = useState(false);
   const [isSignInMode, setIsSignInMode] = useState(false);
   const [rsvpStatus, setRsvpStatus] = useState('Going');
+
+  // Use localStorage to store RSVP data for this specific event
+  const [storedRSVP, setStoredRSVP] = useLocalStorage<PartialEventRSVP>(`event-rsvp-${event.id}`, null, `event-rsvp-${event.id}`);
   const {
     data: rsvps,
     isFetching,
@@ -119,7 +122,10 @@ const EventInvite = ({
     const results: any = await axios.get(`/api/events/${event.id}/rsvps?email=${email}`);
     const { rsvp, user }: { rsvp: PartialEventRSVP; user: PartialUser } = results?.data;
 
-    setEventRSVP(rsvp);
+    if (rsvp) {
+      setEventRSVP(rsvp);
+      setStoredRSVP(rsvp); // Also save to localStorage
+    }
     setStoredUser(user);
   };
 
@@ -129,13 +135,26 @@ const EventInvite = ({
     }
   }, [storedEmail]);
 
+  // Check for existing RSVP in localStorage when component loads
+  useEffect(() => {
+    if (storedRSVP) {
+      setEventRSVP(storedRSVP);
+    }
+  }, [storedRSVP]);
+
+  // Function to save RSVP to localStorage
+  const handleRSVPSubmit = (rsvpData: PartialEventRSVP) => {
+    setEventRSVP(rsvpData);
+    setStoredRSVP(rsvpData);
+  };
+
   return (
     <>
       <Box sx={{ textAlign: 'left', mt: -1 }} mb={2}>
         <img
           style={{
-            width: 'calc(100% + 41px)',
-            marginLeft: '-21px',
+            width: 'calc(100% + 40px)',
+            marginLeft: '-20px',
             marginTop: '-2px',
             borderTopLeftRadius: '5px',
             borderTopRightRadius: '5px',
@@ -201,42 +220,80 @@ const EventInvite = ({
           {invitedByUser?.name ? invitedByUser.name : 'TreeFolksYP'} invited you to {event.name} on {formatDateString(event?.startDate)}{' '}
           6:30-8pm:
         </Typography>
-        <Button
-          fullWidth
-          variant='contained'
-          color='primary'
-          sx={{ mb: 1.5 }}
-          onClick={() => {
-            setRsvpStatus('Going');
-            setIsRSVPDialogOpen(true);
-          }}
-        >
-          Accept Invite
-        </Button>
-        <SplitRow gap={1}>
-          <Button
-            fullWidth
-            variant='outlined'
-            color='primary'
-            onClick={() => {
-              setRsvpStatus('Maybe');
-              setIsRSVPDialogOpen(true);
-            }}
-          >
-            Maybe
-          </Button>
-          <Button
-            fullWidth
-            variant='outlined'
-            color='secondary'
-            onClick={() => {
-              setRsvpStatus('Declined');
-              setIsRSVPDialogOpen(true);
-            }}
-          >
-            Decline
-          </Button>
-        </SplitRow>
+        {eventRSVP ? (
+          // Display RSVP status and change response button
+          <Box>
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+              <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+                {eventRSVP.status === 'Going'
+                  ? '🎉 You are going!'
+                  : eventRSVP.status === 'Maybe'
+                  ? '🤷 You responded Maybe'
+                  : eventRSVP.status === 'Declined'
+                  ? '😔 You declined'
+                  : 'You responded'}
+              </Typography>
+              <Typography variant='body2' color='text.secondary'>
+                {eventRSVP.user?.name
+                  ? `Responded as ${eventRSVP.user.name}`
+                  : eventRSVP.email
+                  ? `Responded with email ${eventRSVP.email}`
+                  : ''}
+              </Typography>
+            </Box>
+            <Button
+              fullWidth
+              variant='outlined'
+              color='primary'
+              onClick={() => {
+                setRsvpStatus(eventRSVP.status as string);
+                setIsRSVPDialogOpen(true);
+              }}
+            >
+              Change Response
+            </Button>
+          </Box>
+        ) : (
+          // Display RSVP buttons if no RSVP exists
+          <>
+            <Button
+              fullWidth
+              variant='contained'
+              color='primary'
+              sx={{ mb: 1.5 }}
+              onClick={() => {
+                setRsvpStatus('Going');
+                setIsRSVPDialogOpen(true);
+              }}
+            >
+              Accept Invite
+            </Button>
+            <SplitRow gap={1}>
+              <Button
+                fullWidth
+                variant='outlined'
+                color='primary'
+                onClick={() => {
+                  setRsvpStatus('Maybe');
+                  setIsRSVPDialogOpen(true);
+                }}
+              >
+                Maybe
+              </Button>
+              <Button
+                fullWidth
+                variant='outlined'
+                color='secondary'
+                onClick={() => {
+                  setRsvpStatus('Declined');
+                  setIsRSVPDialogOpen(true);
+                }}
+              >
+                Decline
+              </Button>
+            </SplitRow>
+          </>
+        )}
       </Box>
       {event.description && (
         <Box sx={{ mt: 3 }}>
@@ -262,6 +319,7 @@ const EventInvite = ({
         invitedByUser={invitedByUser}
         isSignIn={isSignInMode}
         initialStatus={eventRSVP?.status || rsvpStatus}
+        onRSVPSubmit={handleRSVPSubmit}
       />
       <GuestListDialog
         open={isGuestListDialogOpen}

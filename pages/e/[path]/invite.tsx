@@ -34,7 +34,7 @@ const InvitePage = ({
       }
       description={`${invitedByUser?.name || 'TreeFolksYP'} invites you to join for the ${event.name}`}
     >
-      <CenteredSection maxWidth='400px'>
+      <CenteredSection maxWidth='450px'>
         <Invite event={parsedEvent} invitedByUser={invitedByUser} name={name} email={email} />
       </CenteredSection>
     </Layout>
