@@ -110,7 +110,6 @@ const EventInvite = ({
   const [rsvpStatus, setRsvpStatus] = useState('Going');
 
   // Use localStorage to store RSVP data for this specific event
-  const [storedRSVP, setStoredRSVP] = useLocalStorage<PartialEventRSVP>(`event-rsvp-${event.id}`, null, `event-rsvp-${event.id}`);
   const {
     data: rsvps,
     isFetching,
@@ -124,7 +123,6 @@ const EventInvite = ({
 
     if (rsvp) {
       setEventRSVP(rsvp);
-      setStoredRSVP(rsvp); // Also save to localStorage
     }
     setStoredUser(user);
   };
@@ -135,17 +133,10 @@ const EventInvite = ({
     }
   }, [storedEmail]);
 
-  // Check for existing RSVP in localStorage when component loads
-  useEffect(() => {
-    if (storedRSVP) {
-      setEventRSVP(storedRSVP);
-    }
-  }, [storedRSVP]);
-
   // Function to save RSVP to localStorage
   const handleRSVPSubmit = (rsvpData: PartialEventRSVP) => {
     setEventRSVP(rsvpData);
-    setStoredRSVP(rsvpData);
+    if (!storedEmail && rsvpData.email) setStoredEmail(rsvpData.email);
   };
 
   return (
