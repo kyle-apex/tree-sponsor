@@ -21,73 +21,6 @@ import axios from 'axios';
 import InviteRSVPDialog from './InviteRSVPDialog';
 import GuestListDialog from './GuestListDialog';
 
-const testUsers: PartialUser[] = [
-  {
-    id: 0,
-    name: 'Eduardo Rosillo',
-    image: 'https://www.treefolks.org/wp-content/uploads/2023/02/IMG_1436-Eduardo-Rosillo-e1676232827230.jpeg',
-  },
-  {
-    id: 1,
-    name: 'Kim Olden',
-    image: 'https://www.treefolks.org/wp-content/uploads/2023/08/Untitled-300-x-300-px.jpg',
-  },
-  {
-    id: 2,
-    name: 'Kyle2 Hoskins2',
-    image:
-      'https://sponsortrees.s3.amazonaws.com/profile-images/0ca1b0cfe64db2e0d12bef1628b1c0bb8eefa4d69b467ba7b21a3cafc720bb93?d=1697199202473',
-  },
-  {
-    id: 3,
-    name: 'Ruth Dunnescu',
-    image:
-      'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=33902244451765&height=50&width=50&ext=1707343710&hash=AfqS771NxDbmFp5hdHg7UGp1V1ZZuLFBK7gZezNQ6Ays0Q',
-  },
-  {
-    id: 4,
-    name: 'Joshua Johnson',
-    image: 'https://sponsortrees.s3.amazonaws.com/profile-images/2afa14e56ab6d4415043d6bd8520eb3a737d807b28841468598ad6f010e9a006',
-  },
-  {
-    id: 5,
-    name: 'Timothy J Cole',
-    image:
-      'https://sponsortrees.s3.amazonaws.com/profile-images/83111f16b46ec96aa91cc9ce100c24fc08da71001c010d291ca0237bc9404ffb?d=1725583498900',
-  },
-  {
-    id: 6,
-    name: 'Julia Ruth',
-    image: 'https://sponsortrees.s3.amazonaws.com/profile-images/e7f626d5e7e15c19a21e422987be6cbe387f5e2f02218730afa0dc02dfbbdb8e',
-  },
-  {
-    id: 7,
-    name: 'Valerie Benson',
-    image: 'https://sponsortrees.s3.amazonaws.com/profile-images/155fc8e1a614d37ae78359119a4e6520370ce53e60b8d7bd655835dab769dd04',
-  },
-  {
-    id: 8,
-    name: 'Celeste Flahaven',
-    image: 'https://sponsortrees.s3.amazonaws.com/profile-images/bcf1a608ba618a48f1f26bdad7010dc8be3de1717e19e5102273cea44ba399ed',
-  },
-  {
-    id: 9,
-    name: 'Jonathan Friedman',
-    image: 'https://sponsortrees.s3.amazonaws.com/profile-images/41268205568b9da6f2de39daeba7d1e8bc1870f446c0a4f0f589fa60d80ec90d',
-  },
-  {
-    id: 10,
-    name: 'Kristen Koppel',
-    image: 'https://sponsortrees.s3.amazonaws.com/profile-images/ecd808ce9d6896d639d0edbdfcbb69b16096e0ad3cda461e2bf5cf0184c3854b',
-  },
-  {
-    id: 11,
-    name: 'Davin Singh',
-    image: 'https://sponsortrees.s3.amazonaws.com/profile-images/1a0305b8984cfb650ab7cc2b7197a89ad79673ed34ec7220bc3b7c8922a24076',
-  },
-];
-const hosts = testUsers.slice(0, 6).reverse();
-
 const EventInvite = ({
   event,
   invitedByUser,
@@ -152,11 +85,11 @@ const EventInvite = ({
           }}
           src={event.pictureUrl}
         ></img>
-        {false && (
+        {false && event.organizers?.length > 0 && (
           <Box flexDirection='row' alignItems='center' style={{ display: 'flex', gap: '5px' }} mb={1}>
-            <UserAvatar image={hosts[0].image} name={hosts[0].name} size={16}></UserAvatar>
+            <UserAvatar image={event.organizers[0].image} name={event.organizers[0].name} size={16}></UserAvatar>
             <Typography variant='body2' color='gray' sx={{ fontStyle: 'italic' }}>
-              {hosts[0].name} invited you to:
+              {event.organizers[0].name} invited you to:
             </Typography>
           </Box>
         )}
@@ -176,14 +109,16 @@ const EventInvite = ({
           </Typography>
         </Box>
       </Box>
-      <Box flexDirection='row' alignItems='center' style={{ display: 'flex', gap: '5px' }}>
-        <Typography whiteSpace='nowrap'>Hosted By:</Typography>
-        <UserBubbles users={hosts} maxLength={3} size={28} />
-        <Typography color='gray' variant='body2'>
-          {hosts[0].name}
-          {hosts?.length > 1 ? ` and ${hosts?.length - 1} others` : ''}
-        </Typography>
-      </Box>
+      {event.organizers?.length > 0 && (
+        <Box flexDirection='row' alignItems='center' style={{ display: 'flex', gap: '5px' }}>
+          <Typography whiteSpace='nowrap'>Hosted By:</Typography>
+          <UserBubbles users={event.organizers} maxLength={3} size={28} />
+          <Typography color='gray' variant='body2'>
+            {event.organizers[0].name}
+            {event.organizers.length > 1 ? ` and ${event.organizers.length - 1} others` : ''}
+          </Typography>
+        </Box>
+      )}
       <Box
         sx={{ border: 'solid 2px', borderRadius: '5px', borderColor: theme => theme.palette.primary.main, padding: '10px' }}
         className='box-shadow'
@@ -192,7 +127,7 @@ const EventInvite = ({
         <Box>
           <SplitRow>
             <Typography>
-              {testUsers?.length - 5} Going {testUsers?.length - 7} Maybe
+              {rsvps?.filter(r => r.status === 'Going')?.length || 0} Going {rsvps?.filter(r => r.status === 'Maybe')?.length || 0} Maybe
             </Typography>
             <a style={{ textDecoration: 'none', cursor: 'pointer', fontWeight: 600 }} onClick={() => setIsGuestListDialogOpen(true)}>
               View Guest List
@@ -200,13 +135,18 @@ const EventInvite = ({
           </SplitRow>
         </Box>
         <hr />
-        <Box flexDirection='row' alignItems='center' style={{ display: 'flex', gap: '10px' }}>
-          <UserBubbles ml={-1.4} users={testUsers} maxLength={6} size={24} />
-          <Typography color='gray' variant='body2'>
-            {testUsers[0].name}, {testUsers[1].name}
-            {testUsers?.length > 2 ? `, and ${testUsers?.length - 2} others` : ''}
-          </Typography>
-        </Box>
+        {rsvps && rsvps.length > 0 && (
+          <Box flexDirection='row' alignItems='center' style={{ display: 'flex', gap: '10px' }}>
+            <UserBubbles ml={-1.4} users={rsvps.map(r => r.user).filter(Boolean)} maxLength={6} size={24} />
+            <Typography color='gray' variant='body2'>
+              {rsvps[0]?.user?.name && rsvps[1]?.user?.name
+                ? `${rsvps[0].user.name}, ${rsvps[1].user.name}${rsvps.length > 2 ? `, and ${rsvps.length - 2} others` : ''}`
+                : rsvps[0]?.user?.name
+                ? rsvps[0].user.name
+                : 'No attendees yet'}
+            </Typography>
+          </Box>
+        )}
         <Typography sx={{ mt: 2, mb: 2 }}>
           {invitedByUser?.name ? invitedByUser.name : 'TreeFolksYP'} invited you to {event.name} on {formatDateString(event?.startDate)}{' '}
           6:30-8pm:
@@ -316,9 +256,20 @@ const EventInvite = ({
         open={isGuestListDialogOpen}
         onClose={() => setIsGuestListDialogOpen(false)}
         hasRSVP={!!eventRSVP}
-        users={testUsers}
-        goingCount={testUsers.length - 5}
-        maybeCount={testUsers.length - 7}
+        users={[
+          // Going users first
+          ...(rsvps
+            ?.filter(r => r.status === 'Going')
+            .map(r => r.user)
+            .filter(Boolean) || []),
+          // Maybe users next
+          ...(rsvps
+            ?.filter(r => r.status === 'Maybe')
+            .map(r => r.user)
+            .filter(Boolean) || []),
+        ]}
+        goingCount={rsvps?.filter(r => r.status === 'Going')?.length || 0}
+        maybeCount={rsvps?.filter(r => r.status === 'Maybe')?.length || 0}
         onRSVP={() => {
           setIsGuestListDialogOpen(false);
           setIsRSVPDialogOpen(true);

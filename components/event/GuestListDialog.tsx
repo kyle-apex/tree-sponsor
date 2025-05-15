@@ -2,14 +2,13 @@ import React from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import LockIcon from '@mui/icons-material/Lock';
 import { PartialUser } from 'interfaces';
-import UserBubbles from './UserBubbles';
+import { UserAvatar } from 'components/sponsor';
 
 interface GuestListDialogProps {
   open: boolean;
@@ -47,12 +46,55 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
           <Box>
             {users.length > 0 ? (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <UserBubbles users={users} maxLength={users.length} size={32} />
-                <Typography variant='body2' color='text.secondary'>
-                  {users[0]?.name}
-                  {users.length > 1 ? `, ${users[1]?.name}` : ''}
-                  {users.length > 2 ? `, and ${users.length - 2} others` : ''}
-                </Typography>
+                {/* Going users section */}
+                {goingCount > 0 && (
+                  <Box>
+                    <Typography variant='subtitle1' color='primary' sx={{ fontWeight: 600, mb: 1 }}>
+                      Going ({goingCount})
+                    </Typography>
+                    {users
+                      .filter((user, index) => index < goingCount)
+                      .map(user => (
+                        <Box
+                          key={user.id}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            mb: 2,
+                          }}
+                        >
+                          <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
+                          <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
+                        </Box>
+                      ))}
+                  </Box>
+                )}
+
+                {/* Maybe users section */}
+                {maybeCount > 0 && (
+                  <Box>
+                    <Typography variant='subtitle1' color='primary' sx={{ fontWeight: 600, mb: 1 }}>
+                      Maybe ({maybeCount})
+                    </Typography>
+                    {users
+                      .filter((user, index) => index >= goingCount && index < goingCount + maybeCount)
+                      .map(user => (
+                        <Box
+                          key={user.id}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            mb: 2,
+                          }}
+                        >
+                          <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
+                          <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
+                        </Box>
+                      ))}
+                  </Box>
+                )}
               </Box>
             ) : (
               <Typography>No guests have RSVP&apos;d yet.</Typography>

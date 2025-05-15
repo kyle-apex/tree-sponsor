@@ -51,9 +51,54 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       include: {
         RSVPs: { include: { user: { select: { id: true, name: true, image: true } } } },
         location: {},
+        organizers: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
       },
     });
     formatServerProps(event);
+
+    // Create RSVPs for organizers who haven't RSVP'd yet
+    if (event?.organizers?.length > 0) {
+      for (const organizer of event.organizers) {
+        // Check if the organizer already has an RSVP
+        const hasRSVP = event.RSVPs.some(rsvp => rsvp.user?.id === organizer.id);
+
+        // If not, create an RSVP with status "Going"
+        if (!hasRSVP) {
+          await prisma.eventRSVP.upsert({
+            where: {
+              userId_eventId: {
+                userId: organizer.id,
+                eventId: event.id,
+              },
+            },
+            create: {
+              eventId: event.id,
+              userId: organizer.id,
+              status: 'Going',
+              eventDetailsEmailOptIn: true,
+            },
+            update: {
+              status: 'Going',
+              eventDetailsEmailOptIn: true,
+            },
+          });
+        }
+      }
+
+      // Directly query RSVPs instead of fetching the entire event again
+      const rsvps = await prisma.eventRSVP.findMany({
+        where: { eventId: event.id },
+        include: { user: { select: { id: true, name: true, image: true } } },
+      });
+      formatServerProps(rsvps);
+      event.RSVPs = rsvps;
+    }
 
     let invitedByUser = null;
     if (u) {
