@@ -66,10 +66,12 @@ const EventInvite = ({
     }
   }, [storedEmail]);
 
-  // Function to save RSVP to localStorage
+  // Function to save RSVP to localStorage and refresh the guest list
   const handleRSVPSubmit = (rsvpData: PartialEventRSVP) => {
     setEventRSVP(rsvpData);
     if (!storedEmail && rsvpData.email) setStoredEmail(rsvpData.email);
+    // Refresh the rsvps data to update the guest list count
+    refetch();
   };
 
   return (

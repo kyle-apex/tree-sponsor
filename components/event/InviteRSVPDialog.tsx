@@ -9,7 +9,6 @@ import CheckinHistory from './CheckinHistory';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import { useEffect, useState } from 'react';
-import { useAddToQuery } from 'utils/hooks/use-add-to-query';
 import axios from 'axios';
 import SplitRow from 'components/layout/SplitRow';
 import LoadingButton from 'components/LoadingButton';
@@ -44,7 +43,6 @@ const InviteRSVPDialog = ({
   initialStatus?: string;
   onRSVPSubmit?: (rsvpData: PartialEventRSVP) => void;
 }) => {
-  const { add } = useAddToQuery<any>(`events/${event.id}/rsvps`, addToDatabase);
   const [name, setName] = useState(initialName);
   const [email, setEmail] = useState(initialEmail);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,11 +51,6 @@ const InviteRSVPDialog = ({
   const [status, setStatus] = useState(initialStatus || 'Going');
   const [comment, setComment] = useState('');
   const [notifyInviter, setNotifyInviter] = useState(true);
-
-  async function addToDatabase(rsvp: any) {
-    const result = await axios.post(`/api/events/${event.id}/rsvps`, rsvp);
-    return result.data;
-  }
 
   const rsvp = async () => {
     setIsLoading(true);
@@ -72,22 +65,28 @@ const InviteRSVPDialog = ({
       notifyInviter: status === 'Declined' ? notifyInviter : undefined,
     };
 
-    await add(rsvpData);
+    try {
+      // Directly call the API instead of using useAddToQuery
+      await axios.post(`/api/events/${event.id}/rsvps`, rsvpData);
 
-    // Create RSVP data object to pass to parent component
-    const submittedRSVP: PartialEventRSVP = {
-      email,
-      status: status as any, // Cast to any to avoid TypeScript error with EventRSVPStatus enum
-      eventId: event.id,
-      event: event,
-      // Include user info in a format that matches the expected structure
-      user: name ? { name } : undefined,
-    };
+      // Create RSVP data object to pass to parent component
+      const submittedRSVP: PartialEventRSVP = {
+        email,
+        status: status as any, // Cast to any to avoid TypeScript error with EventRSVPStatus enum
+        eventId: event.id,
+        event: event,
+        // Include user info in a format that matches the expected structure
+        user: name ? { name } : undefined,
+      };
 
-    setIsLoading(false);
-    if (onRSVP) onRSVP();
-    if (onRSVPSubmit) onRSVPSubmit(submittedRSVP);
-    handleClose();
+      if (onRSVP) onRSVP();
+      if (onRSVPSubmit) onRSVPSubmit(submittedRSVP);
+    } catch (error) {
+      console.error('Error submitting RSVP:', error);
+    } finally {
+      setIsLoading(false);
+      handleClose();
+    }
   };
 
   const handleStatusChange = (_event: React.MouseEvent<HTMLElement>, newStatus: string | null) => {
