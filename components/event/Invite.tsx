@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { LeaderRow, MembershipStatus, PartialEvent, CheckinFields, PartialUser, PartialEventRSVP } from 'interfaces';
 import { SetStateAction, useEffect, useRef, useState } from 'react';
+import LocationMapDialog from './LocationMapDialog';
 import formatDateString from 'utils/formatDateString';
 import useLocalStorage from 'utils/hooks/use-local-storage';
 import EventNameDisplay from './EventNameDisplay';
@@ -39,6 +40,7 @@ const EventInvite = ({
   const [eventRSVP, setEventRSVP] = useState<PartialEventRSVP>();
   const [isRSVPDialogOpen, setIsRSVPDialogOpen] = useState(false);
   const [isGuestListDialogOpen, setIsGuestListDialogOpen] = useState(false);
+  const [isLocationMapDialogOpen, setIsLocationMapDialogOpen] = useState(false);
   const [isSignInMode, setIsSignInMode] = useState(false);
   const [rsvpStatus, setRsvpStatus] = useState('Going');
 
@@ -104,9 +106,14 @@ const EventInvite = ({
             {formatDateString(event?.startDate)}, 6:30-8pm
           </Typography>
         </Box>
-        <Box flexDirection='row' alignItems='center' style={{ display: 'flex', gap: '5px' }}>
+        <Box
+          flexDirection='row'
+          alignItems='center'
+          style={{ display: 'flex', gap: '5px', cursor: 'pointer' }}
+          onClick={() => setIsLocationMapDialogOpen(true)}
+        >
           <PlaceIcon sx={{ fontSize: '14x', color: 'gray' }}></PlaceIcon>
-          <Typography variant='subtitle2' sx={{ fontSize: '1rem' }}>
+          <Typography variant='subtitle2' sx={{ fontSize: '1rem', textDecoration: 'underline' }}>
             {event.location.name}
           </Typography>
         </Box>
@@ -288,6 +295,7 @@ const EventInvite = ({
           setIsRSVPDialogOpen(true);
         }}
       />
+      <LocationMapDialog open={isLocationMapDialogOpen} onClose={() => setIsLocationMapDialogOpen(false)} location={event.location} />
     </>
   );
 };
