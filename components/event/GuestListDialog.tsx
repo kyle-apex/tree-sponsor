@@ -4,10 +4,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import LockIcon from '@mui/icons-material/Lock';
 import EventIcon from '@mui/icons-material/Event';
+import CloseIcon from '@mui/icons-material/Close';
 import { PartialUser } from 'interfaces';
 import { UserAvatar } from 'components/sponsor';
 
@@ -36,21 +38,32 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
     <Dialog open={open} onClose={onClose} sx={{ borderRadius: '8px' }} maxWidth='sm' fullWidth>
       <DialogTitle
         sx={{
-          background: theme => `radial-gradient(circle at -50% -50%, ${theme.palette.success.light} 0%, ${theme.palette.primary.main} 70%)`,
+          background: theme => `radial-gradient(circle at -50% -50%, #1b2b1c 0%, ${theme.palette.primary.main} 70%)`,
           marginBottom: 2,
           padding: 3,
           position: 'relative',
           overflow: 'hidden',
         }}
       >
+        <IconButton
+          aria-label='close'
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: 'white',
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <Box sx={{ display: 'flex', flexDirection: 'column', color: 'white' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-            <EventIcon sx={{ fontSize: 40, opacity: 0.9 }} />
             <Typography variant='h4' sx={{ fontWeight: 500 }}>
               Guest List
             </Typography>
           </Box>
-          <Typography variant='h6' sx={{ pl: 7, opacity: 0.9 }}>
+          <Typography variant='h6' sx={{ pl: 0, opacity: 0.9 }}>
             {goingCount} Going {maybeCount > 0 ? `• ${maybeCount} Maybe` : ''}
           </Typography>
         </Box>
