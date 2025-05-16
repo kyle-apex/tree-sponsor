@@ -1,12 +1,23 @@
 import React, { useState, useEffect, useRef, ReactNode } from 'react';
 import { Button, Box, Typography } from '@mui/material';
 
-const ExpandableText = ({ children, maxHeight = 250 }: { children?: ReactNode; maxHeight?: number }) => {
+interface ExpandableTextProps {
+  children?: ReactNode;
+  maxHeight?: number;
+  onShowMoreClick?: () => boolean;
+}
+
+const ExpandableText = ({ children, maxHeight = 250, onShowMoreClick }: ExpandableTextProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const textRef = useRef(null);
 
   const toggleExpand = () => {
+    if (onShowMoreClick) {
+      // If onShowMoreClick returns false, don't expand
+      const shouldExpand = onShowMoreClick();
+      if (!shouldExpand) return;
+    }
     setIsExpanded(prev => !prev);
   };
 
