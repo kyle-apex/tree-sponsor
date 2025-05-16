@@ -142,7 +142,13 @@ const EventInvite = ({
             <UserBubbles ml={-1.4} users={rsvps.map(r => r.user).filter(Boolean)} maxLength={6} size={24} />
             <Typography color='gray' variant='body2'>
               {rsvps[0]?.user?.name && rsvps[1]?.user?.name
-                ? `${rsvps[0].user.name}, ${rsvps[1].user.name}${rsvps.length > 2 ? `, and ${rsvps.length - 2} others` : ''}`
+                ? (() => {
+                    const othersCount = rsvps.length - 2;
+                    if (othersCount > 0) {
+                      return `${rsvps[0].user.name}, ${rsvps[1].user.name}, and ${othersCount} ${othersCount === 1 ? 'other' : 'others'}`;
+                    }
+                    return `${rsvps[0].user.name}, ${rsvps[1].user.name}`;
+                  })()
                 : rsvps[0]?.user?.name
                 ? rsvps[0].user.name
                 : 'No attendees yet'}
