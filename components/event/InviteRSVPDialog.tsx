@@ -18,6 +18,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import { useTheme } from '@mui/material/styles';
 import RSVPStatusToggleButton from './RSVPStatusToggleButton';
 
 const InviteRSVPDialog = ({
@@ -109,12 +112,37 @@ const InviteRSVPDialog = ({
   }, [initialStatus]);
 
   const [session] = useSession();
+  const theme = useTheme();
   return (
     <Dialog open={isOpen} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px', margin: '0px' } }} onClose={handleClose}>
-      <DialogTitle sx={{ backgroundColor: theme => theme.palette.primary.main, marginBottom: 2 }}>
-        <Typography color='white' variant='h6'>
-          {isSignIn ? 'Sign In' : 'RSVP'}
-        </Typography>
+      <DialogTitle
+        sx={{
+          background: theme => `radial-gradient(circle at -50% -50%, #1b2b1c 0%, ${theme.palette.primary.main} 70%)`,
+          marginBottom: 2,
+          pl: 3,
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <IconButton
+          aria-label='close'
+          onClick={handleClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: 'white',
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Box sx={{ display: 'flex', flexDirection: 'column', color: 'white' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant='h4' sx={{ fontWeight: 500 }}>
+              {isSignIn ? 'Sign In' : 'RSVP'}
+            </Typography>
+          </Box>
+        </Box>
       </DialogTitle>
       <DialogContent className='' sx={{ pb: 1 }}>
         {!isSignIn && (
@@ -247,13 +275,20 @@ const InviteRSVPDialog = ({
           </Button>
           <LoadingButton
             disabled={(!name && !isSignIn && status !== 'Declined') || (!email && status !== 'Declined')}
-            sx={{ width: '100%' }}
+            sx={{
+              width: '100%',
+              minWidth: '140px',
+              '& .MuiButton-startIcon': {
+                position: 'absolute',
+                left: '8px',
+              },
+            }}
             isLoading={isLoading}
             variant='contained'
             color='primary'
             onClick={rsvp}
           >
-            {isSignIn ? 'Sign In' : `${status === 'Going' ? 'Submit RSVP' : status === 'Maybe' ? ' Submit Maybe' : 'Decline Invite'}`}
+            {isSignIn ? 'Sign In' : `${status === 'Going' ? 'Submit RSVP' : status === 'Maybe' ? 'Submit Maybe' : 'Decline Invite'}`}
           </LoadingButton>
         </SplitRow>
       </DialogActions>
