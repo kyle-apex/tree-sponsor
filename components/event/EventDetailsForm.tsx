@@ -48,11 +48,12 @@ const EventDetailsForm = ({
   const [locationName, setLocationName] = useState(event.location?.name || '');
   const [latitude, setLatitude] = useState(event.location?.latitude || 0);
   const [longitude, setLongitude] = useState(event.location?.longitude || 0);
-  const debouncedSetLocation = useDebouncedCallback((latitude: number, longitude: number) => {
+  const debouncedSetLocation = useDebouncedCallback((latitude: number, longitude: number, address?: string) => {
     setLongitude(longitude);
     setLatitude(latitude);
     updateAttribute('location.latitude', latitude);
     updateAttribute('location.longitude', longitude);
+    updateAttribute('location.address', address);
   }, 200);
   const [pictureUrl, setPictureUrl] = useState(event.pictureUrl);
 
@@ -199,8 +200,8 @@ const EventDetailsForm = ({
         Show navigation links to trees on species quiz (ex: bike tour or hike)
       </Box>
       <LocationSelector
-        onViewportChange={({ latitude, longitude }) => {
-          debouncedSetLocation(latitude, longitude);
+        onViewportChange={({ latitude, longitude, address }) => {
+          debouncedSetLocation(latitude, longitude, address);
         }}
         latitude={latitude ? Number(latitude) : null}
         longitude={longitude ? Number(longitude) : null}
