@@ -67,7 +67,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                       Going ({goingCount})
                     </Typography>
                     {users
-                      .filter((user, index) => index < goingCount)
+                      .filter((_user, index) => index < goingCount)
                       .map(user => (
                         <Box
                           key={user.id}
@@ -92,7 +92,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                       Maybe ({maybeCount})
                     </Typography>
                     {users
-                      .filter((user, index) => index >= goingCount && index < goingCount + maybeCount)
+                      .filter((_user, index) => index >= goingCount && index < goingCount + maybeCount)
                       .map(user => (
                         <Box
                           key={user.id}
