@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import LockIcon from '@mui/icons-material/Lock';
+import EventIcon from '@mui/icons-material/Event';
 import { PartialUser } from 'interfaces';
 import { UserAvatar } from 'components/sponsor';
 
@@ -32,14 +33,27 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
   onSignIn,
 }) => {
   return (
-    <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
-      <DialogTitle sx={{ backgroundColor: theme => theme.palette.primary.main, marginBottom: 2 }}>
-        <Typography color='white' variant='h6' sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-          Guest List{' '}
-          <Typography variant='body2'>
-            ({goingCount} Going {maybeCount > 0 ? `${maybeCount} Maybe` : ''})
+    <Dialog open={open} onClose={onClose} sx={{ borderRadius: '8px' }} maxWidth='sm' fullWidth>
+      <DialogTitle
+        sx={{
+          background: theme => `radial-gradient(circle at -50% -50%, ${theme.palette.success.light} 0%, ${theme.palette.primary.main} 70%)`,
+          marginBottom: 2,
+          padding: 3,
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', color: 'white' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+            <EventIcon sx={{ fontSize: 40, opacity: 0.9 }} />
+            <Typography variant='h4' sx={{ fontWeight: 500 }}>
+              Guest List
+            </Typography>
+          </Box>
+          <Typography variant='h6' sx={{ pl: 7, opacity: 0.9 }}>
+            {goingCount} Going {maybeCount > 0 ? `• ${maybeCount} Maybe` : ''}
           </Typography>
-        </Typography>
+        </Box>
       </DialogTitle>
       <DialogContent>
         {hasRSVP ? (
