@@ -20,6 +20,7 @@ import { useAddToQuery } from 'utils/hooks/use-add-to-query';
 import axios from 'axios';
 import InviteRSVPDialog from './InviteRSVPDialog';
 import GuestListDialog from './GuestListDialog';
+import EventDetailsRestrictedDialog from './EventDetailsRestrictedDialog';
 
 const EventInvite = ({
   event,
@@ -39,6 +40,7 @@ const EventInvite = ({
   const [eventRSVP, setEventRSVP] = useState<PartialEventRSVP>();
   const [isRSVPDialogOpen, setIsRSVPDialogOpen] = useState(false);
   const [isGuestListDialogOpen, setIsGuestListDialogOpen] = useState(false);
+  const [isDetailsRestrictedDialogOpen, setIsDetailsRestrictedDialogOpen] = useState(false);
   const [isSignInMode, setIsSignInMode] = useState(false);
   const [rsvpStatus, setRsvpStatus] = useState('Going');
 
@@ -238,7 +240,16 @@ const EventInvite = ({
         <Box sx={{ mt: 3 }}>
           <Typography>Event Details:</Typography>
           <Typography variant='body2' color='gray'>
-            <ExpandCollapseSection maxHeight={200}>
+            <ExpandCollapseSection
+              maxHeight={200}
+              onShowMoreClick={() => {
+                if (!eventRSVP) {
+                  setIsDetailsRestrictedDialogOpen(true);
+                  return false; // Prevent default expansion
+                }
+                return true; // Allow expansion if user has RSVP'd
+              }}
+            >
               <SafeHTMLDisplay html={event.description}></SafeHTMLDisplay>
             </ExpandCollapseSection>
           </Typography>
@@ -284,6 +295,19 @@ const EventInvite = ({
         }}
         onSignIn={() => {
           setIsGuestListDialogOpen(false);
+          setIsSignInMode(true);
+          setIsRSVPDialogOpen(true);
+        }}
+      />
+      <EventDetailsRestrictedDialog
+        open={isDetailsRestrictedDialogOpen}
+        onClose={() => setIsDetailsRestrictedDialogOpen(false)}
+        onRSVP={() => {
+          setIsDetailsRestrictedDialogOpen(false);
+          setIsRSVPDialogOpen(true);
+        }}
+        onSignIn={() => {
+          setIsDetailsRestrictedDialogOpen(false);
           setIsSignInMode(true);
           setIsRSVPDialogOpen(true);
         }}
