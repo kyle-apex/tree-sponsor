@@ -1,7 +1,11 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { LeaderRow, MembershipStatus, PartialEvent, CheckinFields, PartialUser, PartialEventRSVP } from 'interfaces';
-import { SetStateAction, useEffect, useRef, useState } from 'react';
+import { SetStateAction, useEffect, useRef, useState, MouseEvent } from 'react';
+import { Theme } from '@mui/material/styles';
+import { SxProps } from '@mui/system';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import LocationMapDialog from './LocationMapDialog';
 import formatDateString from 'utils/formatDateString';
 import useLocalStorage from 'utils/hooks/use-local-storage';
@@ -11,8 +15,18 @@ import UserBubbles from './UserBubbles';
 import SplitRow from 'components/layout/SplitRow';
 import { UserAvatar } from 'components/sponsor';
 import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Divider from '@mui/material/Divider';
 import InsertInvitationIcon from '@mui/icons-material/InsertInvitation';
 import PlaceIcon from '@mui/icons-material/Place';
+import EventIcon from '@mui/icons-material/Event';
+import ShareIcon from '@mui/icons-material/Share';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import LinkIcon from '@mui/icons-material/Link';
+import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import { Place } from '@mui/icons-material';
 import SafeHTMLDisplay from 'components/SafeHTMLDisplay';
 import ExpandCollapseSection from 'components/layout/ExpandCollapseSection';
@@ -43,6 +57,8 @@ const EventInvite = ({
   const [isLocationMapDialogOpen, setIsLocationMapDialogOpen] = useState(false);
   const [isSignInMode, setIsSignInMode] = useState(false);
   const [rsvpStatus, setRsvpStatus] = useState('Going');
+  const [calendarAnchorEl, setCalendarAnchorEl] = useState<null | HTMLElement>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Use localStorage to store RSVP data for this specific event
   const {
@@ -74,6 +90,57 @@ const EventInvite = ({
     if (!storedEmail && rsvpData.email) setStoredEmail(rsvpData.email);
     // Refresh the rsvps data to update the guest list count
     refetch();
+  };
+
+  // Calendar link generation functions
+  const generateGoogleCalendarLink = (event: PartialEvent) => {
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(startDate);
+    endDate.setHours(endDate.getHours() + 1.5); // Assuming 1.5 hour event duration
+
+    const startDateStr = startDate.toISOString().replace(/-|:|\.\d+/g, '');
+    const endDateStr = endDate.toISOString().replace(/-|:|\.\d+/g, '');
+
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+      event.name,
+    )}&dates=${startDateStr}/${endDateStr}&details=${encodeURIComponent(event.description || '')}&location=${encodeURIComponent(
+      event.location.name,
+    )}`;
+  };
+
+  const generateOutlookCalendarLink = (event: PartialEvent) => {
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(startDate);
+    endDate.setHours(endDate.getHours() + 1.5); // Assuming 1.5 hour event duration
+
+    return `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(
+      event.name,
+    )}&startdt=${startDate.toISOString()}&enddt=${endDate.toISOString()}&body=${encodeURIComponent(
+      event.description || '',
+    )}&location=${encodeURIComponent(event.location.name)}`;
+  };
+
+  const generateYahooCalendarLink = (event: PartialEvent) => {
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(startDate);
+    endDate.setHours(endDate.getHours() + 1.5); // Assuming 1.5 hour event duration
+
+    const yahooStartDate = startDate.toISOString().replace(/-|:|\.\d+/g, '');
+    const yahooEndDate = endDate.toISOString().replace(/-|:|\.\d+/g, '');
+
+    return `https://calendar.yahoo.com/?v=60&title=${encodeURIComponent(
+      event.name,
+    )}&st=${yahooStartDate}&et=${yahooEndDate}&desc=${encodeURIComponent(event.description || '')}&in_loc=${encodeURIComponent(
+      event.location.name,
+    )}`;
+  };
+
+  // This function is used on line 412, so we need to keep it
+  const generateICalendarLink = (_event: PartialEvent) => {
+    // For iCal, we would typically generate a .ics file
+    // This is a simplified version that would need server-side implementation
+    // For now, we'll just return a placeholder
+    return '#';
   };
 
   return (
@@ -162,14 +229,16 @@ const EventInvite = ({
             </Typography>
           </Box>
         )}
-        <Typography sx={{ mt: 2, mb: 2 }}>
-          {invitedByUser?.name ? invitedByUser.name : 'TreeFolksYP'} invited you to {event.name} on {formatDateString(event?.startDate)}{' '}
-          6:30-8pm:
-        </Typography>
+        {!eventRSVP && (
+          <Typography sx={{ mt: 2, mb: 2 }}>
+            {invitedByUser?.name ? invitedByUser.name : 'TreeFolksYP'} invited you to {event.name} on {formatDateString(event?.startDate)}{' '}
+            6:30-8pm:
+          </Typography>
+        )}
         {eventRSVP ? (
           // Display RSVP status and change response button
           <Box>
-            <Box sx={{ textAlign: 'center', mb: 2 }}>
+            <Box sx={{ textAlign: 'center', mb: 2, mt: 1 }}>
               <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
                 {eventRSVP.status === 'Going'
                   ? '🎉 You are going!'
@@ -198,6 +267,164 @@ const EventInvite = ({
             >
               Change Response
             </Button>
+
+            {/* Show "Want to help spread the word?" section only for Going or Maybe responses */}
+            {(eventRSVP.status === 'Going' || eventRSVP.status === 'Maybe') && (
+              <Box
+                sx={{
+                  mt: 3,
+                  border: '2px solid',
+                  borderColor: 'primary.main',
+                  borderRadius: 2,
+                  overflow: 'hidden',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                }}
+              >
+                {/* Header with gradient background */}
+                <Box
+                  sx={{
+                    background: theme => `radial-gradient(circle at -50% -50%, #1b2b1c 0%, ${theme.palette.primary.main} 70%)`,
+                    padding: 2,
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <Typography variant='h6' sx={{ fontWeight: 'bold', color: 'white' }}>
+                    Want to help spread the word?
+                  </Typography>
+                </Box>
+
+                {/* Content section */}
+                <Box sx={{ p: 2 }}>
+                  <Grid container spacing={2}>
+                    {/* Define common styles for all grid items */}
+                    {(() => {
+                      // Common styles for all Paper components
+                      const commonPaperStyles = {
+                        p: 2,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                        height: '100%',
+                        borderRadius: 2,
+                        transition: 'all 0.2s ease-in-out',
+                        '&:hover': {
+                          bgcolor: (theme: Theme) => `${theme.palette.primary.main}10`,
+                          transform: 'translateY(-2px)',
+                          boxShadow: 3,
+                        },
+                      };
+
+                      // Additional styles for link items
+                      const linkStyles = {
+                        ...commonPaperStyles,
+                        textDecoration: 'none',
+                        color: 'inherit',
+                      };
+
+                      // Common icon styles
+                      const iconStyles = { fontSize: 40, mb: 1 };
+
+                      // Common typography styles
+                      const typographyStyles = { fontWeight: 400, fontSize: '.8rem', color: 'text.secondary' };
+
+                      // Grid item definitions
+                      const gridItems = [
+                        {
+                          icon: <EventIcon color='primary' sx={iconStyles} />,
+                          text: 'Add to Calendar',
+                          onClick: (e: MouseEvent<HTMLElement>) => setCalendarAnchorEl(e.currentTarget),
+                          component: 'div' as React.ElementType | undefined,
+                          href: undefined as string | undefined,
+                        },
+                        {
+                          icon: <LinkIcon color='primary' sx={iconStyles} />,
+                          text: 'Copy Invite Link',
+                          onClick: () => {
+                            if (typeof window !== 'undefined') {
+                              navigator.clipboard.writeText(window.location.href);
+                              setSnackbarOpen(true);
+                            }
+                          },
+                          component: undefined,
+                          href: undefined,
+                        },
+                        {
+                          icon: <ThumbUpIcon color='primary' sx={iconStyles} />,
+                          text: 'Upvote on do512',
+                          onClick: undefined,
+                          component: 'a',
+                          href: 'https://do512.tfyp.org',
+                        },
+                        {
+                          icon: <MeetingRoomIcon color='primary' sx={iconStyles} />,
+                          text: 'RSVP on Meetup.com',
+                          onClick: undefined,
+                          component: 'a',
+                          href: 'https://meetup.tfyp.org',
+                        },
+                      ];
+
+                      return gridItems.map((item, index) => (
+                        <Grid item xs={6} key={index}>
+                          <Paper
+                            elevation={2}
+                            component={item.component}
+                            href={item.href}
+                            target={item.href ? '_blank' : undefined}
+                            rel={item.href ? 'noopener noreferrer' : undefined}
+                            sx={item.href ? (linkStyles as SxProps<Theme>) : (commonPaperStyles as SxProps<Theme>)}
+                            onClick={item.onClick}
+                          >
+                            {item.icon}
+                            <Typography variant='body1' align='center' sx={typographyStyles}>
+                              {item.text}
+                            </Typography>
+                          </Paper>
+                        </Grid>
+                      ));
+                    })()}
+                  </Grid>
+
+                  {/* Calendar dropdown menu */}
+                  <Menu anchorEl={calendarAnchorEl} open={Boolean(calendarAnchorEl)} onClose={() => setCalendarAnchorEl(null)}>
+                    <MenuItem
+                      onClick={() => {
+                        window.open(generateGoogleCalendarLink(event), '_blank');
+                        setCalendarAnchorEl(null);
+                      }}
+                    >
+                      Google Calendar
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        window.open(generateOutlookCalendarLink(event), '_blank');
+                        setCalendarAnchorEl(null);
+                      }}
+                    >
+                      Outlook Calendar
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        window.open(generateYahooCalendarLink(event), '_blank');
+                        setCalendarAnchorEl(null);
+                      }}
+                    >
+                      Yahoo Calendar
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        window.open(generateICalendarLink(event), '_blank');
+                        setCalendarAnchorEl(null);
+                      }}
+                    >
+                      iCalendar (.ics)
+                    </MenuItem>
+                  </Menu>
+                </Box>
+              </Box>
+            )}
           </Box>
         ) : (
           // Display RSVP buttons if no RSVP exists
@@ -296,7 +523,13 @@ const EventInvite = ({
         }}
       />
       <LocationMapDialog open={isLocationMapDialogOpen} onClose={() => setIsLocationMapDialogOpen(false)} location={event.location} />
+      <Snackbar open={snackbarOpen} autoHideDuration={2500} onClose={() => setSnackbarOpen(false)}>
+        <Alert onClose={() => setSnackbarOpen(false)} severity='success' color='info' sx={{ width: '100%' }}>
+          Copied to clipboard!
+        </Alert>
+      </Snackbar>
     </>
   );
 };
+
 export default EventInvite;
