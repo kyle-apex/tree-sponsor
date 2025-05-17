@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { getQueryParams, convertQueryParamsToString, getVisitorEmail, getVisitorId } from './query-params';
 
 /**
  * Track a click event in the analytics system
@@ -23,44 +23,17 @@ export const trackClickEvent = async (
     }
 
     // Get or create visitor ID
-    let visitorId = localStorage.getItem('visitorId');
+    const visitorId = getVisitorId();
 
-    // If no visitor ID exists, create one
-    if (!visitorId) {
-      visitorId = uuidv4();
-      localStorage.setItem('visitorId', visitorId);
-    }
-
-    // Check for user email in localStorage
-    const checkInEmail = localStorage.getItem('checkInEmail');
-    const checkInEmail2 = localStorage.getItem('checkInEmail2');
-    const signInEmail = localStorage.getItem('signInEmail');
-
-    // Helper function to strip double quotes from email values
-    const stripQuotes = (value: string | null): string | null => {
-      if (!value) return null;
-      return value.replace(/^"|"$/g, '');
-    };
-
-    // Use the first available email, stripping any double quotes
-    const email = stripQuotes(checkInEmail) || stripQuotes(checkInEmail2) || stripQuotes(signInEmail) || null;
+    // Get visitor email from localStorage
+    const email = getVisitorEmail();
 
     // Get page URL (path only, no origin)
     // If pagePath is not provided, use the current pathname
     const pageUrl = pagePath || window.location.pathname;
 
-    // If queryParams is not provided, extract them from the current URL
-    let finalQueryParams = queryParams;
-    if (!finalQueryParams && typeof window !== 'undefined') {
-      const urlSearchParams = new URLSearchParams(window.location.search);
-      const params: Record<string, string> = {};
-      urlSearchParams.forEach((value, key) => {
-        params[key] = value;
-      });
-      if (Object.keys(params).length > 0) {
-        finalQueryParams = params;
-      }
-    }
+    // Get query params from provided params or from URL
+    const finalQueryParams = getQueryParams(queryParams);
 
     // Log for debugging
     console.debug('Click event pageUrl:', pageUrl, 'queryParams:', finalQueryParams);
@@ -68,12 +41,8 @@ export const trackClickEvent = async (
     // Get user agent
     const userAgent = navigator.userAgent;
 
-    // Prepare query params string
-    const queryParamsString = finalQueryParams
-      ? Object.entries(finalQueryParams)
-          .map(([key, value]) => `${key}=${value}`)
-          .join('&')
-      : null;
+    // Convert query params to string
+    const queryParamsString = convertQueryParamsToString(finalQueryParams);
 
     // Make API call to store the click event
     await fetch('/api/analytics/click-event', {
@@ -90,7 +59,6 @@ export const trackClickEvent = async (
         queryParams: queryParamsString,
         userAgent,
         userId,
-        // Note: We don't include IP address here as it's better to capture that server-side
       }),
     });
 
