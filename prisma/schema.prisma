@@ -94,9 +94,11 @@ model User {
   organizedEvents       Event[]               @relation("OrganizerToEvent")
   groups                TreeGroup[]
   treeToGroupLinks      TreeToGroup[]
-  referredUsers         User[]                @relation("referralUser")  
+  referredUsers         User[]                @relation("referralUser")
     eventRSVPs         EventRSVP[]            @relation("rsvpUser")
     invitedByUserRSVPs  EventRSVP[]           @relation("invitedByUser")
+    pageViews          PageView[]
+    clickEvents        ClickEvent[]
              
 
   @@map(name: "users")
@@ -609,4 +611,32 @@ model FormResponse {
   form          Form      @relation(fields: [formId], references: [id], onDelete: Cascade)
 
   @@unique([userId, formId])
+}
+
+model PageView {
+  id              Int       @id @default(autoincrement())
+  pageUrl         String    @db.VarChar(512)
+  visitTimestamp  DateTime  @default(now())
+  visitorId       String    @db.VarChar(128)
+  email           String?   @db.VarChar(256)
+  queryParams     String?   @db.Text
+  userAgent       String?   @db.Text
+  ipAddress       String?   @db.VarChar(45)
+  userId          Int?
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model ClickEvent {
+  id              Int       @id @default(autoincrement())
+  pageUrl         String    @db.VarChar(512)
+  actionName      String    @db.VarChar(128)
+  destinationUrl  String?   @db.VarChar(512)
+  clickTimestamp  DateTime  @default(now())
+  visitorId       String    @db.VarChar(128)
+  email           String?   @db.VarChar(256)
+  queryParams     String?   @db.Text
+  userAgent       String?   @db.Text
+  ipAddress       String?   @db.VarChar(45)
+  userId          Int?
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
 }

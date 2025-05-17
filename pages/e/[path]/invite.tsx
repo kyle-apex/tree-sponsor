@@ -9,6 +9,7 @@ import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 import Invite from 'components/event/Invite';
 import CenteredSection from 'components/layout/CenteredSection';
 import createInvitePreviewImage from 'utils/events/create-invite-preview-image';
+import usePageViewTracking from 'utils/hooks/use-page-view-tracking';
 
 const InvitePage = ({
   event,
@@ -21,6 +22,9 @@ const InvitePage = ({
   name?: string;
   email?: string;
 }) => {
+  // Track page views when the component mounts and when the route changes
+  usePageViewTracking();
+
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
 
   return (
