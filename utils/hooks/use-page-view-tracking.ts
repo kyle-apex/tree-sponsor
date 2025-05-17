@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import trackPageView from 'utils/analytics/track-page-view';
 
 /**
  * Hook to track page views
  *
  * This hook automatically tracks page views when a component mounts
- * and when the route changes. It uses the Next.js router to get the
+ * and when the route changes. It uses the window object to get the
  * current path and query parameters.
  *
  * Example usage:
@@ -26,28 +25,74 @@ import trackPageView from 'utils/analytics/track-page-view';
  * ```
  */
 export const usePageViewTracking = (): void => {
-  const router = useRouter();
-
   useEffect(() => {
-    // Skip during route transitions and only track when path is ready
-    if (!router.isReady) return;
+    // Skip during server-side rendering
+    if (typeof window === 'undefined') return;
+
+    // Parse query parameters from URL search string
+    const getQueryParams = (): Record<string, string> => {
+      const params: Record<string, string> = {};
+      const searchParams = new URLSearchParams(window.location.search);
+
+      searchParams.forEach((value, key) => {
+        params[key] = value;
+      });
+
+      return params;
+    };
 
     // Track the current page view
-    trackPageView(router.pathname, router.query as Record<string, string>);
+    trackPageView(window.location.pathname, getQueryParams());
 
     // Set up tracking for route changes
-    const handleRouteChange = (url: string) => {
-      trackPageView(url);
+    const handleRouteChange = () => {
+      trackPageView(window.location.pathname, getQueryParams());
     };
 
-    // Subscribe to route change events
-    router.events.on('routeChangeComplete', handleRouteChange);
+    // Create a MutationObserver to detect DOM changes that might indicate navigation
+    const observer = new MutationObserver(mutations => {
+      // Check if URL has changed since last check
+      if (currentPath !== window.location.pathname || currentSearch !== window.location.search) {
+        currentPath = window.location.pathname;
+        currentSearch = window.location.search;
+        handleRouteChange();
+      }
+    });
 
-    // Clean up event listener
+    // Store current location to detect changes
+    let currentPath = window.location.pathname;
+    let currentSearch = window.location.search;
+
+    // Start observing the document with the configured parameters
+    observer.observe(document, { subtree: true, childList: true });
+
+    // Listen for popstate events (browser back/forward navigation)
+    window.addEventListener('popstate', handleRouteChange);
+
+    // Intercept history methods to detect programmatic navigation
+    const originalPushState = history.pushState;
+    const originalReplaceState = history.replaceState;
+
+    history.pushState = function (...args) {
+      originalPushState.apply(this, args);
+      handleRouteChange();
+    };
+
+    history.replaceState = function (...args) {
+      originalReplaceState.apply(this, args);
+      handleRouteChange();
+    };
+
+    // Clean up event listeners and observers
     return () => {
-      router.events.off('routeChangeComplete', handleRouteChange);
+      window.removeEventListener('popstate', handleRouteChange);
+      observer.disconnect();
+
+      // Restore original history methods
+      history.pushState = originalPushState;
+      history.replaceState = originalReplaceState;
     };
-  }, [router.isReady, router.pathname, router.query]);
+  }, []);
 };
 
 export default usePageViewTracking;

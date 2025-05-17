@@ -7,12 +7,14 @@ import { v4 as uuidv4 } from 'uuid';
  * @param destinationUrl - The URL where the click leads to (if applicable)
  * @param pagePath - The path of the page where the click occurred
  * @param queryParams - Optional query parameters as an object
+ * @param userId - Optional user ID if the user is logged in
  */
 export const trackClickEvent = async (
   actionName: string,
   destinationUrl?: string,
   pagePath?: string,
   queryParams?: Record<string, string>,
+  userId?: number,
 ): Promise<void> => {
   try {
     // Only run on client-side
@@ -22,12 +24,6 @@ export const trackClickEvent = async (
 
     // Get or create visitor ID
     let visitorId = localStorage.getItem('visitorId');
-
-    // Handle unique visit tracking via query params
-    if (queryParams?.u) {
-      // If u parameter is present, create a new unique visit ID
-      visitorId = `${visitorId || ''}-u${queryParams.u}`;
-    }
 
     // If no visitor ID exists, create one
     if (!visitorId) {
@@ -40,18 +36,41 @@ export const trackClickEvent = async (
     const checkInEmail2 = localStorage.getItem('checkInEmail2');
     const signInEmail = localStorage.getItem('signInEmail');
 
-    // Use the first available email
-    const email = checkInEmail || checkInEmail2 || signInEmail || null;
+    // Helper function to strip double quotes from email values
+    const stripQuotes = (value: string | null): string | null => {
+      if (!value) return null;
+      return value.replace(/^"|"$/g, '');
+    };
 
-    // Get full page URL
-    const pageUrl = window.location.origin + (pagePath || window.location.pathname);
+    // Use the first available email, stripping any double quotes
+    const email = stripQuotes(checkInEmail) || stripQuotes(checkInEmail2) || stripQuotes(signInEmail) || null;
+
+    // Get page URL (path only, no origin)
+    // If pagePath is not provided, use the current pathname
+    const pageUrl = pagePath || window.location.pathname;
+
+    // If queryParams is not provided, extract them from the current URL
+    let finalQueryParams = queryParams;
+    if (!finalQueryParams && typeof window !== 'undefined') {
+      const urlSearchParams = new URLSearchParams(window.location.search);
+      const params: Record<string, string> = {};
+      urlSearchParams.forEach((value, key) => {
+        params[key] = value;
+      });
+      if (Object.keys(params).length > 0) {
+        finalQueryParams = params;
+      }
+    }
+
+    // Log for debugging
+    console.debug('Click event pageUrl:', pageUrl, 'queryParams:', finalQueryParams);
 
     // Get user agent
     const userAgent = navigator.userAgent;
 
     // Prepare query params string
-    const queryParamsString = queryParams
-      ? Object.entries(queryParams)
+    const queryParamsString = finalQueryParams
+      ? Object.entries(finalQueryParams)
           .map(([key, value]) => `${key}=${value}`)
           .join('&')
       : null;
@@ -70,6 +89,7 @@ export const trackClickEvent = async (
         email,
         queryParams: queryParamsString,
         userAgent,
+        userId,
         // Note: We don't include IP address here as it's better to capture that server-side
       }),
     });

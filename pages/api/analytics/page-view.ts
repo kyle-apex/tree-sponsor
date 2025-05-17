@@ -7,19 +7,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { pageUrl, visitorId, email, queryParams, userAgent, ipAddress, userId } = req.body;
+    const { pageUrl, visitorId, email, queryParams, userAgent, userId } = req.body;
 
     if (!pageUrl || !visitorId) {
       return res.status(400).json({ message: 'Missing required fields: pageUrl and visitorId' });
     }
 
-    // Create the page view record
-    const pageView = await prisma.$queryRaw`
-      INSERT INTO PageView (pageUrl, visitorId, email, queryParams, userAgent, ipAddress, userId)
-      VALUES (${pageUrl}, ${visitorId}, ${email || null}, ${queryParams || null}, ${userAgent || null}, ${ipAddress || null}, ${
-      userId || null
-    })
-    `;
+    // Extract IP address from request
+    const forwarded = req.headers['x-forwarded-for'];
+    const ipAddress =
+      typeof forwarded === 'string' ? forwarded.split(',')[0] : Array.isArray(forwarded) ? forwarded[0] : req.socket.remoteAddress || null;
+
+    // Create the page view record using Prisma's structured API
+    const pageView = await prisma.pageView.create({
+      data: {
+        pageUrl,
+        visitorId,
+        email: email || null,
+        queryParams: queryParams || null,
+        userAgent: userAgent || null,
+        ipAddress,
+        userId: userId || null,
+      },
+    });
 
     return res.status(200).json({ success: true });
   } catch (error) {
