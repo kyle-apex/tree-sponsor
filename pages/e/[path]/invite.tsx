@@ -107,7 +107,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     let invitedByUser = null;
     if (u) {
       const user = await prisma.user.findFirst({ where: { id: Number(u) } });
-      console.log('user');
+      console.log('user', user);
       if (user?.id) invitedByUser = { id: user.id, name: user.name, image: user.image };
 
       // If invitedByUser has an image and event has a pictureUrl, create an invite preview image
