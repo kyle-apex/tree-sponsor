@@ -10,13 +10,14 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { Theme } from '@mui/material/styles';
 import { SxProps } from '@mui/system';
-import { PartialEvent } from 'interfaces';
+import { PartialEvent, PartialEventRSVP } from 'interfaces';
 
 interface InvitePostRSVPSectionProps {
   event: PartialEvent;
+  currentRSVP?: PartialEventRSVP;
 }
 
-const InvitePostRSVPSection = ({ event }: InvitePostRSVPSectionProps) => {
+const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProps) => {
   const [calendarAnchorEl, setCalendarAnchorEl] = useState<null | HTMLElement>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
@@ -132,7 +133,7 @@ const InvitePostRSVPSection = ({ event }: InvitePostRSVPSectionProps) => {
         }}
       >
         <Typography variant='h6' sx={{ fontWeight: 'bold', color: 'white' }}>
-          Want to help spread the word?
+          Please help branch out!
         </Typography>
       </Box>
       <Typography variant='body2' p={2} pb={0}>
@@ -193,12 +194,18 @@ const InvitePostRSVPSection = ({ event }: InvitePostRSVPSectionProps) => {
                     🔗
                   </Typography>
                 ),
-                text: 'Copy Invite Link',
+                text: 'Copy Personal Invite Link',
                 onClick: () => {
                   if (typeof window !== 'undefined') {
-                    const currentUrl = window.location.href;
-                    navigator.clipboard.writeText(currentUrl);
-                    trackClickEvent('Copy Invite Link', currentUrl);
+                    let inviteUrl = window.location.origin + window.location.pathname;
+
+                    // Add user ID as query parameter if the user is RSVP'd
+                    if (currentRSVP?.userId) {
+                      inviteUrl += `?u=${currentRSVP.userId}`;
+                    }
+
+                    navigator.clipboard.writeText(inviteUrl);
+                    trackClickEvent('Copy Invite Link', inviteUrl);
                     setSnackbarOpen(true);
                   }
                 },

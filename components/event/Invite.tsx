@@ -46,6 +46,7 @@ const EventInvite = ({
   const [isLocationMapDialogOpen, setIsLocationMapDialogOpen] = useState(false);
   const [isSignInMode, setIsSignInMode] = useState(false);
   const [rsvpStatus, setRsvpStatus] = useState('Going');
+  const [showHostsOnly, setShowHostsOnly] = useState(false);
 
   // Use localStorage to store RSVP data for this specific event
   const {
@@ -122,7 +123,15 @@ const EventInvite = ({
         </Box>
       </Box>
       {event.organizers?.length > 0 && (
-        <Box flexDirection='row' alignItems='center' style={{ display: 'flex', gap: '5px' }}>
+        <Box
+          flexDirection='row'
+          alignItems='center'
+          style={{ display: 'flex', gap: '5px', cursor: 'pointer' }}
+          onClick={() => {
+            setShowHostsOnly(true);
+            setIsGuestListDialogOpen(true);
+          }}
+        >
           <Typography whiteSpace='nowrap'>Hosted By:</Typography>
           <UserBubbles users={event.organizers} maxLength={3} size={28} />
           <Typography color='gray' variant='body2'>
@@ -141,14 +150,28 @@ const EventInvite = ({
             <Typography>
               {rsvps?.filter(r => r.status === 'Going')?.length || 0} Going {rsvps?.filter(r => r.status === 'Maybe')?.length || 0} Maybe
             </Typography>
-            <a style={{ textDecoration: 'none', cursor: 'pointer', fontWeight: 600 }} onClick={() => setIsGuestListDialogOpen(true)}>
+            <a
+              style={{ textDecoration: 'none', cursor: 'pointer', fontWeight: 600 }}
+              onClick={() => {
+                setShowHostsOnly(false);
+                setIsGuestListDialogOpen(true);
+              }}
+            >
               View Guest List
             </a>
           </SplitRow>
         </Box>
         <hr />
         {rsvps && rsvps.length > 0 && (
-          <Box flexDirection='row' alignItems='center' style={{ display: 'flex', gap: '10px' }}>
+          <Box
+            flexDirection='row'
+            alignItems='center'
+            style={{ display: 'flex', gap: '10px', cursor: 'pointer' }}
+            onClick={() => {
+              setShowHostsOnly(false);
+              setIsGuestListDialogOpen(true);
+            }}
+          >
             <UserBubbles ml={-1.4} users={rsvps.map(r => r.user).filter(Boolean)} maxLength={6} size={24} />
             <Typography color='gray' variant='body2'>
               {rsvps[0]?.user?.name && rsvps[1]?.user?.name
@@ -247,7 +270,7 @@ const EventInvite = ({
         )}
       </Box>
       {/* Show "Want to help spread the word?" section only for Going or Maybe responses */}
-      {(eventRSVP?.status === 'Going' || eventRSVP?.status === 'Maybe') && <InvitePostRSVPSection event={event} />}
+      {(eventRSVP?.status === 'Going' || eventRSVP?.status === 'Maybe') && <InvitePostRSVPSection event={event} currentRSVP={eventRSVP} />}
       {event.description && (
         <Box sx={{ mt: 3 }}>
           <Typography>Event Details:</Typography>
@@ -277,21 +300,26 @@ const EventInvite = ({
       <GuestListDialog
         open={isGuestListDialogOpen}
         onClose={() => setIsGuestListDialogOpen(false)}
-        hasRSVP={!!eventRSVP}
-        users={[
-          // Going users first
-          ...(rsvps
-            ?.filter(r => r.status === 'Going')
-            .map(r => r.user)
-            .filter(Boolean) || []),
-          // Maybe users next
-          ...(rsvps
-            ?.filter(r => r.status === 'Maybe')
-            .map(r => r.user)
-            .filter(Boolean) || []),
-        ]}
-        goingCount={rsvps?.filter(r => r.status === 'Going')?.length || 0}
-        maybeCount={rsvps?.filter(r => r.status === 'Maybe')?.length || 0}
+        hasRSVP={showHostsOnly ? true : !!eventRSVP}
+        users={
+          showHostsOnly
+            ? event.organizers || []
+            : [
+                // Going users first
+                ...(rsvps
+                  ?.filter(r => r.status === 'Going')
+                  .map(r => r.user)
+                  .filter(Boolean) || []),
+                // Maybe users next
+                ...(rsvps
+                  ?.filter(r => r.status === 'Maybe')
+                  .map(r => r.user)
+                  .filter(Boolean) || []),
+              ]
+        }
+        goingCount={showHostsOnly ? 0 : rsvps?.filter(r => r.status === 'Going')?.length || 0}
+        maybeCount={showHostsOnly ? 0 : rsvps?.filter(r => r.status === 'Maybe')?.length || 0}
+        showHostsOnly={showHostsOnly}
         onRSVP={() => {
           setIsGuestListDialogOpen(false);
           setIsRSVPDialogOpen(true);

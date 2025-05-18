@@ -20,6 +20,7 @@ interface GuestListDialogProps {
   users?: PartialUser[];
   goingCount?: number;
   maybeCount?: number;
+  showHostsOnly?: boolean;
   onRSVP?: () => void;
   onSignIn?: () => void;
 }
@@ -31,6 +32,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
   users = [],
   goingCount = 0,
   maybeCount = 0,
+  showHostsOnly = false,
   onRSVP,
   onSignIn,
 }) => {
@@ -60,12 +62,14 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
         <Box sx={{ display: 'flex', flexDirection: 'column', color: 'white' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
             <Typography variant='h4' sx={{ fontWeight: 500 }}>
-              Guest List
+              {showHostsOnly ? 'Event Hosts' : 'Guest List'}
             </Typography>
           </Box>
-          <Typography variant='h6' sx={{ pl: 0, opacity: 0.9 }}>
-            {goingCount} Going {maybeCount > 0 ? `• ${maybeCount} Maybe` : ''}
-          </Typography>
+          {!showHostsOnly && (
+            <Typography variant='h6' sx={{ pl: 0, opacity: 0.9 }}>
+              {goingCount} Going {maybeCount > 0 ? `• ${maybeCount} Maybe` : ''}
+            </Typography>
+          )}
         </Box>
       </DialogTitle>
       <DialogContent>
@@ -73,54 +77,75 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
           <Box>
             {users.length > 0 ? (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {/* Going users section */}
-                {goingCount > 0 && (
+                {showHostsOnly ? (
                   <Box>
-                    <Typography variant='subtitle1' color='primary' sx={{ fontWeight: 600, mb: 1 }}>
-                      Going ({goingCount})
-                    </Typography>
-                    {users
-                      .filter((_user, index) => index < goingCount)
-                      .map(user => (
-                        <Box
-                          key={user.id}
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 2,
-                            mb: 2,
-                          }}
-                        >
-                          <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
-                          <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
-                        </Box>
-                      ))}
+                    {users.map(user => (
+                      <Box
+                        key={user.id}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 2,
+                          mb: 2,
+                        }}
+                      >
+                        <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
+                        <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
+                      </Box>
+                    ))}
                   </Box>
-                )}
+                ) : (
+                  <>
+                    {/* Going users section */}
+                    {goingCount > 0 && (
+                      <Box>
+                        <Typography variant='subtitle1' color='primary' sx={{ fontWeight: 600, mb: 1 }}>
+                          Going ({goingCount})
+                        </Typography>
+                        {users
+                          .filter((_user, index) => index < goingCount)
+                          .map(user => (
+                            <Box
+                              key={user.id}
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                                mb: 2,
+                              }}
+                            >
+                              <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
+                              <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
+                            </Box>
+                          ))}
+                      </Box>
+                    )}
 
-                {/* Maybe users section */}
-                {maybeCount > 0 && (
-                  <Box>
-                    <Typography variant='subtitle1' color='primary' sx={{ fontWeight: 600, mb: 1 }}>
-                      Maybe ({maybeCount})
-                    </Typography>
-                    {users
-                      .filter((_user, index) => index >= goingCount && index < goingCount + maybeCount)
-                      .map(user => (
-                        <Box
-                          key={user.id}
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 2,
-                            mb: 2,
-                          }}
-                        >
-                          <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
-                          <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
-                        </Box>
-                      ))}
-                  </Box>
+                    {/* Maybe users section */}
+                    {maybeCount > 0 && (
+                      <Box>
+                        <Typography variant='subtitle1' color='primary' sx={{ fontWeight: 600, mb: 1 }}>
+                          Maybe ({maybeCount})
+                        </Typography>
+                        {users
+                          .filter((_user, index) => index >= goingCount && index < goingCount + maybeCount)
+                          .map(user => (
+                            <Box
+                              key={user.id}
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                                mb: 2,
+                              }}
+                            >
+                              <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
+                              <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
+                            </Box>
+                          ))}
+                      </Box>
+                    )}
+                  </>
                 )}
               </Box>
             ) : (
