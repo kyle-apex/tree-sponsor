@@ -2,7 +2,6 @@
 //https://maps.googleapis.com/maps/api/streetview?size=600x300&location=30.24513,-97.769236&key=KEY
 
 import { useEffect, useRef } from 'react';
-import { Wrapper } from '@googlemaps/react-wrapper';
 
 /*
 <iframe width="450" height="250" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/streetview?key=KEY&amp;location=30.24513,-97.769236" allowfullscreen="">

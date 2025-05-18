@@ -1,8 +1,7 @@
 const { createServer } = require('http');
 const next = require('next');
 
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const { prisma } = require('./utils/prisma/init.js');
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = dev ? 'localhost' : '0.0.0.0';

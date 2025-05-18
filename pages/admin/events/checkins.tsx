@@ -35,6 +35,9 @@ import { GetSessionOptions } from 'next-auth/client';
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import EventsTable from 'components/admin/EventsTable';
 import { useRemoveFromQuery } from 'utils/hooks/use-remove-from-query';
@@ -56,9 +59,46 @@ async function handleDelete(id: number) {
 async function handleUpdate(id: number, attributes: Record<string, unknown>) {
   await axios.patch('/api/users/' + id, attributes);
 }
+
+// Function to export attendees data to Excel (CSV format)
+function exportToExcel(attendees: PartialAttendee[]) {
+  if (!attendees || attendees.length === 0) return;
+
+  // Define the headers for the CSV file
+  const headers = ['Event', 'Name', 'Email', 'Member?', 'Date', 'Discovered From'];
+
+  // Convert attendees data to CSV rows
+  const csvRows = attendees.map(attendee => {
+    const isMember = attendee.isMember == 1 ? 'Yes' : 'No';
+    const date = attendee.createdDate ? new Date(attendee.createdDate).toLocaleDateString() : '';
+
+    return [attendee.eventName || '', attendee.name || '', attendee.email || '', isMember, date, attendee.discoveredFrom || '']
+      .map(value => `"${value.toString().replace(/"/g, '""')}"`)
+      .join(',');
+  });
+
+  // Combine headers and rows
+  const csvContent = [headers.join(','), ...csvRows].join('\n');
+
+  // Create a Blob with the CSV content
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+  // Create a download link and trigger the download
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', 'attendees.csv');
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 // TODO: Paginate
 const CheckinsPage = () => {
   const router = useRouter();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [searchString, setSearchString] = useState('');
   const debouncedSetSearchText = useDebouncedCallback((value: string) => {
     setSearchString(value);
@@ -72,7 +112,20 @@ const CheckinsPage = () => {
 
   return (
     <AdminLayout title='Attendees' header='Attendees'>
-      <SearchBox mb={2} label='Search Attendees' onChange={debouncedSetSearchText} defaultValue={searchString}></SearchBox>
+      <Box display='flex' justifyContent='space-between' gap={1} alignItems='center' mb={2}>
+        <SearchBox label='Search Attendees' onChange={debouncedSetSearchText} defaultValue={searchString}></SearchBox>
+        <Button
+          variant='contained'
+          color='primary'
+          size='medium'
+          startIcon={<FileDownloadIcon />}
+          onClick={() => exportToExcel(attendees)}
+          disabled={!attendees || attendees.length === 0}
+          sx={{ whiteSpace: 'nowrap', minWidth: 'auto', pr: isMobile ? '4px' : 2 }}
+        >
+          {!isMobile && 'Export to CSV'}
+        </Button>
+      </Box>
 
       <AttendeesTable attendees={attendees} isFetching={isFetching} onDelete={remove} onUpdate={updateById}></AttendeesTable>
     </AdminLayout>

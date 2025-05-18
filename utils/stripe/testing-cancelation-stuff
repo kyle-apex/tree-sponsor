@@ -1,0 +1,27 @@
+/*const customers: Stripe.ApiList<Stripe.Customer> = await stripe.customers.list({
+    limit: 150,
+    email: 'hayden.p0429@gmail.com', //'fthisthirdemail@gmail.com', //'dhoskins@stetson.edu', //'bernard.kauffman@gmail.com',
+    // canceled: hayden.p0429@gmail.com
+    expand: ['data.subscriptions'],
+  });
+  for (const customer of customers.data || []) console.log('customer.subs', customer.subscriptions);
+  console.log('customers', customers);
+  const canceledSubs = await stripe.subscriptions.list({
+    customer: customers.data[1].id,
+    expand: ['data.latest_invoice.payment_intent'],
+  });
+  //cancel_at 1755527407
+//cancel_at_period_end true
+//canceled_at 1723991548
+//cancellation_details { comment: null, feedback: null, reason: 'cancellation_requested' }
+  console.log('canceledSubs', canceledSubs);
+  for (const sub of canceledSubs.data || []) {
+    for (const nam in sub || {}) {
+      // @ts-ignore
+      console.log(nam, sub[nam]);
+    }
+  }
+  //.latest_invoice.payment_intent.last_payment_error.code == 'card_declined',
+  // .latest_invoice.payment_intent.last_payment_error.decline_code == 'stolen_card'
+  
+  return;*/

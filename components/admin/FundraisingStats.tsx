@@ -114,16 +114,6 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
             isLoading={isLoading}
           ></StatisticIconDisplay>
         </Grid>
-        <Grid item xs={6} sx={{ textAlign: 'center' }}>
-          <StatisticIconDisplay
-            label={endDate > new Date() ? 'Scheduled by ' + endDate.toDateString() : 'Scheduled by the end of ' + currentYear}
-            count={stats?.upcomingMemberDonations}
-            isCurrency={true}
-            isLoading={isLoading}
-            icon={<UpdateIcon fontSize='medium'></UpdateIcon>}
-            color='primary'
-          ></StatisticIconDisplay>
-        </Grid>
 
         <Grid item xs={6} sx={{ textAlign: 'center' }}>
           <StatisticIconDisplay
@@ -143,6 +133,41 @@ const FundraisingStats = ({ year, refreshWhenFalse }: { year?: number; refreshWh
             color='primary'
           ></StatisticIconDisplay>
         </Grid>
+        {startDate?.getMonth() == 0 && startDate?.getDate() == 1 && (
+          <>
+            <Grid item xs={6} sx={{ textAlign: 'center' }}>
+              <StatisticIconDisplay
+                label={endDate > new Date() ? 'Scheduled by ' + endDate.toDateString() : 'Scheduled by the end of ' + currentYear}
+                count={stats?.upcomingMemberDonations}
+                isCurrency={true}
+                isLoading={isLoading}
+                icon={<UpdateIcon fontSize='medium'></UpdateIcon>}
+                color='primary'
+              ></StatisticIconDisplay>
+            </Grid>
+
+            <Grid item xs={6} sx={{ textAlign: 'center' }}>
+              <StatisticIconDisplay
+                label={`Current Fundraising + Scheduled Donations`}
+                count={stats?.currentYearDonations + stats?.currentYearMemberDonations + stats?.upcomingMemberDonations}
+                isCurrency={true}
+                isLoading={isLoading}
+                icon={<UpdateIcon fontSize='medium'></UpdateIcon>}
+                color='primary'
+              ></StatisticIconDisplay>
+            </Grid>
+            <Grid item xs={6} sx={{ textAlign: 'center' }}>
+              <StatisticIconDisplay
+                label={`Unaccounted for donations for $10,000 goal`}
+                count={10000 - (stats?.currentYearDonations + stats?.currentYearMemberDonations + stats?.upcomingMemberDonations)}
+                isCurrency={true}
+                isLoading={isLoading}
+                icon={<UpdateIcon fontSize='medium'></UpdateIcon>}
+                color='primary'
+              ></StatisticIconDisplay>
+            </Grid>
+          </>
+        )}
       </Grid>
     </>
   );

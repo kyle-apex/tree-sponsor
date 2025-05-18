@@ -4,3 +4,4 @@ export * from './use-local-storage';
 export * from './use-post';
 export * from './use-remove-from-query';
 export * from './use-update-query-by-id';
+export * from './use-window-size';

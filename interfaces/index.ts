@@ -56,7 +56,7 @@ export type Attendee = {
   name?: string;
   email?: string;
   userId?: number;
-  isMember: boolean;
+  isMember?: number;
   eventName?: string;
   eventId?: string;
   createdDate?: Date;

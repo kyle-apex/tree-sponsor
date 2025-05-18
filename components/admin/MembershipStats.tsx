@@ -12,6 +12,7 @@ const lastMonth = new Date();
 lastMonth.setDate(lastMonth.getDate() - 30);
 
 type Stats = {
+  predictedByEndOfYear: number;
   active: number;
   newActive: number;
   newInactive: number;
@@ -37,7 +38,7 @@ const MembershipStats = () => {
 
   const increasePerDay = ((stats?.newActive || 0) - (stats?.newInactive || 0)) / 30;
   const daysLeftInYear = (endOfYearTime - new Date().getTime()) / 1000 / 60 / 60 / 24;
-  const projectedMembers = stats ? stats.active + Math.ceil(daysLeftInYear * increasePerDay) : 0;
+  const projectedMembers = (stats?.active || 0) + (stats?.predictedByEndOfYear || 0);
 
   return (
     <>

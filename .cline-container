@@ -1,0 +1,106 @@
+# Tree Sponsor Project Rules for Cline (Container Version)
+
+This file provides guidance for Cline (Claude) when assisting with development on the TreeFolks Young Professionals project within the dev container.
+
+## Container Environment
+
+- You are running in a containerized environment with restricted access
+- Your access is limited to the files within this project directory
+- The container is based on Node.js 20.x
+- MariaDB 10.6 is available at host 'db' on port 3306 within the container network
+- The database name is 'treefolksyp', username is 'root', password is 'treefolks'
+
+## Project Overview
+
+- This is a Next.js application with TypeScript that powers https://tfyp.org
+- Primary functionality includes:
+  - Event Check-in Page
+  - Tree Identification and Tree ID quizzes
+  - Member management
+  - Member referral pages
+  - Custom forms/surveys
+- Hidden/Deprecated Functionality:
+  - Tree Sponsorship/Thank-a-Tree
+
+## Tech Stack
+
+- Next.js 12.x
+- React 17.x
+- TypeScript
+- Prisma ORM with MariaDB database
+- Material UI (MUI) 5.x
+- Jest for testing
+- ESLint and Prettier for code formatting
+
+## Project Structure
+
+- `/pages`: Next.js pages and API routes
+- `/components`: React components organized by feature
+- `/prisma`: Database schema and migrations
+- `/utils`: Utility functions and helpers
+- `/public`: Static assets
+- `/test`: Test files
+
+## Development Guidelines
+
+### Code Style
+
+1. Follow TypeScript best practices:
+   - Use proper typing for all variables, parameters, and return values
+   - Avoid using `any` type when possible
+   - Use interfaces for object shapes
+   - Use type guards when necessary
+
+2. React Component Guidelines:
+   - Use functional components with hooks
+   - Keep components focused on a single responsibility
+   - Extract reusable logic into custom hooks in `/utils/hooks`
+   - Use proper prop typing with TypeScript interfaces
+
+3. State Management:
+   - Use React Query for server state
+   - Use React Context for global UI state when necessary
+   - Prefer local component state when possible
+
+4. Styling:
+   - Use MUI components and styling system
+   - Follow the project's theme configuration in `/utils/theme.ts`
+   - Use emotion for custom styling when needed
+
+### Database Operations
+
+1. Always use Prisma client for database operations
+2. Follow the schema defined in `/prisma/schema.prisma`
+3. When creating migrations:
+   - Use `npx prisma migrate dev --name migration-name`
+   - Keep migrations focused on specific changes
+   - Document complex migrations
+
+### API Development
+
+1. Place API routes in `/pages/api`
+2. Follow RESTful principles
+3. Implement proper error handling and status codes
+4. Use TypeScript interfaces for request and response types
+
+### Testing
+
+1. Write tests for new functionality
+2. Use Jest and React Testing Library
+3. Focus on testing user behavior rather than implementation details
+4. Mock external dependencies appropriately
+
+## Container-Specific Commands
+
+- Start the development server: `npm run server`
+- Run database migrations: `npx prisma migrate deploy`
+- Generate Prisma client: `npx prisma generate`
+- Run tests: `npm test`
+- Run linting: `npm run lint`
+
+## Important Notes
+
+- The codebase uses Node.js 20.x
+- Some features like Tree Sponsorship are deprecated but still in the codebase
+- The project follows ESLint and Prettier configurations defined in the root files
+- When using the container, all file paths are relative to /workspace

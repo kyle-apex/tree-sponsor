@@ -1,5 +1,9 @@
 export default function getOneYearAgo(): Date {
-  const calendarYear = new Date();
-  calendarYear.setFullYear(calendarYear.getFullYear() - 1);
-  return calendarYear;
+  const currentDate = new Date();
+
+  // Create a new date object for one year ago
+  const oneYearAgo = new Date(currentDate);
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
+  return oneYearAgo;
 }

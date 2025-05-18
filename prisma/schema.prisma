@@ -589,16 +589,17 @@ model SubdomainRedirect {
 }
 
 model Form {
-  id               Int            @id @default(autoincrement())
-  name             String?        @db.VarChar(256)
-  path             String?        @db.VarChar(256)
-  description      String?        @db.Text
-  completedMessage String?        @db.Text
-  questionsJson    Json?
-  createdDate      DateTime?      @default(now())
-  createdByUserId  Int?
-  createdByUser    User?          @relation("createdByUser", fields: [createdByUserId], references: [id], onDelete: SetNull)
-  formResponses    FormResponse[]
+  id          Int       @id @default(autoincrement())
+  name        String?   @db.VarChar(256)
+  path        String?   @db.VarChar(256)
+  description String?   @db.Text
+  completedMessage String? @db.Text
+  questionsJson   Json?
+  createdDate DateTime? @default(now())
+  deletedAt   DateTime?
+  createdByUserId          Int?
+  createdByUser            User?                 @relation("createdByUser", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  formResponses         FormResponse[]
 }
 
 model FormResponse {

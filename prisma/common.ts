@@ -12,7 +12,7 @@ export function getUserDisplaySelect() {
     hideFromCheckinPage: true,
     roles: {},
     profile: { select: { instagramHandle: true, linkedInLink: true, twitterHandle: true, organization: true, bio: true } },
-    subscriptions: { where: { lastPaymentDate: { gt: oneYearAgo } }, select: { lastPaymentDate: true } },
+    subscriptions: { where: { lastPaymentDate: { gt: oneYearAgo } }, select: { lastPaymentDate: true, createdDate: true } },
     referredUsers: { select: { id: true } },
   };
 }

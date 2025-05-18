@@ -14,6 +14,7 @@ import { getLocationFilterByDistance } from 'utils/prisma/get-location-filter-by
 import { prisma, Prisma } from 'utils/prisma/init';
 import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
 import { sortUsersByRole } from 'utils/user/sort-users-by-role';
+import axios from 'axios';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const eventId = Number(req.query.id);
@@ -100,6 +101,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         create: createCheckin,
         update: updateCheckin,
       });
+
+      // If this is a new check-in, emit a socket.io event
+      if (!existingCheckin) {
+        try {
+          console.log('New check-in registered for:', `${firstName} ${lastName}`.trim());
+          // Socket.io has been replaced with polling
+        } catch (error: any) {
+          console.error('Error processing new check-in:', error);
+        }
+      }
     }
     //console.log('newCheckin', newCheckin);
 

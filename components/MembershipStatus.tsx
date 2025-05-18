@@ -93,7 +93,7 @@ const MembershipStatus = () => {
           <Button onClick={reset} variant='outlined' color='secondary' sx={{ mb: 2 }}>
             Try Another Search
           </Button>
-          <Link href='/signin'>
+          <Link href='/signin' passHref>
             <Button color='primary' variant='contained'>
               Login{!hasActiveMembership && ' to Renew Membership'}
             </Button>
@@ -108,7 +108,7 @@ const MembershipStatus = () => {
           <Button onClick={reset} variant='outlined' color='secondary' sx={{ mb: 2 }}>
             Try Another Search
           </Button>
-          <Link href='/membership'>
+          <Link href='/membership' passHref>
             <Button color='primary' variant='contained'>
               Become a Member
             </Button>

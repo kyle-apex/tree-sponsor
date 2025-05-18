@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  app:
+    platform: linux/x86_64
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - node_modules:/workspace/node_modules
+      - ./.env.template:/workspace/.env
+      - vscode-server:/home/node/.vscode-server
+      - github-cli-config:/home/node/.config/gh
+      - /Users/khoskins/Development/roo-history:/workspace/roo-history:cached
+    # Start as root to fix permissions, then switch to node user
+    user: root
+    environment:
+      - DATABASE_URL=mysql://root:treefolks@db:3309/treefolksyp
+      - NODE_ENV=development
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+      - PUPPETEER_EXECUTABLE_PATH=/usr/lib/chromium/chromium
+      - DISPLAY=:0
+      - APP_PORT=3001
+    # Fix permissions on node_modules and vscode-server, then switch to node user
+    command: >
+      bash -c "
+        mkdir -p /workspace/node_modules &&
+        chown -R node:node /workspace/node_modules &&
+        mkdir -p /home/node/.vscode-server/bin &&
+        chown -R node:node /home/node/.vscode-server &&
+        chmod -R 755 /home/node/.vscode-server &&
+        mkdir -p /home/node/.config/gh &&
+        chown -R node:node /home/node/.config/gh &&
+        chmod -R 700 /home/node/.config/gh &&
+        su node -c 'sleep infinity'
+      "
+    ports:
+      - '${APP_PORT:-3001}:3001'
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.6
+    platform: linux/arm64
+    restart: unless-stopped
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=treefolks
+      - MYSQL_DATABASE=treefolksyp
+      - DB_PORT=3309
+    ports:
+      - '${DB_PORT:-3309}:3309'
+    command: --default-authentication-plugin=mysql_native_password --port=3309
+
+volumes:
+  vscode-server:
+  node_modules:
+  mysql-data:
+  github-cli-config:
