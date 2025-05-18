@@ -32,6 +32,7 @@ const MapMarkerDisplay = ({
   showLocation,
   onViewportChange,
   isGoogle,
+  staticZoom,
 }: {
   markers: QuizCoordinate[];
   onClick?: (coordinate?: Coordinate) => void;
@@ -46,6 +47,7 @@ const MapMarkerDisplay = ({
   showLocation?: boolean;
   onViewportChange?: (viewport: Partial<Viewport>) => void;
   isGoogle?: boolean;
+  staticZoom?: number;
 }) => {
   const mapRef = useRef<MapRef>();
   const theme = useTheme();
@@ -59,7 +61,7 @@ const MapMarkerDisplay = ({
     height: height || '100%',
     latitude: defaultLatitude || 30.2594625,
     longitude: defaultLongitude || -97.7505386,
-    zoom: defaultZoom || 10.7,
+    zoom: staticZoom || defaultZoom || 10.7,
   });
   const quizContext = useContext(QuizContext);
 
@@ -72,7 +74,7 @@ const MapMarkerDisplay = ({
     );
     centeredViewport.latitude = centeredViewport.latitude + Math.random() * 0.0001;
     centeredViewport.longitude = centeredViewport.longitude + Math.random() * 0.0001;
-    centeredViewport.zoom = centeredViewport.zoom + Math.random() * 0.0001;
+    centeredViewport.zoom = staticZoom || centeredViewport.zoom + Math.random() * 0.0001;
 
     setViewport(centeredViewport);
   }, [height, viewport, markers]);
@@ -126,7 +128,7 @@ const MapMarkerDisplay = ({
             <GoogleMapReact
               bootstrapURLKeys={{ key: process.env.NEXT_PUBLIC_GOOGLE_STREET_VIEW_KEY }}
               center={{ lat: viewport.latitude, lng: viewport.longitude }}
-              zoom={viewport.zoom + 0.5}
+              zoom={staticZoom || viewport.zoom + 0.5}
               options={{ mapTypeId: 'hybrid', fullscreenControl: false }}
               onZoomAnimationEnd={a => {
                 setZoom(a);
@@ -205,7 +207,7 @@ const MapMarkerDisplay = ({
                   key={marker.latitude + marker.longitude}
                   latitude={marker.latitude}
                   longitude={marker.longitude}
-                  zoom={Math.max(viewport.zoom * markerScale, 6.5)}
+                  zoom={staticZoom !== undefined ? staticZoom : Math.max(viewport.zoom * markerScale, 6.5)}
                   onClick={() => {
                     if (onClick) onClick(marker);
                   }}

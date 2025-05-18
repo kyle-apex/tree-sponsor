@@ -8,6 +8,7 @@ module.exports = {
       'treefolks.org',
       'www.treefolks.org',
       'plant-id.ams3.cdn.digitaloceanspaces.com',
+      'secure.meetupstatic.com'
     ],
   },
   swcMinify: false,

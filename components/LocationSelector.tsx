@@ -42,7 +42,7 @@ const LocationSelector = ({
   zoom = 16,
   onSelectedName,
 }: {
-  onViewportChange: (viewport: { longitude: number; latitude: number; zoom: number }) => void;
+  onViewportChange: (viewport: { longitude: number; latitude: number; zoom: number; address?: string }) => void;
   longitude?: number;
   latitude?: number;
   zoomToLocation?: boolean;
@@ -63,8 +63,9 @@ const LocationSelector = ({
   });
 
   const handleViewportChange = useCallback(newViewport => {
-    setViewport(newViewport);
     onViewportChange(newViewport);
+
+    setViewport({ ...newViewport, address: undefined });
   }, []);
 
   useEffect(() => {

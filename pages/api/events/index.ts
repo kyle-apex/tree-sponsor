@@ -4,7 +4,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import throwUnauthenticated from 'utils/api/throw-unauthenticated';
 import { getSession } from 'utils/auth/get-session';
 import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
+import getEventImagePath from 'utils/aws/get-event-image-path';
+import uploadImage from 'utils/aws/upload-image';
 import { Prisma, prisma } from 'utils/prisma/init';
+import { v4 as uuidv4 } from 'uuid';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
@@ -30,9 +33,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const event = { ...req.body };
 
+    const pictureUrl = event?.pictureUrl;
+
+    if (pictureUrl && !pictureUrl.startsWith('http')) {
+      const uuid = uuidv4();
+      const imagePath = getEventImagePath(uuid);
+
+      const newPictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imagePath}`;
+
+      event.pictureUrl = newPictureUrl;
+
+      const fileContent = pictureUrl.split(',')[1];
+
+      await uploadImage(fileContent, pictureUrl.substring(pictureUrl.indexOf(':') + 1, pictureUrl.indexOf(';')), imagePath);
+    }
+
     if (req.method === 'POST') {
       const data = { ...req.body } as Prisma.EventCreateInput;
       delete data.location;
+
+      data.pictureUrl = event.pictureUrl;
 
       data.user = { connect: { id: session.user.id } };
 
@@ -60,6 +80,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       delete req.body.trees;
       const data = { ...req.body } as Prisma.EventUncheckedUpdateInput;
       //delete data.categories;
+
+      data.pictureUrl = event.pictureUrl;
 
       if (event.organizers)
         data.organizers = {

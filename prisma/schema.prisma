@@ -59,15 +59,15 @@ model User {
   displayName              String?
   email                    String?                   @unique
   emailVerified            DateTime?                 @map(name: "email_verified")
-  email2                   String?                   
+  email2                   String?
   image                    String?
   hasShirt                 Boolean?                  @default(false)
   createdAt                DateTime                  @default(now()) @map(name: "created_at")
   updatedAt                DateTime                  @default(now()) @map(name: "updated_at")
   stripeCustomerId         String?                   @db.VarChar(32)
   profilePath              String?                   @db.VarChar(256)
-  hideFromIndexPage        Boolean    @default(false)
-  hideFromCheckinPage      Boolean    @default(false)
+  hideFromIndexPage        Boolean                   @default(false)
+  hideFromCheckinPage      Boolean                   @default(false)
   subscriptions            Subscription[]
   profile                  Profile?
   subscriptionsWithDetails SubscriptionWithDetails[]
@@ -95,25 +95,30 @@ model User {
   groups                TreeGroup[]
   treeToGroupLinks      TreeToGroup[]
   referredUsers         User[]                @relation("referralUser")
+    eventRSVPs         EventRSVP[]            @relation("rsvpUser")
+    invitedByUserRSVPs  EventRSVP[]           @relation("invitedByUser")
+    pageViews          PageView[]
+    clickEvents        ClickEvent[]
+             
 
   @@map(name: "users")
 }
 
 model Role {
-  id                  Int        @id @default(autoincrement())
-  name                String?
-  isAdmin             Boolean    @default(false)
-  hasAuthManagement   Boolean    @default(false)
-  hasFormManagement   Boolean    @default(false)
-  isReviewer          Boolean    @default(false)
-  isTreeReviewer      Boolean    @default(false)
-  hasMemberManagement Boolean    @default(false)
-  hasEventManagement  Boolean    @default(false)
-  hasShirtManagement  Boolean    @default(false)
+  id                    Int        @id @default(autoincrement())
+  name                  String?
+  isAdmin               Boolean    @default(false)
+  hasAuthManagement     Boolean    @default(false)
+  hasFormManagement     Boolean    @default(false)
+  isReviewer            Boolean    @default(false)
+  isTreeReviewer        Boolean    @default(false)
+  hasMemberManagement   Boolean    @default(false)
+  hasEventManagement    Boolean    @default(false)
+  hasShirtManagement    Boolean    @default(false)
   hasRedirectManagement Boolean    @default(false)
-  users               User[]     @relation("UserToRole")
-  Event               Event[]
-  Category            Category[]
+  users                 User[]     @relation("UserToRole")
+  Event                 Event[]
+  Category              Category[]
 }
 
 model VerificationRequest {
@@ -128,21 +133,21 @@ model VerificationRequest {
 }
 
 model Subscription {
-  id               Int           @id @default(autoincrement())
-  createdDate      DateTime?
-  expirationDate   DateTime?
-  lastPaymentDate  DateTime?
-  status           String?       @db.VarChar(32)
-  statusDetails    SubscriptionStatusDetails?
-  cancellationDetails String?       @db.VarChar(64)
-  cancellationReason String? @db.Text
-  stripeCustomerId String?       @db.VarChar(32)
-  stripeId         String?       @unique @db.VarChar(32)
-  user             User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
-  userId           Int?
-  product          Product?      @relation(fields: [productId], references: [id])
-  productId        Int?
-  sponsorships     Sponsorship[]
+  id                  Int                        @id @default(autoincrement())
+  createdDate         DateTime?
+  expirationDate      DateTime?
+  lastPaymentDate     DateTime?
+  status              String?                    @db.VarChar(32)
+  statusDetails       SubscriptionStatusDetails?
+  cancellationDetails String?                    @db.VarChar(64)
+  cancellationReason  String?                    @db.Text
+  stripeCustomerId    String?                    @db.VarChar(32)
+  stripeId            String?                    @unique @db.VarChar(32)
+  user                User?                      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId              Int?
+  product             Product?                   @relation(fields: [productId], references: [id])
+  productId           Int?
+  sponsorships        Sponsorship[]
 }
 
 enum SubscriptionStatusDetails {
@@ -151,27 +156,27 @@ enum SubscriptionStatusDetails {
 }
 
 model SubscriptionWithDetails {
-  id               Int       @unique
-  createdDate      DateTime?
-  expirationDate   DateTime?
-  lastPaymentDate  DateTime?
-  status           String?
-  statusDetails    SubscriptionStatusDetails?
+  id                  Int                        @unique
+  createdDate         DateTime?
+  expirationDate      DateTime?
+  lastPaymentDate     DateTime?
+  status              String?
+  statusDetails       SubscriptionStatusDetails?
   cancellationDetails String?
-  cancellationReason String?
-  stripeId         String?
-  stripeCustomerId String?
-  stripeProductId  String?
-  userId           Int
-  userName         String?
-  referralUserId   Int?
-  productId        Int
-  productName      String?
-  email            String?
-  email2           String?
-  hasShirt         Boolean?  @default(false)
-  amount           Int
-  user             User      @relation(fields: [userId], references: [id])
+  cancellationReason  String?
+  stripeId            String?
+  stripeCustomerId    String?
+  stripeProductId     String?
+  userId              Int
+  userName            String?
+  referralUserId      Int?
+  productId           Int
+  productName         String?
+  email               String?
+  email2              String?
+  hasShirt            Boolean?                   @default(false)
+  amount              Int
+  user                User                       @relation(fields: [userId], references: [id])
 }
 
 model Comment {
@@ -346,6 +351,7 @@ model Event {
   trees               TreeToEvent[]
   checkIns            EventCheckIn[]
   SpeciesQuizResponse SpeciesQuizResponse[]
+  RSVPs               EventRSVP[]  
 }
 
 model TreeCheckIn {
@@ -373,6 +379,33 @@ model EventCheckIn {
 
   @@unique([email, eventId])
   @@unique([userId, eventId])
+}
+
+model EventRSVP {
+  id                     Int              @id @default(autoincrement())
+  createdDate            DateTime?        @default(now())
+  status                 EventRSVPStatus? @default(Going)
+  email                  String?
+  emailOptIn             Boolean?         @default(false)
+  eventDetailsEmailOptIn Boolean?         @default(true)
+  discoveredFrom         String?
+  isPrivate              Boolean?         @default(false)
+  userId                 Int?
+  user                   User?            @relation("rsvpUser", fields: [userId], references: [id], onDelete: Cascade)
+  invitedByUserId        Int?
+  invitedByUser          User?            @relation("invitedByUser", fields: [invitedByUserId], references: [id], onDelete: Cascade)
+  eventId                Int?
+  event                  Event?           @relation(fields: [eventId], references: [id])
+
+  @@unique([email, eventId])
+  @@unique([userId, eventId])
+}
+
+enum EventRSVPStatus {
+  Invited
+  Maybe
+  Going
+  Declined
 }
 
 enum ChangeLogType {
@@ -570,12 +603,41 @@ model Form {
 }
 
 model FormResponse {
-  responsesJson    Json?   
-  createdDate DateTime? @default(now())  
-  updatedDate DateTime? @default(now()) 
-  userId          Int
-  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  formId          Int
-  form            Form    @relation(fields: [formId], references: [id], onDelete: Cascade)
+  responsesJson Json?
+  createdDate   DateTime? @default(now())
+  updatedDate   DateTime? @default(now())
+  userId        Int
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  formId        Int
+  form          Form      @relation(fields: [formId], references: [id], onDelete: Cascade)
+
   @@unique([userId, formId])
+}
+
+model PageView {
+  id              Int       @id @default(autoincrement())
+  pageUrl         String    @db.VarChar(512)
+  visitTimestamp  DateTime  @default(now())
+  visitorId       String    @db.VarChar(128)
+  email           String?   @db.VarChar(256)
+  queryParams     String?   @db.Text
+  userAgent       String?   @db.Text
+  ipAddress       String?   @db.VarChar(45)
+  userId          Int?
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model ClickEvent {
+  id              Int       @id @default(autoincrement())
+  pageUrl         String    @db.VarChar(512)
+  actionName      String    @db.VarChar(128)
+  destinationUrl  String?   @db.VarChar(512)
+  clickTimestamp  DateTime  @default(now())
+  visitorId       String    @db.VarChar(128)
+  email           String?   @db.VarChar(256)
+  queryParams     String?   @db.Text
+  userAgent       String?   @db.Text
+  ipAddress       String?   @db.VarChar(45)
+  userId          Int?
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
 }

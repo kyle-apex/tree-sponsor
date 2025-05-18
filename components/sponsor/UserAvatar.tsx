@@ -13,7 +13,7 @@ const UserAvatar = ({
   sx,
   'data-testid': dataTestId,
 }: {
-  image: string;
+  image?: string;
   name: string;
   size?: number;
   link?: string;
