@@ -5,6 +5,36 @@ import { SetStateAction, useEffect, useRef, useState } from 'react';
 import LocationMapDialog from './LocationMapDialog';
 import formatDateString from 'utils/formatDateString';
 import useLocalStorage from 'utils/hooks/use-local-storage';
+
+// Helper function to format time range with single AM/PM when both times are in the same period
+const formatTimeRange = (startDate: string | Date, endDate?: string | Date): string => {
+  if (!startDate) return 'Time TBD';
+
+  const start = new Date(startDate);
+  const startHours = start.getHours();
+  const startPeriod = startHours >= 12 ? 'pm' : 'am';
+
+  if (!endDate) {
+    return start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  }
+
+  const end = new Date(endDate);
+  const endHours = end.getHours();
+  const endPeriod = endHours >= 12 ? 'pm' : 'am';
+
+  // If both times are in the same period (AM or PM), only show the period once at the end
+  if (startPeriod === endPeriod) {
+    return `${start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).replace(` ${startPeriod.toUpperCase()}`, '')}-${end
+      .toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+      .replace(` ${endPeriod.toUpperCase()}`, '')}${startPeriod}`;
+  }
+
+  // If different periods, show both
+  return `${start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}-${end.toLocaleTimeString([], {
+    hour: 'numeric',
+    minute: '2-digit',
+  })}`;
+};
 import EventNameDisplay from './EventNameDisplay';
 import Image from 'next/image';
 import UserBubbles from './UserBubbles';
@@ -105,7 +135,7 @@ const EventInvite = ({
         <Box flexDirection='row' alignItems='center' style={{ display: 'flex', gap: '5px', marginTop: '8px', marginBottom: '4px' }}>
           <InsertInvitationIcon sx={{ fontSize: '14x', color: 'gray' }}></InsertInvitationIcon>
           <Typography variant='subtitle2' sx={{ fontSize: '1rem' }}>
-            {formatDateString(event?.startDate)}, 6:30-8pm
+            {formatDateString(event?.startDate)}, {event?.startDate ? formatTimeRange(event.startDate, event.endDate) : 'Time TBD'}
           </Typography>
         </Box>
         <Box
@@ -167,7 +197,7 @@ const EventInvite = ({
         {!eventRSVP && (
           <Typography sx={{ mt: 2, mb: 2 }}>
             {invitedByUser?.name ? invitedByUser.name : 'TreeFolksYP'} invited you to {event.name} on {formatDateString(event?.startDate)}{' '}
-            6:30-8pm:
+            {event?.startDate ? formatTimeRange(event.startDate, event.endDate) : 'Time TBD'}:
           </Typography>
         )}
         {eventRSVP ? (

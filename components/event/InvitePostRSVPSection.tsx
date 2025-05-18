@@ -22,13 +22,20 @@ const InvitePostRSVPSection = ({ event }: InvitePostRSVPSectionProps) => {
 
   // Calendar link generation functions
   const generateGoogleCalendarLink = (event: PartialEvent) => {
-    const startDate = new Date(event.startDate);
-    const endDate = new Date(startDate);
-    endDate.setHours(endDate.getHours() + 1.5); // Assuming 1.5 hour event duration
+    // Ensure we have a valid startDate
+    if (!event.startDate) {
+      return '#';
+    }
 
+    // Create date objects from the event's startDate
+    const startDate = new Date(event.startDate);
+
+    // If event has an endDate, use it; otherwise, add 1.5 hours to startDate
+    const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000); // 90 minutes in milliseconds
+
+    // Format dates for Google Calendar (YYYYMMDDTHHmmssZ format without dashes or colons)
     const startDateStr = startDate.toISOString().replace(/-|:|\.\d+/g, '');
     const endDateStr = endDate.toISOString().replace(/-|:|\.\d+/g, '');
-
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
       event.name,
     )}&dates=${startDateStr}/${endDateStr}&details=${encodeURIComponent(event.description || '')}&location=${encodeURIComponent(
@@ -37,9 +44,16 @@ const InvitePostRSVPSection = ({ event }: InvitePostRSVPSectionProps) => {
   };
 
   const generateOutlookCalendarLink = (event: PartialEvent) => {
+    // Ensure we have a valid startDate
+    if (!event.startDate) {
+      return '#';
+    }
+
+    // Create date objects from the event's startDate
     const startDate = new Date(event.startDate);
-    const endDate = new Date(startDate);
-    endDate.setHours(endDate.getHours() + 1.5); // Assuming 1.5 hour event duration
+
+    // If event has an endDate, use it; otherwise, add 1.5 hours to startDate
+    const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000); // 90 minutes in milliseconds
 
     return `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(
       event.name,
@@ -49,10 +63,18 @@ const InvitePostRSVPSection = ({ event }: InvitePostRSVPSectionProps) => {
   };
 
   const generateYahooCalendarLink = (event: PartialEvent) => {
-    const startDate = new Date(event.startDate);
-    const endDate = new Date(startDate);
-    endDate.setHours(endDate.getHours() + 1.5); // Assuming 1.5 hour event duration
+    // Ensure we have a valid startDate
+    if (!event.startDate) {
+      return '#';
+    }
 
+    // Create date objects from the event's startDate
+    const startDate = new Date(event.startDate);
+
+    // If event has an endDate, use it; otherwise, add 1.5 hours to startDate
+    const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000); // 90 minutes in milliseconds
+
+    // Format dates for Yahoo Calendar (YYYYMMDDTHHmmssZ format without dashes or colons)
     const yahooStartDate = startDate.toISOString().replace(/-|:|\.\d+/g, '');
     const yahooEndDate = endDate.toISOString().replace(/-|:|\.\d+/g, '');
 
@@ -63,11 +85,30 @@ const InvitePostRSVPSection = ({ event }: InvitePostRSVPSectionProps) => {
     )}`;
   };
 
-  const generateICalendarLink = (_event: PartialEvent) => {
-    // For iCal, we would typically generate a .ics file
-    // This is a simplified version that would need server-side implementation
-    // For now, we'll just return a placeholder
-    return '#';
+  const generateICalendarLink = (event: PartialEvent) => {
+    // Ensure we have a valid startDate
+    if (!event.startDate) {
+      return '#';
+    }
+
+    // Create date objects from the event's startDate
+    const startDate = new Date(event.startDate);
+
+    // If event has an endDate, use it; otherwise, add 1.5 hours to startDate
+    const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000); // 90 minutes in milliseconds
+
+    // Construct URL to the API endpoint with all necessary parameters
+    const baseUrl = `${window.location.origin}/api/events/ical`;
+    const params = new URLSearchParams({
+      id: event.id?.toString() || '',
+      name: event.name || '',
+      description: event.description || '',
+      location: event.location?.name || '',
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+    });
+
+    return `${baseUrl}?${params.toString()}`;
   };
 
   return (
