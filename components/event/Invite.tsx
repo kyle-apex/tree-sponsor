@@ -4,37 +4,8 @@ import { LeaderRow, MembershipStatus, PartialEvent, CheckinFields, PartialUser, 
 import { SetStateAction, useEffect, useRef, useState } from 'react';
 import LocationMapDialog from './LocationMapDialog';
 import formatDateString from 'utils/formatDateString';
+import formatTimeRange from 'utils/formatTimeRange';
 import useLocalStorage from 'utils/hooks/use-local-storage';
-
-// Helper function to format time range with single AM/PM when both times are in the same period
-const formatTimeRange = (startDate: string | Date, endDate?: string | Date): string => {
-  if (!startDate) return 'Time TBD';
-
-  const start = new Date(startDate);
-  const startHours = start.getHours();
-  const startPeriod = startHours >= 12 ? 'pm' : 'am';
-
-  if (!endDate) {
-    return start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-  }
-
-  const end = new Date(endDate);
-  const endHours = end.getHours();
-  const endPeriod = endHours >= 12 ? 'pm' : 'am';
-
-  // If both times are in the same period (AM or PM), only show the period once at the end
-  if (startPeriod === endPeriod) {
-    return `${start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).replace(` ${startPeriod.toUpperCase()}`, '')}-${end
-      .toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
-      .replace(` ${endPeriod.toUpperCase()}`, '')}${startPeriod}`;
-  }
-
-  // If different periods, show both
-  return `${start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}-${end.toLocaleTimeString([], {
-    hour: 'numeric',
-    minute: '2-digit',
-  })}`;
-};
 import EventNameDisplay from './EventNameDisplay';
 import Image from 'next/image';
 import UserBubbles from './UserBubbles';
