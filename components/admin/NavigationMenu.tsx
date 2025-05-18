@@ -53,6 +53,7 @@ const NavigationMenu = () => {
         <RestrictSection accessType='hasEventManagement'>
           <MenuItem onClick={() => navigateTo('/admin/events/checkins')}>Manage Event Checkins</MenuItem>
         </RestrictSection>
+        <MenuItem onClick={() => navigateTo('/admin/events/rsvp-analytics')}>View Event Invites</MenuItem>
         <RestrictSection accessType='hasRedirectManagement'>
           <MenuItem onClick={() => navigateTo('/admin/redirects')}>Manage Redirects</MenuItem>
         </RestrictSection>
