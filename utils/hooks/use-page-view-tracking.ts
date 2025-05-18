@@ -50,7 +50,7 @@ export const usePageViewTracking = (): void => {
     };
 
     // Create a MutationObserver to detect DOM changes that might indicate navigation
-    const observer = new MutationObserver(mutations => {
+    const observer = new MutationObserver(() => {
       // Check if URL has changed since last check
       if (currentPath !== window.location.pathname || currentSearch !== window.location.search) {
         currentPath = window.location.pathname;

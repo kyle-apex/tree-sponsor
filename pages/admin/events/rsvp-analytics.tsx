@@ -145,7 +145,7 @@ const RSVPAnalyticsPage = () => {
         <Select
           labelId='event-select-label'
           id='event-select'
-          value={selectedEventId || ''}
+          value={selectedEventId?.toString() || ''}
           onChange={handleEventChange}
           disabled={isLoadingEvents}
           sx={{ mt: -2 }}
