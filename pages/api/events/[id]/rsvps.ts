@@ -1,8 +1,9 @@
 import RoleTable from 'components/admin/RoleTable';
-import { PartialEventCheckIn, PartialTree, PartialUser } from 'interfaces';
+import { PartialEventCheckIn, PartialEventRSVP, PartialTree, PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getUserDisplaySelect } from 'prisma/common';
 import throwError from 'utils/api/throw-error';
+import { scheduleSendRsvpConfirmation } from 'utils/email/send-rsvp-confirmation';
 import findOrCreateCheckinUser from 'utils/events/find-or-create-checkin-user';
 import addEventToMember from 'utils/mailchimp/add-event-to-member';
 import addSubscriber from 'utils/mailchimp/add-subscriber';
@@ -28,7 +29,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const status = req.body.status || 'Going';
   console.log('in rsvps', req.method);
 
-  const event = await prisma.event.findFirst({ where: { id: eventId } });
+  const event = await prisma.event.findFirst({
+    where: { id: eventId },
+    include: { location: true },
+  });
 
   const eventCompletedDate = event.startDate;
   eventCompletedDate.setDate(eventCompletedDate.getDate() + 1);
@@ -79,11 +83,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       addTagToMembersByName('Event RSVP: ' + event.name, [email], process.env.MAILCHIMP_EVENT_LIST_ID);
     }
 
+    // Check if this is a new RSVP or an update
+    const existingRSVP = await prisma.eventRSVP.findUnique({
+      where: { userId_eventId: { userId, eventId } },
+    });
+
     const newRSVP = await prisma.eventRSVP.upsert({
       where: { userId_eventId: { userId, eventId } },
       create: createRSVP,
       update: updateRSVP,
     });
+
+    // If this is a new RSVP (not an update) and the status is 'Going', send confirmation email
+    if (status === 'Going' || status == 'Maybe') {
+      try {
+        // Prepare the eventRSVP object with all necessary data for the email
+        const eventRSVPData: PartialEventRSVP = {
+          event: {
+            ...event,
+            path: event.path || '',
+          },
+          user: {
+            id: userId,
+            email: email,
+            name: `${firstName} ${lastName}`.trim(),
+          },
+          status,
+        };
+
+        // Schedule the confirmation email to be sent after 2 minutes
+        await scheduleSendRsvpConfirmation(eventRSVPData);
+        console.log(`Scheduled RSVP confirmation email for ${email}`);
+      } catch (error) {
+        console.error('Error scheduling RSVP confirmation email:', error);
+        // Don't fail the API call if email scheduling fails
+      }
+    }
 
     res.status(200).json(newRSVP);
   } else if (req.method === 'GET') {
