@@ -100,17 +100,20 @@ const generateICalendarLink = (event: PartialEventRSVP['event']): string => {
   if (!event || !event.name || !event.startDate) return '';
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org';
-
   // Format dates for iCalendar
   const startDate = new Date(event.startDate);
   const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000);
 
-  // Use direct URL parameter construction with encodeURIComponent like the other calendar links
-  return `${baseUrl}/api/events/ical?id=${encodeURIComponent(String(event.id || ''))}&name=${encodeURIComponent(
-    event.name,
-  )}&description=${encodeURIComponent(event.description || '')}&location=${encodeURIComponent(
-    event.location?.name ? `${event.location.name}, ${event.location.address || ''}` : '',
-  )}&startDate=${encodeURIComponent(startDate.toISOString())}&endDate=${encodeURIComponent(endDate.toISOString())}`;
+  const params = new URLSearchParams({
+    id: event.id?.toString() || '',
+    name: event.name || '',
+    description: event.description || '',
+    location: event.location?.name || '',
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString(),
+  });
+
+  return `${baseUrl}/api/events/ical?${params.toString()}`;
 };
 
 /**
@@ -151,6 +154,7 @@ const processTemplate = (template: string, eventRSVP: PartialEventRSVP): string 
   const outlookCalendarLink = generateOutlookCalendarLink(event);
   const yahooCalendarLink = generateYahooCalendarLink(event);
   const iCalendarLink = generateICalendarLink(event);
+  console.log('iCalendarLink', iCalendarLink);
   const inviteLink = generateInviteLink(event, user);
   const updateRsvpLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org'}/e/${event.path}/invite?email=${encodeURIComponent(
     user.email || '',

@@ -19,7 +19,6 @@ import { getUserByEmail } from 'utils/user/get-user-by-email';
 import { sortUsersByRole } from 'utils/user/sort-users-by-role';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log('top');
   const eventId = Number(req.query.id);
   const email = req.body.email ? String(req.body.email)?.trim() : null;
   const name = String(req.body.name)?.trim();
@@ -27,14 +26,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const detailsEmailOptIn = req.body.detailsEmailOptIn === true;
   const emailOptIn = req.body.emailOptIn === true;
   const status = req.body.status || 'Going';
-  console.log('in rsvps', req.method);
 
   const event = await prisma.event.findFirst({
     where: { id: eventId },
     include: { location: true },
   });
 
-  const eventCompletedDate = event.startDate;
+  const eventCompletedDate = new Date(event.startDate);
   eventCompletedDate.setDate(eventCompletedDate.getDate() + 1);
 
   if (req.method === 'POST') {
