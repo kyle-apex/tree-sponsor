@@ -185,6 +185,7 @@ const processTemplate = (template: string, eventRSVP: PartialEventRSVP): string 
   processedTemplate = processedTemplate.replace(/{{event.iCalendarLink}}/g, iCalendarLink);
   processedTemplate = processedTemplate.replace(/{{event.inviteLink}}/g, inviteLink);
   processedTemplate = processedTemplate.replace(/{{event.path}}/g, event.path || '');
+  processedTemplate = processedTemplate.replace(/{{event.updateRsvpLink}}/g, updateRsvpLink);
 
   // User details
   processedTemplate = processedTemplate.replace(/{{user.email}}/g, user.email || '');
