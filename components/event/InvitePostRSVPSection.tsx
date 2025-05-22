@@ -133,11 +133,11 @@ const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProp
         }}
       >
         <Typography variant='h6' sx={{ fontWeight: 'bold', color: 'white' }}>
-          Please help branch out!
+          Help us branch out!
         </Typography>
       </Box>
       <Typography variant='body2' p={2} pb={0}>
-        It&quot;s easy to spread the word for an even bigger event supporting TreeFolks!
+        It&quot;s easy to spread the word for an even bigger event supporting TreeFolks. Thanks!
       </Typography>
 
       {/* Content section */}

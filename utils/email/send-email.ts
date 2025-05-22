@@ -20,6 +20,7 @@ const transporter = nodemailer.createTransport(
  * @param body Plain text email body (fallback)
  * @param html HTML email body
  * @param fromName Optional sender name to display (defaults to "TreeFolks Young Professionals")
+ * @param previewText Optional preview text that appears in email clients
  * @returns Boolean indicating success or failure
  */
 export default async function sendEmail(
@@ -28,9 +29,29 @@ export default async function sendEmail(
   body: string,
   html: string,
   fromName = 'TreeFolks Young Professionals',
+  previewText?: string,
 ): Promise<boolean> {
   try {
-    const mailOptions = {
+    let finalHtml = html;
+
+    // Add preview text to HTML if provided
+    if (previewText) {
+      // Add hidden preview text at the beginning of the HTML
+      const previewTextHtml = `
+        <div style="display: none; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: transparent;">
+          ${previewText}
+        </div>
+      `;
+
+      // Insert after opening body tag or at the beginning if no body tag
+      if (finalHtml.includes('<body')) {
+        finalHtml = finalHtml.replace(/(<body[^>]*>)/i, `$1${previewTextHtml}`);
+      } else {
+        finalHtml = previewTextHtml + finalHtml;
+      }
+    }
+
+    const mailOptions: any = {
       from: {
         name: fromName,
         address: process.env.SUPPORT_EMAIL as string,
@@ -38,7 +59,7 @@ export default async function sendEmail(
       to: recipients.join(','),
       subject: subject,
       text: body,
-      html: html,
+      html: finalHtml,
     };
 
     await transporter.sendMail(mailOptions);

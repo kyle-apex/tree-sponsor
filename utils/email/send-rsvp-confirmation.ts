@@ -257,8 +257,14 @@ Update your RSVP: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org'}/e/${
     // Set the subject line
     const subject = `${eventRSVP.status === 'Going' ? "🎉 You're RSVP'd" : "🤔 You've RSVP'd Maybe!"}: ${event.name}`;
 
+    // Generate preview text based on RSVP status
+    const previewText =
+      eventRSVP.status === 'Going'
+        ? `Get ready for an amazing time at ${event.name}. Share with your crew for an even better time!`
+        : `Thanks for letting us know you might join us at ${event.name}. We hope to see you there!`;
+
     // Send the email
-    return await sendEmail([user.email], subject, plainText, emailHtml);
+    return await sendEmail([user.email], subject, plainText, emailHtml, 'TreeFolks Young Professionals', previewText);
   } catch (error) {
     console.error('[sendRsvpConfirmation] Error sending RSVP confirmation email:', error);
 
