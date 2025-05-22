@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { PartialEventRSVP, PartialUser } from 'interfaces';
-import sendEmail from 'utils/aws/send-email';
+import sendEmail from 'utils/email/send-email';
 import formatTimeRange from 'utils/formatTimeRange';
 import userEvent from '@testing-library/user-event';
 
