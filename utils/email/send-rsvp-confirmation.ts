@@ -3,7 +3,7 @@ import path from 'path';
 import { PartialEventRSVP, PartialUser } from 'interfaces';
 import sendEmail from 'utils/email/send-email';
 import formatTimeRange from 'utils/formatTimeRange';
-import userEvent from '@testing-library/user-event';
+import { prisma } from 'utils/prisma/init';
 
 /**
  * Formats a date in a human-readable format (e.g., "Sunday, June 15, 2025")
@@ -204,7 +204,12 @@ const scheduleSendRsvpConfirmation = async (
   delayMs = 2 * 60 * 1000, // 2 minutes by default
 ): Promise<void> => {
   // Schedule the email to be sent after the delay
-  setTimeout(() => {
+  setTimeout(async () => {
+    const currentRSVP = await prisma.eventRSVP.findFirst({ where: { id: eventRSVP.id } });
+
+    // Check if the RSVP status has changed to avoid sending an email for an earlier status
+    if (currentRSVP?.status !== eventRSVP.status) return;
+
     sendRsvpConfirmation(eventRSVP).catch(error => {
       console.error('[scheduleSendRsvpConfirmation] Error sending RSVP confirmation email:', error);
     });
