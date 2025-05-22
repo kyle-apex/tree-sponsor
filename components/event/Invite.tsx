@@ -36,7 +36,7 @@ const EventInvite = ({
   name?: string;
   email?: string;
 }) => {
-  const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
+  const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', email, 'checkinEmail2');
   const [storedUser, setStoredUser] = useState<PartialUser>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [eventRSVP, setEventRSVP] = useState<PartialEventRSVP>();
