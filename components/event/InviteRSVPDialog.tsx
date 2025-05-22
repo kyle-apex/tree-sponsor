@@ -65,7 +65,7 @@ const InviteRSVPDialog = ({
       invitedByUserId: invitedByUser?.id,
       status,
       comment: status === 'Declined' ? comment : undefined,
-      notifyInviter: status === 'Declined' ? notifyInviter : undefined,
+      notifyInviter: notifyInviter,
     };
 
     try {
@@ -176,16 +176,6 @@ const InviteRSVPDialog = ({
         ></TextField>
         {status === 'Declined' && !isSignIn && (
           <>
-            <TextField
-              fullWidth
-              label='Message (optional)'
-              value={comment}
-              onChange={e => setComment(e.target.value)}
-              size='small'
-              multiline
-              rows={3}
-              sx={{ mb: 2 }}
-            ></TextField>
             {invitedByUser && (
               <FormGroup sx={{ marginBottom: 2 }}>
                 <FormControlLabel
@@ -208,9 +198,21 @@ const InviteRSVPDialog = ({
                       size='small'
                     />
                   }
-                  label={`Let ${invitedByUser.name} know that I won't be able to make it`}
+                  label={`Let ${invitedByUser?.name?.split(' ')[0]} know I can't make it`}
                 />
               </FormGroup>
+            )}
+            {notifyInviter && invitedByUser && (
+              <TextField
+                fullWidth
+                label='Message (optional)'
+                value={comment}
+                onChange={e => setComment(e.target.value)}
+                size='small'
+                multiline
+                rows={3}
+                sx={{ mb: 2 }}
+              ></TextField>
             )}
           </>
         )}

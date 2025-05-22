@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getUserDisplaySelect } from 'prisma/common';
 import throwError from 'utils/api/throw-error';
 import { scheduleSendRsvpConfirmation } from 'utils/email/send-rsvp-confirmation';
+import { sendInviterNotification } from 'utils/email/send-inviter-notification';
 import findOrCreateCheckinUser from 'utils/events/find-or-create-checkin-user';
 import addEventToMember from 'utils/mailchimp/add-event-to-member';
 import addSubscriber from 'utils/mailchimp/add-subscriber';
@@ -26,6 +27,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const detailsEmailOptIn = req.body.detailsEmailOptIn === true;
   const emailOptIn = req.body.emailOptIn === true;
   const status = req.body.status || 'Going';
+  const comment = req.body.comment ? String(req.body.comment) : undefined;
+  const notifyInviter = req.body.notifyInviter === true || status === 'Going' || status === 'Maybe';
 
   const event = await prisma.event.findFirst({
     where: { id: eventId },
@@ -92,28 +95,52 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       update: updateRSVP,
     });
 
-    // If this is a new RSVP (not an update) and the status is 'Going', send confirmation email
-    if (status === 'Going' || status == 'Maybe') {
-      try {
-        // Prepare the eventRSVP object with all necessary data for the email
-        const eventRSVPData: PartialEventRSVP = {
-          event: {
-            ...event,
-            path: event.path || '',
-          },
-          user: {
-            id: userId,
-            email: email,
-            name: `${firstName} ${lastName}`.trim(),
-          },
-          status,
-        };
+    // Prepare the eventRSVP object with all necessary data for the email
+    const eventRSVPData: PartialEventRSVP = {
+      event: {
+        ...event,
+        path: event.path || '',
+      },
+      user: {
+        id: userId,
+        email: email,
+        name: `${firstName} ${lastName}`.trim(),
+      },
+      status,
+    };
 
+    // Send confirmation email to the user who RSVP'd (for Going or Maybe)
+    if (status === 'Going' || status === 'Maybe') {
+      try {
         // Schedule the confirmation email to be sent after 2 minutes
         await scheduleSendRsvpConfirmation(eventRSVPData);
         console.log(`Scheduled RSVP confirmation email for ${email}`);
       } catch (error) {
         console.error('Error scheduling RSVP confirmation email:', error);
+        // Don't fail the API call if email scheduling fails
+      }
+    }
+
+    // Send notification to the inviter if applicable
+    if (invitedByUserId && notifyInviter) {
+      try {
+        // Get the inviter's user data
+        const invitedByUser = await prisma.user.findUnique({
+          where: { id: invitedByUserId },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        });
+
+        if (invitedByUser && invitedByUser.email) {
+          // Schedule the notification email to be sent to the inviter
+          await sendInviterNotification(eventRSVPData, invitedByUser, comment);
+          console.log(`Scheduled inviter notification email for ${invitedByUser.email}`);
+        }
+      } catch (error) {
+        console.error('Error scheduling inviter notification email:', error);
         // Don't fail the API call if email scheduling fails
       }
     }

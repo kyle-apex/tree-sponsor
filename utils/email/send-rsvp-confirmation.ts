@@ -201,7 +201,7 @@ const processTemplate = (template: string, eventRSVP: PartialEventRSVP): string 
  */
 const scheduleSendRsvpConfirmation = async (
   eventRSVP: PartialEventRSVP,
-  delayMs = 1, //2 * 60 * 1000, // 2 minutes by default
+  delayMs = 2 * 60 * 1000, // 2 minutes by default
 ): Promise<void> => {
   // Schedule the email to be sent after the delay
   setTimeout(() => {
