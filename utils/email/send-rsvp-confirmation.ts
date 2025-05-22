@@ -154,7 +154,6 @@ const processTemplate = (template: string, eventRSVP: PartialEventRSVP): string 
   const outlookCalendarLink = generateOutlookCalendarLink(event);
   const yahooCalendarLink = generateYahooCalendarLink(event);
   const iCalendarLink = generateICalendarLink(event);
-  console.log('iCalendarLink', iCalendarLink);
   const inviteLink = generateInviteLink(event, user);
   const updateRsvpLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org'}/e/${event.path}/invite?email=${encodeURIComponent(
     user.email || '',
@@ -201,14 +200,17 @@ const processTemplate = (template: string, eventRSVP: PartialEventRSVP): string 
  */
 const scheduleSendRsvpConfirmation = async (
   eventRSVP: PartialEventRSVP,
-  delayMs = 2 * 60 * 1000, // 2 minutes by default
+  delayMs = 1 * 10 * 1000, // 2 minutes by default
 ): Promise<void> => {
   // Schedule the email to be sent after the delay
   setTimeout(async () => {
-    const currentRSVP = await prisma.eventRSVP.findFirst({ where: { id: eventRSVP.id } });
-
-    // Check if the RSVP status has changed to avoid sending an email for an earlier status
-    if (currentRSVP?.status !== eventRSVP.status) return;
+    if (eventRSVP?.id) {
+      const currentRSVP = await prisma.eventRSVP.findFirst({ where: { id: eventRSVP.id } });
+      // Check if the RSVP status has changed to avoid sending an email for an earlier status
+      if (currentRSVP?.status !== eventRSVP.status) {
+        return;
+      }
+    }
 
     sendRsvpConfirmation(eventRSVP).catch(error => {
       console.error('[scheduleSendRsvpConfirmation] Error sending RSVP confirmation email:', error);
