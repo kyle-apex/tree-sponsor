@@ -84,9 +84,25 @@ const InviteRSVPDialog = ({
 
       if (onRSVP) onRSVP();
       if (onRSVPSubmit) onRSVPSubmit(submittedRSVP);
+
+      // Close the dialog
+      setIsLoading(false);
+      handleClose();
+
+      // After a brief delay to allow the page to render, scroll to the Going/Maybe/View Guest List section
+      setTimeout(() => {
+        // Find the box with the distinctive styling that contains the Going/Maybe counts and View Guest List link
+        const targetElement = document.querySelector('.rsvp-button-section');
+        if (targetElement) {
+          // Scroll to the element with smooth behavior and 40px padding at the top
+          window.scrollTo({
+            top: targetElement.getBoundingClientRect().top + window.pageYOffset - 40,
+            behavior: 'smooth',
+          });
+        }
+      }, 300); // 300ms delay to allow for dialog closing animation and page update
     } catch (error) {
       console.error('Error submitting RSVP:', error);
-    } finally {
       setIsLoading(false);
       handleClose();
     }
