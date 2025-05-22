@@ -28,7 +28,6 @@ import InvitePostRSVPSection from './InvitePostRSVPSection';
 const EventInvite = ({
   event,
   invitedByUser,
-  name,
   email,
 }: {
   event?: PartialEvent;
@@ -36,8 +35,7 @@ const EventInvite = ({
   name?: string;
   email?: string;
 }) => {
-  console.log('name', name, 'email', email);
-  const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
+  const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', email, 'checkinEmail2');
   const [storedUser, setStoredUser] = useState<PartialUser>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [eventRSVP, setEventRSVP] = useState<PartialEventRSVP>();

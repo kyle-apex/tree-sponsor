@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>✅ You're RSVP'd: {{event.name}}</title>
+    <style type="text/css">
+        /* Base styles */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #333333;
+            font-size: 16px;
+            line-height: 1.5;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        /* Responsive styles */
+        @media only screen and (max-width: 480px) {
+            .email-container {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .responsive-table {
+                width: 100% !important;
+            }
+
+            .mobile-padding {
+                padding-left: 15px !important;
+                padding-right: 15px !important;
+            }
+
+            .mobile-font {
+                font-size: 16px !important;
+            }
+
+            .mobile-small-font {
+                font-size: 14px !important;
+            }
+
+            h1 {
+                font-size: 24px !important;
+            }
+        }
+    </style>
+    <!--[if mso]>
+    <style type="text/css">
+        table {border-collapse:collapse;border-spacing:0;margin:0;}
+        div, td {padding:0;}
+        div {margin:0 !important;}
+    </style>
+    <noscript>
+    <xml>
+        <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+    </xml>
+    </noscript>
+    <![endif]-->
+</head>
+
+<body>
+    <!-- Gmail Schema for Calendar Integration -->
+    <script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "Event",
+        "name": "{{event.name}}",
+        "startDate": "{{event.startDate}}",
+        "endDate": "{{event.endDate}}",
+        "location": {
+        "@type": "Place",
+        "name": "{{event.location.name}}",
+        "address": "{{event.location.address}}"
+        },
+        "description": "{{event.description}}"
+    }
+    </script>
+
+    <!-- Main Container -->
+    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center" style="padding:20px 0;">
+                <!-- Email Content Container -->
+                <table role="presentation" class="email-container" width="600" border="0" cellspacing="0"
+                    cellpadding="0"
+                    style="max-width:600px; background-color:#ffffff; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+                    <!-- Header with Logo -->
+                    <tr>
+                        <td style="border-top-left-radius:8px; border-top-right-radius:8px;">
+                            <img src="{{event.pictureUrl}}" alt="Event Logo"
+                                style="width:100%; height:auto; display:block;" />
+                        </td>
+                    </tr>
+
+                    <!-- Confirmation Banner -->
+                    <tr>
+                        <td
+                            style="background-color:#f0f7f4; padding:15px; text-align:center; border-bottom:1px solid #e0e0e0;">
+                            <table role="presentation" class="responsive-table" width="100%" border="0" cellspacing="0"
+                                cellpadding="0">
+                                <tr>
+                                    <td style="text-align:center;">
+                                        <h1 style="margin:0; font-size:24px; color:#486e62;">{{heading}}</h1>
+                                        <p style="margin:10px 0 0 0; font-size:18px; color:#6e4854; font-weight:bold;">
+                                            {{event.name}}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Event Details -->
+                    <tr>
+                        <td class="mobile-padding" style="padding:30px;">
+                            <table role="presentation" class="responsive-table" width="100%" border="0" cellspacing="0"
+                                cellpadding="0">
+                                <!-- Date and Time -->
+                                <tr>
+                                    <td style="padding-bottom:20px;">
+                                        <table role="presentation" class="responsive-table" width="100%" border="0"
+                                            cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td width="30" valign="top">
+                                                    <img src="https://tfyp.org/pin-default.svg" alt="Calendar"
+                                                        width="24" height="24"
+                                                        style="width:24px; height:24px; border:0;">
+                                                </td>
+                                                <td>
+                                                    <p style="margin:0; font-weight:bold; color:#486e62;">Date & Time
+                                                    </p>
+                                                    <p style="margin:5px 0 0 0; color:#333333;">{{event.formattedDate}},
+                                                        {{event.formattedTime}}</p>
+
+                                                    <p class="mobile-small-font"
+                                                        style="margin:0; margin-top:5px; font-size:14px; line-height:1.6; color: gray">
+                                                        Add to:
+                                                        <a href="{{event.googleCalendarLink}}" target="_blank"
+                                                            style="color:#486e62; text-decoration:underline; font-weight:bold;">Google</a>
+                                                        •
+                                                        <a href="{{event.outlookCalendarLink}}" target="_blank"
+                                                            style="color:#486e62; text-decoration:underline; font-weight:bold;">Outlook</a>
+                                                        •
+                                                        <a href="{{event.iCalendarLink}}" target="_blank"
+                                                            style="color:#486e62; text-decoration:underline; font-weight:bold;">iCal</a>
+                                                        •
+                                                        <a href="{{event.yahooCalendarLink}}" target="_blank"
+                                                            style="color:#486e62; text-decoration:underline; font-weight:bold;">Yahoo</a>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <!-- Location -->
+                                <tr>
+                                    <td style="padding-bottom:20px;">
+                                        <table role="presentation" class="responsive-table" width="100%" border="0"
+                                            cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td width="30" valign="top">
+                                                    <img src="https://tfyp.org/pin-accent.svg" alt="Location" width="24"
+                                                        height="24" style="width:24px; height:24px; border:0;">
+                                                </td>
+                                                <td>
+                                                    <p style="margin:0; font-weight:bold; color:#486e62;">Location</p>
+                                                    <p style="margin:5px 0 0 0; color:#333333;">
+                                                        <a href="https://www.google.com/maps?q={{event.location.address}}"
+                                                            target="_blank"
+                                                            style="color:#0066CC; text-decoration:underline;">{{event.location.name}}</a>
+                                                    </p>
+                                                    <p style="margin:5px 0 0 0; color:#333333;">
+                                                        <a href="https://www.google.com/maps?q={{event.location.address}}"
+                                                            target="_blank"
+                                                            style="color:#0066CC; text-decoration:underline;">{{event.location.address}}</a>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <!-- Invite Friends Section -->
+                                <tr>
+                                    <td
+                                        style="padding:20px; background-color:#f9f5f7; border-radius:8px; border-left:4px solid #6e4854;">
+                                        <p style="margin:0 0 15px 0; font-weight:bold; color:#6e4854; font-size:18px;">
+                                            Invite Your Friends!</p>
+                                        <p class="mobile-font" style="margin:0 0 15px 0;">Help us spread the word about
+                                            this event by
+                                            inviting your friends with your personal invite link:</p>
+                                        <p
+                                            style="margin:0 0 15px 0; padding:10px; background-color:#f0f0f0; border-radius:4px; font-family:monospace; word-break:break-all;">
+                                            {{event.inviteLink}}</p>
+                                        <table role="presentation" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td
+                                                    style="background-color:#6e4854; border-radius:4px; text-align:center;">
+                                                    <a href="{{event.inviteLink}}" target="_blank"
+                                                        style="display:inline-block; padding:10px 20px; color:#ffffff; text-decoration:none; font-weight:bold; font-size:16px;">Invite
+                                                        Friends</a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <!-- Event Description -->
+                                <tr>
+                                    <td
+                                        style="padding-bottom:30px; padding-top: 30px; border-bottom:1px solid #e0e0e0;">
+                                        <p style="margin:0 0 10px 0; font-weight:bold; color:#486e62;">Event Details</p>
+                                        <div class="mobile-font" style="margin:0; color:#333333;">{{event.description}}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Change RSVP Status -->
+                    <tr>
+                        <td style="padding:0 30px 30px 30px; text-align:center;">
+                            <p class="mobile-small-font" style="margin:0 0 10px 0; color:#666666; font-size:16px;">Need
+                                to change your
+                                RSVP status?</p>
+                            <a href="{{event.updateRsvpLink}}" target="_blank"
+                                style="color:#486e62; text-decoration:underline; font-weight:bold; font-size:16px;">Update
+                                your RSVP</a>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td
+                            style="padding:20px; text-align:center; background-color:#f0f7f4; border-bottom-left-radius:8px; border-bottom-right-radius:8px; border-top:1px solid #e0e0e0;">
+                            <p class="mobile-small-font" style="margin:0; color:#666666; font-size:16px;">TreeFolks
+                                Young Professionals</p>
+                            <p class="mobile-small-font" style="margin:5px 0 0 0; color:#666666; font-size:14px;">© 2025
+                                TreeFolksYP. All rights
+                                reserved.</p>
+                            <p class="mobile-small-font" style="margin:10px 0 0 0; color:#666666; font-size:14px;">
+                                <a href="https://tfyp.org"
+                                    style="color:#486e62; text-decoration:underline; font-size:16px;">Visit our
+                                    website</a>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

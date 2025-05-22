@@ -65,7 +65,7 @@ const InviteRSVPDialog = ({
       invitedByUserId: invitedByUser?.id,
       status,
       comment: status === 'Declined' ? comment : undefined,
-      notifyInviter: status === 'Declined' ? notifyInviter : undefined,
+      notifyInviter: notifyInviter,
     };
 
     try {
@@ -161,7 +161,7 @@ const InviteRSVPDialog = ({
             value={name}
             onChange={e => setName(e.target.value)}
             size='small'
-            sx={{ mb: 2, mt: 1 }}
+            sx={{ mb: 3, mt: 1 }}
             required={status !== 'Declined'}
           ></TextField>
         )}
@@ -171,21 +171,26 @@ const InviteRSVPDialog = ({
           value={email}
           onChange={e => setEmail(e.target.value)}
           size='small'
-          sx={{ mb: 2, mt: isSignIn ? 1 : 0 }}
+          sx={{ mb: 1, mt: isSignIn ? 1 : 0 }}
           required={status !== 'Declined'}
         ></TextField>
+        {(status === 'Going' || status === 'Maybe') && !isSignIn && (
+          <Typography
+            variant='caption'
+            sx={{
+              display: 'block',
+              mb: 1,
+              ml: 1,
+              color: 'var(--secondary-text-color)',
+              fontStyle: 'italic',
+              mt: -1,
+            }}
+          >
+            Just for updates for this event. No spam.
+          </Typography>
+        )}
         {status === 'Declined' && !isSignIn && (
           <>
-            <TextField
-              fullWidth
-              label='Message (optional)'
-              value={comment}
-              onChange={e => setComment(e.target.value)}
-              size='small'
-              multiline
-              rows={3}
-              sx={{ mb: 2 }}
-            ></TextField>
             {invitedByUser && (
               <FormGroup sx={{ marginBottom: 2 }}>
                 <FormControlLabel
@@ -208,38 +213,26 @@ const InviteRSVPDialog = ({
                       size='small'
                     />
                   }
-                  label={`Let ${invitedByUser.name} know that I won't be able to make it`}
+                  label={`Let ${invitedByUser?.name?.split(' ')[0]} know I can't make it`}
                 />
               </FormGroup>
+            )}
+            {notifyInviter && invitedByUser && (
+              <TextField
+                fullWidth
+                label='Message (optional)'
+                value={comment}
+                onChange={e => setComment(e.target.value)}
+                size='small'
+                multiline
+                rows={3}
+                sx={{ mb: 2 }}
+              ></TextField>
             )}
           </>
         )}
         {!isSignIn && status !== 'Declined' && (
           <>
-            <FormGroup sx={{ marginBottom: 1 }}>
-              <FormControlLabel
-                sx={{
-                  '.MuiSvgIcon-root': { color: 'rgba(0, 0, 0, 0.4)' },
-                  '& .MuiFormControlLabel-label': {
-                    fontSize: '.75rem',
-                    color: 'var(--secondary-text-color)',
-                    fontStyle: 'italic',
-                  },
-                  marginRight: '0px',
-                }}
-                control={
-                  <Checkbox
-                    checked={detailsEmailOptIn}
-                    onChange={e => {
-                      setDetailsEmailOptIn(e.target.checked);
-                    }}
-                    color='default'
-                    size='small'
-                  />
-                }
-                label={`Send me any email updates related to this event`}
-              />
-            </FormGroup>
             <FormGroup sx={{ marginBottom: 2 }}>
               <FormControlLabel
                 sx={{
