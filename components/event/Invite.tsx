@@ -28,7 +28,6 @@ import InvitePostRSVPSection from './InvitePostRSVPSection';
 const EventInvite = ({
   event,
   invitedByUser,
-  name,
   email,
 }: {
   event?: PartialEvent;
