@@ -140,7 +140,7 @@ const EventInvite = ({
       )}
       <Box
         sx={{ border: 'solid 2px', borderRadius: '5px', borderColor: theme => theme.palette.primary.main, padding: '10px' }}
-        className='box-shadow'
+        className='box-shadow rsvp-button-section'
         mt={2}
       >
         <Box>

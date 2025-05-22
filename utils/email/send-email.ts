@@ -19,12 +19,22 @@ const transporter = nodemailer.createTransport(
  * @param subject Email subject line
  * @param body Plain text email body (fallback)
  * @param html HTML email body
+ * @param fromName Optional sender name to display (defaults to "TreeFolks Young Professionals")
  * @returns Boolean indicating success or failure
  */
-export default async function sendEmail(recipients: string[], subject: string, body: string, html: string): Promise<boolean> {
+export default async function sendEmail(
+  recipients: string[],
+  subject: string,
+  body: string,
+  html: string,
+  fromName = 'TreeFolks Young Professionals',
+): Promise<boolean> {
   try {
     const mailOptions = {
-      from: process.env.SUPPORT_EMAIL,
+      from: {
+        name: fromName,
+        address: process.env.SUPPORT_EMAIL as string,
+      },
       to: recipients.join(','),
       subject: subject,
       text: body,

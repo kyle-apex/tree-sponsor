@@ -16,7 +16,7 @@ import addEventToMember from 'utils/mailchimp/add-event-to-member';
 import hasAccess from 'utils/auth/has-access';
 //import getUsersByRoles from 'utils/user/get-users-by-roles';
 import formatFormResponseNotification from 'utils/email/format-form-response-notification';
-import sendEmail from 'utils/aws/send-email';
+import sendEmail from 'utils/email/send-email';
 
 export const config = {
   api: {

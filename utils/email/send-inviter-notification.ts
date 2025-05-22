@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { PartialEventRSVP, PartialUser } from 'interfaces';
-import sendEmail from 'utils/aws/send-email';
+import sendEmail from 'utils/email/send-email';
 import formatTimeRange from 'utils/formatTimeRange';
 
 /**
@@ -60,7 +60,7 @@ View event page: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org'}/e/${e
     // Create HTML version
     let htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2>${emoji} ${user.name || 'Someone'} has ${
+      <h2>${user.name || 'Someone'} has ${
       status === 'Declined' ? 'declined' : status === 'Maybe' ? 'responded maybe to' : 'accepted'
     } your invitation</h2>
       <h3>${event.name}</h3>
