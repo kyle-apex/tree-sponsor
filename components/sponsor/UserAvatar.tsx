@@ -58,7 +58,7 @@ const UserAvatar = ({
     // Otherwise, use hash-based approach
     // Simple hash function to convert name to a number
     let hash = 0;
-    for (let i = 0; i < name.length; i++) {
+    for (let i = 0; i < name?.length; i++) {
       hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
     // Use modulo to get an index between 0 and 5
