@@ -12,6 +12,7 @@ const UserAvatar = ({
   link,
   sx,
   'data-testid': dataTestId,
+  colorIndex,
 }: {
   image?: string;
   name: string;
@@ -19,6 +20,7 @@ const UserAvatar = ({
   link?: string;
   sx?: SxProps<Theme>;
   'data-testid'?: string;
+  colorIndex?: number;
 }): JSX.Element => {
   const [abbreviation, setAbbreviation] = useState('AN');
   const router = useRouter();
@@ -46,12 +48,46 @@ const UserAvatar = ({
     setAbbreviation(getAbbreviation(name));
   }, [name]);
 
+  // Get a consistent color index based on the user's name or use provided colorIndex
+  const getAvatarColorIndex = (): number => {
+    // If colorIndex is provided, use it
+    if (colorIndex !== undefined) {
+      return colorIndex % 5;
+    }
+
+    // Otherwise, use hash-based approach
+    // Simple hash function to convert name to a number
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    // Use modulo to get an index between 0 and 5
+    return Math.abs(hash % 5);
+  };
+
   return (
     <Avatar
       aria-label='recipe'
       data-testid={dataTestId}
       sx={{
-        backgroundColor: theme => theme.palette.primary.main,
+        backgroundColor: theme => {
+          const colorIndex = getAvatarColorIndex();
+          // Create 5 variations using theme colors
+          switch (colorIndex) {
+            case 0:
+              return theme.palette.primary.main;
+            case 1:
+              return theme.palette.secondary.light;
+            case 2:
+              return theme.palette.secondary.main;
+            case 3:
+              return theme.palette.primary.dark;
+            case 4:
+              return theme.palette.primary.light;
+            default:
+              return theme.palette.primary.main;
+          }
+        },
         color: theme => theme.palette.primary.contrastText,
         width: size,
         height: size,

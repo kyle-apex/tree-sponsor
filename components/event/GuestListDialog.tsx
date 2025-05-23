@@ -79,7 +79,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {showHostsOnly ? (
                   <Box>
-                    {users.map(user => (
+                    {users.map((user, index) => (
                       <Box
                         key={user.id}
                         sx={{
@@ -89,7 +89,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                           mb: 2,
                         }}
                       >
-                        <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
+                        <UserAvatar image={user.image} name={user.displayName || user.name} size={30} colorIndex={index % 6} />
                         <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
                       </Box>
                     ))}
@@ -104,7 +104,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                         </Typography>
                         {users
                           .filter((_user, index) => index < goingCount)
-                          .map(user => (
+                          .map((user, index) => (
                             <Box
                               key={user.id}
                               sx={{
@@ -114,7 +114,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                                 mb: 2,
                               }}
                             >
-                              <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
+                              <UserAvatar image={user.image} name={user.displayName || user.name} size={30} colorIndex={index} />
                               <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
                             </Box>
                           ))}
@@ -129,7 +129,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                         </Typography>
                         {users
                           .filter((_user, index) => index >= goingCount && index < goingCount + maybeCount)
-                          .map(user => (
+                          .map((user, index) => (
                             <Box
                               key={user.id}
                               sx={{
@@ -139,7 +139,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                                 mb: 2,
                               }}
                             >
-                              <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
+                              <UserAvatar image={user.image} name={user.displayName || user.name} size={30} colorIndex={index} />
                               <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
                             </Box>
                           ))}

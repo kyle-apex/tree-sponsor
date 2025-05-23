@@ -35,8 +35,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     include: { location: true },
   });
 
-  const eventCompletedDate = new Date(event.startDate);
-  eventCompletedDate.setDate(eventCompletedDate.getDate() + 1);
+  const eventCompletedDate = event.endDate ? new Date(event.endDate) : new Date(event.startDate);
+  if (!event.endDate) eventCompletedDate.setHours(eventCompletedDate.getHours() + 5);
 
   if (req.method === 'POST') {
     const nameSplit = name.split(' ');
@@ -48,10 +48,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       firstName,
       lastName,
     });
+    console.log('User found or created:', user);
 
     const userId = user?.id;
 
-    if (!userId || new Date() < eventCompletedDate) {
+    if (!userId) {
+      // remove for testing purposes || new Date() > eventCompletedDate) {
+      console.log('Event is over or userId is missing', userId);
       res.status(200).json({});
       return;
     }
