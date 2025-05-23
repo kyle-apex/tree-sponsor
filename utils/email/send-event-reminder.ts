@@ -1,10 +1,7 @@
-import { PrismaClient } from '@prisma/client';
 import { PartialEventRSVP } from 'interfaces';
 import sendEmail from 'utils/email/send-email';
 import * as EmailUtils from 'utils/email/email-utils';
-
-// Initialize Prisma client
-const prisma = new PrismaClient();
+import { prisma } from 'utils/prisma/init';
 
 /**
  * Sends an event reminder email
@@ -130,9 +127,7 @@ const processEventReminders = async (): Promise<void> => {
     }
   } catch (error) {
     console.error('[processEventReminders] Error processing event reminders:', error);
-  } finally {
-    // Disconnect from the database
-    await prisma.$disconnect();
+    throw error;
   }
 };
 
