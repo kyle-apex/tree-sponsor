@@ -340,6 +340,7 @@ model Event {
   isPrivate           Boolean?              @default(false)
   hasSpecificTrees    Boolean?              @default(false)
   hasNavigation       Boolean?              @default(false)
+  reminderText        String?               @db.Text
   location            Location?             @relation(fields: [locationId], references: [id])
   locationId          Int?
   categories          Category[]            @relation("CategoryToEvent")
@@ -390,6 +391,7 @@ model EventRSVP {
   eventDetailsEmailOptIn Boolean?         @default(true)
   discoveredFrom         String?
   isPrivate              Boolean?         @default(false)
+  reminderSentAt         DateTime?
   userId                 Int?
   user                   User?            @relation("rsvpUser", fields: [userId], references: [id], onDelete: Cascade)
   invitedByUserId        Int?

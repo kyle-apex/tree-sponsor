@@ -178,6 +178,14 @@ const EventDetailsForm = ({
           onChange={val => updateAttribute('description', val)}
         />
       </Box>
+      <Box sx={{ marginTop: 3, marginBottom: 2, minHeight: '110px', display: 'block' }}>
+        <TextEditor
+          label='Reminder Email Text'
+          placeholder='Enter custom text for the reminder email sent 24 hours before the event. If left blank, a default message will be used.'
+          value={event?.reminderText}
+          onChange={val => updateAttribute('reminderText', val)}
+        />
+      </Box>
       <ImageUploadAndPreview
         addSubtitleText='Click to add event image'
         imageUrl={pictureUrl}

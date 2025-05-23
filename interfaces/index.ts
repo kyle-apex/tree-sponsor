@@ -91,12 +91,17 @@ export type PartialEvent = Partial<Event> & {
   trees?: PartialTree[];
   location?: PartialLocation;
   organizers?: PartialUser[];
+  reminderText?: string;
 };
 
 export type PartialStoreProduct = Partial<StoreProduct>;
 export type PartialCategory = Partial<Category> & { events?: PartialEvent[]; trees?: PartialTree[] };
 export type PartialEventCheckIn = Partial<EventCheckIn> & { user?: PartialUser; event?: PartialEvent };
-export type PartialEventRSVP = Partial<EventRSVP> & { user?: PartialUser; event?: PartialEvent };
+export type PartialEventRSVP = Partial<EventRSVP> & {
+  user?: PartialUser;
+  event?: PartialEvent;
+  reminderSentAt?: Date;
+};
 export type PartialProfile = Partial<Profile>;
 export type PartialSpeciesSuggestion = {
   id?: number;
