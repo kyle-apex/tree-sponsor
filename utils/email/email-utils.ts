@@ -3,6 +3,19 @@ import path from 'path';
 import { PartialEventRSVP, PartialUser, PartialEvent } from 'interfaces';
 import formatTimeRange from 'utils/formatTimeRange';
 
+export const getReminderText = (event: PartialEventRSVP['event'], options: { reminderText?: string } = {}): string => {
+  if (!event) return '';
+
+  // Use options.reminderText if provided, then event.reminderText, then default text
+  return (
+    options.reminderText?.trim() ||
+    event.reminderText?.trim() ||
+    `We're excited to see you tomorrow at ${
+      event.name || ''
+    }.  It's your last chance to spread the word to save your friends, fam, and coworkers from missing out on a tree-mendous time!`
+  );
+};
+
 /**
  * Formats a date in a human-readable format (e.g., "Sunday, June 15, 2025")
  * @param date - The date to format
@@ -178,9 +191,8 @@ export const processTemplate = (
   const inviteLink = generateInviteLink(event, user);
   const updateRsvpLink = generateUpdateRsvpLink(event, user);
 
-  // Default reminder text if none is provided
-  const defaultReminderText = `We're excited to see you tomorrow at ${event.name}! Don't forget to bring your enthusiasm and energy!`;
-  const reminderText = options.reminderText || event.reminderText || defaultReminderText;
+  // Get the appropriate reminder text
+  const reminderText = getReminderText(event, options);
 
   // Process the template based on whether it's a reminder or not
   let processedTemplate = template;
@@ -249,9 +261,8 @@ export const generatePlainTextContent = (
     return '';
   }
 
-  // Default reminder text if none is provided
-  const defaultReminderText = `We're excited to see you tomorrow at ${event.name}.  It's your last chance to spread the word to save your friends, fam, and coworkers from missing out on a tree-mendous time!`;
-  const reminderText = options.reminderText || event.reminderText || defaultReminderText;
+  // Get the appropriate reminder text
+  const reminderText = getReminderText(event, options);
 
   let content = '';
 

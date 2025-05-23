@@ -43,6 +43,7 @@ const EventDetailsForm = ({
   const [startDate, setStartDate] = useState(event.startDate);
   const [name, setName] = useState(event.name || '');
   const [instagramPostId, setInstagramPostId] = useState(event.instagramPostId || '');
+  const [reminderText, setReminderText] = useState(event.reminderText || '');
 
   const [path, setPath] = useState(event.path || '');
   const [locationName, setLocationName] = useState(event.location?.name || '');
@@ -178,14 +179,20 @@ const EventDetailsForm = ({
           onChange={val => updateAttribute('description', val)}
         />
       </Box>
-      <Box sx={{ marginTop: 3, marginBottom: 2, minHeight: '110px', display: 'block' }}>
-        <TextEditor
-          label='Reminder Email Text'
-          placeholder='Enter custom text for the reminder email sent 24 hours before the event. If left blank, a default message will be used.'
-          value={event?.reminderText}
-          onChange={val => updateAttribute('reminderText', val)}
-        />
-      </Box>
+      <TextField
+        value={reminderText}
+        onChange={e => {
+          const newText = e.target.value;
+          updateAttribute('reminderText', newText);
+          setReminderText(newText);
+        }}
+        label='Reminder Email Text'
+        placeholder='Enter custom text for the reminder email sent 24 hours before the event. If left blank, a default message will be used.'
+        multiline
+        rows={4}
+        fullWidth
+        sx={{ marginTop: 3, marginBottom: 2 }}
+      />
       <ImageUploadAndPreview
         addSubtitleText='Click to add event image'
         imageUrl={pictureUrl}
