@@ -42,6 +42,7 @@ const sendEventReminder = async (eventRSVP: PartialEventRSVP): Promise<boolean> 
       subject,
       plainText,
       emailHtml,
+      'TreeFolks Young Professionals',
       `We're excited to see you tomorrow at ${event.location?.name}`,
     );
 
@@ -67,15 +68,14 @@ const processEventReminders = async (): Promise<void> => {
   try {
     // Calculate the date range for events happening in ~24 hours
     const now = new Date();
-    const twentyFourHoursFromNow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
     const twentyFiveHoursFromNow = new Date(now.getTime() + 25 * 60 * 60 * 1000);
 
     // Find events happening in approximately 24 hours
     const upcomingEvents = await prisma.event.findMany({
       where: {
         startDate: {
-          gte: twentyFourHoursFromNow,
           lt: twentyFiveHoursFromNow,
+          gte: now,
         },
       },
       include: {

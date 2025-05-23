@@ -126,13 +126,16 @@
                                 {{#isReminder}}
                                 <!-- Reminder Message Section -->
                                 <tr>
-                                    <td
-                                        style="padding:20px; background-color:#f9f7f0; border-radius:8px; border-left:4px solid #486e62; margin-bottom:20px;">
-                                        <p style="margin:0 0 15px 0; font-weight:bold; color:#486e62; font-size:18px;">
-                                            Your Event is Tomorrow!</p>
-                                        <p class="mobile-font" style="margin:0 0 15px 0; color:#333333;">
-                                            {{reminderText}}
-                                        </p>
+                                    <td>
+                                        <div
+                                            style="padding:20px; background-color:#f9f7f0; border-radius:8px; border-left:4px solid #486e62; margin-bottom:30px;">
+                                            <p
+                                                style="margin:0 0 15px 0; font-weight:bold; color:#486e62; font-size:18px;">
+                                                Your Event is Tomorrow!</p>
+                                            <p class="mobile-font" style="margin:0 0 15px 0; color:#333333;">
+                                                {{reminderText}}
+                                            </p>
+                                        </div>
                                     </td>
                                 </tr>
                                 {{/isReminder}}
@@ -177,7 +180,7 @@
 
                                 <!-- Location -->
                                 <tr>
-                                    <td style="padding-bottom:20px;">
+                                    <td style="padding-bottom:30px;">
                                         <table role="presentation" class="responsive-table" width="100%" border="0"
                                             cellspacing="0" cellpadding="0">
                                             <tr>
