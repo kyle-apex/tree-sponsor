@@ -1,9 +1,12 @@
 import fs from 'fs';
 import path from 'path';
-import { PartialEventRSVP, PartialUser } from 'interfaces';
+import { PrismaClient } from '@prisma/client';
+import { PartialEventRSVP } from 'interfaces';
 import sendEmail from 'utils/email/send-email';
 import formatTimeRange from 'utils/formatTimeRange';
-import userEvent from '@testing-library/user-event';
+
+// Initialize Prisma client
+const prisma = new PrismaClient();
 
 /**
  * Formats a date in a human-readable format (e.g., "Sunday, June 15, 2025")
@@ -121,8 +124,8 @@ const generateICalendarLink = (event: PartialEventRSVP['event']): string => {
  * @param event - The event details
  * @returns URL to the event invite page
  */
-const generateInviteLink = (event: PartialEventRSVP['event'], user: PartialUser): string => {
-  if (!event) return '';
+const generateInviteLink = (event: PartialEventRSVP['event'], user: PartialEventRSVP['user']): string => {
+  if (!event || !user) return '';
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org';
   return `${baseUrl}/e/${event.path}/invite?u=${user.id}`;
 };
@@ -154,11 +157,16 @@ const processTemplate = (template: string, eventRSVP: PartialEventRSVP): string 
   const outlookCalendarLink = generateOutlookCalendarLink(event);
   const yahooCalendarLink = generateYahooCalendarLink(event);
   const iCalendarLink = generateICalendarLink(event);
-  console.log('iCalendarLink', iCalendarLink);
   const inviteLink = generateInviteLink(event, user);
   const updateRsvpLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org'}/e/${event.path}/invite?email=${encodeURIComponent(
     user.email || '',
   )}`;
+
+  // Default reminder text if none is provided
+  const defaultReminderText = `We're excited to see you tomorrow at ${event.name}! Don't forget to bring your enthusiasm and energy!`;
+
+  // Use custom reminder text if available, otherwise use default
+  const reminderText = event.reminderText || defaultReminderText;
 
   // Replace placeholders in the template
   let processedTemplate = template;
@@ -170,14 +178,14 @@ const processTemplate = (template: string, eventRSVP: PartialEventRSVP): string 
   processedTemplate = processedTemplate.replace(/{{event.location.name}}/g, event.location?.name || '');
   processedTemplate = processedTemplate.replace(/{{event.location.address}}/g, event.location?.address || '');
   processedTemplate = processedTemplate.replace(/{{event.description}}/g, event.description || '');
+
   // Event details
   processedTemplate = processedTemplate.replace(/{{event.formattedDate}}/g, formattedDate);
   processedTemplate = processedTemplate.replace(/{{event.formattedTime}}/g, formattedTime);
-  processedTemplate = processedTemplate.replace(/{{event.pictureUrl}}/g, event.pictureUrl);
-  processedTemplate = processedTemplate.replace(
-    /{{heading}}/g,
-    eventRSVP.status === 'Going' ? "🎉 You're RSVP'd!" : "🤔 You've RSVP'd Maybe!",
-  );
+  processedTemplate = processedTemplate.replace(/{{event.pictureUrl}}/g, event.pictureUrl || '');
+  processedTemplate = processedTemplate.replace(/{{heading}}/g, '⏰ Event Reminder!');
+  processedTemplate = processedTemplate.replace(/{{reminderText}}/g, reminderText);
+
   // Links
   processedTemplate = processedTemplate.replace(/{{event.googleCalendarLink}}/g, googleCalendarLink);
   processedTemplate = processedTemplate.replace(/{{event.outlookCalendarLink}}/g, outlookCalendarLink);
@@ -194,34 +202,16 @@ const processTemplate = (template: string, eventRSVP: PartialEventRSVP): string 
 };
 
 /**
- * Schedules sending an RSVP confirmation email after a delay
+ * Sends an event reminder email
  * @param eventRSVP - The event RSVP data containing both event and user details
- * @param delayMs - Delay in milliseconds before sending the email (default: 2 minutes),
- * @returns Promise that resolves when the email is scheduled
+ * @returns Promise that resolves to a boolean indicating success or failure
  */
-const scheduleSendRsvpConfirmation = async (
-  eventRSVP: PartialEventRSVP,
-  delayMs = 2 * 60 * 1000, // 2 minutes by default
-): Promise<void> => {
-  // Schedule the email to be sent after the delay
-  setTimeout(() => {
-    sendRsvpConfirmation(eventRSVP).catch(error => {
-      console.error('[scheduleSendRsvpConfirmation] Error sending RSVP confirmation email:', error);
-    });
-  }, delayMs);
-};
-
-/**
- * Sends an RSVP confirmation email
- * @param eventRSVP - The event RSVP data containing both event and user details
- * @returns Promise that resolves when the email is sent
- */
-const sendRsvpConfirmation = async (eventRSVP: PartialEventRSVP): Promise<boolean> => {
+const sendEventReminder = async (eventRSVP: PartialEventRSVP): Promise<boolean> => {
   try {
     const { event, user } = eventRSVP;
 
     if (!event || !user || !user.email) {
-      console.error('[sendRsvpConfirmation] Missing required data:', { event, user });
+      console.error('[sendEventReminder] Missing required data:', { event, user });
       return false;
     }
 
@@ -229,15 +219,23 @@ const sendRsvpConfirmation = async (eventRSVP: PartialEventRSVP): Promise<boolea
     const templatePath = path.join(process.cwd(), 'event-email-template.html');
     const template = fs.readFileSync(templatePath, 'utf8');
 
-    // Process the template to remove the isReminder section completely
-    // First, find all occurrences of the isReminder section
-    const reminderRegex = /{{#isReminder}}[\s\S]*?{{\/isReminder}}/g;
-    const processedTemplate = template.replace(reminderRegex, '');
+    // Process the template with event data and set isReminder to true
+    let processedTemplate = template.replace(/{{#isReminder}}/g, '');
+    processedTemplate = processedTemplate.replace(/{{\/isReminder}}/g, '');
 
     const emailHtml = processTemplate(processedTemplate, eventRSVP);
 
+    // Default reminder text if none is provided
+    const defaultReminderText = `We're excited to see you tomorrow at ${event.name}! Don't forget to bring your enthusiasm and energy!`;
+
+    // Use custom reminder text if available, otherwise use default
+    const reminderText = event.reminderText || defaultReminderText;
+
     // Create a plain text version (simplified)
-    const plainText = `You're RSVP'd for ${event.name}!
+    const plainText = `Event Reminder: ${event.name}!
+
+${reminderText}
+
 Date & Time: ${formatDate(new Date(event.startDate))} ${formatTimeRange(event.startDate, event.endDate)}
 Location: ${event.location?.name} ${event.location?.address || ''}
 Details: ${event.description || ''}
@@ -252,15 +250,97 @@ Invite Friends: ${generateInviteLink(event, user)}
 Update your RSVP: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org'}/e/${event.path}/invite?email=${user.email}`;
 
     // Set the subject line
-    const subject = `${eventRSVP.status === 'Going' ? "🎉 You're RSVP'd" : "🤔 You've RSVP'd Maybe!"}: ${event.name}`;
+    const subject = `⏰ Reminder: ${event.name} is tomorrow!`;
 
     // Send the email
-    return await sendEmail([user.email], subject, plainText, emailHtml);
-  } catch (error) {
-    console.error('[sendRsvpConfirmation] Error sending RSVP confirmation email:', error);
+    const result = await sendEmail([user.email], subject, plainText, emailHtml);
 
+    // If email was sent successfully, update the RSVP record to mark reminder as sent
+    if (result && eventRSVP.id) {
+      // Use raw SQL to update since the field might not be recognized by TypeScript yet
+      await prisma.$executeRaw`UPDATE EventRSVP SET reminderSentAt = NOW() WHERE id = ${eventRSVP.id}`;
+    }
+
+    return result;
+  } catch (error) {
+    console.error('[sendEventReminder] Error sending event reminder email:', error);
     return false;
   }
 };
 
-export { sendRsvpConfirmation, scheduleSendRsvpConfirmation };
+/**
+ * Finds events that are happening in approximately 24 hours and sends reminder emails
+ * to users who have RSVP'd with 'Going' or 'Maybe' status
+ * @returns Promise that resolves when all reminders have been processed
+ */
+const processEventReminders = async (): Promise<void> => {
+  try {
+    // Calculate the date range for events happening in ~24 hours
+    const now = new Date();
+    const twentyFourHoursFromNow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const twentyFiveHoursFromNow = new Date(now.getTime() + 25 * 60 * 60 * 1000);
+
+    // Find events happening in approximately 24 hours
+    const upcomingEvents = await prisma.event.findMany({
+      where: {
+        startDate: {
+          gte: twentyFourHoursFromNow,
+          lt: twentyFiveHoursFromNow,
+        },
+      },
+      include: {
+        location: true,
+      },
+    });
+
+    console.log(`[processEventReminders] Found ${upcomingEvents.length} events happening in ~24 hours`);
+
+    // Process each event
+    for (const event of upcomingEvents) {
+      // Use raw SQL query to find RSVPs that haven't received a reminder
+      // This avoids TypeScript errors with the new reminderSentAt field
+      const rsvps = await prisma.$queryRaw`
+        SELECT r.id, r.status, u.id as userId, u.name, u.email
+        FROM EventRSVP r
+        JOIN users u ON r.userId = u.id
+        WHERE r.eventId = ${event.id}
+        AND r.status IN ('Going', 'Maybe')
+        AND (r.reminderSentAt IS NULL)
+      `;
+
+      console.log(
+        `[processEventReminders] Found ${Array.isArray(rsvps) ? rsvps.length : 0} RSVPs to send reminders for event: ${event.name}`,
+      );
+
+      // Send reminder emails to each RSVP
+      for (const rsvp of rsvps as any[]) {
+        // Create a PartialEventRSVP object
+        const eventRSVP: PartialEventRSVP = {
+          id: rsvp.id,
+          status: rsvp.status,
+          // Create user object from the raw query results
+          user: {
+            id: rsvp.userId,
+            email: rsvp.email,
+            name: rsvp.name,
+          },
+          event: {
+            ...event,
+            location: event.location,
+          },
+        };
+
+        // Send the reminder email
+        const result = await sendEventReminder(eventRSVP);
+        console.log(`[processEventReminders] Reminder email ${result ? 'sent' : 'failed'} for user: ${rsvp.email}`);
+      }
+    }
+  } catch (error) {
+    console.error('[processEventReminders] Error processing event reminders:', error);
+  } finally {
+    // Disconnect from the database
+    await prisma.$disconnect();
+  }
+};
+
+export { sendEventReminder, processEventReminders };
