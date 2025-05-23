@@ -40,7 +40,13 @@ const sendEventReminder = async (eventRSVP: PartialEventRSVP): Promise<boolean> 
     const subject = `⏰ Reminder: ${event.name} is tomorrow!`;
 
     // Send the email
-    const result = await sendEmail([user.email], subject, plainText, emailHtml);
+    const result = await sendEmail(
+      [user.email],
+      subject,
+      plainText,
+      emailHtml,
+      `We're excited to see you tomorrow at ${event.location?.name}`,
+    );
 
     // If email was sent successfully, update the RSVP record to mark reminder as sent
     if (result && eventRSVP.id) {

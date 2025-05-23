@@ -250,7 +250,7 @@ export const generatePlainTextContent = (
   }
 
   // Default reminder text if none is provided
-  const defaultReminderText = `We're excited to see you tomorrow at ${event.name}! Don't forget to bring your enthusiasm and energy!`;
+  const defaultReminderText = `We're excited to see you tomorrow at ${event.name}.  It's your last chance to spread the word to save your friends, fam, and coworkers from missing out on a tree-mendous time!`;
   const reminderText = options.reminderText || event.reminderText || defaultReminderText;
 
   let content = '';
