@@ -107,6 +107,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         name: `${firstName} ${lastName}`.trim(),
       },
       status,
+      id: newRSVP?.id,
     };
 
     // Send confirmation email to the user who RSVP'd (for Going or Maybe)

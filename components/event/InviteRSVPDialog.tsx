@@ -195,7 +195,7 @@ const InviteRSVPDialog = ({
             variant='caption'
             sx={{
               display: 'block',
-              mb: 1,
+              mb: 2,
               ml: 1,
               color: 'var(--secondary-text-color)',
               fontStyle: 'italic',
