@@ -18,6 +18,7 @@ import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-fo
 import listTreesForEvent from 'utils/tree/list-trees-for-event';
 import { getUserByEmail } from 'utils/user/get-user-by-email';
 import { sortUsersByRole } from 'utils/user/sort-users-by-role';
+import createInvitePreviewImage from 'utils/events/create-invite-preview-image';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const eventId = Number(req.query.id);
@@ -75,6 +76,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       eventDetailsEmailOptIn: detailsEmailOptIn,
       status,
     };
+
+    if (user?.image && event.pictureUrl) {
+      createInvitePreviewImage(event.pictureUrl, event.id + '-' + user.id.toString(), user.image).catch(error => {
+        console.error('Error creating invite preview image:', error);
+      });
+    }
 
     if (emailOptIn && firstName && email) {
       await addSubscriber(email, { FNAME: firstName, LNAME: lastName }, false);

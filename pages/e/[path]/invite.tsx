@@ -8,7 +8,6 @@ import formatServerProps from 'utils/api/format-server-props';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 import Invite from 'components/event/Invite';
 import CenteredSection from 'components/layout/CenteredSection';
-import createInvitePreviewImage from 'utils/events/create-invite-preview-image';
 import usePageViewTracking from 'utils/hooks/use-page-view-tracking';
 
 const InvitePage = ({
@@ -109,16 +108,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       const user = await prisma.user.findFirst({ where: { id: Number(u) } });
       console.log('user', user);
       if (user?.id) invitedByUser = { id: user.id, name: user.name, image: user.image };
-
-      // If invitedByUser has an image and event has a pictureUrl, create an invite preview image
-      if (invitedByUser?.image && event?.pictureUrl) {
-        try {
-          const url = await createInvitePreviewImage(event.pictureUrl, event.id + '-' + invitedByUser.id.toString(), invitedByUser.image);
-          console.log('url', url);
-        } catch (error) {
-          console.error('Error creating invite preview image:', error);
-        }
-      }
     }
 
     return { props: { event, invitedByUser, name: name || null, email: email || null } };
