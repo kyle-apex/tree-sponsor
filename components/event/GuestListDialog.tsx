@@ -12,8 +12,7 @@ import EventIcon from '@mui/icons-material/Event';
 import CloseIcon from '@mui/icons-material/Close';
 import { PartialUser } from 'interfaces';
 import { UserAvatar } from 'components/sponsor';
-import Link from 'next/link';
-import SupporterIcon from '@mui/icons-material/VerifiedSharp';
+import GuestListItem from './GuestListItem';
 
 interface GuestListDialogProps {
   open: boolean;
@@ -122,33 +121,13 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                           .map((user, index) => {
                             const isCurrentUser = user.name == currentUser?.name;
                             return (
-                              <Box key={user.id} sx={isCurrentUser ? currentUserStyles : {}} className={isCurrentUser ? 'box-shadow' : ''}>
-                                <Box
-                                  sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 2,
-                                    mb: 2,
-                                  }}
-                                >
-                                  <UserAvatar image={user.image} name={user.displayName || user.name} size={30} colorIndex={index} />
-                                  <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
-                                  {user.subscriptions?.length > 0 && (
-                                    <SupporterIcon fontSize='small' sx={{ ml: -1.5 }} color='primary'></SupporterIcon>
-                                  )}
-                                </Box>
-                                {isCurrentUser && (
-                                  <Box mt={1} sx={{ lineHeight: 1.4, fontSize: '80%', display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <SupporterIcon fontSize='medium' sx={{ ml: 0 }} color='primary'></SupporterIcon>
-                                    <Link href='/membership'>
-                                      <Box>
-                                        <a style={{ cursor: 'pointer', textDecoration: 'underline' }}>Become a supporter</a> of planting
-                                        trees with an annual $20 donation to TreeFolks!
-                                      </Box>
-                                    </Link>
-                                  </Box>
-                                )}
-                              </Box>
+                              <GuestListItem
+                                key={user.id}
+                                user={user}
+                                index={index}
+                                isCurrentUser={isCurrentUser}
+                                currentUserStyles={currentUserStyles}
+                              />
                             );
                           })}
                       </Box>
@@ -162,23 +141,18 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                         </Typography>
                         {users
                           .filter((_user, index) => index >= goingCount && index < goingCount + maybeCount)
-                          .map((user, index) => (
-                            <Box
-                              key={user.id}
-                              sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 2,
-                                mb: 2,
-                              }}
-                            >
-                              <UserAvatar image={user.image} name={user.displayName || user.name} size={30} colorIndex={index} />
-                              <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
-                              {user.subscriptions?.length > 0 && (
-                                <SupporterIcon fontSize='small' sx={{ ml: -1.5 }} color='primary'></SupporterIcon>
-                              )}
-                            </Box>
-                          ))}
+                          .map((user, index) => {
+                            const isCurrentUser = user.name == currentUser?.name;
+                            return (
+                              <GuestListItem
+                                key={user.id}
+                                user={user}
+                                index={index}
+                                isCurrentUser={isCurrentUser}
+                                currentUserStyles={currentUserStyles}
+                              />
+                            );
+                          })}
                       </Box>
                     )}
                   </>
