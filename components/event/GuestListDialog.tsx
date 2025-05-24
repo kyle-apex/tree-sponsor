@@ -27,17 +27,6 @@ interface GuestListDialogProps {
   currentUser?: PartialUser;
 }
 
-const currentUserStyles = {
-  ml: -1,
-  mr: -1,
-  padding: 1,
-  border: 'solid 1px var(--outline-color)',
-  borderRadius: '5px',
-  pl: 1,
-  pr: 1,
-  backgroundColor: '#f7f7f7',
-};
-
 const GuestListDialog: React.FC<GuestListDialogProps> = ({
   open,
   onClose,
@@ -119,16 +108,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                         {users
                           .filter((_user, index) => index < goingCount)
                           .map((user, index) => {
-                            const isCurrentUser = user.name == currentUser?.name;
-                            return (
-                              <GuestListItem
-                                key={user.id}
-                                user={user}
-                                index={index}
-                                isCurrentUser={isCurrentUser}
-                                currentUserStyles={currentUserStyles}
-                              />
-                            );
+                            return <GuestListItem key={user.id} user={user} index={index} currentUser={currentUser} />;
                           })}
                       </Box>
                     )}
@@ -142,16 +122,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                         {users
                           .filter((_user, index) => index >= goingCount && index < goingCount + maybeCount)
                           .map((user, index) => {
-                            const isCurrentUser = user.name == currentUser?.name;
-                            return (
-                              <GuestListItem
-                                key={user.id}
-                                user={user}
-                                index={index}
-                                isCurrentUser={isCurrentUser}
-                                currentUserStyles={currentUserStyles}
-                              />
-                            );
+                            return <GuestListItem key={user.id} user={user} index={index} currentUser={currentUser} />;
                           })}
                       </Box>
                     )}
