@@ -1,7 +1,7 @@
 import RoleTable from 'components/admin/RoleTable';
 import { PartialEventCheckIn, PartialEventRSVP, PartialTree, PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getUserDisplaySelect } from 'prisma/common';
+import { getUserDisplaySelect, getRsvpUserSelect } from 'prisma/common';
 import throwError from 'utils/api/throw-error';
 import { scheduleSendRsvpConfirmation } from 'utils/email/send-rsvp-confirmation';
 import { sendInviterNotification } from 'utils/email/send-inviter-notification';
@@ -170,14 +170,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const rsvp = await prisma.eventRSVP.findFirst({
         where: { eventId: eventId, userId: user?.id },
         include: {
-          user: {
-            select: {
-              name: true,
-              image: true,
-              id: true,
-              subscriptions: { where: { lastPaymentDate: { gte: getOneYearAgo() } }, take: 1, select: { lastPaymentDate: true, id: true } },
-            },
-          },
+          user: getRsvpUserSelect(),
         },
         orderBy: { createdDate: 'asc' },
       });
@@ -187,14 +180,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const rsvps = await prisma.eventRSVP.findMany({
         where: { eventId: eventId },
         include: {
-          user: {
-            select: {
-              name: true,
-              image: true,
-              id: true,
-              subscriptions: { where: { lastPaymentDate: { gte: getOneYearAgo() } }, take: 1, select: { lastPaymentDate: true, id: true } },
-            },
-          },
+          user: getRsvpUserSelect(),
         },
         orderBy: { createdDate: 'asc' },
       });
