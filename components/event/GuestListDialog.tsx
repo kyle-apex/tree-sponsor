@@ -120,7 +120,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                         {users
                           .filter((_user, index) => index < goingCount)
                           .map((user, index) => {
-                            const isCurrentUser = user.email == currentUser?.email;
+                            const isCurrentUser = user.name == currentUser?.name;
                             return (
                               <Box key={user.id} sx={isCurrentUser ? currentUserStyles : {}} className={isCurrentUser ? 'box-shadow' : ''}>
                                 <Box
@@ -133,7 +133,9 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                                 >
                                   <UserAvatar image={user.image} name={user.displayName || user.name} size={30} colorIndex={index} />
                                   <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
-                                  {false && <SupporterIcon fontSize='small' sx={{ ml: -1.5 }} color='primary'></SupporterIcon>}
+                                  {user.subscriptions?.length > 0 && (
+                                    <SupporterIcon fontSize='small' sx={{ ml: -1.5 }} color='primary'></SupporterIcon>
+                                  )}
                                 </Box>
                                 {isCurrentUser && (
                                   <Box mt={1} sx={{ lineHeight: 1.4, fontSize: '80%', display: 'flex', alignItems: 'center', gap: 1 }}>
