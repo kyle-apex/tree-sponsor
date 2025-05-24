@@ -49,7 +49,7 @@ const GuestListItem: React.FC<GuestListItemProps> = ({ user, index, currentUser,
         {user.subscriptions?.length > 0 && (
           <>
             {/* This tooltip shows on hover naturally */}
-            <Tooltip title={supporterMessage} arrow>
+            <Tooltip title={supporterMessage} enterTouchDelay={0} leaveTouchDelay={4000} arrow>
               <SupporterIcon fontSize='small' sx={{ ml: -1.5, cursor: 'pointer' }} color='primary' />
             </Tooltip>
           </>
