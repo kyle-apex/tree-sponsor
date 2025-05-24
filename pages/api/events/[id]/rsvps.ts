@@ -19,6 +19,7 @@ import listTreesForEvent from 'utils/tree/list-trees-for-event';
 import { getUserByEmail } from 'utils/user/get-user-by-email';
 import { sortUsersByRole } from 'utils/user/sort-users-by-role';
 import createInvitePreviewImage from 'utils/events/create-invite-preview-image';
+import getOneYearAgo from 'utils/data/get-one-year-ago';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const eventId = Number(req.query.id);
@@ -168,7 +169,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       const rsvp = await prisma.eventRSVP.findFirst({
         where: { eventId: eventId, userId: user?.id },
-        include: { user: { select: { name: true, image: true, id: true } } },
+        include: {
+          user: {
+            select: {
+              name: true,
+              image: true,
+              id: true,
+              subscriptions: { where: { lastPaymentDate: { gte: getOneYearAgo() } }, take: 1, select: { lastPaymentDate: true, id: true } },
+            },
+          },
+        },
         orderBy: { createdDate: 'asc' },
       });
 
@@ -176,7 +186,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else {
       const rsvps = await prisma.eventRSVP.findMany({
         where: { eventId: eventId },
-        include: { user: { select: { name: true, image: true, id: true } } },
+        include: {
+          user: {
+            select: {
+              name: true,
+              image: true,
+              id: true,
+              subscriptions: { where: { lastPaymentDate: { gte: getOneYearAgo() } }, take: 1, select: { lastPaymentDate: true, id: true } },
+            },
+          },
+        },
         orderBy: { createdDate: 'asc' },
       });
 
