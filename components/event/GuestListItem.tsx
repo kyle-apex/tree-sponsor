@@ -27,34 +27,13 @@ const currentUserStyles = {
 };
 
 const GuestListItem: React.FC<GuestListItemProps> = ({ user, index, currentUser, currentUserSX }) => {
-  const [showClickTooltip, setShowClickTooltip] = useState(false);
-  const [supportsHover, setSupportsHover] = useState(true); // Default to true for SSR
-
   // Extract first name (up to the first space)
   const firstName = user.name ? user.name.split(' ')[0] : '';
   const supporterMessage = `${firstName} supports planting trees in Austin with an annual donation to TreeFolks!`;
   const isCurrentUser = currentUser && user.name === currentUser.name;
   const isCurrentUserMember = !!currentUser.subscriptions?.length;
   currentUserSX = isCurrentUser && !isCurrentUserMember ? currentUserSX || currentUserStyles : {};
-  // Detect if device supports hover
-  useEffect(() => {
-    // Check if we're in a browser environment
-    if (typeof window !== 'undefined') {
-      // Check if the device supports hover
-      const mediaQuery = window.matchMedia('(hover: hover)');
-      setSupportsHover(mediaQuery.matches);
-    }
-  }, []);
 
-  const handleSupporterIconClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    // Only show click tooltip on devices that don't support hover
-    if (!supportsHover) {
-      setShowClickTooltip(true);
-      // Auto-hide tooltip after 4 seconds
-      setTimeout(() => setShowClickTooltip(false), 4000);
-    }
-  };
   return (
     <Box key={user.id} sx={currentUserSX} className={isCurrentUser && !isCurrentUserMember ? 'box-shadow' : ''}>
       <Box
@@ -71,29 +50,8 @@ const GuestListItem: React.FC<GuestListItemProps> = ({ user, index, currentUser,
           <>
             {/* This tooltip shows on hover naturally */}
             <Tooltip title={supporterMessage} arrow>
-              <SupporterIcon fontSize='small' sx={{ ml: -1.5, cursor: 'pointer' }} color='primary' onClick={handleSupporterIconClick} />
+              <SupporterIcon fontSize='small' sx={{ ml: -1.5, cursor: 'pointer' }} color='primary' />
             </Tooltip>
-
-            {/* This is for showing the message when clicked (only on mobile/touch devices) */}
-            {!supportsHover && showClickTooltip && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  bgcolor: 'rgba(97, 97, 97, 0.9)',
-                  color: '#fff',
-                  borderRadius: 1,
-                  p: 1,
-                  fontSize: '0.75rem',
-                  maxWidth: 220,
-                  zIndex: 1500,
-                  mt: 2,
-                  ml: -10,
-                  boxShadow: 1,
-                }}
-              >
-                {supporterMessage}
-              </Box>
-            )}
           </>
         )}
       </Box>
