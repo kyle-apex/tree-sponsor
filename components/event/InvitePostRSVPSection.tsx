@@ -1,5 +1,6 @@
 import { MouseEvent, useState } from 'react';
 import { trackClickEvent } from 'utils/analytics/track-click-event';
+import Link from 'next/link';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
@@ -272,6 +273,33 @@ const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProp
               </Grid>
             ));
           })()}
+          {!currentRSVP?.user?.subscriptions?.length && (
+            <Grid item xs={12}>
+              <Link href='/membership'>
+                <Paper
+                  elevation={2}
+                  component='div'
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    p: 2,
+                    cursor: 'pointer',
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    gap: 2,
+                  }}
+                >
+                  <Typography color='primary' sx={{ fontSize: 32 }}>
+                    🌳
+                  </Typography>
+                  <Typography variant='body1' align='left' sx={{ fontWeight: 400, fontSize: '.8rem', color: 'text.secondary' }}>
+                    Become a supporting member with $20/year donation to TreeFolks!
+                  </Typography>
+                </Paper>
+              </Link>
+            </Grid>
+          )}
         </Grid>
 
         {/* Calendar dropdown menu */}

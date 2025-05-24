@@ -162,7 +162,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const eventId = Number(req.query.id);
     const email = req.query.email ? req.query.email + '' : '';
     if (email) {
-      const user = await getUserByEmail(email, { select: { id: true, email: true, image: true, name: true } });
+      const user = await getUserByEmail(email, {
+        select: {
+          id: true,
+          email: true,
+          image: true,
+          name: true,
+          createdAt: true,
+          subscriptions: {
+            where: { lastPaymentDate: { gte: getOneYearAgo() } },
+            take: 1,
+            select: { lastPaymentDate: true, id: true },
+          },
+        },
+      });
       if (!user?.id || !eventId) {
         res.status(200).json([]);
         return;
