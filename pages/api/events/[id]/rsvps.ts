@@ -1,7 +1,7 @@
 import RoleTable from 'components/admin/RoleTable';
 import { PartialEventCheckIn, PartialEventRSVP, PartialTree, PartialUser } from 'interfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getUserDisplaySelect } from 'prisma/common';
+import { getUserDisplaySelect, getRsvpUserSelect } from 'prisma/common';
 import throwError from 'utils/api/throw-error';
 import { scheduleSendRsvpConfirmation } from 'utils/email/send-rsvp-confirmation';
 import { sendInviterNotification } from 'utils/email/send-inviter-notification';
@@ -18,6 +18,8 @@ import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-fo
 import listTreesForEvent from 'utils/tree/list-trees-for-event';
 import { getUserByEmail } from 'utils/user/get-user-by-email';
 import { sortUsersByRole } from 'utils/user/sort-users-by-role';
+import createInvitePreviewImage from 'utils/events/create-invite-preview-image';
+import getOneYearAgo from 'utils/data/get-one-year-ago';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const eventId = Number(req.query.id);
@@ -75,6 +77,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       eventDetailsEmailOptIn: detailsEmailOptIn,
       status,
     };
+
+    if (user?.image && event.pictureUrl) {
+      createInvitePreviewImage(event.pictureUrl, event.id + '-' + user.id.toString(), user.image).catch(error => {
+        console.error('Error creating invite preview image:', error);
+      });
+    }
 
     if (emailOptIn && firstName && email) {
       await addSubscriber(email, { FNAME: firstName, LNAME: lastName }, false);
@@ -161,7 +169,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       const rsvp = await prisma.eventRSVP.findFirst({
         where: { eventId: eventId, userId: user?.id },
-        include: { user: { select: { name: true, image: true, id: true } } },
+        include: {
+          user: getRsvpUserSelect(),
+        },
         orderBy: { createdDate: 'asc' },
       });
 
@@ -169,7 +179,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else {
       const rsvps = await prisma.eventRSVP.findMany({
         where: { eventId: eventId },
-        include: { user: { select: { name: true, image: true, id: true } } },
+        include: {
+          user: getRsvpUserSelect(),
+        },
         orderBy: { createdDate: 'asc' },
       });
 

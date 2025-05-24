@@ -327,6 +327,7 @@ const EventInvite = ({
           setIsSignInMode(true);
           setIsRSVPDialogOpen(true);
         }}
+        currentUser={eventRSVP?.user || storedUser}
       />
       <LocationMapDialog open={isLocationMapDialogOpen} onClose={() => setIsLocationMapDialogOpen(false)} location={event.location} />
     </>
