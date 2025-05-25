@@ -122,6 +122,10 @@ const InviteRSVPDialog = ({
   }, [initialName]);
 
   useEffect(() => {
+    setEmail(initialEmail);
+  }, [initialEmail]);
+
+  useEffect(() => {
     if (initialStatus) {
       setStatus(initialStatus);
     }
