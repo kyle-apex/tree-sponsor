@@ -12,6 +12,8 @@ import UserBubbles from './UserBubbles';
 import SplitRow from 'components/layout/SplitRow';
 import { UserAvatar } from 'components/sponsor';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import LoadingButton from 'components/LoadingButton';
 import Divider from '@mui/material/Divider';
 import InsertInvitationIcon from '@mui/icons-material/InsertInvitation';
 import PlaceIcon from '@mui/icons-material/Place';
@@ -46,6 +48,10 @@ const EventInvite = ({
   const [isSignInMode, setIsSignInMode] = useState(false);
   const [rsvpStatus, setRsvpStatus] = useState('Going');
   const [showHostsOnly, setShowHostsOnly] = useState(false);
+  const [showUpdateRSVPForm, setShowUpdateRSVPForm] = useState(false);
+  const [updateRSVPEmail, setUpdateRSVPEmail] = useState('');
+  const [isSearchingRSVP, setIsSearchingRSVP] = useState(false);
+  const [rsvpSearchError, setRsvpSearchError] = useState('');
 
   // Use localStorage to store RSVP data for this specific event
   const {
@@ -65,6 +71,37 @@ const EventInvite = ({
       setEventRSVP(rsvp);
     }
     setStoredUser(user);
+    return { rsvp, user };
+  };
+
+  const searchExistingRSVP = async () => {
+    if (!updateRSVPEmail) return;
+
+    setIsSearchingRSVP(true);
+    setRsvpSearchError('');
+    setStoredEmail(updateRSVPEmail);
+
+    try {
+      const { rsvp, user } = await getUserData(updateRSVPEmail);
+
+      if (rsvp) {
+        // If RSVP found, set it and open the dialog
+        setEventRSVP(rsvp);
+        setRsvpStatus(rsvp.status as string);
+
+        setIsRSVPDialogOpen(true);
+        setShowUpdateRSVPForm(false);
+        setUpdateRSVPEmail('');
+      } else {
+        // No RSVP found for this email
+        setRsvpSearchError('No RSVP found for this email address.');
+      }
+    } catch (error) {
+      console.error('Error searching for RSVP:', error);
+      setRsvpSearchError('Error searching for RSVP. Please try again.');
+    } finally {
+      setIsSearchingRSVP(false);
+    }
   };
 
   useEffect(() => {
@@ -272,6 +309,71 @@ const EventInvite = ({
                 Decline
               </Button>
             </SplitRow>
+
+            {/* Update Existing RSVP link and form */}
+            <Box sx={{ mt: 2, textAlign: 'center' }}>
+              {!showUpdateRSVPForm ? (
+                <Typography
+                  variant='body2'
+                  color='primary'
+                  sx={{
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    display: 'inline-block',
+                  }}
+                  onClick={() => setShowUpdateRSVPForm(true)}
+                >
+                  Update Existing RSVP
+                </Typography>
+              ) : (
+                <Box>
+                  <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                    <TextField
+                      size='small'
+                      placeholder='Enter your email'
+                      fullWidth
+                      value={updateRSVPEmail}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdateRSVPEmail(e.target.value)}
+                      disabled={isSearchingRSVP}
+                      error={!!rsvpSearchError}
+                    />
+                    <LoadingButton
+                      variant='outlined'
+                      size='small'
+                      onClick={searchExistingRSVP}
+                      isLoading={isSearchingRSVP}
+                      disabled={!updateRSVPEmail || isSearchingRSVP}
+                    >
+                      Search
+                    </LoadingButton>
+                  </Box>
+
+                  {rsvpSearchError && (
+                    <Typography variant='body2' color='error' sx={{ mt: 1, fontSize: '0.8rem' }}>
+                      {rsvpSearchError}
+                    </Typography>
+                  )}
+
+                  <Typography
+                    variant='body2'
+                    color='primary'
+                    sx={{
+                      cursor: 'pointer',
+                      textDecoration: 'underline',
+                      fontSize: '0.8rem',
+                      mt: 1,
+                    }}
+                    onClick={() => {
+                      setShowUpdateRSVPForm(false);
+                      setUpdateRSVPEmail('');
+                      setRsvpSearchError('');
+                    }}
+                  >
+                    Cancel
+                  </Typography>
+                </Box>
+              )}
+            </Box>
           </>
         )}
       </Box>
