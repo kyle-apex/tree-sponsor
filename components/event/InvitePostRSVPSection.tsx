@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from 'react';
+import { MouseEvent, useState, useEffect } from 'react';
 import { trackClickEvent } from 'utils/analytics/track-click-event';
 import Link from 'next/link';
 import Box from '@mui/material/Box';
@@ -21,6 +21,27 @@ interface InvitePostRSVPSectionProps {
 const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProps) => {
   const [calendarAnchorEl, setCalendarAnchorEl] = useState<null | HTMLElement>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  // Load GiveLively donation widget script
+  useEffect(() => {
+    // Create script element
+    const script = document.createElement('script');
+    script.src =
+      'https://secure.givelively.org/widgets/simple_donation/treefolks-inc/2025-tfyp-summer-solstice.js?show_suggested_amount_buttons=false&show_in_honor_of=false&address_required=false&has_required_custom_question=false';
+    script.async = true;
+    script.id = 'give-lively-script';
+
+    // Append to document head
+    document.head.appendChild(script);
+
+    // Cleanup function to remove script when component unmounts
+    return () => {
+      const existingScript = document.getElementById('give-lively-script');
+      if (existingScript) {
+        document.head.removeChild(existingScript);
+      }
+    };
+  }, []); // Empty dependency array means this effect runs once on mount
 
   // Calendar link generation functions
   const generateGoogleCalendarLink = (event: PartialEvent) => {
@@ -353,6 +374,14 @@ const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProp
           Copied to clipboard!
         </Alert>
       </Snackbar>
+
+      {/* GiveLively Donation Widget */}
+      <Box sx={{ p: 2 }}>
+        <Typography variant='body1' align='center' sx={{ mb: 2, fontWeight: 500 }}>
+          Support our mission with a donation
+        </Typography>
+        <div id='give-lively-widget' className='gl-simple-donation-widget'></div>
+      </Box>
     </Box>
   );
 };
