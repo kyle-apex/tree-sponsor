@@ -129,10 +129,10 @@ export const generateICalendarLink = (event: PartialEventRSVP['event']): string 
   const params = new URLSearchParams({
     id: event.id?.toString() || '',
     name: event.name || '',
-    description: event.description || '',
-    location: event.location?.name || '',
     startDate: startDate.toISOString(),
     endDate: endDate.toISOString(),
+    location: event.location?.name || '',
+    description: event.description || '',
   });
 
   return `${baseUrl}/api/events/ical?${params.toString()}`;
