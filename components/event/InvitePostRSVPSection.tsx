@@ -294,7 +294,7 @@ const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProp
                     🌳
                   </Typography>
                   <Typography variant='body1' align='left' sx={{ fontWeight: 400, fontSize: '.8rem', color: 'text.secondary' }}>
-                    Become a supporting member with $20/year donation to TreeFolks!
+                    Become a supporting member with a $20/year donation to TreeFolks!
                   </Typography>
                 </Paper>
               </Link>
