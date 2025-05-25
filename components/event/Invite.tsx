@@ -271,7 +271,9 @@ const EventInvite = ({
       {(eventRSVP?.status === 'Going' || eventRSVP?.status === 'Maybe') && <InvitePostRSVPSection event={event} currentRSVP={eventRSVP} />}
       {event.description && (
         <Box sx={{ mt: 3 }}>
-          <Typography>Event Details:</Typography>
+          <Typography color='primary' variant='h6'>
+            Event Details:
+          </Typography>
           <Typography variant='body2' color='gray'>
             <ExpandCollapseSection maxHeight={200}>
               <SafeHTMLDisplay html={event.description}></SafeHTMLDisplay>

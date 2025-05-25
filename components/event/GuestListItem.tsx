@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import SupporterIcon from '@mui/icons-material/VerifiedSharp';
@@ -6,6 +6,10 @@ import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
 import { PartialUser } from 'interfaces';
 import { UserAvatar } from 'components/sponsor';
+import IconButton from '@mui/material/IconButton';
+import SettingsIcon from '@mui/icons-material/Settings';
+import AttendeeSettingsDialog from './AttendeeSettingsDialog';
+import useHashToggle from 'utils/hooks/use-hash-toggle';
 
 interface GuestListItemProps {
   user: PartialUser;
@@ -34,6 +38,13 @@ const GuestListItem: React.FC<GuestListItemProps> = ({ user, index, currentUser,
   const isCurrentUserMember = !!currentUser.subscriptions?.length;
   currentUserSX = isCurrentUser && !isCurrentUserMember ? currentUserSX || currentUserStyles : {};
 
+  // Settings dialog state
+  const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useHashToggle('profile-settings', false);
+
+  const onSettingsDialogClose = (val: boolean) => {
+    setIsSettingsDialogOpen(val);
+  };
+
   return (
     <Box key={user.id} sx={currentUserSX} className={isCurrentUser && !isCurrentUserMember ? 'box-shadow' : ''}>
       <Box
@@ -54,6 +65,19 @@ const GuestListItem: React.FC<GuestListItemProps> = ({ user, index, currentUser,
             </Tooltip>
           </>
         )}
+        {isCurrentUser && (
+          <>
+            <Box sx={{ flex: '1 1 auto' }}></Box>
+            <IconButton
+              onClick={() => {
+                setIsSettingsDialogOpen(true);
+              }}
+              sx={{ padding: 0 }}
+            >
+              <SettingsIcon color='secondary'></SettingsIcon>
+            </IconButton>
+          </>
+        )}
       </Box>
       {isCurrentUser && !isCurrentUserMember && (
         <Box mt={1} sx={{ lineHeight: 1.4, fontSize: '80%', display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -65,6 +89,17 @@ const GuestListItem: React.FC<GuestListItemProps> = ({ user, index, currentUser,
             </Box>
           </Link>
         </Box>
+      )}
+
+      {/* Add the AttendeeSettingsDialog with simplified mode */}
+      {isCurrentUser && (
+        <AttendeeSettingsDialog
+          user={user}
+          isOpen={isSettingsDialogOpen}
+          setIsOpen={onSettingsDialogClose}
+          isPrivate={false}
+          simplifiedMode={true}
+        />
       )}
     </Box>
   );

@@ -37,12 +37,14 @@ const AttendeeSettingsDialog = ({
   isPrivate,
   user,
   onSetIsPrivate,
+  simplifiedMode = false,
 }: {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>> | booleanFunc;
   isPrivate: boolean;
   onSetIsPrivate?: () => void;
   user: PartialUser;
+  simplifiedMode?: boolean;
 }) => {
   const handleClose = () => {
     setIsOpen(false);
@@ -102,17 +104,21 @@ const AttendeeSettingsDialog = ({
       <Dialog maxWidth='xs' open={isOpen} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', margin: '0px' } }} onClose={handleClose}>
         <DialogContent className=''>
           <Typography mb={3} variant='h2'>
-            Settings
+            {simplifiedMode ? 'Edit Profile' : 'Settings'}
           </Typography>
-          <Box sx={{ mb: 2 }}>
-            <Checkbox checked={isPrivate} onChange={e => setIsPrivate(e.target.checked)}></Checkbox> Hide my name from public view
-          </Box>
-          <Divider sx={{ mb: 2 }}></Divider>
+          {!simplifiedMode && (
+            <>
+              <Box sx={{ mb: 2 }}>
+                <Checkbox checked={isPrivate} onChange={e => setIsPrivate(e.target.checked)}></Checkbox> Hide my name from public view
+              </Box>
+              <Divider sx={{ mb: 2 }}></Divider>
+            </>
+          )}
           {(!session || !sessionEmailIsUserEmail) && (
             <>
               <Typography mb={2} variant='body1'>
-                To share your LinkedIn, Instagram, or Twitter contact info with other attendees, login with your email address to update
-                your profile:
+                {simplifiedMode ? 'To share your latest profile picture' : `To share your LinkedIn, Instagram, or Twitter contact info`}{' '}
+                with other attendees, login with your email address to update your profile:
               </Typography>
               <Button
                 color='secondary'
@@ -123,14 +129,14 @@ const AttendeeSettingsDialog = ({
                   signIn();
                 }}
               >
-                Login to Edit Contact Info
+                Login to Edit {simplifiedMode ? 'Profile Picture' : 'Contact Info'}
               </Button>
             </>
           )}
           {sessionEmailIsUserEmail && (
             <>
               <Typography mb={3} variant='h6'>
-                Contact Information/Display Name
+                {simplifiedMode ? 'Profile Information' : 'Contact Information/Display Name'}
               </Typography>
               <Box
                 sx={{
@@ -180,23 +186,28 @@ const AttendeeSettingsDialog = ({
                 sx={{ marginBottom: 3 }}
                 id='name-field'
               ></TextField>
-              <AttendeeContactForm profile={profile} setProfile={setProfile}></AttendeeContactForm>
-              <Box sx={{ marginBottom: 3, display: 'block' }}>
-                <TextField
-                  size='small'
-                  fullWidth
-                  multiline={true}
-                  label='Bio'
-                  value={profile.bio}
-                  placeholder='Enter a short bio to display on your profile...'
-                  minRows={2}
-                  onChange={e => {
-                    setProfile(prof => {
-                      return { ...prof, bio: e.target.value };
-                    });
-                  }}
-                ></TextField>
-              </Box>
+
+              {!simplifiedMode && (
+                <>
+                  <AttendeeContactForm profile={profile} setProfile={setProfile}></AttendeeContactForm>
+                  <Box sx={{ marginBottom: 3, display: 'block' }}>
+                    <TextField
+                      size='small'
+                      fullWidth
+                      multiline={true}
+                      label='Bio'
+                      value={profile.bio}
+                      placeholder='Enter a short bio to display on your profile...'
+                      minRows={2}
+                      onChange={e => {
+                        setProfile(prof => {
+                          return { ...prof, bio: e.target.value };
+                        });
+                      }}
+                    ></TextField>
+                  </Box>
+                </>
+              )}
             </>
           )}
           {(!session || !sessionEmailIsUserEmail) && (
