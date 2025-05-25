@@ -161,6 +161,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } else if (req.method === 'GET') {
     const eventId = Number(req.query.id);
     const email = req.query.email ? req.query.email + '' : '';
+    const invitedByUserId = req.query.invitedByUserId ? Number(req.query.invitedByUserId) : null;
+
+    // Case 1: Filter by email to get a specific user's RSVP
     if (email) {
       const user = await getUserByEmail(email, {
         select: {
@@ -189,7 +192,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
 
       res.status(200).json({ rsvp, user });
-    } else {
+    }
+    // Case 2: Filter by invitedByUserId to get all RSVPs invited by a specific user
+    else if (invitedByUserId) {
+      const rsvps = await prisma.eventRSVP.findMany({
+        where: {
+          eventId: eventId,
+          invitedByUserId: invitedByUserId,
+        },
+        include: {
+          user: getRsvpUserSelect(),
+        },
+        orderBy: { createdDate: 'asc' },
+      });
+
+      res.status(200).json(rsvps);
+    }
+    // Case 3: Get all RSVPs for the event
+    else {
       const rsvps = await prisma.eventRSVP.findMany({
         where: { eventId: eventId },
         include: {

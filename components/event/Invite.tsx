@@ -24,6 +24,7 @@ import axios from 'axios';
 import InviteRSVPDialog from './InviteRSVPDialog';
 import GuestListDialog from './GuestListDialog';
 import InvitePostRSVPSection from './InvitePostRSVPSection';
+import InvitedPeopleSection from './InvitedPeopleSection';
 
 const EventInvite = ({
   event,
@@ -224,6 +225,9 @@ const EventInvite = ({
             >
               Change Response
             </Button>
+
+            {/* Show invited people section only if the user is logged in (has userId) */}
+            {eventRSVP?.userId && <InvitedPeopleSection eventId={event.id} currentUserId={eventRSVP.userId} />}
           </Box>
         ) : (
           // Display RSVP buttons if no RSVP exists
