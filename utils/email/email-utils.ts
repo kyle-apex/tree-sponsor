@@ -3,6 +3,16 @@ import path from 'path';
 import { PartialEventRSVP, PartialUser, PartialEvent } from 'interfaces';
 import formatTimeRange from 'utils/formatTimeRange';
 
+/**
+ * Converts a date to CST timezone
+ * @param date - The date to convert
+ * @returns Date object in CST timezone
+ */
+const convertToCST = (date: string | Date): Date => {
+  const dateObj = new Date(date);
+  return new Date(dateObj.toLocaleString('en-US', { timeZone: 'America/Chicago' }));
+};
+
 export const getReminderText = (event: PartialEventRSVP['event'], options: { reminderText?: string } = {}): string => {
   if (!event) return '';
 
@@ -27,6 +37,7 @@ export const formatDate = (date: Date): string => {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'America/Chicago', // Format date in CST timezone
   });
 };
 
@@ -38,11 +49,11 @@ export const formatDate = (date: Date): string => {
 export const generateGoogleCalendarLink = (event: PartialEventRSVP['event']): string => {
   if (!event || !event.startDate) return '';
 
-  // Create date objects from the event's startDate
-  const startDate = new Date(event.startDate);
+  // Create date objects from the event's startDate in CST
+  const startDate = convertToCST(event.startDate);
 
   // If event has an endDate, use it; otherwise, add 1.5 hours to startDate
-  const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000);
+  const endDate = event.endDate ? convertToCST(event.endDate) : new Date(startDate.getTime() + 90 * 60000);
 
   // Format dates for Google Calendar (YYYYMMDDTHHmmssZ format without dashes or colons)
   const startDateStr = startDate.toISOString().replace(/-|:|\.\d+/g, '');
@@ -63,11 +74,11 @@ export const generateGoogleCalendarLink = (event: PartialEventRSVP['event']): st
 export const generateOutlookCalendarLink = (event: PartialEventRSVP['event']): string => {
   if (!event || !event.startDate) return '';
 
-  // Create date objects from the event's startDate
-  const startDate = new Date(event.startDate);
+  // Create date objects from the event's startDate in CST
+  const startDate = convertToCST(event.startDate);
 
   // If event has an endDate, use it; otherwise, add 1.5 hours to startDate
-  const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000);
+  const endDate = event.endDate ? convertToCST(event.endDate) : new Date(startDate.getTime() + 90 * 60000);
 
   return `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(
     event.name || '',
@@ -84,11 +95,11 @@ export const generateOutlookCalendarLink = (event: PartialEventRSVP['event']): s
 export const generateYahooCalendarLink = (event: PartialEventRSVP['event']): string => {
   if (!event || !event.startDate) return '';
 
-  // Create date objects from the event's startDate
-  const startDate = new Date(event.startDate);
+  // Create date objects from the event's startDate in CST
+  const startDate = convertToCST(event.startDate);
 
   // If event has an endDate, use it; otherwise, add 1.5 hours to startDate
-  const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000);
+  const endDate = event.endDate ? convertToCST(event.endDate) : new Date(startDate.getTime() + 90 * 60000);
 
   // Format dates for Yahoo Calendar (YYYYMMDDTHHmmssZ format without dashes or colons)
   const yahooStartDate = startDate.toISOString().replace(/-|:|\.\d+/g, '');
@@ -111,9 +122,9 @@ export const generateICalendarLink = (event: PartialEventRSVP['event']): string 
   if (!event || !event.name || !event.startDate) return '';
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org';
-  // Format dates for iCalendar
-  const startDate = new Date(event.startDate);
-  const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000);
+  // Format dates for iCalendar in CST
+  const startDate = convertToCST(event.startDate);
+  const endDate = event.endDate ? convertToCST(event.endDate) : new Date(startDate.getTime() + 90 * 60000);
 
   const params = new URLSearchParams({
     id: event.id?.toString() || '',
@@ -174,13 +185,13 @@ export const processTemplate = (
     throw new Error('Event or user data is missing');
   }
 
-  // Format dates for display
+  // Format dates for display in CST
   const formattedDate = event.startDate ? formatDate(new Date(event.startDate)) : 'Date TBD';
   const formattedTime =
     event.startDate && event.endDate
-      ? formatTimeRange(event.startDate, event.endDate)
+      ? formatTimeRange(convertToCST(event.startDate), convertToCST(event.endDate))
       : event.startDate
-      ? formatTimeRange(event.startDate)
+      ? formatTimeRange(convertToCST(event.startDate))
       : 'Time TBD';
 
   // Generate links
@@ -210,8 +221,8 @@ export const processTemplate = (
   // Replace placeholders in the template
   // Schema.org event data for calendar integration
   processedTemplate = processedTemplate.replace(/{{event.name}}/g, event.name || '');
-  processedTemplate = processedTemplate.replace(/{{event.startDate}}/g, event.startDate ? new Date(event.startDate).toISOString() : '');
-  processedTemplate = processedTemplate.replace(/{{event.endDate}}/g, event.endDate ? new Date(event.endDate).toISOString() : '');
+  processedTemplate = processedTemplate.replace(/{{event.startDate}}/g, event.startDate ? convertToCST(event.startDate).toISOString() : '');
+  processedTemplate = processedTemplate.replace(/{{event.endDate}}/g, event.endDate ? convertToCST(event.endDate).toISOString() : '');
   processedTemplate = processedTemplate.replace(/{{event.location.name}}/g, event.location?.name || '');
   processedTemplate = processedTemplate.replace(/{{event.location.address}}/g, event.location?.address || '');
   processedTemplate = processedTemplate.replace(/{{event.description}}/g, event.description || '');
@@ -272,7 +283,10 @@ export const generatePlainTextContent = (
     content = `You're RSVP'd for ${event.name}!\n\n`;
   }
 
-  content += `Date & Time: ${formatDate(new Date(event.startDate))} ${formatTimeRange(event.startDate, event.endDate)}
+  content += `Date & Time: ${formatDate(new Date(event.startDate))} ${formatTimeRange(
+    convertToCST(event.startDate),
+    event.endDate ? convertToCST(event.endDate) : undefined,
+  )}
 Location: ${event.location?.name} ${event.location?.address || ''}
 Details: ${event.description || ''}
 
