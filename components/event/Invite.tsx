@@ -55,6 +55,8 @@ const EventInvite = ({
     isFetched,
   } = useGet<PartialEventRSVP[]>(`/api/events/${event.id}/rsvps`, `events/${event.id}/rsvps`, null);
 
+  const rsvpsWithoutDeclined = rsvps?.filter(r => r.status === 'Going' || r.status === 'Maybe') || [];
+
   const getUserData = async (email: string) => {
     const results: any = await axios.get(`/api/events/${event.id}/rsvps?email=${email}`);
     const { rsvp, user }: { rsvp: PartialEventRSVP; user: PartialUser } = results?.data;
@@ -171,18 +173,20 @@ const EventInvite = ({
               setIsGuestListDialogOpen(true);
             }}
           >
-            <UserBubbles ml={-1.4} users={rsvps.map(r => r.user).filter(Boolean)} maxLength={6} size={24} />
+            <UserBubbles ml={-1.4} users={rsvpsWithoutDeclined.map(r => r.user)} maxLength={6} size={24} />
             <Typography color='gray' variant='body2'>
-              {rsvps[0]?.user?.name && rsvps[1]?.user?.name
+              {rsvpsWithoutDeclined[0]?.user?.name && rsvpsWithoutDeclined[1]?.user?.name
                 ? (() => {
-                    const othersCount = rsvps.length - 2;
+                    const othersCount = rsvpsWithoutDeclined.length - 2;
                     if (othersCount > 0) {
-                      return `${rsvps[0].user.name}, ${rsvps[1].user.name}, and ${othersCount} ${othersCount === 1 ? 'other' : 'others'}`;
+                      return `${rsvpsWithoutDeclined[0].user.name}, ${rsvpsWithoutDeclined[1].user.name}, and ${othersCount} ${
+                        othersCount === 1 ? 'other' : 'others'
+                      }`;
                     }
-                    return `${rsvps[0].user.name}, ${rsvps[1].user.name}`;
+                    return `${rsvpsWithoutDeclined[0].user.name}, ${rsvpsWithoutDeclined[1].user.name}`;
                   })()
-                : rsvps[0]?.user?.name
-                ? rsvps[0].user.name
+                : rsvpsWithoutDeclined[0]?.user?.name
+                ? rsvpsWithoutDeclined[0].user.name
                 : 'No attendees yet'}
             </Typography>
           </Box>
