@@ -104,12 +104,12 @@ const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProp
     const params = new URLSearchParams({
       id: event.id?.toString() || '',
       name: event.name || '',
-      description: event.description || '',
-      location: event.location?.name || '',
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
+      location: event.location?.name || '',
+      description: event.description || '',
     });
-
+    console.log('Generated iCalendar link:', `${baseUrl}?${params.toString()}`);
     return `${baseUrl}?${params.toString()}`;
   };
 
