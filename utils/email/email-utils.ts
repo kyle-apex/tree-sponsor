@@ -119,23 +119,12 @@ export const generateYahooCalendarLink = (event: PartialEventRSVP['event']): str
  */
 export const generateICalendarLink = (event: PartialEventRSVP['event']): string => {
   // Return empty string if event is missing or required parameters are not present
-  if (!event || !event.name || !event.startDate) return '';
+  if (!event || !event.id) return '';
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org';
-  // Format dates for iCalendar (using original UTC time)
-  const startDate = new Date(event.startDate);
-  const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000);
 
-  const params = new URLSearchParams({
-    id: event.id?.toString() || '',
-    name: event.name || '',
-    startDate: startDate.toISOString(),
-    endDate: endDate.toISOString(),
-    location: event.location?.name || '',
-    description: event.description || '',
-  });
-
-  return `${baseUrl}/api/events/ical?${params.toString()}`;
+  // Use the new endpoint that fetches event data by ID
+  return `${baseUrl}/api/events/${event.id}/ical`;
 };
 
 /**

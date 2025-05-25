@@ -88,29 +88,13 @@ const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProp
   };
 
   const generateICalendarLink = (event: PartialEvent) => {
-    // Ensure we have a valid startDate
-    if (!event.startDate) {
+    // Ensure we have a valid ID and startDate
+    if (!event.id || !event.startDate) {
       return '#';
     }
 
-    // Create date objects from the event's startDate
-    const startDate = new Date(event.startDate);
-
-    // If event has an endDate, use it; otherwise, add 1.5 hours to startDate
-    const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000); // 90 minutes in milliseconds
-
-    // Construct URL to the API endpoint with all necessary parameters
-    const baseUrl = `${window.location.origin}/api/events/ical`;
-    const params = new URLSearchParams({
-      id: event.id?.toString() || '',
-      name: event.name || '',
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
-      location: event.location?.name || '',
-      description: event.description || '',
-    });
-    console.log('Generated iCalendar link:', `${baseUrl}?${params.toString()}`);
-    return `${baseUrl}?${params.toString()}`;
+    // Construct URL to the API endpoint using the event ID
+    return `${window.location.origin}/api/events/${event.id}/ical`;
   };
 
   return (
