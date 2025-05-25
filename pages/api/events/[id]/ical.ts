@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import xss from 'xss';
+import { prisma } from 'utils/prisma/init';
 
 /**
  * Converts HTML to plain text and formats it according to iCalendar standards
@@ -72,28 +73,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Extract event details from query parameters
-    const { id, name, description, location, startDate, endDate } = req.query;
+    // Extract event ID from the path parameter
+    const eventId = Number(req.query.id);
 
-    // If an ID is provided, redirect to the new endpoint
-    if (id) {
-      console.log(`[DEPRECATED] Redirecting to new iCal endpoint for event ID: ${id}`);
-      return res.redirect(307, `/api/events/${id}/ical`);
+    if (isNaN(eventId)) {
+      return res.status(400).json({ message: 'Invalid event ID' });
     }
 
-    // For backward compatibility, continue with the old implementation
+    // Fetch event data from the database
+    const event = await prisma.event.findFirst({
+      where: { id: eventId },
+      include: {
+        location: true,
+      },
+    });
+
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
     // Validate required parameters
-    if (!name || !startDate) {
-      return res.status(400).json({ message: 'Missing required parameters: name and startDate are required' });
+    if (!event.name || !event.startDate) {
+      return res.status(400).json({ message: 'Event is missing required data: name and startDate are required' });
     }
-
-    console.log('[DEPRECATED] Using legacy iCal endpoint without event ID');
 
     // Parse dates
-    const start = new Date(startDate as string);
+    const start = new Date(event.startDate);
 
     // If event has an endDate, use it; otherwise, add 1.5 hours to startDate (same logic as in calendar functions)
-    const end = endDate ? new Date(endDate as string) : new Date(start.getTime() + 90 * 60000); // 90 minutes in milliseconds
+    const end = event.endDate ? new Date(event.endDate) : new Date(start.getTime() + 90 * 60000); // 90 minutes in milliseconds
 
     // Format dates for iCalendar (YYYYMMDDTHHmmssZ format)
     const formatDate = (date: Date): string => {
@@ -105,18 +113,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const now = formatDate(new Date());
 
     // Generate a unique identifier for the event
-    const uid = `event-${id || Math.random().toString(36).substring(2, 11)}@tfyp.org`;
+    const uid = `event-${eventId}@tfyp.org`;
 
     // Format the event summary (name) according to iCalendar standards
-    const formattedSummary = (name as string).replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;').replace(/\n/g, '\\n');
+    const formattedSummary = event.name.replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;').replace(/\n/g, '\\n');
 
     // Format the location according to iCalendar standards if provided
-    const formattedLocation = location
-      ? (location as string).replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;').replace(/\n/g, '\\n')
+    const formattedLocation = event.location?.name
+      ? event.location.name.replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;').replace(/\n/g, '\\n')
       : '';
 
     // Process the description with our HTML-to-text conversion function
-    const formattedDescription = formatDescriptionForICalendar(description as string | undefined);
+    const formattedDescription = formatDescriptionForICalendar(event.description);
 
     // Create the iCalendar content
     const icalContent = [
@@ -131,8 +139,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       `DTSTART:${startFormatted}`,
       `DTEND:${endFormatted}`,
       `SUMMARY:${formattedSummary}`,
-      description ? formattedDescription : '',
-      location ? `LOCATION:${formattedLocation}` : '',
+      event.description ? formattedDescription : '',
+      event.location?.name ? `LOCATION:${formattedLocation}` : '',
       'END:VEVENT',
       'END:VCALENDAR',
     ]
@@ -141,7 +149,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Set headers for file download
     res.setHeader('Content-Type', 'text/calendar');
-    res.setHeader('Content-Disposition', `attachment; filename="event-${id || 'calendar'}.ics"`);
+    res.setHeader('Content-Disposition', `attachment; filename="event-${eventId}.ics"`);
 
     // Return the iCalendar content
     return res.status(200).send(icalContent);
