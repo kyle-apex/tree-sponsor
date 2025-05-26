@@ -27,6 +27,7 @@ import InviteRSVPDialog from './InviteRSVPDialog';
 import GuestListDialog from './GuestListDialog';
 import InvitePostRSVPSection from './InvitePostRSVPSection';
 import InvitedPeopleSection from './InvitedPeopleSection';
+import InviteDonationSection from './InviteDonationSection';
 
 const EventInvite = ({
   event,
@@ -377,8 +378,10 @@ const EventInvite = ({
           </>
         )}
       </Box>
-      {/* Show "Want to help spread the word?" section only for Going or Maybe responses */}
-      {(eventRSVP?.status === 'Going' || eventRSVP?.status === 'Maybe') && <InvitePostRSVPSection event={event} currentRSVP={eventRSVP} />}
+      {/* Show full InvitePostRSVPSection for Going or Maybe responses, but only donation section for Declined */}
+      {eventRSVP?.status && (
+        <InvitePostRSVPSection event={event} currentRSVP={eventRSVP} showDonationSectionOnly={eventRSVP.status === 'Declined'} />
+      )}
       {event.description && (
         <Box sx={{ mt: 3 }}>
           <Typography color='primary' variant='h6'>

@@ -14,6 +14,7 @@ interface InviteDonationSectionProps {
   goalAmount?: number;
   returnUrl?: string;
   donors?: PartialUser[];
+  isDeclined?: boolean;
 }
 
 const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
@@ -23,6 +24,7 @@ const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
   goalAmount = 1000,
   returnUrl,
   donors = [],
+  isDeclined = false,
 }) => {
   // Log props for debugging
   console.log('InviteDonationSection props:', { currentAmount, goalAmount, addedAmount: 25 });
@@ -38,16 +40,28 @@ const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
     setAddedAmount(amount); // Preview the donation in the goal display
   };
 
+  // Check if current user has already donated
+  const hasUserDonated = currentRSVP?.userId && donors.some(donor => donor.id === currentRSVP.userId);
+
   return (
     <Box>
       {/* Description */}
-      <Box sx={{ p: 2, pb: 0 }}>
+      <Box sx={{ p: 2, pb: 0, ...(hasUserDonated && { mb: 2 }) }}>
         <Typography variant='body2' gutterBottom>
-          Help us reach our ${goalAmount.toLocaleString()} pre-event fundraising goal with donation to TreeFolks. Thanks!
+          {hasUserDonated
+            ? `Thank you for your donation to TreeFolks! Your support helps us grow a healthier community.`
+            : isDeclined
+            ? `We'll miss you at the event, but you can still help us reach our $${goalAmount.toLocaleString()} fundraising goal with a donation to TreeFolks. Thanks!`
+            : `Help us reach our $${goalAmount.toLocaleString()} pre-event fundraising goal with donation to TreeFolks. Thanks!`}
         </Typography>
 
         {/* Fundraising Goal Display */}
-        <FundraisingGoalDisplay currentAmount={currentAmount} goalAmount={goalAmount} addedAmount={addedAmount} />
+        <FundraisingGoalDisplay
+          currentAmount={currentAmount}
+          goalAmount={goalAmount}
+          addedAmount={addedAmount}
+          hideAddedAmount={hasUserDonated}
+        />
 
         {/* Display donors if there are any */}
         {donors.length > 1 && (
@@ -70,26 +84,31 @@ const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
           </Box>
         )}
 
-        {/* Donation Amount Selector */}
-        <FundraisingButtonSelector amounts={donationAmounts} amount={donationAmount} setAmount={handleAmountChange} />
+        {/* Only show donation controls if user hasn't already donated */}
+        {!hasUserDonated && (
+          <>
+            {/* Donation Amount Selector */}
+            <FundraisingButtonSelector amounts={donationAmounts} amount={donationAmount} setAmount={handleAmountChange} />
 
-        {/* Donate Button */}
-        <Box sx={{ mt: 1, mb: 2, display: 'flex', justifyContent: 'center' }}>
-          <DonateButton
-            amount={donationAmount}
-            metadata={{
-              eventId: event.id?.toString() || '',
-              eventName: event.name || '',
-              userId: currentRSVP?.userId?.toString() || '',
-            }}
-            returnUrl={returnUrl}
-            label={`Donate $${donationAmount}`}
-            size='large'
-            fullWidth={true}
-            color='primary'
-            variant='outlined'
-          />
-        </Box>
+            {/* Donate Button */}
+            <Box sx={{ mt: 1, mb: 2, display: 'flex', justifyContent: 'center' }}>
+              <DonateButton
+                amount={donationAmount}
+                metadata={{
+                  eventId: event.id?.toString() || '',
+                  eventName: event.name || '',
+                  userId: currentRSVP?.userId?.toString() || '',
+                }}
+                returnUrl={returnUrl}
+                label={`Donate $${donationAmount}`}
+                size='large'
+                fullWidth={true}
+                color='primary'
+                variant='outlined'
+              />
+            </Box>
+          </>
+        )}
       </Box>
     </Box>
   );

@@ -6,6 +6,7 @@ interface FundraisingGoalDisplayProps {
   currentAmount: number;
   goalAmount: number;
   addedAmount: number;
+  hideAddedAmount?: boolean;
 }
 
 // Custom styled LinearProgress to allow for multiple colors in one progress bar
@@ -35,7 +36,12 @@ const AddedAmountIndicator = styled(Box)(({ theme }) => ({
   },
 }));
 
-const FundraisingGoalDisplay: React.FC<FundraisingGoalDisplayProps> = ({ currentAmount, goalAmount, addedAmount }) => {
+const FundraisingGoalDisplay: React.FC<FundraisingGoalDisplayProps> = ({
+  currentAmount,
+  goalAmount,
+  addedAmount,
+  hideAddedAmount = false,
+}) => {
   const theme = useTheme();
 
   // Log props for debugging
@@ -78,13 +84,13 @@ const FundraisingGoalDisplay: React.FC<FundraisingGoalDisplayProps> = ({ current
               value={currentPercentage}
               sx={{
                 '& .MuiLinearProgress-bar': {
-                  backgroundColor: '#b3b3b3',
+                  backgroundColor: hideAddedAmount ? theme.palette.primary.main : '#b3b3b3',
                 },
               }}
             />
 
             {/* Added amount overlay */}
-            {addedAmount > 0 && (
+            {addedAmount > 0 && !hideAddedAmount && (
               <>
                 <AddedAmountIndicator
                   sx={{
