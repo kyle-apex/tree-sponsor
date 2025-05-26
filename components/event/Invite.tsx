@@ -310,7 +310,7 @@ const EventInvite = ({
               </Button>
             </SplitRow>
 
-            {/* Update Existing RSVP link and form */}
+            {/* Modify Existing RSVP link and form */}
             <Box sx={{ mt: 2, textAlign: 'center' }}>
               {!showUpdateRSVPForm ? (
                 <Typography
@@ -323,7 +323,7 @@ const EventInvite = ({
                   }}
                   onClick={() => setShowUpdateRSVPForm(true)}
                 >
-                  Update Existing RSVP
+                  Modify Existing RSVP
                 </Typography>
               ) : (
                 <Box>
