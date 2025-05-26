@@ -9,6 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const session = await getSession({ req });
 
     const { amount, metadata = {}, cancelRedirectPath, returnUrl = '/' } = req.body;
+    const userEmail = metadata.userEmail;
 
     // Validate amount
     const parsedAmount = parseInt(amount, 10);
@@ -27,6 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         payment_method_types: ['card'],
         billing_address_collection: 'auto',
         customer: customerId,
+        customer_email: !customerId && userEmail ? userEmail : undefined,
         allow_promotion_codes: true,
         line_items: [
           {

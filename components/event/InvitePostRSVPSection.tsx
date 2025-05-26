@@ -337,6 +337,7 @@ const InvitePostRSVPSection = ({ event, currentRSVP, showDonationSectionOnly = f
                 {event.fundraisingGoal && (
                   <Grid item xs={12}>
                     <Box sx={{ mt: 2 }}>
+                      <hr></hr>
                       <InviteDonationSection
                         event={event}
                         currentRSVP={currentRSVP}
