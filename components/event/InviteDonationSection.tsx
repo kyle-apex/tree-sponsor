@@ -53,9 +53,19 @@ const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
         {donors.length > 0 && (
           <Box flexDirection='row' alignItems='center' sx={{ display: 'flex', gap: '5px', mt: -1, mb: -1 }}>
             <UserBubbles users={donors} maxLength={3} size={28} />
+
             <Typography color='gray' variant='body2'>
-              {donors[0].name}
-              {donors.length > 1 ? ` and ${donors.length - 1} others` : ''}
+              {donors[0]?.name && donors[1]?.name
+                ? (() => {
+                    const othersCount = donors.length - 2;
+                    if (othersCount > 0) {
+                      return `${donors[0].name}, ${donors[1].name}, and ${othersCount} ${othersCount === 1 ? 'other' : 'others'}`;
+                    }
+                    return `${donors[0].name}, ${donors[1].name}`;
+                  })()
+                : donors[0]?.name
+                ? donors[0].name
+                : 'No attendees yet'}
             </Typography>
           </Box>
         )}
