@@ -50,7 +50,7 @@ const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
         <FundraisingGoalDisplay currentAmount={currentAmount} goalAmount={goalAmount} addedAmount={addedAmount} />
 
         {/* Display donors if there are any */}
-        {donors.length > 0 && (
+        {donors.length > 1 && (
           <Box flexDirection='row' alignItems='center' sx={{ display: 'flex', gap: '5px', mt: -1, mb: -1 }}>
             <UserBubbles users={donors} maxLength={3} size={28} />
 
