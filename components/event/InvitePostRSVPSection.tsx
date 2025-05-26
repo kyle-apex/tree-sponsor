@@ -324,6 +324,18 @@ const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProp
                 </Link>
               </Grid>
             )}
+            {/* Add the donation section only if fundraisingGoal is set */}
+            {event.fundraisingGoal && (
+              <Box sx={{ mt: 2 }}>
+                <InviteDonationSection
+                  event={event}
+                  currentRSVP={currentRSVP}
+                  currentAmount={currentDonationAmount}
+                  goalAmount={Number(event.fundraisingGoal)}
+                  returnUrl={currentUrl}
+                />
+              </Box>
+            )}
           </Grid>
 
           {/* Calendar dropdown menu */}
@@ -378,23 +390,6 @@ const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProp
           </Alert>
         </Snackbar>
       </Box>
-
-      {/* Add the donation section only if fundraisingGoal is set */}
-      {event.fundraisingGoal && (
-        <>
-          {console.log('Rendering InviteDonationSection with:', {
-            currentDonationAmount,
-            goalAmount: Number(event.fundraisingGoal),
-          })}
-          <InviteDonationSection
-            event={event}
-            currentRSVP={currentRSVP}
-            currentAmount={currentDonationAmount}
-            goalAmount={Number(event.fundraisingGoal)}
-            returnUrl={currentUrl}
-          />
-        </>
-      )}
     </>
   );
 };

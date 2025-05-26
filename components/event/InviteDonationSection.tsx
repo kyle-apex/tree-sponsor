@@ -35,34 +35,11 @@ const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
   };
 
   return (
-    <Box
-      sx={{
-        mt: 3,
-        border: '2px solid',
-        borderColor: 'primary.main',
-        borderRadius: 2,
-        overflow: 'hidden',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      }}
-    >
-      {/* Header with gradient background */}
-      <Box
-        sx={{
-          background: theme => `radial-gradient(circle at -50% -50%, #1b2b1c 0%, ${theme.palette.primary.main} 70%)`,
-          padding: 2,
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <Typography variant='h6' sx={{ fontWeight: 'bold', color: 'white' }}>
-          Support TreeFolks
-        </Typography>
-      </Box>
-
+    <Box>
       {/* Description */}
       <Box sx={{ p: 2, pb: 0 }}>
-        <Typography variant='body1' gutterBottom>
-          Your donation helps us plant more trees and create a greener community!
+        <Typography variant='body2' gutterBottom>
+          Help us reach our {goalAmount.toLocaleString()} fundraising goal with donation to TreeFolks. Thanks!
         </Typography>
 
         {/* Fundraising Goal Display */}
