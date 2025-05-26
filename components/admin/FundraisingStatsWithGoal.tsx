@@ -9,6 +9,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import FundraisingGoalDisplay from './FundraisingGoalDisplay';
 import FundraisingButtonSelector from './FundraisingButtonSelector';
 import { Box, Typography, Paper } from '@mui/material';
+import DonateButton from 'components/DonateButton';
 
 type Stats = {
   activeDonations: number;
@@ -35,7 +36,7 @@ const FundraisingStatsWithGoal = ({
   const [startDate, setStartDate] = useState<Date>(null);
   const [endDate, setEndDate] = useState<Date>(null);
   const [isCustomDate, setIsCustomDate] = useState(false);
-  const [selectedAmount, setSelectedAmount] = useState<number>(25);
+  const [selectedAmount, setSelectedAmount] = useState<number>(10);
 
   const currentYear = year || new Date().getFullYear();
 
@@ -89,6 +90,17 @@ const FundraisingStatsWithGoal = ({
 
         <FundraisingButtonSelector amounts={[5, 10, 20, 50]} amount={selectedAmount} setAmount={setSelectedAmount} />
 
+        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+          <DonateButton
+            amount={selectedAmount}
+            label={`Donate $${selectedAmount}`}
+            metadata={{
+              source: 'fundraising_goal',
+              year: currentYear.toString(),
+              campaign: `${currentYear} Fundraising Goal`,
+            }}
+          />
+        </Box>
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant='body2' color='text.secondary'>
             Current donations: ${currentTotal.toLocaleString()}

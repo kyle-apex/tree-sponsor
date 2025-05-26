@@ -44,6 +44,7 @@ const EventDetailsForm = ({
   const [name, setName] = useState(event.name || '');
   const [instagramPostId, setInstagramPostId] = useState(event.instagramPostId || '');
   const [reminderText, setReminderText] = useState(event.reminderText || '');
+  const [fundraisingGoal, setFundraisingGoal] = useState(event.fundraisingGoal?.toString() || '');
 
   const [path, setPath] = useState(event.path || '');
   const [locationName, setLocationName] = useState(event.location?.name || '');
@@ -190,6 +191,25 @@ const EventDetailsForm = ({
         placeholder='Enter custom text for the reminder email sent 24 hours before the event. If left blank, a default message will be used.'
         multiline
         rows={4}
+        fullWidth
+        sx={{ marginTop: 3, marginBottom: 2 }}
+      />
+      <TextField
+        value={fundraisingGoal}
+        onChange={e => {
+          const newValue = e.target.value;
+          // Only allow numbers and decimal point
+          if (newValue === '' || /^[0-9]*\.?[0-9]*$/.test(newValue)) {
+            updateAttribute('fundraisingGoal', newValue === '' ? null : parseFloat(newValue));
+            setFundraisingGoal(newValue);
+          }
+        }}
+        label='Fundraising Goal'
+        placeholder='Enter fundraising goal amount'
+        type='text'
+        InputProps={{
+          startAdornment: <span style={{ marginRight: 8 }}>$</span>,
+        }}
         fullWidth
         sx={{ marginTop: 3, marginBottom: 2 }}
       />

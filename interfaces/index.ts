@@ -92,6 +92,7 @@ export type PartialEvent = Partial<Event> & {
   location?: PartialLocation;
   organizers?: PartialUser[];
   reminderText?: string;
+  fundraisingGoal?: number;
 };
 
 export type PartialStoreProduct = Partial<StoreProduct>;

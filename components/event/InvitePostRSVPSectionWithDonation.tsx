@@ -1,5 +1,4 @@
-import { MouseEvent, useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { MouseEvent, useState } from 'react';
 import { trackClickEvent } from 'utils/analytics/track-click-event';
 import Link from 'next/link';
 import Box from '@mui/material/Box';
@@ -23,41 +22,6 @@ interface InvitePostRSVPSectionProps {
 const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProps) => {
   const [calendarAnchorEl, setCalendarAnchorEl] = useState<null | HTMLElement>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [currentUrl, setCurrentUrl] = useState<string>('');
-  const [currentDonationAmount, setCurrentDonationAmount] = useState<number>(0);
-  const [isLoadingDonations, setIsLoadingDonations] = useState<boolean>(false);
-  const router = useRouter();
-
-  // Get the current URL for the returnUrl parameter
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setCurrentUrl(window.location.href);
-    }
-  }, [router.asPath]);
-
-  // Fetch donation data for the event
-  useEffect(() => {
-    const fetchDonationData = async () => {
-      if (event.id && event.fundraisingGoal) {
-        setIsLoadingDonations(true);
-        try {
-          const response = await fetch(`/api/events/${event.id}/donations`);
-          if (response.ok) {
-            const data = await response.json();
-            setCurrentDonationAmount(data.totalAmount || 0);
-          } else {
-            console.error('Failed to fetch donation data');
-          }
-        } catch (error) {
-          console.error('Error fetching donation data:', error);
-        } finally {
-          setIsLoadingDonations(false);
-        }
-      }
-    };
-
-    fetchDonationData();
-  }, [event.id, event.fundraisingGoal]);
 
   // Calendar link generation functions
   const generateGoogleCalendarLink = (event: PartialEvent) => {
@@ -377,16 +341,13 @@ const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProp
         </Snackbar>
       </Box>
 
-      {/* Add the donation section only if fundraisingGoal is set */}
-      {event.fundraisingGoal && (
-        <InviteDonationSection
-          event={event}
-          currentRSVP={currentRSVP}
-          currentAmount={currentDonationAmount}
-          goalAmount={Number(event.fundraisingGoal)}
-          returnUrl={currentUrl}
-        />
-      )}
+      {/* Add the new InviteDonationSection component here */}
+      <InviteDonationSection
+        event={event}
+        currentRSVP={currentRSVP}
+        currentAmount={500} // Example value - this would come from your API in a real implementation
+        goalAmount={2000} // Example value - this would come from your API in a real implementation
+      />
     </>
   );
 };

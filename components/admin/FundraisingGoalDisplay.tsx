@@ -96,12 +96,14 @@ const FundraisingGoalDisplay: React.FC<FundraisingGoalDisplayProps> = ({ current
                   sx={{
                     position: 'absolute',
                     top: -24,
-                    left: `${currentPercentage + addedPercentage / 2}%`,
+                    // If total would exceed 100%, position near right edge but within bounds
+                    left: totalPercentage >= 100 ? '90%' : `${currentPercentage + addedPercentage / 2}%`,
                     transform: 'translateX(-50%)',
                     color: '#f39c12',
                     fontWeight: 'bold',
                     fontSize: '1.1rem',
                     transition: 'left 0.5s ease-out', // Add transition for smooth animation
+                    maxWidth: '100%', // Ensure text doesn't overflow container
                   }}
                 >
                   +{formatCurrency(addedAmount)}
