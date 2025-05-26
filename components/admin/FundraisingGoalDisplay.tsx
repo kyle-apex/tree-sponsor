@@ -22,7 +22,7 @@ const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
 const AddedAmountIndicator = styled(Box)(({ theme }) => ({
   position: 'relative',
   height: 20,
-  backgroundColor: '#f39c12', // Orange color that complements the primary color
+  backgroundColor: theme.palette.primary.main, // Orange color that complements the primary color
   borderRadius: '0 5px 5px 0',
   backgroundImage:
     'linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent)',
@@ -78,7 +78,7 @@ const FundraisingGoalDisplay: React.FC<FundraisingGoalDisplayProps> = ({ current
               value={currentPercentage}
               sx={{
                 '& .MuiLinearProgress-bar': {
-                  backgroundColor: theme.palette.primary.main,
+                  backgroundColor: '#b3b3b3',
                 },
               }}
             />
@@ -97,23 +97,25 @@ const FundraisingGoalDisplay: React.FC<FundraisingGoalDisplayProps> = ({ current
                 />
 
                 {/* Added amount label */}
-                <Typography
-                  variant='body1'
-                  sx={{
-                    position: 'absolute',
-                    top: -24,
-                    // If total would exceed 100%, position near right edge but within bounds
-                    left: totalPercentage >= 100 ? '90%' : `${currentPercentage + addedPercentage / 2}%`,
-                    transform: 'translateX(-50%)',
-                    color: '#f39c12',
-                    fontWeight: 'bold',
-                    fontSize: '1.1rem',
-                    transition: 'left 0.5s ease-out', // Add transition for smooth animation
-                    maxWidth: '100%', // Ensure text doesn't overflow container
-                  }}
-                >
-                  +{formatCurrency(addedAmount)}
-                </Typography>
+                {false && (
+                  <Typography
+                    variant='body1'
+                    sx={{
+                      position: 'absolute',
+                      top: -24,
+                      // If total would exceed 100%, position near right edge but within bounds
+                      left: totalPercentage >= 100 ? '90%' : `${currentPercentage + addedPercentage / 2}%`,
+                      transform: 'translateX(-50%)',
+                      color: '#f39c12',
+                      fontWeight: 'bold',
+                      fontSize: '1.1rem',
+                      transition: 'left 0.5s ease-out', // Add transition for smooth animation
+                      maxWidth: '100%', // Ensure text doesn't overflow container
+                    }}
+                  >
+                    +{formatCurrency(addedAmount)}
+                  </Typography>
+                )}
               </>
             )}
           </Box>

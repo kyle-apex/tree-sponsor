@@ -26,6 +26,7 @@ const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProp
   const [currentUrl, setCurrentUrl] = useState<string>('');
   const [currentDonationAmount, setCurrentDonationAmount] = useState<number>(0);
   const [isLoadingDonations, setIsLoadingDonations] = useState<boolean>(false);
+  const [donors, setDonors] = useState<any[]>([]);
   const router = useRouter();
 
   // Get the current URL for the returnUrl parameter
@@ -47,6 +48,10 @@ const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProp
             const data = await response.json();
             console.log('Donation data fetched:', data);
             setCurrentDonationAmount(data.totalAmount || 0);
+            // Set donors if available
+            if (data.donors && Array.isArray(data.donors)) {
+              setDonors(data.donors);
+            }
           } else {
             console.error('Failed to fetch donation data');
           }
@@ -333,6 +338,7 @@ const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProp
                   currentAmount={currentDonationAmount}
                   goalAmount={Number(event.fundraisingGoal)}
                   returnUrl={currentUrl}
+                  donors={donors}
                 />
               </Box>
             )}
