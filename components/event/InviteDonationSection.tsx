@@ -84,6 +84,8 @@ const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
             label={`Donate $${donationAmount}`}
             size='large'
             fullWidth={true}
+            color='primary'
+            variant='outlined'
           />
         </Box>
       </Box>
