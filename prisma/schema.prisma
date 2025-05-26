@@ -99,6 +99,7 @@ model User {
     invitedByUserRSVPs  EventRSVP[]           @relation("invitedByUser")
     pageViews          PageView[]
     clickEvents        ClickEvent[]
+    stripeDonations    StripeDonation[]
              
 
   @@map(name: "users")
@@ -654,6 +655,7 @@ model StripeDonation {
   eventId           Int?
   eventName         String?
   userId            Int?
+  user              User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
   createdDate       DateTime? @default(now())
   metadata          Json?
 }
