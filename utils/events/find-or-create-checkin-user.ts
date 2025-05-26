@@ -1,4 +1,5 @@
 import { CheckinFields, PartialUser } from 'interfaces';
+import getOneYearAgo from 'utils/data/get-one-year-ago';
 import { prisma, Prisma } from 'utils/prisma/init';
 import { generateProfilePath } from 'utils/user/generate-profile-path';
 import { getUserByEmail } from 'utils/user/get-user-by-email';
@@ -6,7 +7,16 @@ import { getUserByEmail } from 'utils/user/get-user-by-email';
 const findOrCreateCheckinUser = async (fields: CheckinFields) => {
   if (!fields) return;
   const { email, firstName, lastName } = fields;
-  let user = await getUserByEmail(email, { include: { profile: {} } });
+  let user = await getUserByEmail(email, {
+    include: {
+      profile: {},
+      subscriptions: {
+        where: { lastPaymentDate: { gte: getOneYearAgo() } },
+        take: 1,
+        select: { lastPaymentDate: true, id: true },
+      },
+    },
+  });
 
   if (user && !user.profile) {
     user.profile = await prisma.profile.create({ data: { userId: user.id } });
