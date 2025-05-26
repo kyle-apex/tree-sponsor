@@ -70,18 +70,7 @@ const InviteRSVPDialog = ({
 
     try {
       // Directly call the API instead of using useAddToQuery
-      await axios.post(`/api/events/${event.id}/rsvps`, rsvpData);
-
-      // Create RSVP data object to pass to parent component
-      const submittedRSVP: PartialEventRSVP = {
-        email,
-        status: status as any, // Cast to any to avoid TypeScript error with EventRSVPStatus enum
-        eventId: event.id,
-        event: event,
-        // Include user info in a format that matches the expected structure
-        user: name ? { name } : undefined,
-      };
-
+      const submittedRSVP = (await axios.post(`/api/events/${event.id}/rsvps`, rsvpData))?.data as PartialEventRSVP;
       if (onRSVP) onRSVP();
       if (onRSVPSubmit) onRSVPSubmit(submittedRSVP);
 

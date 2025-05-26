@@ -116,9 +116,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         id: userId,
         email: email,
         name: `${firstName} ${lastName}`.trim(),
+        subscriptions: user.subscriptions || [],
       },
       status,
-      id: newRSVP?.id,
+      ...newRSVP,
     };
 
     // Send confirmation email to the user who RSVP'd (for Going or Maybe)
@@ -157,7 +158,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
-    res.status(200).json(newRSVP);
+    res.status(200).json(eventRSVPData);
   } else if (req.method === 'GET') {
     const eventId = Number(req.query.id);
     const email = req.query.email ? req.query.email + '' : '';
