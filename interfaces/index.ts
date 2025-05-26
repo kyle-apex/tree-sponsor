@@ -91,7 +91,6 @@ export type PartialEvent = Partial<Event> & {
   trees?: PartialTree[];
   location?: PartialLocation;
   organizers?: PartialUser[];
-  reminderText?: string;
 };
 
 export type PartialStoreProduct = Partial<StoreProduct>;

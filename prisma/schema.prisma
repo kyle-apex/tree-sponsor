@@ -99,6 +99,7 @@ model User {
     invitedByUserRSVPs  EventRSVP[]           @relation("invitedByUser")
     pageViews          PageView[]
     clickEvents        ClickEvent[]
+    stripeDonations    StripeDonation[]
              
 
   @@map(name: "users")
@@ -341,6 +342,7 @@ model Event {
   hasSpecificTrees    Boolean?              @default(false)
   hasNavigation       Boolean?              @default(false)
   reminderText        String?               @db.Text
+  fundraisingGoal     Decimal?              @db.Decimal(10, 2)
   location            Location?             @relation(fields: [locationId], references: [id])
   locationId          Int?
   categories          Category[]            @relation("CategoryToEvent")
@@ -642,4 +644,18 @@ model ClickEvent {
   ipAddress       String?   @db.VarChar(45)
   userId          Int?
   user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model StripeDonation {
+  id                Int       @id @default(autoincrement())
+  stripeSessionId   String?   @unique
+  stripeCustomerId  String?
+  amount            Decimal?  @db.Decimal(6, 2)
+  status            String?   @default("pending")
+  eventId           Int?
+  eventName         String?
+  userId            Int?
+  user              User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdDate       DateTime? @default(now())
+  metadata          Json?
 }
