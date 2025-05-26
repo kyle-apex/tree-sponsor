@@ -98,6 +98,7 @@ const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
                   eventId: event.id?.toString() || '',
                   eventName: event.name || '',
                   userId: currentRSVP?.userId?.toString() || '',
+                  userEmail: currentRSVP?.email || '',
                 }}
                 returnUrl={returnUrl}
                 label={`Donate $${donationAmount}`}
