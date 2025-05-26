@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
       where: {
         eventId: eventId,
-        status: 'succeeded', // Only count successful donations
+        status: 'paid', // Only count successful donations
       },
     });
 

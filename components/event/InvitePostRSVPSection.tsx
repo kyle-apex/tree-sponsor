@@ -38,12 +38,14 @@ const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProp
   // Fetch donation data for the event
   useEffect(() => {
     const fetchDonationData = async () => {
+      console.log('Event data for donation fetch:', { id: event.id, fundraisingGoal: event.fundraisingGoal });
       if (event.id && event.fundraisingGoal) {
         setIsLoadingDonations(true);
         try {
           const response = await fetch(`/api/events/${event.id}/donations`);
           if (response.ok) {
             const data = await response.json();
+            console.log('Donation data fetched:', data);
             setCurrentDonationAmount(data.totalAmount || 0);
           } else {
             console.error('Failed to fetch donation data');
@@ -379,13 +381,19 @@ const InvitePostRSVPSection = ({ event, currentRSVP }: InvitePostRSVPSectionProp
 
       {/* Add the donation section only if fundraisingGoal is set */}
       {event.fundraisingGoal && (
-        <InviteDonationSection
-          event={event}
-          currentRSVP={currentRSVP}
-          currentAmount={currentDonationAmount}
-          goalAmount={Number(event.fundraisingGoal)}
-          returnUrl={currentUrl}
-        />
+        <>
+          {console.log('Rendering InviteDonationSection with:', {
+            currentDonationAmount,
+            goalAmount: Number(event.fundraisingGoal),
+          })}
+          <InviteDonationSection
+            event={event}
+            currentRSVP={currentRSVP}
+            currentAmount={currentDonationAmount}
+            goalAmount={Number(event.fundraisingGoal)}
+            returnUrl={currentUrl}
+          />
+        </>
       )}
     </>
   );

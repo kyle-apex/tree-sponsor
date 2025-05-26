@@ -38,6 +38,9 @@ const AddedAmountIndicator = styled(Box)(({ theme }) => ({
 const FundraisingGoalDisplay: React.FC<FundraisingGoalDisplayProps> = ({ currentAmount, goalAmount, addedAmount }) => {
   const theme = useTheme();
 
+  // Log props for debugging
+  console.log('FundraisingGoalDisplay props:', { currentAmount, goalAmount, addedAmount });
+
   // Calculate percentages for progress bars
   const currentPercentage = (currentAmount / goalAmount) * 100;
   const addedPercentage = (addedAmount / goalAmount) * 100;
@@ -60,6 +63,9 @@ const FundraisingGoalDisplay: React.FC<FundraisingGoalDisplayProps> = ({ current
         <Grid item xs={2}>
           <Typography variant='body1' fontWeight='bold'>
             {formatCurrency(currentAmount)}
+          </Typography>
+          <Typography variant='body2' color='text.secondary'>
+            raised
           </Typography>
         </Grid>
 
@@ -117,6 +123,9 @@ const FundraisingGoalDisplay: React.FC<FundraisingGoalDisplayProps> = ({ current
         <Grid item xs={2} sx={{ textAlign: 'right' }}>
           <Typography variant='body1' fontWeight='bold'>
             {formatCurrency(goalAmount)}
+          </Typography>
+          <Typography variant='body2' color='text.secondary'>
+            goal
           </Typography>
         </Grid>
       </Grid>

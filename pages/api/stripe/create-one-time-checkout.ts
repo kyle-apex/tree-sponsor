@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     const session = await getSession({ req });
 
-    const { amount, metadata = {}, cancelRedirectPath, returnUrl } = req.body;
+    const { amount, metadata = {}, cancelRedirectPath, returnUrl = '/' } = req.body;
 
     // Validate amount
     const parsedAmount = parseInt(amount, 10);
@@ -44,12 +44,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         mode: 'payment', // One-time payment
         metadata: {
           ...metadata,
-          returnUrl: returnUrl || '',
+          returnUrl, // returnUrl is now always defined with a default value
         },
-        success_url: `${getURL()}/signup-success?session_id={CHECKOUT_SESSION_ID}${
-          returnUrl ? '&returnUrl=' + encodeURIComponent(returnUrl) : ''
-        }`,
-        cancel_url: returnUrl ? returnUrl : cancelRedirectPath ? getURL() + cancelRedirectPath : `${getURL()}/signup`,
+        success_url: `${getURL()}/donation-success?session_id={CHECKOUT_SESSION_ID}&returnUrl=${encodeURIComponent(returnUrl)}`,
+        cancel_url: cancelRedirectPath ? getURL() + cancelRedirectPath : returnUrl,
       });
 
       return res.status(200).json({ sessionId: stripeSession.id });

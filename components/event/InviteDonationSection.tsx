@@ -20,8 +20,10 @@ const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
   goalAmount = 1000,
   returnUrl,
 }) => {
+  // Log props for debugging
+  console.log('InviteDonationSection props:', { currentAmount, goalAmount, addedAmount: 25 });
   const [donationAmount, setDonationAmount] = useState<number>(25);
-  const [addedAmount, setAddedAmount] = useState<number>(0);
+  const [addedAmount, setAddedAmount] = useState<number>(25); // Initialize to same value as donationAmount
 
   // Predefined donation amounts
   const donationAmounts = [10, 25, 50, 100];
@@ -70,7 +72,7 @@ const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
         <FundraisingButtonSelector amounts={donationAmounts} amount={donationAmount} setAmount={handleAmountChange} />
 
         {/* Donate Button */}
-        <Box sx={{ mt: 3, mb: 2, display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ mt: 1, mb: 2, display: 'flex', justifyContent: 'center' }}>
           <DonateButton
             amount={donationAmount}
             metadata={{
