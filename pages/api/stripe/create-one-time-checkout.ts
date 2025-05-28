@@ -30,6 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         customer: customerId,
         customer_email: !customerId && userEmail ? userEmail : undefined,
         allow_promotion_codes: true,
+        submit_type: 'donate', // Change button text from "Pay" to "Donate"
         line_items: [
           {
             price_data: {
