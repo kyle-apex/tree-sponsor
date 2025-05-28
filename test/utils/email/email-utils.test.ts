@@ -4,8 +4,6 @@ import {
   getReminderText,
   formatDate,
   generateGoogleCalendarLink,
-  generateOutlookCalendarLink,
-  generateYahooCalendarLink,
   generateICalendarLink,
   generateInviteLink,
   generateUpdateRsvpLink,
@@ -134,66 +132,6 @@ describe('Email Utilities', () => {
     });
   });
 
-  describe('generateOutlookCalendarLink', () => {
-    test('should return empty string if event is not provided', () => {
-      const result = generateOutlookCalendarLink(undefined);
-      expect(result).toBe('');
-    });
-
-    test('should return empty string if event.startDate is not provided', () => {
-      const result = generateOutlookCalendarLink({ ...mockEvent, startDate: undefined });
-      expect(result).toBe('');
-    });
-
-    test('should generate an Outlook Calendar link with correct parameters', () => {
-      const result = generateOutlookCalendarLink(mockEvent);
-      expect(result).toContain('https://outlook.live.com/calendar/0/deeplink/compose');
-      expect(result).toContain(`subject=${encodeURIComponent(mockEvent.name)}`);
-      expect(result).toContain('startdt=');
-      expect(result).toContain('enddt=');
-      expect(result).toContain(`body=${encodeURIComponent(mockEvent.description)}`);
-      expect(result).toContain(`location=${encodeURIComponent(mockEvent.location.name)}`);
-    });
-
-    test('should handle event without endDate by adding 1.5 hours to startDate', () => {
-      const eventWithoutEndDate: PartialEvent = { ...mockEvent, endDate: undefined };
-      const result = generateOutlookCalendarLink(eventWithoutEndDate);
-      expect(result).toContain('https://outlook.live.com/calendar/0/deeplink/compose');
-      expect(result).toContain('startdt=');
-      expect(result).toContain('enddt=');
-    });
-  });
-
-  describe('generateYahooCalendarLink', () => {
-    test('should return empty string if event is not provided', () => {
-      const result = generateYahooCalendarLink(undefined);
-      expect(result).toBe('');
-    });
-
-    test('should return empty string if event.startDate is not provided', () => {
-      const result = generateYahooCalendarLink({ ...mockEvent, startDate: undefined });
-      expect(result).toBe('');
-    });
-
-    test('should generate a Yahoo Calendar link with correct parameters', () => {
-      const result = generateYahooCalendarLink(mockEvent);
-      expect(result).toContain('https://calendar.yahoo.com/?v=60');
-      expect(result).toContain(`title=${encodeURIComponent(mockEvent.name)}`);
-      expect(result).toContain('st=');
-      expect(result).toContain('et=');
-      expect(result).toContain(`desc=${encodeURIComponent(mockEvent.description)}`);
-      expect(result).toContain(`in_loc=${encodeURIComponent(mockEvent.location.name)}`);
-    });
-
-    test('should handle event without endDate by adding 1.5 hours to startDate', () => {
-      const eventWithoutEndDate: PartialEvent = { ...mockEvent, endDate: undefined };
-      const result = generateYahooCalendarLink(eventWithoutEndDate);
-      expect(result).toContain('https://calendar.yahoo.com/?v=60');
-      expect(result).toContain('st=');
-      expect(result).toContain('et=');
-    });
-  });
-
   describe('generateICalendarLink', () => {
     test('should return empty string if event is not provided', () => {
       const result = generateICalendarLink(undefined);
@@ -273,8 +211,6 @@ describe('Email Utilities', () => {
           <p>{{event.description}}</p>
           <p>{{user.email}}</p>
           <a href="{{event.googleCalendarLink}}">Google Calendar</a>
-          <a href="{{event.outlookCalendarLink}}">Outlook Calendar</a>
-          <a href="{{event.yahooCalendarLink}}">Yahoo Calendar</a>
           <a href="{{event.iCalendarLink}}">iCal</a>
           <a href="{{event.inviteLink}}">Invite Friends</a>
           <a href="{{event.updateRsvpLink}}">Update RSVP</a>
@@ -307,8 +243,6 @@ describe('Email Utilities', () => {
 
       // Check that links are generated
       expect(result).toContain('https://calendar.google.com/calendar/render');
-      expect(result).toContain('https://outlook.live.com/calendar/0/deeplink/compose');
-      expect(result).toContain('https://calendar.yahoo.com/?v=60');
       expect(result).toContain(`https://tfyp.org/api/events/${mockEvent.id}/ical`);
       expect(result).toContain(`https://tfyp.org/e/${mockEvent.path}/invite?u=${mockUser.id}`);
       expect(result).toContain(`https://tfyp.org/e/${mockEvent.path}/invite?email=${encodeURIComponent(mockUser.email)}`);
@@ -366,8 +300,6 @@ describe('Email Utilities', () => {
       expect(result).toContain('Details:');
       expect(result).toContain('Add to Calendar:');
       expect(result).toContain('Google:');
-      expect(result).toContain('Outlook:');
-      expect(result).toContain('Yahoo:');
       expect(result).toContain('iCal:');
       expect(result).toContain('Invite Friends:');
       expect(result).toContain('Update your RSVP:');

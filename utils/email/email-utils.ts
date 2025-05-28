@@ -67,52 +67,6 @@ export const generateGoogleCalendarLink = (event: PartialEventRSVP['event']): st
 };
 
 /**
- * Generates an Outlook Calendar link for the event
- * @param event - The event details
- * @returns URL to add event to Outlook Calendar
- */
-export const generateOutlookCalendarLink = (event: PartialEventRSVP['event']): string => {
-  if (!event || !event.startDate) return '';
-
-  // Create date objects from the event's startDate (using original UTC time)
-  const startDate = new Date(event.startDate);
-
-  // If event has an endDate, use it; otherwise, add 1.5 hours to startDate
-  const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000);
-
-  return `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(
-    event.name || '',
-  )}&startdt=${startDate.toISOString()}&enddt=${endDate.toISOString()}&body=${encodeURIComponent(
-    event.description || '',
-  )}&location=${encodeURIComponent(event.location?.name || '')}`;
-};
-
-/**
- * Generates a Yahoo Calendar link for the event
- * @param event - The event details
- * @returns URL to add event to Yahoo Calendar
- */
-export const generateYahooCalendarLink = (event: PartialEventRSVP['event']): string => {
-  if (!event || !event.startDate) return '';
-
-  // Create date objects from the event's startDate (using original UTC time)
-  const startDate = new Date(event.startDate);
-
-  // If event has an endDate, use it; otherwise, add 1.5 hours to startDate
-  const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000);
-
-  // Format dates for Yahoo Calendar (YYYYMMDDTHHmmssZ format without dashes or colons)
-  const yahooStartDate = startDate.toISOString().replace(/-|:|\.\d+/g, '');
-  const yahooEndDate = endDate.toISOString().replace(/-|:|\.\d+/g, '');
-
-  return `https://calendar.yahoo.com/?v=60&title=${encodeURIComponent(
-    event.name || '',
-  )}&st=${yahooStartDate}&et=${yahooEndDate}&desc=${encodeURIComponent(event.description || '')}&in_loc=${encodeURIComponent(
-    event.location?.name || '',
-  )}`;
-};
-
-/**
  * Generates an iCalendar link for the event
  * @param event - The event details
  * @returns URL to download the iCal file
@@ -185,8 +139,6 @@ export const processTemplate = (
 
   // Generate links
   const googleCalendarLink = generateGoogleCalendarLink(event);
-  const outlookCalendarLink = generateOutlookCalendarLink(event);
-  const yahooCalendarLink = generateYahooCalendarLink(event);
   const iCalendarLink = generateICalendarLink(event);
   const inviteLink = generateInviteLink(event, user);
   const updateRsvpLink = generateUpdateRsvpLink(event, user);
@@ -228,8 +180,6 @@ export const processTemplate = (
 
   // Links
   processedTemplate = processedTemplate.replace(/{{event.googleCalendarLink}}/g, googleCalendarLink);
-  processedTemplate = processedTemplate.replace(/{{event.outlookCalendarLink}}/g, outlookCalendarLink);
-  processedTemplate = processedTemplate.replace(/{{event.yahooCalendarLink}}/g, yahooCalendarLink);
   processedTemplate = processedTemplate.replace(/{{event.iCalendarLink}}/g, iCalendarLink);
   processedTemplate = processedTemplate.replace(/{{event.inviteLink}}/g, inviteLink);
   processedTemplate = processedTemplate.replace(/{{event.path}}/g, event.path || '');
@@ -281,8 +231,6 @@ Details: ${event.description || ''}
 
 Add to Calendar:
 Google: ${generateGoogleCalendarLink(event)}
-Outlook: ${generateOutlookCalendarLink(event)}
-Yahoo: ${generateYahooCalendarLink(event)}
 iCal: ${generateICalendarLink(event)}
 
 Invite Friends: ${generateInviteLink(event, user)}
