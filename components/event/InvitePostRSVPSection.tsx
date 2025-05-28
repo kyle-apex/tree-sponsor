@@ -196,7 +196,15 @@ const InvitePostRSVPSection = ({ event, currentRSVP, showDonationSectionOnly = f
                           }
 
                           navigator.clipboard.writeText(inviteUrl);
-                          trackClickEvent('Copy Invite Link', inviteUrl);
+                          // Pass userId and email from currentRSVP to trackClickEvent
+                          trackClickEvent(
+                            'Copy Invite Link',
+                            inviteUrl,
+                            undefined,
+                            undefined,
+                            currentRSVP?.userId,
+                            currentRSVP?.user?.email,
+                          );
                           setSnackbarOpen(true);
                         }
                       },
@@ -239,7 +247,7 @@ const InvitePostRSVPSection = ({ event, currentRSVP, showDonationSectionOnly = f
                           sx={linkStyles as SxProps<Theme>}
                           onClick={(e: MouseEvent<HTMLElement>) => {
                             // Track the click event before navigating
-                            trackClickEvent(item.text, item.href);
+                            trackClickEvent(item.text, item.href, undefined, undefined, currentRSVP?.userId, currentRSVP?.user?.email);
 
                             // Execute the original onClick if it exists
                             if (item.onClick) {
@@ -315,7 +323,7 @@ const InvitePostRSVPSection = ({ event, currentRSVP, showDonationSectionOnly = f
                 <MenuItem
                   onClick={() => {
                     const link = generateGoogleCalendarLink(event);
-                    trackClickEvent('Add to Google Calendar', link);
+                    trackClickEvent('Add to Google Calendar', link, undefined, undefined, currentRSVP?.userId, currentRSVP?.user?.email);
                     window.open(link, '_blank');
                     setCalendarAnchorEl(null);
                   }}
@@ -325,7 +333,7 @@ const InvitePostRSVPSection = ({ event, currentRSVP, showDonationSectionOnly = f
                 <MenuItem
                   onClick={() => {
                     const link = generateICalendarLink(event);
-                    trackClickEvent('Add to iCalendar', link);
+                    trackClickEvent('Add to iCalendar', link, undefined, undefined, currentRSVP?.userId, currentRSVP?.user?.email);
                     window.open(link, '_blank');
                     setCalendarAnchorEl(null);
                   }}

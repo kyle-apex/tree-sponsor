@@ -15,6 +15,7 @@ export const trackClickEvent = async (
   pagePath?: string,
   queryParams?: Record<string, string>,
   userId?: number,
+  userEmail?: string,
 ): Promise<void> => {
   try {
     // Only run on client-side
@@ -25,8 +26,8 @@ export const trackClickEvent = async (
     // Get or create visitor ID
     const visitorId = getVisitorId();
 
-    // Get visitor email from localStorage
-    const email = getVisitorEmail();
+    // Get visitor email from provided email or localStorage
+    const email = userEmail || getVisitorEmail();
 
     // Get page URL (path only, no origin)
     // If pagePath is not provided, use the current pathname
