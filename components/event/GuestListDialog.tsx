@@ -84,7 +84,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
             bottom: 0,
             left: 0,
             right: 0,
-            height: '140px',
+            height: '90px',
             background: theme => `linear-gradient(to bottom, rgba(255,255,255,0) 0%, ${theme.palette.background.paper} 100%)`,
             pointerEvents: 'none', // Allows clicking through the gradient
           },
