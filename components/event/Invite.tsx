@@ -60,7 +60,7 @@ const EventInvite = ({
     isFetching,
     refetch,
     isFetched,
-  } = useGet<PartialEventRSVP[]>(`/api/events/${event.id}/rsvps`, `events/${event.id}/rsvps`, null);
+  } = useGet<PartialEventRSVP[]>(`/api/events/${event.id}/rsvps`, `events/${event.id}/rsvps`, null, { refetchOnWindowFocus: true });
 
   const rsvpsWithoutDeclined = rsvps?.filter(r => r.status === 'Going' || r.status === 'Maybe') || [];
 
