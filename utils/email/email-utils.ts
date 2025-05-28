@@ -8,7 +8,7 @@ import formatTimeRange from 'utils/formatTimeRange';
  * @param date - The date to convert
  * @returns Date object in CST timezone
  */
-const convertToCST = (date: string | Date): Date => {
+export const convertToCST = (date: string | Date): Date => {
   const dateObj = new Date(date);
   return new Date(dateObj.toLocaleString('en-US', { timeZone: 'America/Chicago' }));
 };
