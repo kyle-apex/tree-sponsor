@@ -3,6 +3,7 @@ import path from 'path';
 import { PartialEventRSVP, PartialUser } from 'interfaces';
 import sendEmail from 'utils/email/send-email';
 import formatTimeRange from 'utils/formatTimeRange';
+import { convertToCST } from 'utils/email/email-utils';
 
 /**
  * Formats a date in a human-readable format (e.g., "Sunday, June 15, 2025")
@@ -15,6 +16,7 @@ const formatDate = (date: Date): string => {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'America/Chicago', // Format date in CST timezone
   });
 };
 
@@ -44,7 +46,7 @@ const sendInviterNotification = async (eventRSVP: PartialEventRSVP, invitedByUse
     }
 
     plainText += `\n\nEvent Details:
-Date & Time: ${formatDate(new Date(event.startDate))} ${formatTimeRange(event.startDate, event.endDate)}
+Date & Time: ${formatDate(new Date(event.startDate))} ${formatTimeRange(convertToCST(event.startDate), convertToCST(event.endDate))}
 Location: ${event.location?.name} ${event.location?.address || ''}
 Details: ${event.description || ''}
 
@@ -64,7 +66,10 @@ View event page: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org'}/e/${e
       status === 'Declined' ? 'declined' : status === 'Maybe' ? 'responded maybe to' : 'accepted'
     } your invitation</h2>
       <h3>${event.name}</h3>
-      <p><strong>Date & Time:</strong> ${formatDate(new Date(event.startDate))} ${formatTimeRange(event.startDate, event.endDate)}</p>
+      <p><strong>Date & Time:</strong> ${formatDate(new Date(event.startDate))} ${formatTimeRange(
+      convertToCST(event.startDate),
+      convertToCST(event.endDate),
+    )}</p>
       <p><strong>Location:</strong> ${event.location?.name} ${event.location?.address || ''}</p>
     `;
 

@@ -90,48 +90,6 @@ const InvitePostRSVPSection = ({ event, currentRSVP, showDonationSectionOnly = f
     )}`;
   };
 
-  const generateOutlookCalendarLink = (event: PartialEvent) => {
-    // Ensure we have a valid startDate
-    if (!event.startDate) {
-      return '#';
-    }
-
-    // Create date objects from the event's startDate
-    const startDate = new Date(event.startDate);
-
-    // If event has an endDate, use it; otherwise, add 1.5 hours to startDate
-    const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000); // 90 minutes in milliseconds
-
-    return `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(
-      event.name,
-    )}&startdt=${startDate.toISOString()}&enddt=${endDate.toISOString()}&body=${encodeURIComponent(
-      event.description || '',
-    )}&location=${encodeURIComponent(event.location.name)}`;
-  };
-
-  const generateYahooCalendarLink = (event: PartialEvent) => {
-    // Ensure we have a valid startDate
-    if (!event.startDate) {
-      return '#';
-    }
-
-    // Create date objects from the event's startDate
-    const startDate = new Date(event.startDate);
-
-    // If event has an endDate, use it; otherwise, add 1.5 hours to startDate
-    const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate.getTime() + 90 * 60000); // 90 minutes in milliseconds
-
-    // Format dates for Yahoo Calendar (YYYYMMDDTHHmmssZ format without dashes or colons)
-    const yahooStartDate = startDate.toISOString().replace(/-|:|\.\d+/g, '');
-    const yahooEndDate = endDate.toISOString().replace(/-|:|\.\d+/g, '');
-
-    return `https://calendar.yahoo.com/?v=60&title=${encodeURIComponent(
-      event.name,
-    )}&st=${yahooStartDate}&et=${yahooEndDate}&desc=${encodeURIComponent(event.description || '')}&in_loc=${encodeURIComponent(
-      event.location.name,
-    )}`;
-  };
-
   const generateICalendarLink = (event: PartialEvent) => {
     // Ensure we have a valid ID and startDate
     if (!event.id || !event.startDate) {
@@ -238,7 +196,15 @@ const InvitePostRSVPSection = ({ event, currentRSVP, showDonationSectionOnly = f
                           }
 
                           navigator.clipboard.writeText(inviteUrl);
-                          trackClickEvent('Copy Invite Link', inviteUrl);
+                          // Pass userId and email from currentRSVP to trackClickEvent
+                          trackClickEvent(
+                            'Copy Invite Link',
+                            inviteUrl,
+                            undefined,
+                            undefined,
+                            currentRSVP?.userId,
+                            currentRSVP?.user?.email,
+                          );
                           setSnackbarOpen(true);
                         }
                       },
@@ -281,7 +247,7 @@ const InvitePostRSVPSection = ({ event, currentRSVP, showDonationSectionOnly = f
                           sx={linkStyles as SxProps<Theme>}
                           onClick={(e: MouseEvent<HTMLElement>) => {
                             // Track the click event before navigating
-                            trackClickEvent(item.text, item.href);
+                            trackClickEvent(item.text, item.href, undefined, undefined, currentRSVP?.userId, currentRSVP?.user?.email);
 
                             // Execute the original onClick if it exists
                             if (item.onClick) {
@@ -357,7 +323,7 @@ const InvitePostRSVPSection = ({ event, currentRSVP, showDonationSectionOnly = f
                 <MenuItem
                   onClick={() => {
                     const link = generateGoogleCalendarLink(event);
-                    trackClickEvent('Add to Google Calendar', link);
+                    trackClickEvent('Add to Google Calendar', link, undefined, undefined, currentRSVP?.userId, currentRSVP?.user?.email);
                     window.open(link, '_blank');
                     setCalendarAnchorEl(null);
                   }}
@@ -366,28 +332,8 @@ const InvitePostRSVPSection = ({ event, currentRSVP, showDonationSectionOnly = f
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
-                    const link = generateOutlookCalendarLink(event);
-                    trackClickEvent('Add to Outlook Calendar', link);
-                    window.open(link, '_blank');
-                    setCalendarAnchorEl(null);
-                  }}
-                >
-                  Outlook Calendar
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    const link = generateYahooCalendarLink(event);
-                    trackClickEvent('Add to Yahoo Calendar', link);
-                    window.open(link, '_blank');
-                    setCalendarAnchorEl(null);
-                  }}
-                >
-                  Yahoo Calendar
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
                     const link = generateICalendarLink(event);
-                    trackClickEvent('Add to iCalendar', link);
+                    trackClickEvent('Add to iCalendar', link, undefined, undefined, currentRSVP?.userId, currentRSVP?.user?.email);
                     window.open(link, '_blank');
                     setCalendarAnchorEl(null);
                   }}

@@ -75,7 +75,21 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
           )}
         </Box>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent
+        sx={{
+          overflowY: 'auto',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '90px',
+            background: theme => `linear-gradient(to bottom, rgba(255,255,255,0) 0%, ${theme.palette.background.paper} 100%)`,
+            pointerEvents: 'none', // Allows clicking through the gradient
+          },
+        }}
+      >
         {hasRSVP ? (
           <Box>
             {users.length > 0 ? (
