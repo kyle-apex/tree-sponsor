@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { Stripe, stripe } from 'utils/stripe/init';
 import { prisma } from 'utils/prisma/init';
+import { sendDonationReceipt } from 'utils/email/send-donation-receipt';
 
 const DonationSuccess = ({ returnUrl, amount }: { returnUrl?: string; amount?: number }) => {
   const router = useRouter();
@@ -59,6 +60,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext): Pr
       if (stripeSession.payment_status === 'paid') {
         const metadata = stripeSession.metadata || {};
         console.log('metadata:', metadata);
+        const donationAmount = stripeSession.amount_total / 100;
+
         // Use $executeRaw to bypass TypeScript error until Prisma client is regenerated
         await prisma.$executeRaw`
           INSERT INTO StripeDonation (
@@ -74,7 +77,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext): Pr
           ) VALUES (
             ${stripeSession.id},
             ${customer.id},
-            ${stripeSession.amount_total / 100},
+            ${donationAmount},
             ${stripeSession.payment_status},
             ${metadata.eventId ? parseInt(metadata.eventId) : null},
             ${metadata.eventName || null},
@@ -85,7 +88,27 @@ export async function getServerSideProps(context: GetServerSidePropsContext): Pr
         `;
 
         // Set the donation amount in props
-        props.amount = stripeSession.amount_total / 100;
+        props.amount = donationAmount;
+
+        // Send thank you receipt email
+        try {
+          // Get customer email from Stripe
+          const customerEmail = customer.email || metadata.userEmail;
+
+          if (customerEmail) {
+            // If there's an event associated with this donation, fetch it
+
+            // Send the receipt email
+            await sendDonationReceipt(customerEmail, donationAmount);
+
+            console.log('Donation receipt email sent to:', customerEmail);
+          } else {
+            console.log('No email available to send donation receipt');
+          }
+        } catch (emailError) {
+          console.error('Error sending donation receipt email:', emailError);
+          // Don't fail the overall process if email sending fails
+        }
       }
     } catch (err: unknown) {
       console.log('Error processing donation:', err);
