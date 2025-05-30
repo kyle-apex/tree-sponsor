@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Skeleton from '@mui/material/Skeleton';
 import { LeaderRow, MembershipStatus, PartialEvent, CheckinFields, PartialUser, PartialEventRSVP } from 'interfaces';
 import { SetStateAction, useEffect, useRef, useState } from 'react';
 import LocationMapDialog from './LocationMapDialog';
@@ -105,6 +106,26 @@ const EventInvite = ({
     }
   };
 
+  // Helper function to process users for a given status
+  const getProcessedUsersForStatus = (status: string) => {
+    return (
+      rsvps
+        ?.filter(r => r.status === status)
+        .sort((a: PartialEventRSVP, b: PartialEventRSVP) => {
+          if (invitedByUser?.id) {
+            const aInvitedByUser = a.invitedByUserId === invitedByUser.id || a.userId == invitedByUser.id;
+            const bInvitedByUser = b.invitedByUserId === invitedByUser.id || b.userId == invitedByUser.id;
+
+            if (aInvitedByUser && !bInvitedByUser) return -1;
+            if (!aInvitedByUser && bInvitedByUser) return 1;
+          }
+          return 0;
+        })
+        .map(r => r.user)
+        .filter(Boolean) || []
+    );
+  };
+
   useEffect(() => {
     if (storedEmail) {
       getUserData(storedEmail);
@@ -184,50 +205,72 @@ const EventInvite = ({
         className='box-shadow rsvp-button-section'
         mt={2}
       >
-        <Box>
-          <SplitRow>
-            <Typography>
-              {rsvps?.filter(r => r.status === 'Going')?.length || 0} Going {rsvps?.filter(r => r.status === 'Maybe')?.length || 0} Maybe
-            </Typography>
-            <a
-              style={{ textDecoration: 'none', cursor: 'pointer', fontWeight: 600 }}
-              onClick={() => {
-                setShowHostsOnly(false);
-                setIsGuestListDialogOpen(true);
-              }}
-            >
-              View Guest List
-            </a>
-          </SplitRow>
-        </Box>
-        <hr />
-        {rsvps && rsvps.length > 0 && (
-          <Box
-            flexDirection='row'
-            alignItems='center'
-            style={{ display: 'flex', gap: '10px', cursor: 'pointer' }}
-            onClick={() => {
-              setShowHostsOnly(false);
-              setIsGuestListDialogOpen(true);
-            }}
-          >
-            <UserBubbles ml={-1.4} users={rsvpsWithoutDeclined.map(r => r.user)} maxLength={6} size={24} />
-            <Typography color='gray' variant='body2'>
-              {rsvpsWithoutDeclined[0]?.user?.name && rsvpsWithoutDeclined[1]?.user?.name
-                ? (() => {
-                    const othersCount = rsvpsWithoutDeclined.length - 2;
-                    if (othersCount > 0) {
-                      return `${rsvpsWithoutDeclined[0].user.name}, ${rsvpsWithoutDeclined[1].user.name}, and ${othersCount} ${
-                        othersCount === 1 ? 'other' : 'others'
-                      }`;
-                    }
-                    return `${rsvpsWithoutDeclined[0].user.name}, ${rsvpsWithoutDeclined[1].user.name}`;
-                  })()
-                : rsvpsWithoutDeclined[0]?.user?.name
-                ? rsvpsWithoutDeclined[0].user.name
-                : 'No attendees yet'}
-            </Typography>
-          </Box>
+        {isFetching ? (
+          <>
+            <Box>
+              <SplitRow>
+                <Box>
+                  <Skeleton variant='text' width={120} height={24} />
+                </Box>
+                <Skeleton variant='text' width={100} height={24} />
+              </SplitRow>
+            </Box>
+            <hr />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Skeleton variant='circular' width={24} height={24} />
+              <Skeleton variant='circular' width={24} height={24} />
+              <Skeleton variant='text' width={100} height={24} />
+            </Box>
+          </>
+        ) : (
+          <>
+            <Box>
+              <SplitRow>
+                <Typography>
+                  {rsvps?.filter(r => r.status === 'Going')?.length || 0} Going {rsvps?.filter(r => r.status === 'Maybe')?.length || 0}{' '}
+                  Maybe
+                </Typography>
+                <a
+                  style={{ textDecoration: 'none', cursor: 'pointer', fontWeight: 600 }}
+                  onClick={() => {
+                    setShowHostsOnly(false);
+                    setIsGuestListDialogOpen(true);
+                  }}
+                >
+                  View Guest List
+                </a>
+              </SplitRow>
+            </Box>
+            <hr />
+            {rsvps && rsvps.length > 0 && (
+              <Box
+                flexDirection='row'
+                alignItems='center'
+                style={{ display: 'flex', gap: '10px', cursor: 'pointer' }}
+                onClick={() => {
+                  setShowHostsOnly(false);
+                  setIsGuestListDialogOpen(true);
+                }}
+              >
+                <UserBubbles ml={-1.4} users={rsvpsWithoutDeclined.map(r => r.user)} maxLength={6} size={24} />
+                <Typography color='gray' variant='body2'>
+                  {rsvpsWithoutDeclined[0]?.user?.name && rsvpsWithoutDeclined[1]?.user?.name
+                    ? (() => {
+                        const othersCount = rsvpsWithoutDeclined.length - 2;
+                        if (othersCount > 0) {
+                          return `${rsvpsWithoutDeclined[0].user.name}, ${rsvpsWithoutDeclined[1].user.name}, and ${othersCount} ${
+                            othersCount === 1 ? 'other' : 'others'
+                          }`;
+                        }
+                        return `${rsvpsWithoutDeclined[0].user.name}, ${rsvpsWithoutDeclined[1].user.name}`;
+                      })()
+                    : rsvpsWithoutDeclined[0]?.user?.name
+                    ? rsvpsWithoutDeclined[0].user.name
+                    : 'No attendees yet'}
+                </Typography>
+              </Box>
+            )}
+          </>
         )}
         {!eventRSVP && (
           <Typography sx={{ mt: 2, mb: 2 }}>
@@ -414,22 +457,7 @@ const EventInvite = ({
         open={isGuestListDialogOpen}
         onClose={() => setIsGuestListDialogOpen(false)}
         hasRSVP={showHostsOnly ? true : !!eventRSVP}
-        users={
-          showHostsOnly
-            ? event.organizers || []
-            : [
-                // Going users first
-                ...(rsvps
-                  ?.filter(r => r.status === 'Going')
-                  .map(r => r.user)
-                  .filter(Boolean) || []),
-                // Maybe users next
-                ...(rsvps
-                  ?.filter(r => r.status === 'Maybe')
-                  .map(r => r.user)
-                  .filter(Boolean) || []),
-              ]
-        }
+        users={showHostsOnly ? event.organizers || [] : [...getProcessedUsersForStatus('Going'), ...getProcessedUsersForStatus('Maybe')]}
         goingCount={showHostsOnly ? 0 : rsvps?.filter(r => r.status === 'Going')?.length || 0}
         maybeCount={showHostsOnly ? 0 : rsvps?.filter(r => r.status === 'Maybe')?.length || 0}
         showHostsOnly={showHostsOnly}
