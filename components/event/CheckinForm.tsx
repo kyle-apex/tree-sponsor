@@ -81,6 +81,7 @@ const CheckinForm = forwardRef(
               size='small'
               sx={{ mb: 3 }}
               required
+              autoComplete='given-name'
             ></TextField>
             <TextField
               InputLabelProps={{
@@ -92,6 +93,7 @@ const CheckinForm = forwardRef(
               size='small'
               sx={{ mb: 3 }}
               required
+              autoComplete='family-name'
             ></TextField>
           </SplitRow>
         )}
@@ -108,6 +110,7 @@ const CheckinForm = forwardRef(
           size='small'
           fullWidth
           required
+          autoComplete='email'
           sx={{ mb: 3 }}
         ></TextField>
         {activeTab == 0 && (

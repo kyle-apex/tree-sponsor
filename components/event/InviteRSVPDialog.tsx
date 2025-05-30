@@ -172,6 +172,7 @@ const InviteRSVPDialog = ({
             size='small'
             sx={{ mb: 3, mt: 1 }}
             required={status !== 'Declined'}
+            autoComplete='name'
           ></TextField>
         )}
         <TextField
@@ -182,6 +183,7 @@ const InviteRSVPDialog = ({
           size='small'
           sx={{ mb: 1, mt: isSignIn ? 1 : 0 }}
           required={status !== 'Declined'}
+          autoComplete='email'
         ></TextField>
         {(status === 'Going' || status === 'Maybe') && !isSignIn && (
           <Typography
