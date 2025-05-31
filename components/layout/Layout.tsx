@@ -59,7 +59,6 @@ const Layout = ({
         body {
           /*background: #f9f9f9;*/
           background: url(/background-lighter.svg);
-          overflow-x: hidden;
           padding: 0 !important;
         }
         html {

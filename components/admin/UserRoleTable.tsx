@@ -107,11 +107,11 @@ export default function UserRoleTable({
   }, [users, searchText]);
 
   return (
-    <TableContainer className={classes.tableContainer}>
+    <TableContainer sx={{ overflowX: 'unset' }} className={classes.tableContainer}>
       {roles && (
         <>
           {users?.length && <SearchBox label='Filter Users' onChange={setSearchText} defaultValue={searchText} mb={2}></SearchBox>}
-          <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
+          <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table' stickyHeader>
             <TableHeader classes={classes} headCells={headCells} />
             {users && (
               <TableBody>
