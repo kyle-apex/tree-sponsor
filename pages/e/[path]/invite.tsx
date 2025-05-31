@@ -29,7 +29,7 @@ const InvitePage = ({
 
   return (
     <Layout
-      title={event.name}
+      titleOverride={invitedByUser?.name ? event.name + ' - Respond to ' + invitedByUser.name.split(' ')[0] + "'s Invite" : event.name}
       header='TreeFolksYP'
       ogImage={
         event.pictureUrl && invitedByUser?.image
