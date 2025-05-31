@@ -247,7 +247,7 @@ export default function EnhancedTable(): JSX.Element {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-        <TableContainer sx={{ overflowX: 'unset' }}>
+        <TableContainer>
           <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table' stickyHeader>
             <TableHeader
               classes={classes}

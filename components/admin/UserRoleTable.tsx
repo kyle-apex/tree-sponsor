@@ -107,7 +107,7 @@ export default function UserRoleTable({
   }, [users, searchText]);
 
   return (
-    <TableContainer sx={{ overflowX: 'unset' }} className={classes.tableContainer}>
+    <TableContainer className={classes.tableContainer}>
       {roles && (
         <>
           {users?.length && <SearchBox label='Filter Users' onChange={setSearchText} defaultValue={searchText} mb={2}></SearchBox>}
