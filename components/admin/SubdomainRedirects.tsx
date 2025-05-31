@@ -92,6 +92,7 @@ const SubdomainRedirects = () => {
                 return { ...i, subdomain: e.target.value };
               });
             }}
+            inputProps={{ autoCapitalize: 'none' }}
             label='Subdomain Name'
             size='small'
             autoCapitalize='off'
@@ -113,6 +114,7 @@ const SubdomainRedirects = () => {
             multiline
             autoCapitalize='off'
             autoComplete='off'
+            inputProps={{ autoCapitalize: 'none' }}
             sx={{ marginBottom: 3 }}
             helperText='Include https:// in the provided redirect link'
           ></TextField>
