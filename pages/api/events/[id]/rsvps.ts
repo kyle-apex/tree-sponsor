@@ -65,14 +65,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       userId,
       emailOptIn,
       eventDetailsEmailOptIn: detailsEmailOptIn,
-      invitedByUserId,
+      invitedByUserId: userId === invitedByUserId ? null : invitedByUserId,
       status,
     };
     const createRSVP: Prisma.EventRSVPUncheckedCreateInput = {
       eventId,
       userId,
       email,
-      invitedByUserId,
+      invitedByUserId: userId === invitedByUserId ? null : invitedByUserId,
       emailOptIn,
       eventDetailsEmailOptIn: detailsEmailOptIn,
       status,
