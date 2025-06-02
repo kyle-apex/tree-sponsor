@@ -75,7 +75,7 @@ const InvitedPeopleSection = ({ eventId, currentUserId }: InvitedPeopleSectionPr
           {invitedPeople.map((rsvp, index) => (
             <Box key={rsvp.id}>
               {index > 0 && <Divider component='li' />}
-              <ListItem alignItems='flex-start'>
+              <ListItem alignItems='flex-start' sx={{ px: 0.5 }}>
                 <ListItemAvatar>
                   <UserAvatar image={rsvp.user?.image} name={rsvp.user?.name || rsvp.email || 'Guest'} size={40} />
                 </ListItemAvatar>

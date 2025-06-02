@@ -57,8 +57,11 @@ View event page: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org'}/e/${e
     // Set the subject line
     const emoji = status === 'Declined' ? '😔' : status === 'Maybe' ? '🤔' : '🎉';
     const action = status === 'Declined' ? 'declined' : status === 'Maybe' ? 'might attend' : 'is attending';
-    const subject = `${emoji} ${user.name || 'Someone'} ${action} your event: ${event.name}`;
 
+    if (user?.name === 'undefined') user.name = null;
+
+    const subject = `${emoji} ${user.name || 'Someone'} ${action} your event: ${event.name}`;
+    console.log('subject', subject);
     // Create HTML version
     let htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
