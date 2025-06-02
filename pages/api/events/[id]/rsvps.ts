@@ -123,7 +123,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
 
     // Send confirmation email to the user who RSVP'd (for Going or Maybe)
-    if ((status === 'Going' || status === 'Maybe') && status !== existingRSVP?.status) {
+    if ((status === 'Going' || status === 'Maybe') && status !== existingRSVP?.status && firstName) {
       try {
         // Schedule the confirmation email to be sent after 2 minutes
         await scheduleSendRsvpConfirmation(eventRSVPData);
@@ -135,7 +135,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Send notification to the inviter if applicable
-    if (invitedByUserId && notifyInviter && invitedByUserId !== userId) {
+    if (invitedByUserId && notifyInviter && invitedByUserId !== userId && firstName) {
       try {
         // Get the inviter's user data
         const invitedByUser = await prisma.user.findUnique({
