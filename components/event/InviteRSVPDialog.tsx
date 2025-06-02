@@ -270,7 +270,7 @@ const InviteRSVPDialog = ({
             </FormGroup>
           </>
         )}
-        <Divider sx={{ marginBottom: 1 }}></Divider>
+        {!isSignIn && <Divider sx={{ marginBottom: 1 }}></Divider>}
       </DialogContent>
       <DialogActions>
         <SplitRow>
