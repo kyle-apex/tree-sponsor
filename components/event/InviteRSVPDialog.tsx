@@ -184,6 +184,7 @@ const InviteRSVPDialog = ({
           sx={{ mb: 1, mt: isSignIn ? 1 : 0 }}
           required={status !== 'Declined'}
           autoComplete='email'
+          inputProps={{ autoCapitalize: 'none' }}
         ></TextField>
         {(status === 'Going' || status === 'Maybe') && !isSignIn && (
           <Typography
