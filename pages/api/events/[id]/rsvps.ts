@@ -24,7 +24,8 @@ import getOneYearAgo from 'utils/data/get-one-year-ago';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const eventId = Number(req.query.id);
   const email = req.body.email ? String(req.body.email)?.trim() : null;
-  const name = String(req.body.name)?.trim();
+  let name = String(req.body.name)?.trim();
+  if (name === 'undefined') name = '';
   const invitedByUserId = req.body.invitedByUserId ? Number(req.body.invitedByUserId) : null;
   const detailsEmailOptIn = req.body.detailsEmailOptIn === true;
   const emailOptIn = req.body.emailOptIn === true;
@@ -44,7 +45,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const nameSplit = name.split(' ');
     const firstName = nameSplit.shift();
     const lastName = nameSplit.join(' ');
-
     const user = await findOrCreateCheckinUser({
       email,
       firstName,
@@ -123,7 +123,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
 
     // Send confirmation email to the user who RSVP'd (for Going or Maybe)
-    if (status === 'Going' || status === 'Maybe') {
+    if ((status === 'Going' || status === 'Maybe') && status !== existingRSVP?.status) {
       try {
         // Schedule the confirmation email to be sent after 2 minutes
         await scheduleSendRsvpConfirmation(eventRSVPData);
@@ -135,7 +135,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Send notification to the inviter if applicable
-    if (invitedByUserId && notifyInviter) {
+    if (invitedByUserId && notifyInviter && invitedByUserId !== userId) {
       try {
         // Get the inviter's user data
         const invitedByUser = await prisma.user.findUnique({
