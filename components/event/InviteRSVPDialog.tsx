@@ -57,30 +57,9 @@ const InviteRSVPDialog = ({
 
   const rsvp = async () => {
     setIsLoading(true);
-
-    // Get the latest values from the TextFields in case browser autocomplete was used
-    // and the onChange event didn't fire
-    const nameInput = document.querySelector('input[autocomplete="name"]') as HTMLInputElement;
-    const emailInput = document.querySelector('input[autocomplete="email"]') as HTMLInputElement;
-
-    // Update state with latest values from the DOM
-    const latestName = nameInput?.value || name;
-    const latestEmail = emailInput?.value || email;
-
-    // Update state with these values
-    if (latestName !== name) setName(latestName);
-    if (latestEmail !== email) setEmail(latestEmail);
-
-    // Validate name for Going or Maybe status
-    if ((status === 'Going' || status === 'Maybe') && (!latestName || latestName.trim() === '' || latestName === 'undefined')) {
-      console.error('Cannot submit RSVP: Name is required for Going or Maybe status');
-      setIsLoading(false);
-      return;
-    }
-
     const rsvpData = {
-      email: latestEmail,
-      name: latestName,
+      email,
+      name,
       detailsEmailOptIn,
       emailOptIn: isEmailOptIn,
       invitedByUserId: invitedByUser?.id,
@@ -291,7 +270,7 @@ const InviteRSVPDialog = ({
             </FormGroup>
           </>
         )}
-        <Divider sx={{ marginBottom: 1 }}></Divider>
+        {!isSignIn && <Divider sx={{ marginBottom: 1 }}></Divider>}
       </DialogContent>
       <DialogActions>
         <SplitRow>
@@ -299,10 +278,7 @@ const InviteRSVPDialog = ({
             Cancel
           </Button>
           <LoadingButton
-            disabled={
-              (status !== 'Declined' && !isSignIn && (!name || name === 'undefined' || name.trim() === '')) ||
-              (status !== 'Declined' && !email)
-            }
+            disabled={(!name && !isSignIn && status !== 'Declined') || (!email && status !== 'Declined')}
             sx={{
               width: '100%',
               minWidth: '140px',
