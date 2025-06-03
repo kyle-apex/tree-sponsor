@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         billing_address_collection: 'auto',
         customer: customerId,
         customer_email: !customerId && userEmail ? userEmail : undefined,
-        allow_promotion_codes: true,
+        allow_promotion_codes: false,
         submit_type: 'donate', // Change button text from "Pay" to "Donate"
         line_items: [
           {
