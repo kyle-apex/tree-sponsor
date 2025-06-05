@@ -34,19 +34,52 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const getIcon = (title: string) => {
+  // Common styling for all icons to ensure consistent positioning
+  const iconStyle = {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
   switch (title) {
     case 'Pollution':
-      return <PollutionIcon />;
+      return (
+        <Box sx={iconStyle}>
+          <PollutionIcon />
+        </Box>
+      );
     case 'Flood Prevention':
-      return <FloodingIcon />;
+      return (
+        <Box sx={iconStyle}>
+          <FloodingIcon />
+        </Box>
+      );
     case 'Homes':
-      return <AnimalsImage />;
+      return (
+        <Box sx={iconStyle}>
+          <AnimalsImage />
+        </Box>
+      );
     case 'Shade':
-      return <ShadeImage />;
+      return (
+        <Box sx={iconStyle}>
+          <ShadeImage />
+        </Box>
+      );
     case 'Atmosphere':
-      return <AtmosphereImage />;
+      return (
+        <Box sx={iconStyle}>
+          <AtmosphereImage />
+        </Box>
+      );
     case 'Activities':
-      return <ActivitiesImage />;
+      return (
+        <Box sx={iconStyle}>
+          <ActivitiesImage />
+        </Box>
+      );
   }
 };
 
@@ -96,31 +129,160 @@ const IndexPage = ({
         </Box>
       </Container>
       <Container maxWidth='lg'>
-        <div
-          style={{
-            width: '100px',
-            marginBottom: '25px',
-            height: '3px',
-            backgroundColor: '#486e62',
-          }}
-        ></div>
-        <Typography variant='h2' color='secondary' mb={6}>
-          Why Support the Urban Forest with an Annual Membership?
-        </Typography>
-        <Grid container direction={{ xs: 'column', sm: 'row', md: 'row' }} spacing={2} mb={5}>
+        <Box sx={{ mb: 6, textAlign: 'center' }}>
+          <Typography
+            variant='overline'
+            sx={{
+              color: '#486e62',
+              fontWeight: 600,
+              letterSpacing: 1.5,
+              fontSize: '1rem',
+              display: 'block',
+              mb: 1,
+            }}
+          >
+            BENEFITS OF TREES
+          </Typography>
+          <Typography
+            variant='h2'
+            color='secondary'
+            sx={{
+              position: 'relative',
+              display: 'inline-block',
+              mb: 2,
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                bottom: -10,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: 80,
+                height: 4,
+                borderRadius: 2,
+                backgroundColor: '#486e62',
+              },
+            }}
+          >
+            Why Support the Urban Forest?
+          </Typography>
+          <Typography
+            variant='subtitle1'
+            color='text.secondary'
+            sx={{
+              maxWidth: 700,
+              mx: 'auto',
+              mt: 3,
+              mb: 5,
+            }}
+          >
+            Your annual membership helps grow and maintain our urban forest, creating a healthier and more sustainable community for
+            everyone.
+          </Typography>
+        </Box>
+        <Grid container spacing={3} mb={6}>
           {TREE_BENEFITS.map((benefit, idx) => (
-            <Grid key={idx} item xs={12} sm={4} mb={4}>
-              <Grid container gap='15px' wrap='nowrap' direction={{ xs: 'row', sm: 'row', md: 'row' }}>
-                <Grid item className='icon-container' alignSelf={{ xs: 'start', sm: 'center' }}>
-                  {getIcon(benefit.title)}
-                </Grid>
-                <Grid item>
-                  <Typography variant='h6' color='primary'>
-                    {benefit.title}
-                  </Typography>
-                  <Typography variant='caption'>{benefit.description}</Typography>
-                </Grid>
-              </Grid>
+            <Grid key={idx} item xs={12} sm={6} md={4}>
+              <Box
+                sx={{
+                  height: '100%',
+                  p: 3.5,
+                  borderRadius: 3,
+                  boxShadow: '0 6px 20px rgba(0, 0, 0, 0.06)',
+                  transition: 'all 0.3s ease',
+                  background: 'linear-gradient(145deg, #ffffff, #f5f9f7)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&:hover': {
+                    transform: 'translateY(-5px)',
+                    boxShadow: '0 12px 28px rgba(72, 110, 98, 0.15)',
+                    background: 'linear-gradient(145deg, #f5f9f7, #ffffff)',
+                  },
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    width: '100px',
+                    height: '100px',
+                    background: 'radial-gradient(circle at top right, rgba(72, 110, 98, 0.05) 0%, rgba(255,255,255,0) 70%)',
+                    zIndex: 0,
+                  },
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    mb: 2.5,
+                    borderRadius: '50%',
+                    width: 90,
+                    height: 90,
+                    background: 'linear-gradient(135deg, rgba(72, 110, 98, 0.18) 0%, rgba(72, 110, 98, 0.08) 100%)',
+                    border: '2px solid rgba(72, 110, 98, 0.25)',
+                    mx: 'auto',
+                    transition: 'all 0.3s ease',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    '&:hover': {
+                      background: 'linear-gradient(135deg, rgba(72, 110, 98, 0.25) 0%, rgba(72, 110, 98, 0.15) 100%)',
+                      transform: 'scale(1.05)',
+                      boxShadow: '0 4px 12px rgba(72, 110, 98, 0.2)',
+                    },
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: 'radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)',
+                      zIndex: 1,
+                    },
+                  }}
+                >
+                  <Box sx={{ width: '60px', height: '60px', position: 'relative', zIndex: 2 }}>{getIcon(benefit.title)}</Box>
+                </Box>
+                <Typography
+                  variant='h6'
+                  color='primary'
+                  sx={{
+                    textAlign: 'center',
+                    fontWeight: 600,
+                    mb: 1.5,
+                    position: 'relative',
+                    zIndex: 1,
+                    '&::after': {
+                      content: '""',
+                      position: 'absolute',
+                      bottom: -8,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: '40px',
+                      height: '3px',
+                      borderRadius: '2px',
+                      backgroundColor: 'rgba(72, 110, 98, 0.3)',
+                    },
+                  }}
+                >
+                  {benefit.title}
+                </Typography>
+                <Typography
+                  variant='body2'
+                  sx={{
+                    textAlign: 'center',
+                    color: 'text.secondary',
+                    lineHeight: 1.7,
+                    mt: 1.5,
+                    position: 'relative',
+                    zIndex: 1,
+                  }}
+                >
+                  {benefit.description}
+                </Typography>
+              </Box>
             </Grid>
           ))}
         </Grid>
