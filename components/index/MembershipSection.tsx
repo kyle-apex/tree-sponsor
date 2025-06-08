@@ -19,7 +19,7 @@ const MembershipSection: React.FC<MembershipSectionProps> = ({ stripePriceIdLow,
         <CurveTop />
       </CurveTopContainer>
 
-      <div className='wide-container index'>
+      <div id='membership-section' className='wide-container index'>
         <Container maxWidth='sm'>
           <Typography color='white' variant='h1' sx={{ fontSize: '2rem' }}>
             Become a Supporting Member
