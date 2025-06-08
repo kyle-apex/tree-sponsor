@@ -65,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const userAnalyticsMap = new Map<number, UserAnalytics>();
 
     // Track unique visitors by IP address for each inviting user
-    const userVisitorMap = new Map<number, Set<string>>();
+    const userVisitorMap = new Map<number, { seenVisitorIds: Set<string>; seenIpAddresses: Set<string> }>();
 
     // Process page views to extract inviting users
     for (const view of pageViewsRaw as any[]) {
@@ -122,21 +122,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
 
         // Initialize the set of unique visitors for this user
-        userVisitorMap.set(userId, new Set<string>());
+        userVisitorMap.set(userId, {
+          seenVisitorIds: new Set<string>(),
+          seenIpAddresses: new Set<string>(),
+        });
       }
 
-      // Create a unique visitor identifier based on visitorId and ipAddress
-      // If ipAddress is available, use it as the primary identifier to deduplicate
-      // Otherwise, fall back to visitorId
-      const visitorKey = view.ipAddress ? `ip:${view.ipAddress}` : `visitor:${view.visitorId}`;
+      const visitorTracking = userVisitorMap.get(userId)!;
+      const currentVisitorId = view.visitorId as string | undefined;
+      const currentIpAddress = view.ipAddress as string | undefined;
 
-      const visitorSet = userVisitorMap.get(userId)!;
+      let isUnique = true;
 
-      // Only count this as a unique page view if we haven't seen this visitor before
-      if (!visitorSet.has(visitorKey)) {
-        visitorSet.add(visitorKey);
+      // Check if visitorId has been seen
+      if (currentVisitorId && visitorTracking.seenVisitorIds.has(currentVisitorId)) {
+        isUnique = false;
+      }
 
-        // Increment unique page views
+      // Check if ipAddress has been seen
+      if (currentIpAddress && visitorTracking.seenIpAddresses.has(currentIpAddress)) {
+        isUnique = false;
+      }
+
+      if (isUnique) {
+        if (currentVisitorId) {
+          visitorTracking.seenVisitorIds.add(currentVisitorId);
+        }
+        if (currentIpAddress) {
+          visitorTracking.seenIpAddresses.add(currentIpAddress);
+        }
+
         const analytics = userAnalyticsMap.get(userId)!;
         analytics.uniquePageViews++;
       }
