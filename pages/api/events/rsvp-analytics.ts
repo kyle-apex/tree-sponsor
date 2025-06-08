@@ -47,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Refined raw query to ensure we get all necessary fields and proper joins
     const pageViewsRaw = await prisma.$queryRaw`
-      SELECT DISTINCT pv.visitorId, pv.queryParams
+      SELECT DISTINCT pv.visitorId, pv.queryParams, pv.ipAddress
       FROM PageView pv
       WHERE pv.pageUrl = ${invitePageUrl}
       AND pv.queryParams LIKE '%u=%'
@@ -63,6 +63,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Extract user IDs from the 'u' query parameter in page views
     const userAnalyticsMap = new Map<number, UserAnalytics>();
+
+    // Track unique visitors by IP address for each inviting user
+    const userVisitorMap = new Map<number, Set<string>>();
 
     // Process page views to extract inviting users
     for (const view of pageViewsRaw as any[]) {
@@ -117,11 +120,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             invited: 0,
           },
         });
+
+        // Initialize the set of unique visitors for this user
+        userVisitorMap.set(userId, new Set<string>());
       }
 
-      // Increment unique page views
-      const analytics = userAnalyticsMap.get(userId)!;
-      analytics.uniquePageViews++;
+      // Create a unique visitor identifier based on visitorId and ipAddress
+      // If ipAddress is available, use it as the primary identifier to deduplicate
+      // Otherwise, fall back to visitorId
+      const visitorKey = view.ipAddress ? `ip:${view.ipAddress}` : `visitor:${view.visitorId}`;
+
+      const visitorSet = userVisitorMap.get(userId)!;
+
+      // Only count this as a unique page view if we haven't seen this visitor before
+      if (!visitorSet.has(visitorKey)) {
+        visitorSet.add(visitorKey);
+
+        // Increment unique page views
+        const analytics = userAnalyticsMap.get(userId)!;
+        analytics.uniquePageViews++;
+      }
     }
 
     // Get all user IDs from the analytics map
