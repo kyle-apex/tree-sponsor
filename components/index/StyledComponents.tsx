@@ -130,7 +130,7 @@ export const BenefitDescription = styled(Typography)(({ theme }) => ({
 }));
 
 // Decorative divider
-export const Divider = styled(Box)(({ theme }) => ({
+export const Divider = styled(Box)(() => ({
   width: '100px',
   height: '3px',
   backgroundColor: '#486e62',
