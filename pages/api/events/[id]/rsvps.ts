@@ -201,8 +201,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           eventId: eventId,
           invitedByUserId: invitedByUserId,
         },
-        include: {
+        select: {
           user: getRsvpUserSelect(),
+          createdDate: true,
+          status: true,
+          userId: true,
+          invitedByUserId: true,
         },
         orderBy: { createdDate: 'asc' },
       });
@@ -213,8 +217,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     else {
       const rsvps = await prisma.eventRSVP.findMany({
         where: { eventId: eventId },
-        include: {
+        select: {
           user: getRsvpUserSelect(),
+          createdDate: true,
+          status: true,
+          userId: true,
+          invitedByUserId: true,
         },
         orderBy: { createdDate: 'asc' },
       });
