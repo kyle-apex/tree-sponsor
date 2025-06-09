@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import { LeaderRow, MembershipStatus, PartialEvent, CheckinFields, PartialUser, PartialEventRSVP } from 'interfaces';
-import { SetStateAction, useEffect, useRef, useState } from 'react';
+import { SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import LocationMapDialog from './LocationMapDialog';
 import formatDateString from 'utils/formatDateString';
 import formatTimeRange from 'utils/formatTimeRange';
@@ -29,6 +29,8 @@ import GuestListDialog from './GuestListDialog';
 import InvitePostRSVPSection from './InvitePostRSVPSection';
 import InvitedPeopleSection from './InvitedPeopleSection';
 import InviteDonationSection from './InviteDonationSection';
+import RSVPSearchForm from './RSVPSearchForm';
+import Grid from '@mui/material/Grid';
 
 const EventInvite = ({
   event,
@@ -51,9 +53,32 @@ const EventInvite = ({
   const [rsvpStatus, setRsvpStatus] = useState('Going');
   const [showHostsOnly, setShowHostsOnly] = useState(false);
   const [showUpdateRSVPForm, setShowUpdateRSVPForm] = useState(false);
-  const [updateRSVPEmail, setUpdateRSVPEmail] = useState('');
-  const [isSearchingRSVP, setIsSearchingRSVP] = useState(false);
-  const [rsvpSearchError, setRsvpSearchError] = useState('');
+
+  // Create hosts array that starts with event.organizers and prioritizes invitedByUser
+  const hosts = useMemo(() => {
+    if (!event?.organizers?.length) return [];
+
+    // Start with a copy of the organizers array
+    const hostsArray = [...event.organizers];
+
+    // If there's no invitedByUser, just return the organizers
+    if (!invitedByUser) return hostsArray;
+
+    // Check if invitedByUser is already in the organizers list
+    const invitedByUserIndex = hostsArray.findIndex(user => user.id === invitedByUser.id);
+
+    if (invitedByUserIndex === -1) {
+      // If invitedByUser is not in the list, add them
+      return [invitedByUser, ...hostsArray];
+    } else if (invitedByUserIndex > 0) {
+      // If invitedByUser is in the list but not first, move them to the front
+      const invitedUser = hostsArray.splice(invitedByUserIndex, 1)[0];
+      return [invitedUser, ...hostsArray];
+    }
+
+    // If invitedByUser is already first in the list, return as is
+    return hostsArray;
+  }, [event?.organizers, invitedByUser]);
 
   // Use localStorage to store RSVP data for this specific event
   const {
@@ -74,36 +99,6 @@ const EventInvite = ({
     }
     setStoredUser(user);
     return { rsvp, user };
-  };
-
-  const searchExistingRSVP = async () => {
-    if (!updateRSVPEmail) return;
-
-    setIsSearchingRSVP(true);
-    setRsvpSearchError('');
-    setStoredEmail(updateRSVPEmail);
-
-    try {
-      const { rsvp, user } = await getUserData(updateRSVPEmail);
-
-      if (rsvp) {
-        // If RSVP found, set it and open the dialog
-        setEventRSVP(rsvp);
-        setRsvpStatus(rsvp.status as string);
-
-        setIsRSVPDialogOpen(true);
-        setShowUpdateRSVPForm(false);
-        setUpdateRSVPEmail('');
-      } else {
-        // No RSVP found for this email
-        setRsvpSearchError('No RSVP found for this email address.');
-      }
-    } catch (error) {
-      console.error('Error searching for RSVP:', error);
-      setRsvpSearchError('Error searching for RSVP. Please try again.');
-    } finally {
-      setIsSearchingRSVP(false);
-    }
   };
 
   // Helper function to process users for a given status
@@ -153,14 +148,6 @@ const EventInvite = ({
           }}
           src={event.pictureUrl}
         ></img>
-        {false && event.organizers?.length > 0 && (
-          <Box flexDirection='row' alignItems='center' style={{ display: 'flex', gap: '5px' }} mb={1}>
-            <UserAvatar image={event.organizers[0].image} name={event.organizers[0].name} size={16}></UserAvatar>
-            <Typography variant='body2' color='gray' sx={{ fontStyle: 'italic' }}>
-              {event.organizers[0].name} invited you to:
-            </Typography>
-          </Box>
-        )}
         <Typography variant='subtitle1' color='secondary' sx={{ lineHeight: 'normal', fontWeight: 600, fontSize: '1.4rem' }} mb={2} mt={1}>
           {event.name}
         </Typography>
@@ -182,7 +169,7 @@ const EventInvite = ({
           </Typography>
         </Box>
       </Box>
-      {event.organizers?.length > 0 && (
+      {hosts.length > 0 && (
         <Box
           flexDirection='row'
           alignItems='center'
@@ -193,10 +180,10 @@ const EventInvite = ({
           }}
         >
           <Typography whiteSpace='nowrap'>Hosted By:</Typography>
-          <UserBubbles users={event.organizers} maxLength={3} size={28} />
+          <UserBubbles users={hosts} maxLength={3} size={28} />
           <Typography color='gray' variant='body2'>
-            {event.organizers[0].name}
-            {event.organizers.length > 1 ? ` and ${event.organizers.length - 1} others` : ''}
+            {hosts[0].name}
+            {hosts.length > 1 ? ` and ${hosts.length - 1} others` : ''}
           </Typography>
         </Box>
       )}
@@ -370,52 +357,23 @@ const EventInvite = ({
                   Modify Existing RSVP
                 </Typography>
               ) : (
-                <Box>
-                  <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-                    <TextField
-                      size='small'
-                      placeholder='Enter your email'
-                      fullWidth
-                      value={updateRSVPEmail}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdateRSVPEmail(e.target.value)}
-                      disabled={isSearchingRSVP}
-                      error={!!rsvpSearchError}
-                    />
-                    <LoadingButton
-                      variant='outlined'
-                      size='small'
-                      onClick={searchExistingRSVP}
-                      isLoading={isSearchingRSVP}
-                      disabled={!updateRSVPEmail || isSearchingRSVP}
-                    >
-                      Search
-                    </LoadingButton>
-                  </Box>
-
-                  {rsvpSearchError && (
-                    <Typography variant='body2' color='error' sx={{ mt: 1, fontSize: '0.8rem' }}>
-                      {rsvpSearchError}
-                    </Typography>
-                  )}
-
-                  <Typography
-                    variant='body2'
-                    color='primary'
-                    sx={{
-                      cursor: 'pointer',
-                      textDecoration: 'underline',
-                      fontSize: '0.8rem',
-                      mt: 1,
-                    }}
-                    onClick={() => {
-                      setShowUpdateRSVPForm(false);
-                      setUpdateRSVPEmail('');
-                      setRsvpSearchError('');
-                    }}
-                  >
-                    Cancel
-                  </Typography>
-                </Box>
+                <RSVPSearchForm
+                  eventId={String(event.id)}
+                  onSearchSuccess={(rsvp, user) => {
+                    setEventRSVP(rsvp);
+                    setRsvpStatus(rsvp.status as string);
+                    setIsRSVPDialogOpen(true);
+                    setShowUpdateRSVPForm(false);
+                    setStoredEmail(rsvp.email);
+                    setStoredUser(user);
+                  }}
+                  onCancel={() => {
+                    setShowUpdateRSVPForm(false);
+                  }}
+                  buttonText='Search'
+                  cancelText='Cancel'
+                  label='Enter your email'
+                />
               )}
             </Box>
           </>
@@ -424,6 +382,36 @@ const EventInvite = ({
       {/* Show full InvitePostRSVPSection for Going or Maybe responses, but only donation section for Declined */}
       {eventRSVP?.status && (
         <InvitePostRSVPSection event={event} currentRSVP={eventRSVP} showDonationSectionOnly={eventRSVP.status === 'Declined'} />
+      )}
+      {false && event.fundraisingGoal && (
+        <Box
+          sx={{
+            mt: 3,
+            border: '2px solid',
+            borderColor: 'primary.main',
+            borderRadius: 2,
+            overflow: 'hidden',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          }}
+        >
+          <Box sx={{ p: 2 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Box sx={{ mt: 2 }}>
+                  <hr></hr>
+                  <InviteDonationSection
+                    event={event}
+                    currentRSVP={eventRSVP}
+                    currentAmount={20}
+                    goalAmount={Number(event.fundraisingGoal)}
+                    donors={[]}
+                    isDeclined={true}
+                  />
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
       )}
       {event.description && (
         <Box sx={{ mt: 3 }}>
@@ -457,10 +445,11 @@ const EventInvite = ({
         open={isGuestListDialogOpen}
         onClose={() => setIsGuestListDialogOpen(false)}
         hasRSVP={showHostsOnly ? true : !!eventRSVP}
-        users={showHostsOnly ? event.organizers || [] : [...getProcessedUsersForStatus('Going'), ...getProcessedUsersForStatus('Maybe')]}
+        users={showHostsOnly ? hosts : [...getProcessedUsersForStatus('Going'), ...getProcessedUsersForStatus('Maybe')]}
         goingCount={showHostsOnly ? 0 : rsvps?.filter(r => r.status === 'Going')?.length || 0}
         maybeCount={showHostsOnly ? 0 : rsvps?.filter(r => r.status === 'Maybe')?.length || 0}
         showHostsOnly={showHostsOnly}
+        eventId={event.id}
         onRSVP={() => {
           setIsGuestListDialogOpen(false);
           setIsRSVPDialogOpen(true);
