@@ -490,7 +490,6 @@ const EventInvite = ({
         goingCount={showHostsOnly ? 0 : rsvps?.filter(r => r.status === 'Going')?.length || 0}
         maybeCount={showHostsOnly ? 0 : rsvps?.filter(r => r.status === 'Maybe')?.length || 0}
         showHostsOnly={showHostsOnly}
-        eventId={event.id}
         onRSVP={() => {
           setIsGuestListDialogOpen(false);
           setIsRSVPDialogOpen(true);
