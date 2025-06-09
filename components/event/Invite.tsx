@@ -88,7 +88,38 @@ const EventInvite = ({
     isFetched,
   } = useGet<PartialEventRSVP[]>(`/api/events/${event.id}/rsvps`, `events/${event.id}/rsvps`, null, { refetchOnWindowFocus: true });
 
-  const rsvpsWithoutDeclined = rsvps?.filter(r => r.status === 'Going' || r.status === 'Maybe') || [];
+  // Filter RSVPs to only include Going or Maybe responses
+  const rsvpsWithoutDeclined = useMemo(() => {
+    const filtered = rsvps?.filter(r => r.status === 'Going' || r.status === 'Maybe') || [];
+
+    // If there's no invitedByUser, just return the filtered list
+    if (!invitedByUser?.id) return filtered;
+
+    // Sort the list with the following priority:
+    // 1. The invitedByUser themselves
+    // 2. Users invited by the invitedByUser
+    // 3. Everyone else
+    return filtered.sort((a, b) => {
+      // Check if either RSVP is for the invitedByUser themselves
+      const aIsInvitedByUser = a.userId === invitedByUser.id;
+      const bIsInvitedByUser = b.userId === invitedByUser.id;
+
+      // Check if either RSVP is for someone invited by the invitedByUser
+      const aInvitedByThisUser = a.invitedByUserId === invitedByUser.id;
+      const bInvitedByThisUser = b.invitedByUserId === invitedByUser.id;
+
+      // Priority 1: The invitedByUser themselves comes first
+      if (aIsInvitedByUser && !bIsInvitedByUser) return -1;
+      if (!aIsInvitedByUser && bIsInvitedByUser) return 1;
+
+      // Priority 2: Users invited by the invitedByUser come next
+      if (aInvitedByThisUser && !bInvitedByThisUser) return -1;
+      if (!aInvitedByThisUser && bInvitedByThisUser) return 1;
+
+      // Otherwise, maintain original order
+      return 0;
+    });
+  }, [rsvps, invitedByUser]);
 
   const getUserData = async (email: string) => {
     const results: any = await axios.get(`/api/events/${event.id}/rsvps?email=${email}`);
@@ -108,11 +139,21 @@ const EventInvite = ({
         ?.filter(r => r.status === status)
         .sort((a: PartialEventRSVP, b: PartialEventRSVP) => {
           if (invitedByUser?.id) {
-            const aInvitedByUser = a.invitedByUserId === invitedByUser.id || a.userId == invitedByUser.id;
-            const bInvitedByUser = b.invitedByUserId === invitedByUser.id || b.userId == invitedByUser.id;
+            // Check if either RSVP is for the invitedByUser themselves
+            const aIsInvitedByUser = a.userId === invitedByUser.id;
+            const bIsInvitedByUser = b.userId === invitedByUser.id;
 
-            if (aInvitedByUser && !bInvitedByUser) return -1;
-            if (!aInvitedByUser && bInvitedByUser) return 1;
+            // Check if either RSVP is for someone invited by the invitedByUser
+            const aInvitedByThisUser = a.invitedByUserId === invitedByUser.id;
+            const bInvitedByThisUser = b.invitedByUserId === invitedByUser.id;
+
+            // Priority 1: The invitedByUser themselves comes first
+            if (aIsInvitedByUser && !bIsInvitedByUser) return -1;
+            if (!aIsInvitedByUser && bIsInvitedByUser) return 1;
+
+            // Priority 2: Users invited by the invitedByUser come next
+            if (aInvitedByThisUser && !bInvitedByThisUser) return -1;
+            if (!aInvitedByThisUser && bInvitedByThisUser) return 1;
           }
           return 0;
         })
