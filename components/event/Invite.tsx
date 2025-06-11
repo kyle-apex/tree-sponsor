@@ -116,6 +116,13 @@ const EventInvite = ({
       if (aInvitedByThisUser && !bInvitedByThisUser) return -1;
       if (!aInvitedByThisUser && bInvitedByThisUser) return 1;
 
+      // Priority 3: Sort by number of events attended (EventCheckIn count)
+      const aCheckInCount = a.user?._count?.eventCheckIns || 0;
+      const bCheckInCount = b.user?._count?.eventCheckIns || 0;
+
+      if (aCheckInCount > bCheckInCount) return -1;
+      if (aCheckInCount < bCheckInCount) return 1;
+
       // Otherwise, maintain original order
       return 0;
     });
@@ -155,6 +162,14 @@ const EventInvite = ({
             if (aInvitedByThisUser && !bInvitedByThisUser) return -1;
             if (!aInvitedByThisUser && bInvitedByThisUser) return 1;
           }
+
+          // Priority 3: Sort by number of events attended (EventCheckIn count)
+          const aCheckInCount = a.user?._count?.eventCheckIns?.length || 0;
+          const bCheckInCount = b.user?._count?.eventCheckIns?.length || 0;
+
+          if (aCheckInCount > bCheckInCount) return -1;
+          if (aCheckInCount < bCheckInCount) return 1;
+
           return 0;
         })
         .map(r => r.user)

@@ -166,6 +166,12 @@ export type PartialUser = Partial<
     profile?: Partial<Profile>;
     eventCheckIns?: PartialEventCheckIn[];
     referredUsers?: PartialUser[];
+    _count: {
+      eventCheckIns: number;
+      subscriptions: number;
+      sponsorships: number;
+      referredUsers: number;
+    };
   }
 >;
 
