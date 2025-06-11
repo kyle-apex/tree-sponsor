@@ -88,25 +88,16 @@ const EventInvite = ({
     isFetched,
   } = useGet<PartialEventRSVP[]>(`/api/events/${event.id}/rsvps`, `events/${event.id}/rsvps`, null, { refetchOnWindowFocus: true });
 
-  // Filter RSVPs to only include Going or Maybe responses
-  const rsvpsWithoutDeclined = useMemo(() => {
-    const filtered = rsvps?.filter(r => r.status === 'Going' || r.status === 'Maybe') || [];
-
-    // If there's no invitedByUser, just return the filtered list
-    if (!invitedByUser?.id) return filtered;
-
-    // Sort the list with the following priority:
-    // 1. The invitedByUser themselves
-    // 2. Users invited by the invitedByUser
-    // 3. Everyone else
-    return filtered.sort((a, b) => {
+  // Utility function to sort RSVPs by priority
+  const sortRSVPsByPriority = (a: PartialEventRSVP, b: PartialEventRSVP, inviterUserId?: string | number) => {
+    if (inviterUserId) {
       // Check if either RSVP is for the invitedByUser themselves
-      const aIsInvitedByUser = a.userId === invitedByUser.id;
-      const bIsInvitedByUser = b.userId === invitedByUser.id;
+      const aIsInvitedByUser = a.userId === inviterUserId;
+      const bIsInvitedByUser = b.userId === inviterUserId;
 
       // Check if either RSVP is for someone invited by the invitedByUser
-      const aInvitedByThisUser = a.invitedByUserId === invitedByUser.id;
-      const bInvitedByThisUser = b.invitedByUserId === invitedByUser.id;
+      const aInvitedByThisUser = a.invitedByUserId === inviterUserId;
+      const bInvitedByThisUser = b.invitedByUserId === inviterUserId;
 
       // Priority 1: The invitedByUser themselves comes first
       if (aIsInvitedByUser && !bIsInvitedByUser) return -1;
@@ -115,17 +106,28 @@ const EventInvite = ({
       // Priority 2: Users invited by the invitedByUser come next
       if (aInvitedByThisUser && !bInvitedByThisUser) return -1;
       if (!aInvitedByThisUser && bInvitedByThisUser) return 1;
+    }
 
-      // Priority 3: Sort by number of events attended (EventCheckIn count)
-      const aCheckInCount = a.user?._count?.eventCheckIns || 0;
-      const bCheckInCount = b.user?._count?.eventCheckIns || 0;
+    // Priority 3: Sort by number of events attended (EventCheckIn count)
+    const aCheckInCount = a.user?._count?.eventCheckIns || 0;
+    const bCheckInCount = b.user?._count?.eventCheckIns || 0;
 
-      if (aCheckInCount > bCheckInCount) return -1;
-      if (aCheckInCount < bCheckInCount) return 1;
+    if (aCheckInCount > bCheckInCount) return -1;
+    if (aCheckInCount < bCheckInCount) return 1;
 
-      // Otherwise, maintain original order
-      return 0;
-    });
+    // Otherwise, maintain original order
+    return 0;
+  };
+
+  // Filter RSVPs to only include Going or Maybe responses
+  const rsvpsWithoutDeclined = useMemo(() => {
+    const filtered = rsvps?.filter(r => r.status === 'Going' || r.status === 'Maybe') || [];
+
+    // If there's no invitedByUser, just return the filtered list
+    if (!invitedByUser?.id) return filtered;
+
+    // Sort the list with priority order
+    return filtered.sort((a, b) => sortRSVPsByPriority(a, b, invitedByUser.id));
   }, [rsvps, invitedByUser]);
 
   const getUserData = async (email: string) => {
@@ -144,34 +146,7 @@ const EventInvite = ({
     return (
       rsvps
         ?.filter(r => r.status === status)
-        .sort((a: PartialEventRSVP, b: PartialEventRSVP) => {
-          if (invitedByUser?.id) {
-            // Check if either RSVP is for the invitedByUser themselves
-            const aIsInvitedByUser = a.userId === invitedByUser.id;
-            const bIsInvitedByUser = b.userId === invitedByUser.id;
-
-            // Check if either RSVP is for someone invited by the invitedByUser
-            const aInvitedByThisUser = a.invitedByUserId === invitedByUser.id;
-            const bInvitedByThisUser = b.invitedByUserId === invitedByUser.id;
-
-            // Priority 1: The invitedByUser themselves comes first
-            if (aIsInvitedByUser && !bIsInvitedByUser) return -1;
-            if (!aIsInvitedByUser && bIsInvitedByUser) return 1;
-
-            // Priority 2: Users invited by the invitedByUser come next
-            if (aInvitedByThisUser && !bInvitedByThisUser) return -1;
-            if (!aInvitedByThisUser && bInvitedByThisUser) return 1;
-          }
-
-          // Priority 3: Sort by number of events attended (EventCheckIn count)
-          const aCheckInCount = a.user?._count?.eventCheckIns || 0;
-          const bCheckInCount = b.user?._count?.eventCheckIns || 0;
-
-          if (aCheckInCount > bCheckInCount) return -1;
-          if (aCheckInCount < bCheckInCount) return 1;
-
-          return 0;
-        })
+        .sort((a, b) => sortRSVPsByPriority(a, b, invitedByUser?.id))
         .map(r => r.user)
         .filter(Boolean) || []
     );
