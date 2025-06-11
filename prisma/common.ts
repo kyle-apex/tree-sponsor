@@ -33,6 +33,11 @@ export function getRsvpUserSelect() {
         take: 1,
         select: { lastPaymentDate: true, id: true },
       },
+      _count: {
+        select: {
+          eventCheckIns: true, // Count of check-ins for this user
+        },
+      },
     },
   };
 }
