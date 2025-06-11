@@ -164,8 +164,8 @@ const EventInvite = ({
           }
 
           // Priority 3: Sort by number of events attended (EventCheckIn count)
-          const aCheckInCount = a.user?._count?.eventCheckIns?.length || 0;
-          const bCheckInCount = b.user?._count?.eventCheckIns?.length || 0;
+          const aCheckInCount = a.user?._count?.eventCheckIns || 0;
+          const bCheckInCount = b.user?._count?.eventCheckIns || 0;
 
           if (aCheckInCount > bCheckInCount) return -1;
           if (aCheckInCount < bCheckInCount) return 1;
