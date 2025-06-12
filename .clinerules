@@ -89,6 +89,13 @@ The project uses Prisma with MySQL. Key database elements include:
 4. **Test Implementation**: Never mock the component being tested
    - Mock dependencies and external services, not the component under test
    - Test the actual component implementation, not a mock version
+5. **Running Tests**:
+   - Run all tests: `npm test`
+   - Run a specific test file: `npm test -- path/to/test/file.test.ts`
+   - Example: `npm test -- test/pages/api/events/rsvp-analytics.test.ts`
+   - Tests use Jest with the `-i` flag (runs tests serially)
+   - API tests use `next-test-api-route-handler` to test Next.js API routes
+   - Prisma is mocked using `jest-mock-extended` in `utils/prisma/singleton.ts`
 
 ## Development Workflow
 
