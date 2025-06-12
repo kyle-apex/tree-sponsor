@@ -5,6 +5,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import ClearIcon from '@mui/icons-material/Clear';
 import { CheckinSessionContext } from 'components/event/CheckinSessionProvider';
 import { PartialTree, PartialUser, Session } from 'interfaces';
 import { useContext, useEffect, useState } from 'react';
@@ -102,15 +104,17 @@ const EditSessionTreesDialog = ({
 
   return (
     <Dialog open={isOpen} sx={{ '& .MuiDialog-paperWidthSm': { maxWidth: '95%', width: '450px', margin: '0px' } }} onClose={handleClose}>
-      <DialogContent className=''>
+      <DialogContent sx={{ position: 'relative' }} className=''>
+        <IconButton onClick={handleClose} sx={{ position: 'absolute', right: 8, top: 8, zIndex: 5000 }}>
+          <ClearIcon />
+        </IconButton>
         <Typography mb={0} variant='h2' color='secondary'>
           Edit Tree(s)
         </Typography>
 
         {isFetched && !trees?.length && (
           <Typography mb={0} mt={2} variant='body1'>
-            No trees available to edit for this event.{' '}
-            {!session && hasTreeReviewerRole ? 'Please login to manage trees.' : 'Please login to manage your added trees.'}
+            No trees available to edit for this session.
           </Typography>
         )}
 
@@ -140,13 +144,7 @@ const EditSessionTreesDialog = ({
             <Typography mb={2} mt={2} variant='body1'>
               To view and edit all trees for this event, please login with your email address:
             </Typography>
-            <Button
-              color='secondary'
-              variant='contained'
-              fullWidth
-              sx={{ mb: 2 }}
-              onClick={() => signIn('', { callbackUrl: '/checkin', redirect: true })}
-            >
+            <Button color='secondary' variant='contained' fullWidth onClick={() => signIn('', { callbackUrl: '/checkin', redirect: true })}>
               Login to Edit Trees
             </Button>
           </>
