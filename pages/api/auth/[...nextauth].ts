@@ -98,8 +98,6 @@ export default NextAuth({
       return session;
     },
     async signIn(user, _account, profile) {
-      //console.log('profile', profile);
-      //console.log('user', user);
       const profilePictureUrl = getProfilePictureUrl(profile);
       let hasUpdate;
       const updateData: Partial<User> = {};
@@ -123,7 +121,39 @@ export default NextAuth({
       if (hasUpdate) await prisma.user.update({ where: { id: user.id as number }, data: updateData });
       return true;
     },
-    async redirect(_url, baseUrl) {
+    async redirect(url, baseUrl) {
+      try {
+        // Case 1: The URL is a relative path (like /checkin)
+        if (url.startsWith('/') && !url.startsWith('//')) {
+          return baseUrl + url;
+        }
+
+        // Case 2: The URL contains a callbackUrl parameter
+        let parsedUrl;
+        try {
+          parsedUrl = new URL(url, baseUrl);
+
+          if (parsedUrl.searchParams.has('callbackUrl')) {
+            const callbackUrl = parsedUrl.searchParams.get('callbackUrl');
+
+            // If callbackUrl exists and is a relative URL (starts with /)
+            if (callbackUrl && callbackUrl.startsWith('/')) {
+              return baseUrl + callbackUrl;
+            }
+          }
+        } catch (error) {
+          console.error('Error parsing URL:', error);
+        }
+
+        // Case 3: The URL is an absolute URL that we should use directly
+        if (url.startsWith(baseUrl)) {
+          return url;
+        }
+      } catch (error) {
+        console.error('Error in redirect callback:', error);
+      }
+
+      // Default fallback to account page
       return baseUrl + '/account';
     },
   },
