@@ -60,6 +60,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             id: true,
             name: true,
             image: true,
+            email: true,
           },
         },
       },
@@ -74,24 +75,30 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
         // If not, create an RSVP with status "Going"
         if (!hasRSVP) {
-          await prisma.eventRSVP.upsert({
-            where: {
-              userId_eventId: {
-                userId: organizer.id,
-                eventId: event.id,
+          try {
+            await prisma.eventRSVP.upsert({
+              where: {
+                userId_eventId: {
+                  userId: organizer.id,
+                  eventId: event.id,
+                },
               },
-            },
-            create: {
-              eventId: event.id,
-              userId: organizer.id,
-              status: 'Going',
-              eventDetailsEmailOptIn: true,
-            },
-            update: {
-              status: 'Going',
-              eventDetailsEmailOptIn: true,
-            },
-          });
+              create: {
+                eventId: event.id,
+                userId: organizer.id,
+                email: organizer.email || null,
+                status: 'Going',
+                eventDetailsEmailOptIn: true,
+              },
+              update: {
+                status: 'Going',
+                eventDetailsEmailOptIn: true,
+              },
+            });
+          } catch (err) {
+            console.error(`Error creating RSVP for organizer ${organizer.id} in event ${event.id}:`, err);
+          }
+          delete organizer.email;
         }
       }
 
