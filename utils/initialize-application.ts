@@ -17,6 +17,12 @@ export default async function initializeApplication() {
 
   const admin = await initAdmin();
   await initSpecies();
-  initDemoData(admin?.id);
-  initDemoUsers();
+
+  initDemoData(admin?.id).catch(error => {
+    console.error('Error initializing demo data:', error);
+  });
+
+  initDemoUsers().catch(error => {
+    console.error('Error initializing demo users:', error);
+  });
 }
