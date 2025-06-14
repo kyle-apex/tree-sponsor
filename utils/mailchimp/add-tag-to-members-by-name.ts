@@ -7,10 +7,12 @@ const addTagToMembersByName = async (tagName: string, emails: string[], mailchim
   let tagId = await getTagId(tagName);
   //console.log('tagId', tagId);
   if (!tagId) {
-    //console.log('before segmet post');
-    const segment = await mailchimpPost(`lists/${mailchimpListId}/segments`, { name: tagName, static_segment: emails });
-    //console.log('segment', segment);
-    tagId = segment?.id;
+    try {
+      const segment = await mailchimpPost(`lists/${mailchimpListId}/segments`, { name: tagName, static_segment: emails });
+      tagId = segment?.id;
+    } catch (err) {
+      console.log('Error creating segment:', err);
+    }
   }
   if (!tagId) return;
   try {
