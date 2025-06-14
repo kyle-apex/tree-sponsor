@@ -12,6 +12,12 @@ import Collapse from '@mui/material/Collapse';
 import Checkbox from '@mui/material/Checkbox';
 import React, { useState } from 'react';
 import LocationSelector from 'components/LocationSelector';
+import LocationMapDialog from './LocationMapDialog';
+import EditIcon from '@mui/icons-material/Edit';
+import CheckIcon from '@mui/icons-material/Check';
+import Button from '@mui/material/Button';
+import Link from '@mui/material/Link';
+import PlaceIcon from '@mui/icons-material/Place';
 import { paramCase } from 'change-case';
 import { useDebouncedCallback } from 'use-debounce';
 import UserMultiSelect from './UserMultiSelect';
@@ -50,6 +56,8 @@ const EventDetailsForm = ({
   const [locationName, setLocationName] = useState(event.location?.name || '');
   const [latitude, setLatitude] = useState(event.location?.latitude || 0);
   const [longitude, setLongitude] = useState(event.location?.longitude || 0);
+  const [editingLocation, setEditingLocation] = useState(!event.location?.latitude);
+  const [locationDialogOpen, setLocationDialogOpen] = useState(false);
   const debouncedSetLocation = useDebouncedCallback((latitude: number, longitude: number, address?: string) => {
     setLongitude(longitude);
     setLatitude(latitude);
@@ -234,31 +242,95 @@ const EventDetailsForm = ({
         <Checkbox defaultChecked={event?.hasNavigation} onChange={e => updateAttribute('hasNavigation', e.target.checked)}></Checkbox>
         Show navigation links to trees on species quiz (ex: bike tour or hike)
       </Box>
-      <LocationSelector
-        onViewportChange={({ latitude, longitude, address }) => {
-          debouncedSetLocation(latitude, longitude, address);
-        }}
-        latitude={latitude ? Number(latitude) : null}
-        longitude={longitude ? Number(longitude) : null}
-        zoomToLocation={!latitude}
-        onSelectedName={name => {
-          if (!locationName && name) {
-            setLocationName(name);
-            updateAttribute('location.name', name);
-          }
-        }}
-      ></LocationSelector>
-      <TextField
-        value={locationName}
-        onChange={e => {
-          setLocationName(e.target.value);
-          updateAttribute('location.name', e.target.value);
-        }}
-        label='Location Name'
-        size='small'
-        sx={{ marginBottom: 3, marginTop: 4 }}
-        id='name-field'
-      ></TextField>
+
+      {!editingLocation && event.location?.latitude ? (
+        <Box sx={{ mb: 3, mt: 3, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
+              justifyContent: 'space-between',
+              alignItems: { xs: 'flex-start', sm: 'center' },
+              mb: 2,
+            }}
+          >
+            <Typography variant='h6' sx={{ mb: { xs: 1, sm: 0 }, wordBreak: 'break-word' }}>
+              {locationName || 'Event Location'}
+            </Typography>
+            <Button
+              startIcon={<EditIcon />}
+              onClick={() => setEditingLocation(true)}
+              size='small'
+              variant='outlined'
+              sx={{ alignSelf: { xs: 'flex-start', sm: 'auto' } }}
+            >
+              Edit
+            </Button>
+          </Box>
+
+          {event.location?.address && (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 1,
+                cursor: 'pointer',
+                '&:hover': { textDecoration: 'underline' },
+              }}
+              onClick={() => setLocationDialogOpen(true)}
+            >
+              <PlaceIcon color='primary' sx={{ mt: 0.5 }} />
+              <Link
+                component='span'
+                underline='hover'
+                sx={{
+                  wordBreak: 'break-word',
+                  display: 'inline-block',
+                }}
+              >
+                {event.location.address}
+              </Link>
+            </Box>
+          )}
+
+          <LocationMapDialog open={locationDialogOpen} onClose={() => setLocationDialogOpen(false)} location={event.location} />
+        </Box>
+      ) : (
+        <>
+          <LocationSelector
+            onViewportChange={({ latitude, longitude, address }) => {
+              debouncedSetLocation(latitude, longitude, address);
+            }}
+            latitude={latitude ? Number(latitude) : null}
+            longitude={longitude ? Number(longitude) : null}
+            zoomToLocation={!latitude}
+            onSelectedName={name => {
+              if (!locationName && name) {
+                setLocationName(name);
+                updateAttribute('location.name', name);
+              }
+            }}
+          ></LocationSelector>
+          <TextField
+            value={locationName}
+            onChange={e => {
+              setLocationName(e.target.value);
+              updateAttribute('location.name', e.target.value);
+            }}
+            label='Location Name'
+            size='small'
+            sx={{ marginBottom: 3, marginTop: 4 }}
+            id='name-field'
+          ></TextField>
+          {event.location?.latitude && (
+            <Box sx={{ mb: 3 }}>
+              <Button onClick={() => setEditingLocation(false)} size='small' variant='outlined' startIcon={<CheckIcon />}>
+                Done Editing Location
+              </Button>
+            </Box>
+          )}
+        </>
+      )}
       {false && (
         <>
           <Box sx={{ marginTop: 2, marginBottom: -2 }}>
