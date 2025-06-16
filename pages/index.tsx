@@ -9,6 +9,7 @@ import parsedGet from 'utils/api/parsed-get';
 // Import refactored components
 import IntroSection from 'components/index/IntroSection';
 import TreeBenefitsSection from 'components/index/TreeBenefitsSection';
+import UpcomingEventsSection from 'components/index/UpcomingEventsSection';
 import MembershipSection from 'components/index/MembershipSection';
 import CoreTeamSection from 'components/index/CoreTeamSection';
 
@@ -51,6 +52,9 @@ const IndexPage = ({
         stripePriceIdLow={stripePriceIdLow}
         stripePriceIdMedium={stripePriceIdMedium}
       />
+
+      {/* Upcoming Events Section */}
+      <UpcomingEventsSection />
 
       {/* Core Team Section */}
       <CoreTeamSection users={users} />
