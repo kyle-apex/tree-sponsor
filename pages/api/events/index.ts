@@ -16,11 +16,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       include: { location: { select: { name: true } } },
     };
 
-    if (req.query.isPastEvent === 'true') filter.where = { startDate: { lt: new Date() } };
-    if (req.query.isPastEvent === 'false') filter.where = { startDate: { gt: new Date() } };
+    // Initialize where clause if it doesn't exist
+    if (!filter.where) filter.where = {};
 
-    const isAdmin = await isCurrentUserAuthorized('isAdmin', req);
-    if (!isAdmin) filter.where.isPrivate = false;
+    if (req.query.isPastEvent === 'true') filter.where.startDate = { lt: new Date() };
+    if (req.query.isPastEvent === 'false') filter.where.startDate = { gt: new Date() };
+
+    // Add forHomepage filter to get events with description and pictureUrl
+    if (req.query.forHomepage === 'true') {
+      filter.where.description = { not: null };
+      filter.where.pictureUrl = { not: null };
+      filter.where.isPrivate = false;
+    } else {
+      // Only apply isPrivate filter if not already set by forHomepage
+      const isAdmin = await isCurrentUserAuthorized('isAdmin', req);
+      if (!isAdmin) filter.where.isPrivate = false;
+    }
 
     const events = await prisma.event.findMany(filter);
     res.status(200).json(events);
