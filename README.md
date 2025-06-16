@@ -4,8 +4,8 @@ This codebase powers [https://tfyp.org](https://tfyp.org)
 
 Primary Functionality:
 
-- Event Check-in Page [https://checkin.tfyp.org](checkin.tfyp.org)
-- Event invitation app [https://invite.tfyp.org](invite.tfyp.org)
+- Event Check-in Page [checkin.tfyp.org](https://checkin.tfyp.org)
+- Event invitation app [invite.tfyp.org](https://invite.tfyp.org)
 - Event welcome screen w/live uodates
 - Tree Identification and Tree ID quizzes
 - Member management
