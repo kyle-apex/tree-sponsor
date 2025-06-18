@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Box, Grid, LinearProgress, Typography, useTheme } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useRouter } from 'next/router';
 
 interface FundraisingGoalDisplayProps {
   currentAmount: number;
@@ -43,6 +44,31 @@ const FundraisingGoalDisplay: React.FC<FundraisingGoalDisplayProps> = ({
   hideAddedAmount = false,
 }) => {
   const theme = useTheme();
+  const componentRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  // Effect to scroll to this component when donate=true is in the URL
+  useEffect(() => {
+    if (router.query.donate === 'true' && componentRef.current) {
+      // Function to scroll to this component
+      const scrollToComponent = () => {
+        if (componentRef.current) {
+          // Element found, scroll to it
+          componentRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Clear the interval once we've scrolled to the element
+          clearInterval(checkInterval);
+        }
+      };
+
+      // Check immediately and then set up an interval to keep checking
+      // (since the component might not be fully rendered immediately)
+      scrollToComponent();
+      const checkInterval = setInterval(scrollToComponent, 500);
+
+      // Clean up the interval when the component unmounts
+      return () => clearInterval(checkInterval);
+    }
+  }, [router.query]);
 
   // Log props for debugging
   console.log('FundraisingGoalDisplay props:', { currentAmount, goalAmount, addedAmount });
@@ -63,7 +89,7 @@ const FundraisingGoalDisplay: React.FC<FundraisingGoalDisplayProps> = ({
   };
 
   return (
-    <Box sx={{ width: '100%', mt: 2, mb: 2 }}>
+    <Box sx={{ width: '100%', mt: 2, mb: 2 }} className='FundraisingGoalDisplay' ref={componentRef}>
       <Grid container spacing={2} alignItems='center'>
         {/* Current Amount */}
         <Grid item xs={2}>
