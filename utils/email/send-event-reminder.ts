@@ -2,6 +2,7 @@ import { PartialEventRSVP } from 'interfaces';
 import sendEmail from 'utils/email/send-email';
 import * as EmailUtils from 'utils/email/email-utils';
 import { prisma } from 'utils/prisma/init';
+import axios from 'axios';
 
 /**
  * Sends an event reminder email
@@ -17,6 +18,22 @@ const sendEventReminder = async (eventRSVP: PartialEventRSVP): Promise<boolean> 
       return false;
     }
 
+    // Fetch fundraising information if the event has a fundraising goal
+    let fundraisingInfo = null;
+    if (event.id && event.fundraisingGoal && Number(event.fundraisingGoal) > 0) {
+      try {
+        // Fetch donation information for the event
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org'}/api/events/${event.id}/donations`);
+        fundraisingInfo = {
+          currentAmount: response.data.totalAmount || 0,
+          goalAmount: Number(event.fundraisingGoal),
+        };
+      } catch (error) {
+        console.error('[sendEventReminder] Error fetching fundraising info:', error);
+        // Continue without fundraising info if there's an error
+      }
+    }
+
     // Read the email template
     const template = EmailUtils.readEmailTemplate();
 
@@ -25,12 +42,14 @@ const sendEventReminder = async (eventRSVP: PartialEventRSVP): Promise<boolean> 
       isReminder: true,
       heading: '⏰ Event Reminder!',
       reminderText: event.reminderText,
+      fundraisingInfo,
     });
 
     // Generate plain text content
     const plainText = EmailUtils.generatePlainTextContent(eventRSVP, {
       isReminder: true,
       reminderText: event.reminderText,
+      fundraisingInfo,
     });
 
     // Set the subject line
