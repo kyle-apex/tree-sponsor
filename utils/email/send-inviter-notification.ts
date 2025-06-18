@@ -50,7 +50,7 @@ Date & Time: ${formatDate(new Date(event.startDate))} ${formatTimeRange(convertT
 Location: ${event.location?.name} ${event.location?.address || ''}
 Details: ${event.description || ''}
 
-View event page: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org'}/e/${event.path}/invite?email=${encodeURIComponent(
+View event page: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.tfyp.org'}/e/${event.path}/invite?email=${encodeURIComponent(
       invitedByUser.email,
     )}`;
 
@@ -85,7 +85,7 @@ View event page: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org'}/e/${e
     }
 
     htmlContent += `
-      <p><a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org'}/e/${event.path}/invite?email=${encodeURIComponent(
+      <p><a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.tfyp.org'}/e/${event.path}/invite?email=${encodeURIComponent(
       invitedByUser.email,
     )}" style="display: inline-block; background-color: #486e62; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">View Event</a></p>
     </div>

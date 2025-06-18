@@ -75,7 +75,7 @@ export const generateICalendarLink = (event: PartialEventRSVP['event']): string 
   // Return empty string if event is missing or required parameters are not present
   if (!event || !event.id) return '';
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.tfyp.org';
 
   // Use the new endpoint that fetches event data by ID
   return `${baseUrl}/api/events/${event.id}/ical`;
@@ -89,7 +89,7 @@ export const generateICalendarLink = (event: PartialEventRSVP['event']): string 
  */
 export const generateInviteLink = (event: PartialEventRSVP['event'], user: PartialUser): string => {
   if (!event || !user) return '';
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.tfyp.org';
   return `${baseUrl}/e/${event.path}/invite?u=${user.id}`;
 };
 
@@ -101,7 +101,7 @@ export const generateInviteLink = (event: PartialEventRSVP['event'], user: Parti
  */
 export const generateUpdateRsvpLink = (event: PartialEventRSVP['event'], user: PartialUser): string => {
   if (!event || !user || !user.email) return '';
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.tfyp.org';
   return `${baseUrl}/e/${event.path}/invite?email=${encodeURIComponent(user.email)}`;
 };
 
@@ -215,7 +215,7 @@ export const processTemplate = (
     );
 
     // Generate donation link with user's email
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.tfyp.org';
     const donationLink = `${baseUrl}/e/${event.path}/invite?email=${encodeURIComponent(user.email || '')}&donate=true`;
     processedTemplate = processedTemplate.replace(/{{fundraising.donationLink}}/g, donationLink);
   } else {
@@ -279,7 +279,7 @@ Update your RSVP: ${generateUpdateRsvpLink(event, user)}`;
   // Add fundraising information to plain text if available
   if (fundraisingInfo) {
     const percentComplete = Math.min(100, Math.round((fundraisingInfo.currentAmount / fundraisingInfo.goalAmount) * 100));
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.tfyp.org';
     const donationLink = `${baseUrl}/e/${event.path}/invite?email=${encodeURIComponent(user.email || '')}&donate=true`;
 
     content += `\n\nFundraising Progress: $${fundraisingInfo.currentAmount} of $${fundraisingInfo.goalAmount} (${percentComplete}%)
