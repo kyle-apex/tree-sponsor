@@ -155,6 +155,47 @@ The project uses Prisma with MySQL. Key database elements include:
 3. Implement proper error handling and status codes
 4. Use TypeScript interfaces for request and response types
 
+## Authentication and Role Management
+
+1. **Authentication System**:
+
+   - The project uses `next-auth/client` for authentication
+   - User sessions contain role information
+   - The `RestrictSection` component conditionally renders content based on user permissions
+
+2. **Role-Based Access Control**:
+
+   - Roles are managed through the `RoleTable` component in the admin interface
+   - Each role has specific permission flags that determine access to features
+   - Role properties are defined as `AccessType` in `utils/auth/AccessType.ts`
+
+3. **Available Role Permissions**:
+
+   - `isAdmin`: Full administrative access
+   - `hasAuthManagement`: Can manage users and authentication
+   - `isReviewer`: Can review Thank-a-Tree submissions
+   - `isTreeReviewer`: Can review tree submissions
+   - `hasEventManagement`: Can create and manage events
+   - `hasMemberManagement`: Can manage member accounts
+   - `hasShirtManagement`: Can manage shirt/merchandise inventory
+   - `hasFormManagement`: Can create and manage forms
+   - `hasRedirectManagement`: Can set up subdomain redirects
+
+4. **Permission Checking**:
+
+   - Use the `RestrictSection` component to conditionally render UI elements based on permissions
+   - Server-side API routes should validate permissions before processing requests
+   - Permission checks combine all roles a user has (users can have multiple roles)
+
+5. **Server-Side Authorization Utilities**:
+   - `isCurrentUserAuthorized(accessType, req)`: Main utility for API routes to check if the current user has permission
+   - `hasAccess(userId, accessType)`: Checks if a specific user has a particular permission
+   - `hasAccessForQueriedUser(query, accessType)`: Database-level check that queries user roles with Prisma
+   - These utilities support checking for single permissions or arrays of permissions (using OR logic)
+   - Example usage in API routes:
+     if (!(await isCurrentUserAuthorized('hasEventManagement', req)))
+     return res.status(403).json({ error: 'Not authorized' });
+
 ## Git Workflow
 
 1. For each new task or feature:
