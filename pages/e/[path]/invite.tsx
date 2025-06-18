@@ -10,6 +10,8 @@ import Invite from 'components/event/Invite';
 import CenteredSection from 'components/layout/CenteredSection';
 import usePageViewTracking from 'utils/hooks/use-page-view-tracking';
 import getOneYearAgo from 'utils/data/get-one-year-ago';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const InvitePage = ({
   event,
@@ -24,8 +26,33 @@ const InvitePage = ({
 }) => {
   // Track page views when the component mounts and when the route changes
   usePageViewTracking();
-
+  const router = useRouter();
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
+
+  // Effect to scroll to FundraisingGoalDisplay when donate=true is in the URL
+  useEffect(() => {
+    if (router.query.donate === 'true') {
+      // Function to check for the FundraisingGoalDisplay element
+      const scrollToFundraisingGoal = () => {
+        // Look for the FundraisingGoalDisplay component
+        const fundraisingElement = document.querySelector('.MuiLinearProgress-root');
+        if (fundraisingElement) {
+          // Element found, scroll to it
+          fundraisingElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Clear the interval once we've found and scrolled to the element
+          clearInterval(checkInterval);
+        }
+      };
+
+      // Check immediately and then set up an interval to keep checking
+      // (since the component might not be rendered immediately)
+      scrollToFundraisingGoal();
+      const checkInterval = setInterval(scrollToFundraisingGoal, 500);
+
+      // Clean up the interval when the component unmounts
+      return () => clearInterval(checkInterval);
+    }
+  }, [router.query]);
 
   return (
     <Layout

@@ -119,10 +119,14 @@ export const processTemplate = (
     isReminder?: boolean;
     heading?: string;
     reminderText?: string;
+    fundraisingInfo?: {
+      currentAmount: number;
+      goalAmount: number;
+    } | null;
   } = {},
 ): string => {
   const { event, user } = eventRSVP;
-  const { isReminder = false, heading } = options;
+  const { isReminder = false, heading, fundraisingInfo } = options;
 
   if (!event || !user) {
     throw new Error('Event or user data is missing');
@@ -188,6 +192,38 @@ export const processTemplate = (
   // User details
   processedTemplate = processedTemplate.replace(/{{user.email}}/g, user.email || '');
 
+  // Fundraising information
+  if (fundraisingInfo) {
+    // Format currency values
+    const formatCurrency = (amount: number) => {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(amount);
+    };
+
+    // Replace fundraising placeholders
+    processedTemplate = processedTemplate.replace(/{{#hasFundraisingGoal}}/g, '');
+    processedTemplate = processedTemplate.replace(/{{\/hasFundraisingGoal}}/g, '');
+    processedTemplate = processedTemplate.replace(/{{fundraising.currentAmount}}/g, formatCurrency(fundraisingInfo.currentAmount));
+    processedTemplate = processedTemplate.replace(/{{fundraising.goalAmount}}/g, formatCurrency(fundraisingInfo.goalAmount));
+    processedTemplate = processedTemplate.replace(
+      /{{fundraising.percentComplete}}/g,
+      Math.min(100, Math.round((fundraisingInfo.currentAmount / fundraisingInfo.goalAmount) * 100)).toString(),
+    );
+
+    // Generate donation link with user's email
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org';
+    const donationLink = `${baseUrl}/e/${event.path}/invite?email=${encodeURIComponent(user.email || '')}&donate=true`;
+    processedTemplate = processedTemplate.replace(/{{fundraising.donationLink}}/g, donationLink);
+  } else {
+    // Remove fundraising section if no goal
+    const fundraisingRegex = /{{#hasFundraisingGoal}}[\s\S]*?{{\/hasFundraisingGoal}}/g;
+    processedTemplate = processedTemplate.replace(fundraisingRegex, '');
+  }
+
   return processedTemplate;
 };
 
@@ -202,10 +238,14 @@ export const generatePlainTextContent = (
   options: {
     isReminder?: boolean;
     reminderText?: string;
+    fundraisingInfo?: {
+      currentAmount: number;
+      goalAmount: number;
+    } | null;
   } = {},
 ): string => {
   const { event, user } = eventRSVP;
-  const { isReminder = false } = options;
+  const { isReminder = false, fundraisingInfo } = options;
 
   if (!event || !user || !event.startDate) {
     return '';
@@ -235,6 +275,16 @@ iCal: ${generateICalendarLink(event)}
 
 Invite Friends: ${generateInviteLink(event, user)}
 Update your RSVP: ${generateUpdateRsvpLink(event, user)}`;
+
+  // Add fundraising information to plain text if available
+  if (fundraisingInfo) {
+    const percentComplete = Math.min(100, Math.round((fundraisingInfo.currentAmount / fundraisingInfo.goalAmount) * 100));
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org';
+    const donationLink = `${baseUrl}/e/${event.path}/invite?email=${encodeURIComponent(user.email || '')}&donate=true`;
+
+    content += `\n\nFundraising Progress: $${fundraisingInfo.currentAmount} of $${fundraisingInfo.goalAmount} (${percentComplete}%)
+Help us reach our goal by donating: ${donationLink}`;
+  }
 
   return content;
 };

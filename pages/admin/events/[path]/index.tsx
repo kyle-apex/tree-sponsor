@@ -17,6 +17,7 @@ import { GetSessionOptions } from 'next-auth/client';
 import restrictPageAccess from 'utils/auth/restrict-page-access';
 import AdminLayout from 'components/layout/AdminLayout';
 import EventDetailsForm from 'components/event/EventDetailsForm';
+import TestEmailForm from 'components/event/TestEmailForm';
 import parsedGet from 'utils/api/parsed-get';
 
 const EditEventPage = ({ path }: { path: string }) => {
@@ -61,7 +62,13 @@ const EditEventPage = ({ path }: { path: string }) => {
   return (
     <AdminLayout title='Edit Event'>
       <CenteredSection backButtonText='Back' headerText='Edit Event'>
-        {eventRef.current && !isLoading && <EventDetailsForm event={eventRef.current} updateAttribute={updateAttribute}></EventDetailsForm>}
+        {eventRef.current && !isLoading && (
+          <>
+            <EventDetailsForm event={eventRef.current} updateAttribute={updateAttribute} />
+
+            <TestEmailForm event={eventRef.current} />
+          </>
+        )}
         <LoadingButton variant='contained' onClick={saveEvent} isLoading={isLoading || isSaving} sx={{ mt: 5 }}>
           Save
         </LoadingButton>
