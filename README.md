@@ -1,6 +1,6 @@
 # TreeFolks Young Professionals
 
-This codebase powers [https://tfyp.org](https://tfyp.org)
+This codebase powers [https://www.tfyp.org](https://www.tfyp.org)
 
 Primary Functionality:
 

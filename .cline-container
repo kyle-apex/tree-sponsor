@@ -12,7 +12,7 @@ This file provides guidance for Cline (Claude) when assisting with development o
 
 ## Project Overview
 
-- This is a Next.js application with TypeScript that powers https://tfyp.org
+- This is a Next.js application with TypeScript that powers https://www.tfyp.org
 - Primary functionality includes:
   - Event Check-in Page
   - Tree Identification and Tree ID quizzes

@@ -54,7 +54,7 @@ const createDonationEmailHtml = (amount: number): string => {
           <!-- Header with Logo -->
           <tr>
             <td style="padding: 30px 0; text-align: center;">
-              <img src="https://tfyp.org/logo.png" alt="TreeFolks Logo" style="max-width: 150px; height: auto;">
+              <img src="https://www.tfyp.org/logo.png" alt="TreeFolks Logo" style="max-width: 150px; height: auto;">
             </td>
           </tr>
           
@@ -143,7 +143,7 @@ const generatePlainTextContent = (amount: number): string => {
 
   content += `TreeFolks Young Professionals\n`;
   content += `© ${convertToCST(new Date()).getFullYear()} TreeFolksYP. All rights reserved.\n`;
-  content += `Visit our website: https://tfyp.org`;
+  content += `Visit our website: https://www.tfyp.org`;
 
   return content;
 };

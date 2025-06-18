@@ -4,7 +4,7 @@ This file captures important patterns, preferences, and project intelligence tha
 
 ## Project Overview
 
-- This is a Next.js application with TypeScript that powers https://tfyp.org
+- This is a Next.js application with TypeScript that powers https://www.tfyp.org
 - Primary functionality includes:
   - Event Check-in Page
   - Tree Identification and Tree ID quizzes
@@ -216,7 +216,7 @@ The project uses Prisma with MySQL. Key database elements include:
 
 ## Deployment
 
-- The application is deployed to production at https://tfyp.org
+- The application is deployed to production at https://www.tfyp.org
 - Node.js 14.x is required for deployment
 - Heroku is used for hosting
 

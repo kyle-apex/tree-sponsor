@@ -23,7 +23,7 @@ const sendEventReminder = async (eventRSVP: PartialEventRSVP): Promise<boolean> 
     if (event.id && event.fundraisingGoal && Number(event.fundraisingGoal) > 0) {
       try {
         // Fetch donation information for the event
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://tfyp.org'}/api/events/${event.id}/donations`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.tfyp.org'}/api/events/${event.id}/donations`);
         fundraisingInfo = {
           currentAmount: response.data.totalAmount || 0,
           goalAmount: Number(event.fundraisingGoal),

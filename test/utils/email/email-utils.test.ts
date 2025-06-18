@@ -31,7 +31,7 @@ const originalEnv = process.env;
 beforeEach(() => {
   jest.resetModules();
   process.env = { ...originalEnv };
-  process.env.NEXT_PUBLIC_BASE_URL = 'https://tfyp.org';
+  process.env.NEXT_PUBLIC_BASE_URL = 'https://www.tfyp.org';
 });
 
 afterEach(() => {
@@ -145,7 +145,7 @@ describe('Email Utilities', () => {
 
     test('should generate an iCalendar link with the event ID in the path', () => {
       const result = generateICalendarLink(mockEvent);
-      expect(result).toBe(`https://tfyp.org/api/events/${mockEvent.id}/ical`);
+      expect(result).toBe(`https://www.tfyp.org/api/events/${mockEvent.id}/ical`);
     });
 
     test('should use process.env.NEXT_PUBLIC_BASE_URL for the base URL', () => {
@@ -165,7 +165,7 @@ describe('Email Utilities', () => {
 
     test('should generate an invite link with correct parameters', () => {
       const result = generateInviteLink(mockEvent, mockUser);
-      expect(result).toBe(`https://tfyp.org/e/${mockEvent.path}/invite?u=${mockUser.id}`);
+      expect(result).toBe(`https://www.tfyp.org/e/${mockEvent.path}/invite?u=${mockUser.id}`);
     });
 
     test('should use process.env.NEXT_PUBLIC_BASE_URL for the base URL', () => {
@@ -190,7 +190,7 @@ describe('Email Utilities', () => {
 
     test('should generate an update RSVP link with correct parameters', () => {
       const result = generateUpdateRsvpLink(mockEvent, mockUser);
-      expect(result).toBe(`https://tfyp.org/e/${mockEvent.path}/invite?email=${encodeURIComponent(mockUser.email)}`);
+      expect(result).toBe(`https://www.tfyp.org/e/${mockEvent.path}/invite?email=${encodeURIComponent(mockUser.email)}`);
     });
 
     test('should use process.env.NEXT_PUBLIC_BASE_URL for the base URL', () => {
@@ -243,9 +243,9 @@ describe('Email Utilities', () => {
 
       // Check that links are generated
       expect(result).toContain('https://calendar.google.com/calendar/render');
-      expect(result).toContain(`https://tfyp.org/api/events/${mockEvent.id}/ical`);
-      expect(result).toContain(`https://tfyp.org/e/${mockEvent.path}/invite?u=${mockUser.id}`);
-      expect(result).toContain(`https://tfyp.org/e/${mockEvent.path}/invite?email=${encodeURIComponent(mockUser.email)}`);
+      expect(result).toContain(`https://www.tfyp.org/api/events/${mockEvent.id}/ical`);
+      expect(result).toContain(`https://www.tfyp.org/e/${mockEvent.path}/invite?u=${mockUser.id}`);
+      expect(result).toContain(`https://www.tfyp.org/e/${mockEvent.path}/invite?email=${encodeURIComponent(mockUser.email)}`);
 
       // Check that reminder section is removed for non-reminder emails
       expect(result).not.toContain('Reminder:');
