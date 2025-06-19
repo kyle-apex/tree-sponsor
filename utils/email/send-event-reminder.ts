@@ -87,7 +87,7 @@ const processEventReminders = async (): Promise<void> => {
   try {
     // Calculate the date range for events happening in ~24 hours
     const now = new Date();
-    const twentyFiveHoursFromNow = new Date(now.getTime() + 25 * 60 * 60 * 1000);
+    const twentyFiveHoursFromNow = new Date(now.getTime() + 31 * 60 * 60 * 1000);
 
     // Find events happening in approximately 24 hours
     const upcomingEvents = await prisma.event.findMany({
