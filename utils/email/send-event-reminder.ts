@@ -1,7 +1,7 @@
 import { PartialEventRSVP } from 'interfaces';
 import sendEmail from 'utils/email/send-email';
 import * as EmailUtils from 'utils/email/email-utils';
-import { prisma, Prisma } from 'utils/prisma/init';
+import { prisma } from 'utils/prisma/init';
 import axios from 'axios';
 
 /**
