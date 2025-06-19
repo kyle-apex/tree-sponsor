@@ -35,7 +35,7 @@ const GuestListItem: React.FC<GuestListItemProps> = ({ user, index, currentUser,
   const firstName = user.name ? user.name.split(' ')[0] : '';
   const supporterMessage = `${firstName} supports planting trees in Austin with an annual donation to TreeFolks!`;
   const isCurrentUser = currentUser && user.name === currentUser.name;
-  const isCurrentUserMember = !!currentUser.subscriptions?.length;
+  const isCurrentUserMember = !!currentUser?.subscriptions?.length;
   currentUserSX = isCurrentUser && !isCurrentUserMember ? currentUserSX || currentUserStyles : {};
 
   // Settings dialog state
