@@ -70,9 +70,6 @@ const FundraisingGoalDisplay: React.FC<FundraisingGoalDisplayProps> = ({
     }
   }, [router.query]);
 
-  // Log props for debugging
-  console.log('FundraisingGoalDisplay props:', { currentAmount, goalAmount, addedAmount });
-
   // Calculate percentages for progress bars
   const currentPercentage = (currentAmount / goalAmount) * 100;
   const addedPercentage = (addedAmount / goalAmount) * 100;
