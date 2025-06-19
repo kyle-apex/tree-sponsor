@@ -1,7 +1,7 @@
 import { PartialEventRSVP } from 'interfaces';
 import sendEmail from 'utils/email/send-email';
 import * as EmailUtils from 'utils/email/email-utils';
-import { prisma } from 'utils/prisma/init';
+import { prisma, Prisma } from 'utils/prisma/init';
 import axios from 'axios';
 
 /**
@@ -67,7 +67,6 @@ const sendEventReminder = async (eventRSVP: PartialEventRSVP): Promise<boolean> 
 
     // If email was sent successfully, update the RSVP record to mark reminder as sent
     if (result && eventRSVP.id) {
-      // Use raw SQL to update since the field might not be recognized by TypeScript yet
       await prisma.$executeRaw`UPDATE EventRSVP SET reminderSentAt = NOW() WHERE id = ${eventRSVP.id}`;
     }
 
@@ -108,14 +107,18 @@ const processEventReminders = async (): Promise<void> => {
     for (const event of upcomingEvents) {
       // Use raw SQL query to find RSVPs that haven't received a reminder
       // This avoids TypeScript errors with the new reminderSentAt field
+      // Calculate a timestamp 31 hours before the event start
+      const cutoffTime = new Date(event.startDate.getTime() - 31 * 60 * 60 * 1000);
+
       const rsvps = await prisma.$queryRaw`
-        SELECT r.id, r.status, u.id as userId, u.name, u.email
-        FROM EventRSVP r
-        JOIN users u ON r.userId = u.id
-        WHERE r.eventId = ${event.id}
-        AND r.status IN ('Going', 'Maybe')
-        AND (r.reminderSentAt IS NULL)
-      `;
+          SELECT r.id, r.status, u.id as userId, u.name, u.email
+          FROM EventRSVP r
+          JOIN users u ON r.userId = u.id
+          WHERE r.eventId = ${event.id}
+          AND r.status IN ('Going', 'Maybe')
+          AND (r.reminderSentAt IS NULL)
+          AND (r.createdDate < ${cutoffTime})
+        `;
 
       console.log(
         `[processEventReminders] Found ${Array.isArray(rsvps) ? rsvps.length : 0} RSVPs to send reminders for event: ${event.name}`,
