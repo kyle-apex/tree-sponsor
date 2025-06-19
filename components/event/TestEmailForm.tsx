@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { PartialEvent } from 'interfaces';
+import { useState, useEffect } from 'react';
+import { PartialEvent, Session } from 'interfaces';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
@@ -14,6 +14,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import EmailIcon from '@mui/icons-material/Email';
 import PropTypes from 'prop-types';
+import { useSession } from 'next-auth/client';
 
 type EmailType = 'reminder' | 'rsvp' | 'inviter';
 
@@ -22,7 +23,15 @@ interface TestEmailFormProps {
 }
 
 const TestEmailForm: React.FC<TestEmailFormProps> = ({ event }) => {
+  const [session] = useSession();
   const [email, setEmail] = useState('');
+
+  // Pre-fill email from session when component mounts or session changes
+  useEffect(() => {
+    if (session?.user?.email) {
+      setEmail(session.user.email);
+    }
+  }, [session]);
   const [emailType, setEmailType] = useState<EmailType>('reminder');
   const [isLoading, setIsLoading] = useState(false);
   const [snackbar, setSnackbar] = useState<{
