@@ -25,6 +25,7 @@ interface GuestListDialogProps {
   onRSVP?: () => void;
   onSignIn?: () => void;
   currentUser?: PartialUser;
+  title?: string;
 }
 
 const GuestListDialog: React.FC<GuestListDialogProps> = ({
@@ -38,6 +39,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
   onRSVP,
   onSignIn,
   currentUser,
+  title,
 }) => {
   return (
     <Dialog open={open} onClose={onClose} sx={{ borderRadius: '8px' }} maxWidth='sm' fullWidth>
@@ -65,7 +67,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
         <Box sx={{ display: 'flex', flexDirection: 'column', color: 'white' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
             <Typography variant='h4' sx={{ fontWeight: 500 }}>
-              {showHostsOnly ? 'Event Hosts' : 'Guest List'}
+              {title ? title : showHostsOnly ? 'Event Hosts' : 'Guest List'}
             </Typography>
           </Box>
           {!showHostsOnly && (

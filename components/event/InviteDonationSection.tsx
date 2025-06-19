@@ -6,6 +6,7 @@ import DonateButton from 'components/DonateButton';
 import UserAvatarsRowWithLabel from 'components/UserAvatarsRowWithLabel';
 import { PartialEvent, PartialEventRSVP, PartialUser } from 'interfaces';
 import UserBubbles from './UserBubbles';
+import GuestListDialog from './GuestListDialog';
 
 interface InviteDonationSectionProps {
   event: PartialEvent;
@@ -27,9 +28,9 @@ const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
   isDeclined = false,
 }) => {
   // Log props for debugging
-  console.log('InviteDonationSection props:', { currentAmount, goalAmount, addedAmount: 25 });
   const [donationAmount, setDonationAmount] = useState<number>(10);
   const [addedAmount, setAddedAmount] = useState<number>(10); // Initialize to same value as donationAmount
+  const [isGuestListDialogOpen, setIsGuestListDialogOpen] = useState(false);
 
   // Predefined donation amounts
   const donationAmounts = [5, 10, 20, 50];
@@ -65,7 +66,12 @@ const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
 
         {/* Display donors if there are any */}
         {donors.length > 1 && (
-          <Box flexDirection='row' alignItems='center' sx={{ display: 'flex', gap: '5px', mt: -1, mb: -1 }}>
+          <Box
+            flexDirection='row'
+            alignItems='center'
+            sx={{ display: 'flex', gap: '5px', mt: -1, mb: -1, cursor: 'pointer' }}
+            onClick={() => setIsGuestListDialogOpen(true)}
+          >
             <UserBubbles users={donors} maxLength={3} size={28} />
 
             <Typography color='gray' variant='body2'>
@@ -111,6 +117,18 @@ const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
           </>
         )}
       </Box>
+
+      {/* Guest List Dialog for Contributors */}
+      <GuestListDialog
+        open={isGuestListDialogOpen}
+        onClose={() => setIsGuestListDialogOpen(false)}
+        hasRSVP={true}
+        users={donors}
+        goingCount={donors?.length || 0}
+        maybeCount={0}
+        showHostsOnly={true}
+        title='Contributors'
+      />
     </Box>
   );
 };
