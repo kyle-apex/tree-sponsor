@@ -19,7 +19,7 @@ import StatisticIconDisplay from './StatisticIconDisplay';
 import { StyledTableRow } from 'components/StyledTableRow';
 import { TableHeader } from 'components/TableHeader';
 import { Prisma } from '@prisma/client';
-import type { EventAttendanceStats } from 'interfaces';
+import type { EventStats } from 'interfaces';
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -63,13 +63,13 @@ const headerCells = [
 const EventAttendanceStats = () => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
-  const [stats, setStats] = useState<EventAttendanceStats[]>([]);
+  const [stats, setStats] = useState<EventStats[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [orderBy, setOrderBy] = useState<string>('startDate');
 
   const getStats = async () => {
     setIsLoading(true);
-    const data = await parsedGet<EventAttendanceStats[]>('/api/events/attendance-stats');
+    const data = await parsedGet<EventStats[]>('/api/events/attendance-stats');
     setStats(data || []);
     setIsLoading(false);
   };
@@ -114,15 +114,15 @@ const EventAttendanceStats = () => {
       ];
 
       if (numericColumns.includes(orderBy)) {
-        const aNum = (a[orderBy as keyof EventAttendanceStats] as number) || 0;
-        const bNum = (b[orderBy as keyof EventAttendanceStats] as number) || 0;
+        const aNum = (a[orderBy as keyof EventStats] as number) || 0;
+        const bNum = (b[orderBy as keyof EventStats] as number) || 0;
         return order === 'asc' ? aNum - bNum : bNum - aNum;
       }
 
       // For fundraising columns
       if (orderBy === 'fundraisingGoal' || orderBy === 'fundraisingAmount') {
-        const aAmount = a[orderBy as keyof EventAttendanceStats] ? Number(a[orderBy as keyof EventAttendanceStats]) : 0;
-        const bAmount = b[orderBy as keyof EventAttendanceStats] ? Number(b[orderBy as keyof EventAttendanceStats]) : 0;
+        const aAmount = a[orderBy as keyof EventStats] ? Number(a[orderBy as keyof EventStats]) : 0;
+        const bAmount = b[orderBy as keyof EventStats] ? Number(b[orderBy as keyof EventStats]) : 0;
         return order === 'asc' ? aAmount - bAmount : bAmount - aAmount;
       }
 

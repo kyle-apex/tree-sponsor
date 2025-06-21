@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from 'utils/prisma/init';
 import { Prisma } from '@prisma/client';
-import { EventAttendanceStats } from 'interfaces';
+import { EventStats } from 'interfaces';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -97,7 +97,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }, {} as Record<number, number>);
 
     // Transform the data to include the stats we need
-    const eventStats: EventAttendanceStats[] = events.map(event => {
+    const eventStats: EventStats[] = events.map(event => {
       // Count RSVPs by status
       const goingRsvpCount = event.RSVPs.filter(rsvp => rsvp.status === 'Going').length;
 
