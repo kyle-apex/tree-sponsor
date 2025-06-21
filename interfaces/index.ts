@@ -25,6 +25,7 @@ import {
   Form,
   FormResponse,
   EventRSVP,
+  Prisma,
 } from '@prisma/client';
 
 import { ViewportProps } from 'react-map-gl';
@@ -218,3 +219,19 @@ export type CheckinFields = {
 export type PartialSubscriptionWithDetails = Partial<SubscriptionWithDetails>;
 
 export type ReferralStats = { numberOfDonations: number; amountOfDonations: number; referrals: PartialSubscriptionWithDetails[] };
+
+export interface EventAttendanceStats {
+  id: number;
+  name: string | null;
+  startDate: Date | null;
+  location: any;
+  path: string | null;
+  checkInCount: number;
+  goingRsvpCount: number;
+  maybeRsvpCount: number;
+  rsvpCheckInCount: number; // Count of users who both RSVPd and checked in
+  newMemberCount: number; // Count of new members associated with this event
+  firstTimeCheckInCount: number; // Count of users who are checking in for the first time
+  fundraisingGoal: Prisma.Decimal | null;
+  fundraisingAmount: number | null;
+}
