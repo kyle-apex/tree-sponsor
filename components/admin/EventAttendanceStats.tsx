@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -50,20 +50,22 @@ const useStyles = makeStyles(theme => ({
 
 const headerCells = [
   { id: 'name', numeric: false, disablePadding: false, label: 'Event Name' },
-  { id: 'date', numeric: false, disablePadding: false, label: 'Date' },
-  { id: 'checkIns', numeric: true, disablePadding: false, label: 'Event Check-ins' },
-  { id: 'goingRsvps', numeric: true, disablePadding: false, label: 'RSVPs (Going)' },
-  { id: 'maybeRsvps', numeric: true, disablePadding: false, label: 'RSVPs (Maybe)' },
-  { id: 'checkInRate', numeric: true, disablePadding: false, label: `RSVPs who Checked-in` },
-  { id: 'firstTimers', numeric: true, disablePadding: false, label: 'First Timers' },
-  { id: 'newMembers', numeric: true, disablePadding: false, label: 'New Members' },
-  { id: 'fundraising', numeric: true, disablePadding: false, label: 'Fundraising' },
+  { id: 'startDate', numeric: false, disablePadding: false, label: 'Date' },
+  { id: 'checkInCount', numeric: true, disablePadding: false, label: 'Event Check-ins' },
+  { id: 'goingRsvpCount', numeric: true, disablePadding: false, label: 'RSVPs (Going)' },
+  { id: 'maybeRsvpCount', numeric: true, disablePadding: false, label: 'RSVPs (Maybe)' },
+  { id: 'rsvpCheckInCount', numeric: true, disablePadding: false, label: `RSVPs who Checked-in` },
+  { id: 'firstTimeCheckInCount', numeric: true, disablePadding: false, label: 'First Timers' },
+  { id: 'newMemberCount', numeric: true, disablePadding: false, label: 'New Members' },
+  { id: 'fundraisingAmount', numeric: true, disablePadding: false, label: 'Fundraising' },
 ];
 
 const EventAttendanceStats = () => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const [stats, setStats] = useState<EventAttendanceStats[]>([]);
+  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+  const [orderBy, setOrderBy] = useState<string>('startDate');
 
   const getStats = async () => {
     setIsLoading(true);
@@ -75,6 +77,59 @@ const EventAttendanceStats = () => {
   useEffect(() => {
     getStats();
   }, []);
+
+  // Handle sort request
+  const handleRequestSort = (property: string) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  // Function to sort data
+  const sortedStats = React.useMemo(() => {
+    if (!stats.length) return [];
+
+    return [...stats].sort((a, b) => {
+      // Special handling for different columns
+      if (orderBy === 'startDate') {
+        const aDate = a.startDate ? new Date(a.startDate).getTime() : 0;
+        const bDate = b.startDate ? new Date(b.startDate).getTime() : 0;
+        return order === 'asc' ? aDate - bDate : bDate - aDate;
+      }
+
+      if (orderBy === 'name') {
+        const aName = a.name || '';
+        const bName = b.name || '';
+        return order === 'asc' ? aName.localeCompare(bName) : bName.localeCompare(aName);
+      }
+
+      // For numeric columns
+      const numericColumns = [
+        'checkInCount',
+        'goingRsvpCount',
+        'maybeRsvpCount',
+        'rsvpCheckInCount',
+        'firstTimeCheckInCount',
+        'newMemberCount',
+      ];
+
+      if (numericColumns.includes(orderBy)) {
+        const aNum = (a[orderBy as keyof EventAttendanceStats] as number) || 0;
+        const bNum = (b[orderBy as keyof EventAttendanceStats] as number) || 0;
+        return order === 'asc' ? aNum - bNum : bNum - aNum;
+      }
+
+      // For fundraising columns
+      if (orderBy === 'fundraisingGoal' || orderBy === 'fundraisingAmount') {
+        const aAmount = a[orderBy as keyof EventAttendanceStats] ? Number(a[orderBy as keyof EventAttendanceStats]) : 0;
+        const bAmount = b[orderBy as keyof EventAttendanceStats] ? Number(b[orderBy as keyof EventAttendanceStats]) : 0;
+        return order === 'asc' ? aAmount - bAmount : bAmount - aAmount;
+      }
+
+      // Default case
+      return 0;
+    });
+  }, [stats, order, orderBy]);
 
   // Calculate summary statistics
   const totalCheckIns = stats.reduce((sum, event) => sum + event.checkInCount, 0);
@@ -107,7 +162,16 @@ const EventAttendanceStats = () => {
     <>
       <TableContainer component={Paper} className={classes.tableContainer}>
         <Table className={classes.table} aria-label='event attendance table' size='medium'>
-          <TableHeader classes={classes} headCells={headerCells} />
+          <TableHeader
+            classes={{
+              white: classes.white,
+              visuallyHidden: classes.visuallyHidden,
+            }}
+            headCells={headerCells}
+            order={order}
+            orderBy={orderBy}
+            onRequestSort={handleRequestSort}
+          />
           <TableBody>
             {isLoading ? (
               <TableRow>
@@ -116,7 +180,7 @@ const EventAttendanceStats = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              stats.map(event => (
+              sortedStats.map(event => (
                 <StyledTableRow key={event.id}>
                   <TableCell component='th' scope='row'>
                     {event.name}
