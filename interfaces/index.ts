@@ -220,7 +220,7 @@ export type PartialSubscriptionWithDetails = Partial<SubscriptionWithDetails>;
 
 export type ReferralStats = { numberOfDonations: number; amountOfDonations: number; referrals: PartialSubscriptionWithDetails[] };
 
-export interface EventAttendanceStats {
+export interface EventStats {
   id: number;
   name: string | null;
   startDate: Date | null;
