@@ -57,7 +57,7 @@ const headerCells = [
   { id: 'rsvpCheckInCount', numeric: true, disablePadding: false, label: `RSVPs who Checked-in` },
   { id: 'firstTimeCheckInCount', numeric: true, disablePadding: false, label: 'First Timers' },
   { id: 'newMemberCount', numeric: true, disablePadding: false, label: 'New Members' },
-  { id: 'fundraisingAmount', numeric: true, disablePadding: false, label: 'Fundraising' },
+  { id: 'fundraisingAmount', numeric: true, disablePadding: false, label: 'Pre-Event Fundraising' },
 ];
 
 const EventAttendanceStats = () => {
