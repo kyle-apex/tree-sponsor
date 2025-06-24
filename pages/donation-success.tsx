@@ -56,7 +56,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext): Pr
       const stripeSession = await stripe.checkout.sessions.retrieve(stripeSessionId);
       const customer = (await stripe.customers.retrieve(stripeSession.customer as string)) as Stripe.Customer;
       console.log('stripeSession:', stripeSession);
-      // Store donation data in StripeDonation table
+      // Store donation data in Donation table
       if (stripeSession.payment_status === 'paid') {
         const metadata = stripeSession.metadata || {};
         console.log('metadata:', metadata);
@@ -64,7 +64,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext): Pr
 
         // Use $executeRaw to bypass TypeScript error until Prisma client is regenerated
         await prisma.$executeRaw`
-          INSERT INTO StripeDonation (
+          INSERT INTO Donation (
             stripeSessionId,
             stripeCustomerId,
             amount,
