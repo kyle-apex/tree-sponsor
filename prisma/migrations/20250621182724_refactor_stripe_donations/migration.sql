@@ -36,11 +36,5 @@ WHERE NOT EXISTS (
   SELECT 1 FROM Donation d WHERE d.stripeSessionId = sd.stripeSessionId
 );
 
--- Step 2: Drop the StripeDonation table (will be done by Prisma when applying the migration)
--- This step is handled automatically by Prisma when you run prisma migrate
-
--- DropTable
---DROP TABLE `StripeDonation`;
-
 -- AddForeignKey
 ALTER TABLE `Donation` ADD CONSTRAINT `Donation_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
