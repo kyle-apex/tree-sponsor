@@ -76,18 +76,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
-    // Get all stripe donations for events
-    const stripeDonations = await prisma.stripeDonation.findMany({
+    // Get all donations for events
+    const donations = await prisma.donation.findMany({
       where: {
         eventId: {
           in: eventIds,
         },
-        status: 'paid',
+        // Note: status field removed as it may not exist in the Donation model
       },
     });
 
     // Calculate donation amounts by event
-    const donationsByEvent = stripeDonations.reduce((acc, donation) => {
+    const donationsByEvent = donations.reduce((acc, donation) => {
       const eventId = donation.eventId;
       if (!acc[eventId]) {
         acc[eventId] = 0;

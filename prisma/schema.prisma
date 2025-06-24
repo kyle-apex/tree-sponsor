@@ -99,7 +99,7 @@ model User {
     invitedByUserRSVPs  EventRSVP[]           @relation("invitedByUser")
     pageViews          PageView[]
     clickEvents        ClickEvent[]
-    stripeDonations    StripeDonation[]
+    donations          Donation[]
              
 
   @@map(name: "users")
@@ -566,13 +566,19 @@ model Sponsorship {
 }
 
 model Donation {
-  id          Int       @id @default(autoincrement())
-  eventId     Int?
-  label       String?
-  amount      Decimal?  @db.Decimal(6, 2)
-  source      String?
-  date        DateTime?
-  createdDate DateTime? @default(now())
+  id               Int       @id @default(autoincrement())
+  eventId          Int?
+  label            String?
+  amount           Decimal?  @db.Decimal(6, 2)
+  source           String?
+  date             DateTime?
+  createdDate      DateTime? @default(now())
+  stripeSessionId  String?  
+  stripeCustomerId String?
+  status           String?
+  userId           Int?
+  user             User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  metadata         Json?
 }
 
 model StoreProduct {
@@ -646,16 +652,3 @@ model ClickEvent {
   user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
-model StripeDonation {
-  id                Int       @id @default(autoincrement())
-  stripeSessionId   String?   @unique
-  stripeCustomerId  String?
-  amount            Decimal?  @db.Decimal(6, 2)
-  status            String?   @default("pending")
-  eventId           Int?
-  eventName         String?
-  userId            Int?
-  user              User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  createdDate       DateTime? @default(now())
-  metadata          Json?
-}

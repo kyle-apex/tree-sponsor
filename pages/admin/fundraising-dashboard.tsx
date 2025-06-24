@@ -14,6 +14,8 @@ import { useRemoveFromQuery } from 'utils/hooks/use-remove-from-query';
 import { useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import { GetSessionOptions } from 'next-auth/client';
+import restrictPageAccess from 'utils/auth/restrict-page-access';
 
 const addDonationToDatabase = async (donation: PartialDonation) => {
   const result = await axios.post('/api/donations', donation);
@@ -57,3 +59,7 @@ const FundraisingDashboardPage = () => {
   );
 };
 export default FundraisingDashboardPage;
+
+export const getServerSideProps = (ctx: GetSessionOptions) => {
+  return restrictPageAccess(ctx, 'isAdmin');
+};
