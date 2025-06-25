@@ -9,6 +9,7 @@ import { Session, PartialUser } from 'interfaces';
 import { AccessTypes } from 'utils/auth/AccessType';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 import { Adapter } from './custom-prisma-nextauth-adapter';
+import sendEmailSES from 'utils/email/send-email-ses';
 
 function getProfilePictureUrl(profile: Profile): string {
   console.log('profile', profile);
@@ -42,26 +43,52 @@ export default NextAuth({
     }),
     // Passwordless / email sign in
     Providers.Email({
-      server: {
-        host: process.env.SENDGRID_HOST || 'smtp.sendgrid.net',
-        port: Number(process.env.SENDGRID_PORT) || 587,
-        auth: {
-          user: 'apikey',
-          pass: process.env.SENDGRID_API_KEY2,
-        },
-      },
+      server:
+        process.env.USE_SES_FOR_AUTH === 'true'
+          ? {} // Empty server config when using SES
+          : {
+              host: process.env.SENDGRID_HOST || 'smtp.sendgrid.net',
+              port: Number(process.env.SENDGRID_PORT) || 587,
+              auth: {
+                user: 'apikey',
+                pass: process.env.SENDGRID_API_KEY2,
+              },
+            },
       maxAge: 60 * 15,
-      from: 'yp@treefolks.org',
-      sendVerificationRequest({ identifier: email, url, provider: { server, from } }) {
+      from: process.env.SES_SENDER_EMAIL || 'yp@treefolks.org',
+      async sendVerificationRequest({ identifier: email, url, provider: { server, from } }) {
         const { host } = new URL(url);
-        const transport = createTransport(server);
-        transport.sendMail({
-          to: email,
-          from,
-          subject: `TreeFolksYP Login Link`,
-          text: text({ url, host }),
-          html: html({ url, host, email }),
-        });
+
+        // Use Amazon SES if configured
+        if (process.env.USE_SES_FOR_AUTH === 'true') {
+          try {
+            const result = await sendEmailSES(
+              [email],
+              'TreeFolksYP Login Link',
+              text({ url, host }),
+              html({ url, host, email }),
+              'TreeFolks Young Professionals',
+            );
+
+            if (!result) {
+              console.error(`Failed to send verification email via SES to ${email}`);
+              throw new Error('Failed to send verification email');
+            }
+          } catch (error) {
+            console.error('Error sending verification email via SES:', error);
+            throw new Error('Failed to send verification email');
+          }
+        } else {
+          // Use SendGrid via nodemailer (original implementation)
+          const transport = createTransport(server);
+          await transport.sendMail({
+            to: email,
+            from,
+            subject: `TreeFolksYP Login Link`,
+            text: text({ url, host }),
+            html: html({ url, host, email }),
+          });
+        }
       },
     }),
   ],
