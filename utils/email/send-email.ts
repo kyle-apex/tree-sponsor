@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import sendEmailSES from './send-email-ses';
 
 // Since we don't have type definitions for nodemailer-sendgrid, we'll use require
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -31,6 +32,11 @@ export default async function sendEmail(
   fromName = 'TreeFolks Young Professionals',
   previewText?: string,
 ): Promise<boolean> {
+  // If USE_SES_FOR_AUTH is true, use SES instead of SendGrid
+  if (process.env.USE_SES_FOR_AUTH === 'true') {
+    return sendEmailSES(recipients, subject, body, html, fromName, previewText);
+  }
+
   try {
     let finalHtml = html;
 
