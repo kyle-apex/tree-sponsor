@@ -12,6 +12,7 @@ import TreeBenefitsSection from 'components/index/TreeBenefitsSection';
 import UpcomingEventsSection from 'components/index/UpcomingEventsSection';
 import MembershipSection from 'components/index/MembershipSection';
 import CoreTeamSection from 'components/index/CoreTeamSection';
+import Box from '@mui/material/Box';
 
 const IndexPage = ({
   stripePriceIdLow,
@@ -43,8 +44,13 @@ const IndexPage = ({
       {/* Introduction Section */}
       <IntroSection />
 
+      {/* Upcoming Events Section */}
+      <Box mb={3}>
+        <UpcomingEventsSection />
+      </Box>
+
       {/* Tree Benefits Section */}
-      <TreeBenefitsSection benefits={TREE_BENEFITS} />
+      {false && <TreeBenefitsSection benefits={TREE_BENEFITS} />}
 
       {/* Membership Section */}
       <MembershipSection
@@ -52,9 +58,6 @@ const IndexPage = ({
         stripePriceIdLow={stripePriceIdLow}
         stripePriceIdMedium={stripePriceIdMedium}
       />
-
-      {/* Upcoming Events Section */}
-      <UpcomingEventsSection />
 
       {/* Core Team Section */}
       <CoreTeamSection users={users} />
