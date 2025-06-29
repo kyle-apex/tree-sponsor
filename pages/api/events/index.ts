@@ -13,7 +13,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'GET') {
     const filter: Prisma.EventFindManyArgs = {
       orderBy: { startDate: 'desc' },
-      include: { location: { select: { name: true } } },
+      include: {
+        location: { select: { name: true } },
+        // Include SpeciesQuizResponse count when hasQuizResponses is true
+        ...(req.query.hasQuizResponses === 'true' && {
+          _count: {
+            select: { SpeciesQuizResponse: true },
+          },
+        }),
+      },
     };
 
     // Initialize where clause if it doesn't exist
@@ -31,6 +39,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Only apply isPrivate filter if not already set by forHomepage
       const isAdmin = await isCurrentUserAuthorized('isAdmin', req);
       if (!isAdmin) filter.where.isPrivate = false;
+    }
+
+    // Add filter for events with quiz responses
+    if (req.query.hasQuizResponses === 'true') {
+      filter.where.SpeciesQuizResponse = {
+        some: {}, // At least one quiz response
+      };
+    }
+
+    // Add limit if specified
+    if (req.query.limit && !isNaN(Number(req.query.limit))) {
+      filter.take = Number(req.query.limit);
     }
 
     const events = await prisma.event.findMany(filter);
