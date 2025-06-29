@@ -338,6 +338,7 @@ model Event {
   identifier          String?
   path                String?               @db.VarChar(256)
   instagramPostId     String?               @db.VarChar(64)
+  externalRSVPLink    String?               @db.VarChar(512)
   isPrivate           Boolean?              @default(false)
   hasSpecificTrees    Boolean?              @default(false)
   hasNavigation       Boolean?              @default(false)
