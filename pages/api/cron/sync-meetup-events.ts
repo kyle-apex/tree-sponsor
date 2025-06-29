@@ -73,6 +73,32 @@ function extractJsonLd(html: string): any[] {
 }
 
 /**
+ * Clean up address by removing redundant city/state information
+ * For example: "1161 Angelina St., Austin, TX, 78702, Austin, TX, Austin, TX"
+ * becomes "1161 Angelina St., Austin, TX, 78702"
+ */
+function normalizeAddress(address: string): string {
+  if (!address) return '';
+
+  // Split the address by commas
+  const parts = address.split(',').map(part => part.trim());
+
+  // Create a map to track unique parts (case-insensitive)
+  const uniqueParts = new Map<string, string>();
+
+  // Keep only unique parts while preserving order
+  for (const part of parts) {
+    const lowerPart = part.toLowerCase();
+    if (!uniqueParts.has(lowerPart)) {
+      uniqueParts.set(lowerPart, part);
+    }
+  }
+
+  // Join the unique parts back together
+  return Array.from(uniqueParts.values()).join(', ');
+}
+
+/**
  * Geocode an address using Mapbox Geocoding API
  * Returns latitude and longitude coordinates
  */
@@ -82,8 +108,13 @@ async function geocodeAddress(address: string): Promise<{ latitude: number | nul
   }
 
   try {
-    // URL encode the address
-    const encodedAddress = encodeURIComponent(address);
+    // Normalize the address to remove redundant information
+    const normalizedAddress = normalizeAddress(address);
+    console.log(`Original address: "${address}"`);
+    console.log(`Normalized address: "${normalizedAddress}"`);
+
+    // URL encode the normalized address
+    const encodedAddress = encodeURIComponent(normalizedAddress);
 
     // Make a request to the Mapbox Geocoding API
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedAddress}.json?limit=1&access_token=${process.env.MAPBOX_ACCESS_TOKEN}`;
@@ -268,6 +299,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const locationData = extractLocationData(htmlData);
       locationName = locationData.name;
       locationAddress = locationData.address;
+
+      // Normalize the address to remove redundant information
+      if (locationAddress) {
+        locationAddress = normalizeAddress(locationAddress);
+      }
+
       latitude = locationData.latitude;
       longitude = locationData.longitude;
 
