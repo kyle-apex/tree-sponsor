@@ -49,6 +49,7 @@ const EventDetailsForm = ({
   const [startDate, setStartDate] = useState(event.startDate);
   const [name, setName] = useState(event.name || '');
   const [instagramPostId, setInstagramPostId] = useState(event.instagramPostId || '');
+  const [externalRSVPLink, setExternalRSVPLink] = useState(event.externalRSVPLink || '');
   const [reminderText, setReminderText] = useState(event.reminderText || '');
   const [fundraisingGoal, setFundraisingGoal] = useState(event.fundraisingGoal?.toString() || '');
 
@@ -116,6 +117,21 @@ const EventDetailsForm = ({
           helperText='(ex: CvDTcUFuMO9 is the post id from instagram.com/p/CvDTcUFuMO9/)'
         ></TextField>
       )}
+
+      <TextField
+        value={externalRSVPLink}
+        onChange={e => {
+          const newLink = e.target.value;
+          updateAttribute('externalRSVPLink', newLink);
+          setExternalRSVPLink(newLink);
+        }}
+        label='External RSVP Link'
+        size='small'
+        sx={{ marginBottom: 3 }}
+        id='external-rsvp-link-field'
+        helperText='Link to external event page (e.g., Meetup event)'
+        fullWidth
+      ></TextField>
 
       <SplitRow gap={2}>
         <DateTimeField

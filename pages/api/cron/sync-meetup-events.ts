@@ -428,6 +428,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           path: paramCase(eventTitle),
           identifier: eventGuid,
           pictureUrl: pictureUrl,
+          externalRSVPLink: eventLink,
           startDate: startDate || eventPubDate,
           endDate: endDate || new Date((startDate || eventPubDate).getTime() + 2 * 60 * 60 * 1000),
           locationId: locationId,

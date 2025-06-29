@@ -101,7 +101,7 @@ const UpcomingEventsSection: React.FC = () => {
         <Grid container spacing={4} justifyContent='center'>
           {upcomingEvents.map(event => (
             <Grid item xs={12} sm={6} md={4} key={event.id}>
-              <Link href={`/e/${event.path}/invite`} passHref>
+              <Link href={event.externalRSVPLink || `/e/${event.path}/invite`} passHref>
                 <Card className={classes.eventCard}>
                   <CardMedia
                     className={classes.eventMedia}
