@@ -80,7 +80,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   const logout = () => {
     checkinFormRef?.current?.reset();
     setIsLoggedIn(false);
-    setStoredEmail(null);
+    setStoredEmail(undefined);
   };
 
   useEffect(() => {
