@@ -180,8 +180,15 @@ const UpcomingEventsSection: React.FC = () => {
           {/* Show upcoming events */}
           {upcomingEvents.map(event => renderEventCard(event, 'View and RSVP', event.externalRSVPLink || `/e/${event.path}/invite`, false))}
 
-          {/* Show past event last on small screens */}
-          {isSmallScreen && pastEvent && renderEventCard(pastEvent, 'LEARN ABOUT TREES', `/e/${pastEvent.path}/quiz`, true)}
+          {/* Show past event last on small screens with a divider */}
+          {isSmallScreen && pastEvent && (
+            <>
+              <Grid item xs={12}>
+                <Divider sx={{ margin: '32px auto' }} />
+              </Grid>
+              {renderEventCard(pastEvent, 'LEARN ABOUT TREES', `/e/${pastEvent.path}/quiz`, true)}
+            </>
+          )}
         </Grid>
       </Box>
     </Container>
