@@ -257,7 +257,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
           {!isLoggedIn && (
             <Box
               sx={{
-                zIndex: 2000,
+                zIndex: 1200,
                 position: 'absolute',
                 bottom: -2,
                 left: 0,
