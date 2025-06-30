@@ -90,12 +90,23 @@ export default function useLocalStorage<T>(
 
       // Save to local storage
       if (typeof window !== 'undefined') {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
-        if (!valueToStore && secondaryKey) {
-          window.localStorage.setItem(secondaryKey, JSON.stringify(valueToStore));
-        }
-        if (expirationDate) {
-          window.localStorage.setItem(key + 'Expiration', JSON.stringify(expirationDate));
+        if (valueToStore === undefined) {
+          // Remove item from localStorage if value is undefined
+          window.localStorage.removeItem(key);
+          if (secondaryKey) {
+            window.localStorage.removeItem(secondaryKey);
+          }
+          // Also remove expiration if it exists
+          window.localStorage.removeItem(key + 'Expiration');
+        } else {
+          // Otherwise save to localStorage as normal
+          window.localStorage.setItem(key, JSON.stringify(valueToStore));
+          if (!valueToStore && secondaryKey) {
+            window.localStorage.setItem(secondaryKey, JSON.stringify(valueToStore));
+          }
+          if (expirationDate) {
+            window.localStorage.setItem(key + 'Expiration', JSON.stringify(expirationDate));
+          }
         }
 
         // Broadcast the change to other components
