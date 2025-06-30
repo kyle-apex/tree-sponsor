@@ -64,8 +64,7 @@ const TreeIdQuiz = forwardRef(
     const longitude = currentMapCoordinateRef?.current?.longitude || defaultLongitude;
 
     const apiUrl = eventId ? 'for-event' : categoryIds ? 'for-categories' : 'for-coordinate';
-    //30.26172 -97.722017 500
-    //30.27141 -97.758546 NaN
+
     const {
       data: trees,
       isFetching,

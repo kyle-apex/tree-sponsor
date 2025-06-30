@@ -22,10 +22,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (emailOptIn && firstName) {
       if (email) {
-        const result = await addSubscriber(email, { FNAME: firstName, LNAME: lastName }, false);
+        addSubscriber(email, { FNAME: firstName, LNAME: lastName }, false).catch(error => {
+          console.error('Error adding subscriber:', error);
+        });
       }
     }
-
     res.status(200).json({ email: user?.email });
   }
 }
