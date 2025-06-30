@@ -26,7 +26,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import SplitRow from 'components/layout/SplitRow';
 
 const saveResponse = async (speciesQuizResponse: PartialSpeciesQuizResponse & { email: string }) => {
-  await axios.post('/api/speciesQuizResponses', speciesQuizResponse);
+  if (speciesQuizResponse?.email) await axios.post('/api/speciesQuizResponses', speciesQuizResponse);
 };
 
 function getQuizOptions(species: PartialSpecies[], correctSpecies: PartialSpecies): PartialSpecies[] {
