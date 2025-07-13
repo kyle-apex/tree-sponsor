@@ -85,6 +85,7 @@ const SignupForm = ({
           '& button': {
             flex: '1 1 auto',
             border: 'solid lightgray 1px',
+            backgroundColor: '#fff',
           },
         }}
         value={activeMembershipIndex}
