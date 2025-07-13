@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import TFYPAboutSection from './TFYPAboutSection';
 import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   memberButton: {
     fontWeight: 'bold',
     '&:hover': {
