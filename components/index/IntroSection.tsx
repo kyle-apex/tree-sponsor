@@ -7,15 +7,8 @@ import TFYPAboutSection from './TFYPAboutSection';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(theme => ({
-  headlineSubTitle: {
-    marginBottom: theme.spacing(2),
-    fontSize: '1.2rem',
-  },
   memberButton: {
-    marginBottom: theme.spacing(2),
     fontWeight: 'bold',
-    borderColor: '#ffffff',
-    color: '#ffffff',
     '&:hover': {
       backgroundColor: '#1b2b1c',
       color: '#ffffff',
@@ -55,11 +48,17 @@ const IntroSection: React.FC = () => {
         className='index detail-section'
       >
         <Typography variant='h2'>What is TreeFolks Young Professionals?</Typography>
-        <Typography variant='subtitle1' className={classes.headlineSubTitle}>
+        <Typography variant='subtitle1' sx={{ marginBottom: theme => theme.spacing(2), fontSize: '1.2rem' }}>
           TreeFolks Young Professionals (ages 21 – 40ish) volunteer, educate, fundraise, and build community in support of the mission of
           TreeFolks: planting, caring for, and giving people free trees to plant!
         </Typography>
-        <Button variant='outlined' sx={{ px: 3 }} size='medium' className={classes.memberButton} onClick={scrollToMembershipSection}>
+        <Button
+          variant='outlined'
+          sx={{ px: 3, borderColor: '#ffffff', color: '#ffffff', marginBottom: theme => theme.spacing(2) }}
+          size='medium'
+          className={classes.memberButton}
+          onClick={scrollToMembershipSection}
+        >
           Become a Supporter
         </Button>
       </Box>
