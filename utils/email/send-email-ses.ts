@@ -94,6 +94,10 @@ export default async function sendEmailSES(
 
     // Send the email
     await ses.sendEmail(params).promise();
+
+    // delay 100ms to avoid SES rate limiting issues
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     return true;
   } catch (error) {
     console.error('[sendEmailSES] Error sending email:', error);
