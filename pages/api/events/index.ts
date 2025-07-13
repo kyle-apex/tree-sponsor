@@ -35,6 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       filter.where.description = { not: null };
       filter.where.pictureUrl = { not: null };
       filter.where.isPrivate = false;
+      filter.orderBy = { startDate: 'asc' };
     } else {
       // Only apply isPrivate filter if not already set by forHomepage
       const isAdmin = await isCurrentUserAuthorized('isAdmin', req);

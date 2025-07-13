@@ -17,6 +17,7 @@ import Link from 'next/link';
 import { Divider, SectionHeader } from './StyledComponents';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import { markdownToHtml } from 'utils/markdown';
 
 const useStyles = makeStyles(theme => ({
   sectionTitle: {
@@ -144,7 +145,11 @@ const UpcomingEventsSection: React.FC = () => {
                     {description}
                   </Typography>
                 ) : (
-                  <Typography variant='body2' className={classes.eventDescription} dangerouslySetInnerHTML={{ __html: description }} />
+                  <Typography
+                    variant='body2'
+                    className={classes.eventDescription}
+                    dangerouslySetInnerHTML={{ __html: markdownToHtml(description) }}
+                  />
                 )}
               </CardContent>
               <CardActions className={classes.cardActions}>
