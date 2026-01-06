@@ -129,7 +129,7 @@ const SignupPage = ({
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>BAND App Community Access</TableCell>
+              <TableCell>WhatsApp Community Access</TableCell>
               <TableCell>
                 <CheckCircleIcon color='primary'></CheckCircleIcon>
               </TableCell>

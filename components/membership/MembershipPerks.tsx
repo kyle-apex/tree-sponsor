@@ -15,7 +15,7 @@ const MembershipPerks = ({ isMember }: { isMember?: boolean }) => {
           <>
             <li>
               <a href={process.env.BAND_URL || 'https://band.tfyp.org'} target='_blank' rel='noreferrer' style={{ textDecoration: 'none' }}>
-                <Typography color='primary'>Join our members only group on BAND for:</Typography>
+                <Typography color='primary'>Join our members only group on WhatsApp for:</Typography>
               </a>
               <ul style={{ color: 'var(--secondary-text-color)' }}>
                 <li>Members only updates and events</li>

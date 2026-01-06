@@ -16,10 +16,10 @@ const CalendarPage = () => {
     <Layout title='Calendar' header='Calendar'>
       <h1>Calendar</h1>
       <p>
-        Import the calendar to your favorite applications using one of the options below. Be sure to join our BAND app groups to RSVP, keep
+        Import the calendar to your favorite applications using one of the options below. Be sure to join our WhatsApp group to RSVP, keep
         up to date with, and/or organize carpools for events.{' '}
         <Link href='/account'>
-          <a>(View BAND link in your account)</a>
+          <a>(View WhatsApp link in your account)</a>
         </Link>
       </p>
       <Typography variant='h2' color='secondary'>
