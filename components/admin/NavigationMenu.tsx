@@ -47,6 +47,7 @@ const NavigationMenu = () => {
       >
         <MenuItem onClick={() => navigateTo('/admin/membership-dashboard')}>Membership Dashboard</MenuItem>
         <MenuItem onClick={() => navigateTo('/admin/fundraising-dashboard')}>Fundraising Dashboard</MenuItem>
+        <MenuItem onClick={() => navigateTo('/admin/event-dashboard')}>Event Dashboard</MenuItem>
         <RestrictSection accessType='hasEventManagement'>
           <MenuItem onClick={() => navigateTo('/admin/events')}>Manage Events</MenuItem>
         </RestrictSection>

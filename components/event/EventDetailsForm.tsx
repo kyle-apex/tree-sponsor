@@ -12,6 +12,12 @@ import Collapse from '@mui/material/Collapse';
 import Checkbox from '@mui/material/Checkbox';
 import React, { useState } from 'react';
 import LocationSelector from 'components/LocationSelector';
+import LocationMapDialog from './LocationMapDialog';
+import EditIcon from '@mui/icons-material/Edit';
+import CheckIcon from '@mui/icons-material/Check';
+import Button from '@mui/material/Button';
+import Link from '@mui/material/Link';
+import PlaceIcon from '@mui/icons-material/Place';
 import { paramCase } from 'change-case';
 import { useDebouncedCallback } from 'use-debounce';
 import UserMultiSelect from './UserMultiSelect';
@@ -43,11 +49,16 @@ const EventDetailsForm = ({
   const [startDate, setStartDate] = useState(event.startDate);
   const [name, setName] = useState(event.name || '');
   const [instagramPostId, setInstagramPostId] = useState(event.instagramPostId || '');
+  const [externalRSVPLink, setExternalRSVPLink] = useState(event.externalRSVPLink || '');
+  const [reminderText, setReminderText] = useState(event.reminderText || '');
+  const [fundraisingGoal, setFundraisingGoal] = useState(event.fundraisingGoal?.toString() || '');
 
   const [path, setPath] = useState(event.path || '');
   const [locationName, setLocationName] = useState(event.location?.name || '');
   const [latitude, setLatitude] = useState(event.location?.latitude || 0);
   const [longitude, setLongitude] = useState(event.location?.longitude || 0);
+  const [editingLocation, setEditingLocation] = useState(!event.location?.latitude);
+  const [locationDialogOpen, setLocationDialogOpen] = useState(false);
   const debouncedSetLocation = useDebouncedCallback((latitude: number, longitude: number, address?: string) => {
     setLongitude(longitude);
     setLatitude(latitude);
@@ -106,6 +117,21 @@ const EventDetailsForm = ({
           helperText='(ex: CvDTcUFuMO9 is the post id from instagram.com/p/CvDTcUFuMO9/)'
         ></TextField>
       )}
+
+      <TextField
+        value={externalRSVPLink}
+        onChange={e => {
+          const newLink = e.target.value;
+          updateAttribute('externalRSVPLink', newLink);
+          setExternalRSVPLink(newLink);
+        }}
+        label='External RSVP Link'
+        size='small'
+        sx={{ marginBottom: 3 }}
+        id='external-rsvp-link-field'
+        helperText='Link to external event page (e.g., Meetup event)'
+        fullWidth
+      ></TextField>
 
       <SplitRow gap={2}>
         <DateTimeField
@@ -178,6 +204,39 @@ const EventDetailsForm = ({
           onChange={val => updateAttribute('description', val)}
         />
       </Box>
+      <TextField
+        value={reminderText}
+        onChange={e => {
+          const newText = e.target.value;
+          updateAttribute('reminderText', newText);
+          setReminderText(newText);
+        }}
+        label='Reminder Email Text'
+        placeholder='Enter custom text for the reminder email sent 24 hours before the event. If left blank, a default message will be used.'
+        multiline
+        rows={4}
+        fullWidth
+        sx={{ marginTop: 3, marginBottom: 2 }}
+      />
+      <TextField
+        value={fundraisingGoal}
+        onChange={e => {
+          const newValue = e.target.value;
+          // Only allow numbers and decimal point
+          if (newValue === '' || /^[0-9]*\.?[0-9]*$/.test(newValue)) {
+            updateAttribute('fundraisingGoal', newValue === '' ? null : parseFloat(newValue));
+            setFundraisingGoal(newValue);
+          }
+        }}
+        label='Fundraising Goal'
+        placeholder='Enter fundraising goal amount'
+        type='text'
+        InputProps={{
+          startAdornment: <span style={{ marginRight: 8 }}>$</span>,
+        }}
+        fullWidth
+        sx={{ marginTop: 3, marginBottom: 2 }}
+      />
       <ImageUploadAndPreview
         addSubtitleText='Click to add event image'
         imageUrl={pictureUrl}
@@ -199,31 +258,95 @@ const EventDetailsForm = ({
         <Checkbox defaultChecked={event?.hasNavigation} onChange={e => updateAttribute('hasNavigation', e.target.checked)}></Checkbox>
         Show navigation links to trees on species quiz (ex: bike tour or hike)
       </Box>
-      <LocationSelector
-        onViewportChange={({ latitude, longitude, address }) => {
-          debouncedSetLocation(latitude, longitude, address);
-        }}
-        latitude={latitude ? Number(latitude) : null}
-        longitude={longitude ? Number(longitude) : null}
-        zoomToLocation={!latitude}
-        onSelectedName={name => {
-          if (!locationName && name) {
-            setLocationName(name);
-            updateAttribute('location.name', name);
-          }
-        }}
-      ></LocationSelector>
-      <TextField
-        value={locationName}
-        onChange={e => {
-          setLocationName(e.target.value);
-          updateAttribute('location.name', e.target.value);
-        }}
-        label='Location Name'
-        size='small'
-        sx={{ marginBottom: 3, marginTop: 4 }}
-        id='name-field'
-      ></TextField>
+
+      {!editingLocation && event.location?.latitude ? (
+        <Box sx={{ mb: 3, mt: 3, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
+              justifyContent: 'space-between',
+              alignItems: { xs: 'flex-start', sm: 'center' },
+              mb: 2,
+            }}
+          >
+            <Typography variant='h6' sx={{ mb: { xs: 1, sm: 0 }, wordBreak: 'break-word' }}>
+              {locationName || 'Event Location'}
+            </Typography>
+            <Button
+              startIcon={<EditIcon />}
+              onClick={() => setEditingLocation(true)}
+              size='small'
+              variant='outlined'
+              sx={{ alignSelf: { xs: 'flex-start', sm: 'auto' } }}
+            >
+              Edit
+            </Button>
+          </Box>
+
+          {event.location?.address && (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 1,
+                cursor: 'pointer',
+                '&:hover': { textDecoration: 'underline' },
+              }}
+              onClick={() => setLocationDialogOpen(true)}
+            >
+              <PlaceIcon color='primary' sx={{ mt: 0.5 }} />
+              <Link
+                component='span'
+                underline='hover'
+                sx={{
+                  wordBreak: 'break-word',
+                  display: 'inline-block',
+                }}
+              >
+                {event.location.address}
+              </Link>
+            </Box>
+          )}
+
+          <LocationMapDialog open={locationDialogOpen} onClose={() => setLocationDialogOpen(false)} location={event.location} />
+        </Box>
+      ) : (
+        <>
+          <LocationSelector
+            onViewportChange={({ latitude, longitude, address }) => {
+              debouncedSetLocation(latitude, longitude, address);
+            }}
+            latitude={latitude ? Number(latitude) : null}
+            longitude={longitude ? Number(longitude) : null}
+            zoomToLocation={!latitude}
+            onSelectedName={name => {
+              if (!locationName && name) {
+                setLocationName(name);
+                updateAttribute('location.name', name);
+              }
+            }}
+          ></LocationSelector>
+          <TextField
+            value={locationName}
+            onChange={e => {
+              setLocationName(e.target.value);
+              updateAttribute('location.name', e.target.value);
+            }}
+            label='Location Name'
+            size='small'
+            sx={{ marginBottom: 3, marginTop: 4 }}
+            id='name-field'
+          ></TextField>
+          {event.location?.latitude && (
+            <Box sx={{ mb: 3 }}>
+              <Button onClick={() => setEditingLocation(false)} size='small' variant='outlined' startIcon={<CheckIcon />}>
+                Done Editing Location
+              </Button>
+            </Box>
+          )}
+        </>
+      )}
       {false && (
         <>
           <Box sx={{ marginTop: 2, marginBottom: -2 }}>

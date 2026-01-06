@@ -103,6 +103,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
   const [leaderBoardMode, setLeaderBoardMode] = useState('');
 
   const [hasTrees, setHasTrees] = useState(null);
+  const [hasTreeReviewerRole, setHasTreeReviewerRole] = useState(false);
   const onFetchedTrees = useCallback(async (trees: PartialTree[]) => {
     setHasTrees(!!trees?.length);
   }, []);
@@ -160,6 +161,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
 
     setStatus(status);
     setIsPrivate(status.myCheckin?.isPrivate);
+    setHasTreeReviewerRole(!!status.myCheckin?.user?.roles?.some(role => role.isTreeReviewer || role.isAdmin));
 
     setIsLoading(false);
   };
@@ -175,6 +177,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
     setEmail('');
     setActiveTab(0);
     setIsLoadingExistingUser(null);
+    setHasTreeReviewerRole(false);
     checkinFormRef?.current?.reset();
   };
 
@@ -421,7 +424,7 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
               )}
             </Box>
 
-            {sessionId && (
+            {(sessionId || hasTreeReviewerRole) && (
               <Box sx={{ textAlign: 'center', fontSize: '80%', mt: 1, mb: hasTrees ? -1 : 1, mr: 0.5 }}>
                 <a
                   onClick={() => {
@@ -441,6 +444,8 @@ const Checkin = ({ event }: { event?: PartialEvent }) => {
                 <EditSessionTreesDialog
                   isOpen={isEditTreeDialogOpen}
                   setIsOpen={setIsEditTreeDialogOpen}
+                  eventId={event.id}
+                  hasTreeReviewerRole={hasTreeReviewerRole}
                   onComplete={() => {
                     setIsQuizRefreshing(true);
                   }}

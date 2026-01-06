@@ -24,6 +24,7 @@ const CheckinForm = forwardRef(
       isLoading,
       newUserLabel = 'New/Guest',
       existingUserLabel = 'Supporter',
+      isPastEvent = false,
     }: {
       onSubmit: (fields: CheckinFields) => void;
       activeTab: number;
@@ -31,6 +32,7 @@ const CheckinForm = forwardRef(
       isLoading?: boolean;
       newUserLabel?: string;
       existingUserLabel?: string;
+      isPastEvent?: boolean;
     },
     ref: React.Ref<CheckinFormHandle>,
   ) => {
@@ -81,6 +83,7 @@ const CheckinForm = forwardRef(
               size='small'
               sx={{ mb: 3 }}
               required
+              autoComplete='given-name'
             ></TextField>
             <TextField
               InputLabelProps={{
@@ -92,6 +95,7 @@ const CheckinForm = forwardRef(
               size='small'
               sx={{ mb: 3 }}
               required
+              autoComplete='family-name'
             ></TextField>
           </SplitRow>
         )}
@@ -108,21 +112,24 @@ const CheckinForm = forwardRef(
           size='small'
           fullWidth
           required
+          autoComplete='email'
           sx={{ mb: 3 }}
         ></TextField>
         {activeTab == 0 && (
           <Box>
-            <TextField
-              InputLabelProps={{
-                shrink: true,
-              }}
-              label="How'd you learn about this event?"
-              value={discoveredFrom}
-              onChange={e => setDiscoveredFrom(e.target.value)}
-              size='small'
-              fullWidth
-              sx={{ mb: 2 }}
-            ></TextField>
+            {!isPastEvent && (
+              <TextField
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                label="How'd you learn about this event?"
+                value={discoveredFrom}
+                onChange={e => setDiscoveredFrom(e.target.value)}
+                size='small'
+                fullWidth
+                sx={{ mb: 2 }}
+              ></TextField>
+            )}
             <FormGroup sx={{ marginBottom: 2 }}>
               <FormControlLabel
                 sx={{

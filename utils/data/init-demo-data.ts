@@ -157,14 +157,15 @@ export default async function initDemoData(userId: number) {
 
   let demoEvent;
   if (!demoEventExists) {
+    const newData: Prisma.EventCreateInput = {
+      name: 'Summer Solstice Demo',
+      startDate: new Date(),
+      path: 'summer-solstice-demo',
+      location: { create: { name: 'Better Half', latitude: 30.27114, longitude: -97.758657 } },
+      user: { connect: { id: userId } },
+    };
     demoEvent = await prisma.event.create({
-      data: {
-        name: 'Summer Solstice Demo',
-        startDate: new Date(),
-        path: 'summer-solstice-demo',
-        location: { create: { name: 'Better Half', latitude: 30.27114, longitude: -97.758657 } },
-        user: { connect: { id: userId } },
-      },
+      data: newData,
     });
     console.log('Created demo event');
   } else {

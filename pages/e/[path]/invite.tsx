@@ -8,8 +8,9 @@ import formatServerProps from 'utils/api/format-server-props';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 import Invite from 'components/event/Invite';
 import CenteredSection from 'components/layout/CenteredSection';
-import createInvitePreviewImage from 'utils/events/create-invite-preview-image';
 import usePageViewTracking from 'utils/hooks/use-page-view-tracking';
+import getOneYearAgo from 'utils/data/get-one-year-ago';
+import { useRouter } from 'next/router';
 
 const InvitePage = ({
   event,
@@ -24,12 +25,12 @@ const InvitePage = ({
 }) => {
   // Track page views when the component mounts and when the route changes
   usePageViewTracking();
-
+  const router = useRouter();
   const parsedEvent = parseResponseDateStrings(event) as PartialEvent;
 
   return (
     <Layout
-      title={event.name}
+      titleOverride={invitedByUser?.name ? event.name + ' - Respond to ' + invitedByUser.name.split(' ')[0] + "'s Invite" : event.name}
       header='TreeFolksYP'
       ogImage={
         event.pictureUrl && invitedByUser?.image
@@ -60,6 +61,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             id: true,
             name: true,
             image: true,
+            email: true,
           },
         },
       },
@@ -74,31 +76,46 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
         // If not, create an RSVP with status "Going"
         if (!hasRSVP) {
-          await prisma.eventRSVP.upsert({
-            where: {
-              userId_eventId: {
-                userId: organizer.id,
-                eventId: event.id,
+          try {
+            await prisma.eventRSVP.upsert({
+              where: {
+                userId_eventId: {
+                  userId: organizer.id,
+                  eventId: event.id,
+                },
               },
-            },
-            create: {
-              eventId: event.id,
-              userId: organizer.id,
-              status: 'Going',
-              eventDetailsEmailOptIn: true,
-            },
-            update: {
-              status: 'Going',
-              eventDetailsEmailOptIn: true,
-            },
-          });
+              create: {
+                eventId: event.id,
+                userId: organizer.id,
+                email: organizer.email || null,
+                status: 'Going',
+                eventDetailsEmailOptIn: true,
+              },
+              update: {
+                status: 'Going',
+                eventDetailsEmailOptIn: true,
+              },
+            });
+          } catch (err) {
+            console.error(`Error creating RSVP for organizer ${organizer.id} in event ${event.id}:`, err);
+          }
+          delete organizer.email;
         }
       }
 
       // Directly query RSVPs instead of fetching the entire event again
       const rsvps = await prisma.eventRSVP.findMany({
         where: { eventId: event.id },
-        include: { user: { select: { id: true, name: true, image: true } } },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              subscriptions: { where: { lastPaymentDate: { gte: getOneYearAgo() } }, take: 1, select: { lastPaymentDate: true, id: true } },
+            },
+          },
+        },
       });
       formatServerProps(rsvps);
       event.RSVPs = rsvps;
@@ -109,16 +126,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       const user = await prisma.user.findFirst({ where: { id: Number(u) } });
       console.log('user', user);
       if (user?.id) invitedByUser = { id: user.id, name: user.name, image: user.image };
-
-      // If invitedByUser has an image and event has a pictureUrl, create an invite preview image
-      if (invitedByUser?.image && event?.pictureUrl) {
-        try {
-          const url = await createInvitePreviewImage(event.pictureUrl, event.id + '-' + invitedByUser.id.toString(), invitedByUser.image);
-          console.log('url', url);
-        } catch (error) {
-          console.error('Error creating invite preview image:', error);
-        }
-      }
     }
 
     return { props: { event, invitedByUser, name: name || null, email: email || null } };

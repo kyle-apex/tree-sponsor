@@ -103,7 +103,7 @@ const Subscriptions = ({
                   </div>
                   {subscription.status != 'canceled' ? (
                     <div className='center'>
-                      {subscription.status === 'active' ? 'Renews' : 'Expiration'}:{' '}
+                      {subscription.status === 'active' && subscription.statusDetails != 'Cancelled_Manually' ? 'Renews' : 'Expiration'}:{' '}
                       {new Date(subscription.expirationDate).toLocaleString('default', { month: 'long', day: 'numeric' })}
                       <span>, {new Date(subscription.expirationDate).getFullYear()}</span>
                     </div>

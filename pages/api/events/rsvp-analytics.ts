@@ -2,6 +2,13 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from 'utils/prisma/init';
 import { Prisma } from '@prisma/client';
 
+// Define the structure of raw page view data returned from the database
+interface PageViewRaw {
+  visitorId: string | null;
+  queryParams: string | null;
+  ipAddress: string | null;
+}
+
 interface UserAnalytics {
   userId: number;
   userName: string | null;
@@ -46,8 +53,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log(`Searching for page views with URL: ${invitePageUrl}`);
 
     // Refined raw query to ensure we get all necessary fields and proper joins
-    const pageViewsRaw = await prisma.$queryRaw`
-      SELECT DISTINCT pv.visitorId, pv.queryParams
+    const pageViewsRaw = await prisma.$queryRaw<PageViewRaw[]>`
+      SELECT DISTINCT pv.visitorId, pv.queryParams, pv.ipAddress
       FROM PageView pv
       WHERE pv.pageUrl = ${invitePageUrl}
       AND pv.queryParams LIKE '%u=%'
@@ -64,8 +71,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Extract user IDs from the 'u' query parameter in page views
     const userAnalyticsMap = new Map<number, UserAnalytics>();
 
+    // Track unique visitors by IP address for each inviting user
+    const userVisitorMap = new Map<number, Set<string>>();
+
     // Process page views to extract inviting users
-    for (const view of pageViewsRaw as any[]) {
+    for (const view of pageViewsRaw) {
       if (!view.queryParams) continue;
 
       // Extract the u parameter using regex since URLSearchParams is not available in Node.js
@@ -117,11 +127,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             invited: 0,
           },
         });
+
+        // Initialize the set of unique visitors for this user
+        userVisitorMap.set(userId, new Set<string>());
       }
 
-      // Increment unique page views
-      const analytics = userAnalyticsMap.get(userId)!;
-      analytics.uniquePageViews++;
+      // Get the visitor set for this user
+      const visitorSet = userVisitorMap.get(userId)!;
+
+      // Track IP addresses and visitor IDs separately to implement the deduplication logic
+      const ipKey = view.ipAddress ? `ip:${view.ipAddress}` : null;
+      const visitorKey = view.visitorId ? `visitor:${view.visitorId}` : null;
+
+      // Check if we've seen this IP address or visitor ID before
+      const seenIp = ipKey && Array.from(visitorSet).some(key => key === ipKey);
+      const seenVisitor = visitorKey && Array.from(visitorSet).some(key => key === visitorKey);
+
+      // Only count as a unique page view if we haven't seen this IP or visitor ID before
+      if (!seenIp && !seenVisitor) {
+        // Add both keys to the set (if they exist)
+        if (ipKey) visitorSet.add(ipKey);
+        if (visitorKey) visitorSet.add(visitorKey);
+
+        // Increment unique page views
+        const analytics = userAnalyticsMap.get(userId)!;
+        analytics.uniquePageViews++;
+      } else {
+        // If we've seen either the IP or visitor ID before, but not both,
+        // add the new identifier to the set for future deduplication
+        if (ipKey && !seenIp) visitorSet.add(ipKey);
+        if (visitorKey && !seenVisitor) visitorSet.add(visitorKey);
+      }
     }
 
     // Get all user IDs from the analytics map
@@ -205,9 +241,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json(userAnalytics);
   } catch (error) {
-    console.error('Error fetching RSVP analytics:', error);
-    console.error('Error details:', JSON.stringify(error, null, 2));
+    const typedError: Error = error instanceof Error ? error : new Error(String(error));
+    console.error('Error fetching RSVP analytics:', typedError);
+    console.error('Error details:', JSON.stringify(typedError, Object.getOwnPropertyNames(typedError) as (string | number)[], 2));
     console.error('Request query parameters:', req.query);
-    return res.status(500).json({ message: 'Error fetching RSVP analytics', error });
+    return res.status(500).json({
+      message: 'Error fetching RSVP analytics',
+      error: typedError.message,
+    });
   }
 }

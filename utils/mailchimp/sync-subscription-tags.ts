@@ -2,7 +2,7 @@ import { prisma } from 'utils/prisma/init';
 import { SubscriptionStatusDetails, SubscriptionWithDetails } from '@prisma/client';
 import { capitalCase } from 'change-case';
 import addTagToMembersByName from './add-tag-to-members-by-name';
-import { Stripe, stripe } from 'utils/stripe/init';
+import { stripe } from 'utils/stripe/init';
 
 const syncSubscriptionTags = async () => {
   for await (const sub of stripe.subscriptions.list({ limit: 100, status: 'all', expand: ['data.latest_invoice.payment_intent'] })) {
@@ -29,8 +29,27 @@ const syncSubscriptionTags = async () => {
 
     if (statusDetails) {
       try {
-        await prisma.subscription.update({ where: { stripeId: sub.id }, data: { statusDetails, cancellationDetails } });
-      } catch (err) {}
+        const data: any = { statusDetails, cancellationDetails };
+
+        // If cancelled manually, check if last payment was over 366 days ago
+        if (statusDetails === SubscriptionStatusDetails.Cancelled_Manually) {
+          const subscription = await prisma.subscription.findUnique({
+            where: { stripeId: sub.id },
+            select: { lastPaymentDate: true },
+          });
+
+          if (subscription?.lastPaymentDate) {
+            const daysSinceLastPayment = (Date.now() - subscription.lastPaymentDate.getTime()) / (1000 * 60 * 60 * 24);
+            if (daysSinceLastPayment > 366) {
+              data.status = 'canceled';
+            }
+          }
+        }
+
+        await prisma.subscription.update({ where: { stripeId: sub.id }, data });
+      } catch (err) {
+        // Error updating subscription, continue to next
+      }
     }
   }
 

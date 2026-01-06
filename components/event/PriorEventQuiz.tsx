@@ -23,7 +23,7 @@ import { InstagramEmbed } from 'react-social-media-embed';
 const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   const [storedEmail, setStoredEmail] = useLocalStorage('checkinEmail', '', 'checkinEmail2');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [activeCheckinTab, setActiveCheckinTab] = useState(1);
+  const [activeCheckinTab, setActiveCheckinTab] = useState(storedEmail ? 1 : 0);
   const [isLoading, setIsLoading] = useState(false);
   const [isUserNotFound, setIsUserNotFound] = useState(false);
   const [showAllLeaders, setShowAllLeaders] = useState(false);
@@ -80,7 +80,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
   const logout = () => {
     checkinFormRef?.current?.reset();
     setIsLoggedIn(false);
-    setStoredEmail(null);
+    setStoredEmail(undefined);
   };
 
   useEffect(() => {
@@ -232,6 +232,7 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
                 ref={checkinFormRef}
                 newUserLabel='New User'
                 existingUserLabel='Existing'
+                isPastEvent={true}
               ></CheckinForm>
             </Box>
             {isUserNotFound && activeCheckinTab === 1 && (
@@ -256,11 +257,11 @@ const PriorEventQuiz = ({ event }: { event?: PartialEvent }) => {
           {!isLoggedIn && (
             <Box
               sx={{
-                zIndex: 6000,
+                zIndex: 1200,
                 position: 'absolute',
-                top: 0,
+                bottom: -2,
                 left: 0,
-                height: '100%',
+                height: '60px',
                 width: '100%',
                 backgroundColor: '#808080e8',
                 color: 'white',

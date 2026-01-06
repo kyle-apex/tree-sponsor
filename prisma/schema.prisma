@@ -99,6 +99,7 @@ model User {
     invitedByUserRSVPs  EventRSVP[]           @relation("invitedByUser")
     pageViews          PageView[]
     clickEvents        ClickEvent[]
+    donations          Donation[]
              
 
   @@map(name: "users")
@@ -337,9 +338,12 @@ model Event {
   identifier          String?
   path                String?               @db.VarChar(256)
   instagramPostId     String?               @db.VarChar(64)
+  externalRSVPLink    String?               @db.VarChar(512)
   isPrivate           Boolean?              @default(false)
   hasSpecificTrees    Boolean?              @default(false)
   hasNavigation       Boolean?              @default(false)
+  reminderText        String?               @db.Text
+  fundraisingGoal     Decimal?              @db.Decimal(10, 2)
   location            Location?             @relation(fields: [locationId], references: [id])
   locationId          Int?
   categories          Category[]            @relation("CategoryToEvent")
@@ -390,6 +394,7 @@ model EventRSVP {
   eventDetailsEmailOptIn Boolean?         @default(true)
   discoveredFrom         String?
   isPrivate              Boolean?         @default(false)
+  reminderSentAt         DateTime?
   userId                 Int?
   user                   User?            @relation("rsvpUser", fields: [userId], references: [id], onDelete: Cascade)
   invitedByUserId        Int?
@@ -562,13 +567,19 @@ model Sponsorship {
 }
 
 model Donation {
-  id          Int       @id @default(autoincrement())
-  eventId     Int?
-  label       String?
-  amount      Decimal?  @db.Decimal(6, 2)
-  source      String?
-  date        DateTime?
-  createdDate DateTime? @default(now())
+  id               Int       @id @default(autoincrement())
+  eventId          Int?
+  label            String?
+  amount           Decimal?  @db.Decimal(6, 2)
+  source           String?
+  date             DateTime?
+  createdDate      DateTime? @default(now())
+  stripeSessionId  String?  
+  stripeCustomerId String?
+  status           String?
+  userId           Int?
+  user             User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  metadata         Json?
 }
 
 model StoreProduct {
@@ -641,3 +652,4 @@ model ClickEvent {
   userId          Int?
   user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
+

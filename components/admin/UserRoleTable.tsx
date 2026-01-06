@@ -111,7 +111,7 @@ export default function UserRoleTable({
       {roles && (
         <>
           {users?.length && <SearchBox label='Filter Users' onChange={setSearchText} defaultValue={searchText} mb={2}></SearchBox>}
-          <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table'>
+          <Table className={classes.table} aria-labelledby='tableTitle' size='medium' aria-label='enhanced table' stickyHeader>
             <TableHeader classes={classes} headCells={headCells} />
             {users && (
               <TableBody>

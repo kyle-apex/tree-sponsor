@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import Head from 'next/head';
+import Script from 'next/script';
 import Header from './Header';
 import Footer from './Footer';
 import Box from '@mui/material/Box';
@@ -10,6 +11,7 @@ import { BASE_TITLE } from 'consts';
 type Props = {
   children?: ReactNode;
   title?: string;
+  titleOverride?: string;
   isFullWidth?: boolean;
   description?: string;
   ogImage?: string;
@@ -19,6 +21,7 @@ type Props = {
 const Layout = ({
   children,
   title = 'TreeFolksYP',
+  titleOverride,
   header,
   isFullWidth,
   description = 'TreeFolks Young Professionals (ages 21–40ish) volunteer, educate, fundraise, and build community in support of the mission of TreeFolks: planting, caring for, and giving people free trees to plant!',
@@ -26,12 +29,15 @@ const Layout = ({
 }: Props) => (
   <>
     <Head>
-      <title>
-        {title}
-        {title != BASE_TITLE ? ` - ${BASE_TITLE}` : ``}
-      </title>
+      <title>{titleOverride ? titleOverride : title != BASE_TITLE ? title + ` - ${BASE_TITLE}` : title}</title>
       {ogImage && <meta property='og:image' content={ogImage} key='ogimage' />}
-      {title && <meta property='og:title' content={title != BASE_TITLE ? title + ` - ${BASE_TITLE}` : title} key='ogtitle' />}
+      {(titleOverride || title) && (
+        <meta
+          property='og:title'
+          content={titleOverride ? titleOverride : title != BASE_TITLE ? title + ` - ${BASE_TITLE}` : title}
+          key='ogtitle'
+        />
+      )}
       {description && <meta property='og:description' content={description} key='ogdesc' />}
       <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
       <meta charSet='utf-8' />
@@ -39,6 +45,18 @@ const Layout = ({
 
       <link href='/mapbox-gl.css' rel='stylesheet' />
     </Head>
+    <Script id='hotjar-tracking' strategy='afterInteractive'>
+      {`
+        (function(h,o,t,j,a,r){
+            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+            h._hjSettings={hjid:6428977,hjsv:6};
+            a=o.getElementsByTagName('head')[0];
+            r=o.createElement('script');r.async=1;
+            r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+      `}
+    </Script>
     <Acute />
     <Header title={header} />
     <main>

@@ -9,6 +9,7 @@ import { Session, PartialUser } from 'interfaces';
 import { AccessTypes } from 'utils/auth/AccessType';
 import parseResponseDateStrings from 'utils/api/parse-response-date-strings';
 import { Adapter } from './custom-prisma-nextauth-adapter';
+import sendEmailSES from 'utils/email/send-email-ses';
 
 function getProfilePictureUrl(profile: Profile): string {
   console.log('profile', profile);
@@ -42,26 +43,52 @@ export default NextAuth({
     }),
     // Passwordless / email sign in
     Providers.Email({
-      server: {
-        host: process.env.SENDGRID_HOST || 'smtp.sendgrid.net',
-        port: Number(process.env.SENDGRID_PORT) || 587,
-        auth: {
-          user: 'apikey',
-          pass: process.env.SENDGRID_API_KEY2,
-        },
-      },
+      server:
+        process.env.USE_SES_FOR_AUTH === 'true'
+          ? {} // Empty server config when using SES
+          : {
+              host: process.env.SENDGRID_HOST || 'smtp.sendgrid.net',
+              port: Number(process.env.SENDGRID_PORT) || 587,
+              auth: {
+                user: 'apikey',
+                pass: process.env.SENDGRID_API_KEY2,
+              },
+            },
       maxAge: 60 * 15,
-      from: 'yp@treefolks.org',
-      sendVerificationRequest({ identifier: email, url, provider: { server, from } }) {
+      from: process.env.SES_SENDER_EMAIL || 'yp@treefolks.org',
+      async sendVerificationRequest({ identifier: email, url, provider: { server, from } }) {
         const { host } = new URL(url);
-        const transport = createTransport(server);
-        transport.sendMail({
-          to: email,
-          from,
-          subject: `TreeFolksYP Login Link`,
-          text: text({ url, host }),
-          html: html({ url, host, email }),
-        });
+
+        // Use Amazon SES if configured
+        if (process.env.USE_SES_FOR_AUTH === 'true') {
+          try {
+            const result = await sendEmailSES(
+              [email],
+              'TreeFolksYP Login Link',
+              text({ url, host }),
+              html({ url, host, email }),
+              'TreeFolks Young Professionals',
+            );
+
+            if (!result) {
+              console.error(`Failed to send verification email via SES to ${email}`);
+              throw new Error('Failed to send verification email');
+            }
+          } catch (error) {
+            console.error('Error sending verification email via SES:', error);
+            throw new Error('Failed to send verification email');
+          }
+        } else {
+          // Use SendGrid via nodemailer (original implementation)
+          const transport = createTransport(server);
+          await transport.sendMail({
+            to: email,
+            from,
+            subject: `TreeFolksYP Login Link`,
+            text: text({ url, host }),
+            html: html({ url, host, email }),
+          });
+        }
       },
     }),
   ],
@@ -98,8 +125,6 @@ export default NextAuth({
       return session;
     },
     async signIn(user, _account, profile) {
-      //console.log('profile', profile);
-      //console.log('user', user);
       const profilePictureUrl = getProfilePictureUrl(profile);
       let hasUpdate;
       const updateData: Partial<User> = {};
@@ -123,7 +148,39 @@ export default NextAuth({
       if (hasUpdate) await prisma.user.update({ where: { id: user.id as number }, data: updateData });
       return true;
     },
-    async redirect(_url, baseUrl) {
+    async redirect(url, baseUrl) {
+      try {
+        // Case 1: The URL is a relative path (like /checkin)
+        if (url.startsWith('/') && !url.startsWith('//')) {
+          return baseUrl + url;
+        }
+
+        // Case 2: The URL contains a callbackUrl parameter
+        let parsedUrl;
+        try {
+          parsedUrl = new URL(url, baseUrl);
+
+          if (parsedUrl.searchParams.has('callbackUrl')) {
+            const callbackUrl = parsedUrl.searchParams.get('callbackUrl');
+
+            // If callbackUrl exists and is a relative URL (starts with /)
+            if (callbackUrl && callbackUrl.startsWith('/')) {
+              return baseUrl + callbackUrl;
+            }
+          }
+        } catch (error) {
+          console.error('Error parsing URL:', error);
+        }
+
+        // Case 3: The URL is an absolute URL that we should use directly
+        if (url.startsWith(baseUrl)) {
+          return url;
+        }
+      } catch (error) {
+        console.error('Error in redirect callback:', error);
+      }
+
+      // Default fallback to account page
       return baseUrl + '/account';
     },
   },

@@ -65,28 +65,33 @@ const InviteRSVPDialog = ({
       invitedByUserId: invitedByUser?.id,
       status,
       comment: status === 'Declined' ? comment : undefined,
-      notifyInviter: status === 'Declined' ? notifyInviter : undefined,
+      notifyInviter: notifyInviter,
     };
 
     try {
       // Directly call the API instead of using useAddToQuery
-      await axios.post(`/api/events/${event.id}/rsvps`, rsvpData);
-
-      // Create RSVP data object to pass to parent component
-      const submittedRSVP: PartialEventRSVP = {
-        email,
-        status: status as any, // Cast to any to avoid TypeScript error with EventRSVPStatus enum
-        eventId: event.id,
-        event: event,
-        // Include user info in a format that matches the expected structure
-        user: name ? { name } : undefined,
-      };
-
+      const submittedRSVP = (await axios.post(`/api/events/${event.id}/rsvps`, rsvpData))?.data as PartialEventRSVP;
       if (onRSVP) onRSVP();
       if (onRSVPSubmit) onRSVPSubmit(submittedRSVP);
+
+      // Close the dialog
+      setIsLoading(false);
+      handleClose();
+
+      // After a brief delay to allow the page to render, scroll to the Going/Maybe/View Guest List section
+      setTimeout(() => {
+        // Find the box with the distinctive styling that contains the Going/Maybe counts and View Guest List link
+        const targetElement = document.querySelector('.rsvp-button-section');
+        if (targetElement) {
+          // Scroll to the element with smooth behavior and 40px padding at the top
+          window.scrollTo({
+            top: targetElement.getBoundingClientRect().top + window.pageYOffset - 40,
+            behavior: 'smooth',
+          });
+        }
+      }, 300); // 300ms delay to allow for dialog closing animation and page update
     } catch (error) {
       console.error('Error submitting RSVP:', error);
-    } finally {
       setIsLoading(false);
       handleClose();
     }
@@ -104,6 +109,10 @@ const InviteRSVPDialog = ({
   useEffect(() => {
     setName(initialName);
   }, [initialName]);
+
+  useEffect(() => {
+    setEmail(initialEmail);
+  }, [initialEmail]);
 
   useEffect(() => {
     if (initialStatus) {
@@ -161,8 +170,9 @@ const InviteRSVPDialog = ({
             value={name}
             onChange={e => setName(e.target.value)}
             size='small'
-            sx={{ mb: 2, mt: 1 }}
+            sx={{ mb: 3, mt: 1 }}
             required={status !== 'Declined'}
+            autoComplete='name'
           ></TextField>
         )}
         <TextField
@@ -171,21 +181,29 @@ const InviteRSVPDialog = ({
           value={email}
           onChange={e => setEmail(e.target.value)}
           size='small'
-          sx={{ mb: 2, mt: isSignIn ? 1 : 0 }}
+          sx={{ mb: 1, mt: isSignIn ? 1 : 0 }}
           required={status !== 'Declined'}
+          autoComplete='email'
+          autoCapitalize='none'
+          inputProps={{ autoCapitalize: 'none' }}
         ></TextField>
+        {(status === 'Going' || status === 'Maybe') && !isSignIn && (
+          <Typography
+            variant='caption'
+            sx={{
+              display: 'block',
+              mb: 2,
+              ml: 1,
+              color: 'var(--secondary-text-color)',
+              fontStyle: 'italic',
+              mt: -1,
+            }}
+          >
+            Just for updates for this event. No spam.
+          </Typography>
+        )}
         {status === 'Declined' && !isSignIn && (
           <>
-            <TextField
-              fullWidth
-              label='Message (optional)'
-              value={comment}
-              onChange={e => setComment(e.target.value)}
-              size='small'
-              multiline
-              rows={3}
-              sx={{ mb: 2 }}
-            ></TextField>
             {invitedByUser && (
               <FormGroup sx={{ marginBottom: 2 }}>
                 <FormControlLabel
@@ -208,38 +226,26 @@ const InviteRSVPDialog = ({
                       size='small'
                     />
                   }
-                  label={`Let ${invitedByUser.name} know that I won't be able to make it`}
+                  label={`Let ${invitedByUser?.name?.split(' ')[0]} know I can't make it`}
                 />
               </FormGroup>
+            )}
+            {notifyInviter && invitedByUser && (
+              <TextField
+                fullWidth
+                label='Message (optional)'
+                value={comment}
+                onChange={e => setComment(e.target.value)}
+                size='small'
+                multiline
+                rows={3}
+                sx={{ mb: 2 }}
+              ></TextField>
             )}
           </>
         )}
         {!isSignIn && status !== 'Declined' && (
           <>
-            <FormGroup sx={{ marginBottom: 1 }}>
-              <FormControlLabel
-                sx={{
-                  '.MuiSvgIcon-root': { color: 'rgba(0, 0, 0, 0.4)' },
-                  '& .MuiFormControlLabel-label': {
-                    fontSize: '.75rem',
-                    color: 'var(--secondary-text-color)',
-                    fontStyle: 'italic',
-                  },
-                  marginRight: '0px',
-                }}
-                control={
-                  <Checkbox
-                    checked={detailsEmailOptIn}
-                    onChange={e => {
-                      setDetailsEmailOptIn(e.target.checked);
-                    }}
-                    color='default'
-                    size='small'
-                  />
-                }
-                label={`Send me any email updates related to this event`}
-              />
-            </FormGroup>
             <FormGroup sx={{ marginBottom: 2 }}>
               <FormControlLabel
                 sx={{
@@ -266,7 +272,7 @@ const InviteRSVPDialog = ({
             </FormGroup>
           </>
         )}
-        <Divider sx={{ marginBottom: 1 }}></Divider>
+        {!isSignIn && <Divider sx={{ marginBottom: 1 }}></Divider>}
       </DialogContent>
       <DialogActions>
         <SplitRow>

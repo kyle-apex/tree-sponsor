@@ -4,7 +4,7 @@ This file captures important patterns, preferences, and project intelligence tha
 
 ## Project Overview
 
-- This is a Next.js application with TypeScript that powers https://tfyp.org
+- This is a Next.js application with TypeScript that powers https://www.tfyp.org
 - Primary functionality includes:
   - Event Check-in Page
   - Tree Identification and Tree ID quizzes
@@ -89,6 +89,13 @@ The project uses Prisma with MySQL. Key database elements include:
 4. **Test Implementation**: Never mock the component being tested
    - Mock dependencies and external services, not the component under test
    - Test the actual component implementation, not a mock version
+5. **Running Tests**:
+   - Run all tests: `npm test`
+   - Run a specific test file: `npm test -- path/to/test/file.test.ts`
+   - Example: `npm test -- test/pages/api/events/rsvp-analytics.test.ts`
+   - Tests use Jest with the `-i` flag (runs tests serially)
+   - API tests use `next-test-api-route-handler` to test Next.js API routes
+   - Prisma is mocked using `jest-mock-extended` in `utils/prisma/singleton.ts`
 
 ## Development Workflow
 
@@ -147,6 +154,47 @@ The project uses Prisma with MySQL. Key database elements include:
 2. Follow RESTful principles
 3. Implement proper error handling and status codes
 4. Use TypeScript interfaces for request and response types
+
+## Authentication and Role Management
+
+1. **Authentication System**:
+
+   - The project uses `next-auth/client` for authentication
+   - User sessions contain role information
+   - The `RestrictSection` component conditionally renders content based on user permissions
+
+2. **Role-Based Access Control**:
+
+   - Roles are managed through the `RoleTable` component in the admin interface
+   - Each role has specific permission flags that determine access to features
+   - Role properties are defined as `AccessType` in `utils/auth/AccessType.ts`
+
+3. **Available Role Permissions**:
+
+   - `isAdmin`: Full administrative access
+   - `hasAuthManagement`: Can manage users and authentication
+   - `isReviewer`: Can review Thank-a-Tree submissions
+   - `isTreeReviewer`: Can review tree submissions
+   - `hasEventManagement`: Can create and manage events
+   - `hasMemberManagement`: Can manage member accounts
+   - `hasShirtManagement`: Can manage shirt/merchandise inventory
+   - `hasFormManagement`: Can create and manage forms
+   - `hasRedirectManagement`: Can set up subdomain redirects
+
+4. **Permission Checking**:
+
+   - Use the `RestrictSection` component to conditionally render UI elements based on permissions
+   - Server-side API routes should validate permissions before processing requests
+   - Permission checks combine all roles a user has (users can have multiple roles)
+
+5. **Server-Side Authorization Utilities**:
+   - `isCurrentUserAuthorized(accessType, req)`: Main utility for API routes to check if the current user has permission
+   - `hasAccess(userId, accessType)`: Checks if a specific user has a particular permission
+   - `hasAccessForQueriedUser(query, accessType)`: Database-level check that queries user roles with Prisma
+   - These utilities support checking for single permissions or arrays of permissions (using OR logic)
+   - Example usage in API routes:
+     if (!(await isCurrentUserAuthorized('hasEventManagement', req)))
+     return res.status(403).json({ error: 'Not authorized' });
 
 ## Git Workflow
 
@@ -216,7 +264,7 @@ The project uses Prisma with MySQL. Key database elements include:
 
 ## Deployment
 
-- The application is deployed to production at https://tfyp.org
+- The application is deployed to production at https://www.tfyp.org
 - Node.js 14.x is required for deployment
 - Heroku is used for hosting
 

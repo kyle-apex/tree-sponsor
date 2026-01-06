@@ -35,7 +35,7 @@ const SignupSuccess = ({ name, email, isSignedIn }: { name?: string; email?: str
             <p>or</p>
             <Link href='/signin'>
               <Button fullWidth variant='outlined' color='primary'>
-                Sign in With Google/Facebook
+                Sign in With Email or Google
               </Button>
             </Link>
           </div>

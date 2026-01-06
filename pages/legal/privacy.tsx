@@ -84,8 +84,8 @@ const PrivacyPage = () => (
       <li>
         <p>
           <strong>Website</strong> refers to TreeFolksYP, accessible from{' '}
-          <a href='https://tfyp.org' rel='external nofollow noopener noreferrer' target='_blank'>
-            https://tfyp.org
+          <a href='https://www.tfyp.org' rel='external nofollow noopener noreferrer' target='_blank'>
+            https://www.tfyp.org
           </a>
         </p>
       </li>
@@ -374,7 +374,7 @@ const PrivacyPage = () => (
     <h2>Removal of Your Personal Data</h2>
     <p>
       If you wish to remove Your Personal Data, you can let us know using the{' '}
-      <a href='https://tfyp.org/contact' rel='external nofollow noopener noreferrer' target='_blank'>
+      <a href='https://www.tfyp.org/contact' rel='external nofollow noopener noreferrer' target='_blank'>
         contact form
       </a>{' '}
       or clicking the &quot;Delete my account and personal data&quot; option within your account.
@@ -416,8 +416,8 @@ const PrivacyPage = () => (
     <ul>
       <li>
         By visiting this page on our website:{' '}
-        <a href='https://tfyp.org/contact' rel='external nofollow noopener noreferrer' target='_blank'>
-          https://tfyp.org/contact
+        <a href='https://www.tfyp.org/contact' rel='external nofollow noopener noreferrer' target='_blank'>
+          https://www.tfyp.org/contact
         </a>
       </li>
     </ul>

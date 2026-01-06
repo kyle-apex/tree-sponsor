@@ -8,21 +8,21 @@ const TermsPage = () => (
       <p>&nbsp; </p>
 
       <p>
-        <b>Agreement between User and https://tfyp.org</b>{' '}
+        <b>Agreement between User and https://www.tfyp.org</b>{' '}
       </p>
 
       <p>
-        Welcome to https://tfyp.org. The https://tfyp.org website (the &quot;Site&quot;) is comprised of various web pages operated by{' '}
-        <span className='bold'>TreeFolks</span> Young Professionals (&quot;<span className='bold'>TreeFolksYP</span>&quot;).
-        https://tfyp.org is offered to you conditioned on your acceptance without modification of the terms, conditions, and notices
-        contained herein (the &quot;Terms&quot;). Your use of https://tfyp.org constitutes your agreement to all such Terms. Please read
+        Welcome to https://www.tfyp.org. The https://www.tfyp.org website (the &quot;Site&quot;) is comprised of various web pages operated
+        by <span className='bold'>TreeFolks</span> Young Professionals (&quot;<span className='bold'>TreeFolksYP</span>&quot;).
+        https://www.tfyp.org is offered to you conditioned on your acceptance without modification of the terms, conditions, and notices
+        contained herein (the &quot;Terms&quot;). Your use of https://www.tfyp.org constitutes your agreement to all such Terms. Please read
         these terms <span>carefully, and</span>
         keep a copy of them for your reference.{' '}
       </p>
 
       <p>&nbsp; </p>
 
-      <p>https://tfyp.org is a Non-Profit Site. </p>
+      <p>https://www.tfyp.org is a Non-Profit Site. </p>
 
       <p>&nbsp; </p>
 
@@ -35,7 +35,7 @@ const TermsPage = () => (
       </p>
 
       <p>
-        Your use of https://tfyp.org is subject to <span className='bold'>TreeFolksYP&apos;s</span> Privacy Policy. Please review our
+        Your use of https://www.tfyp.org is subject to <span className='bold'>TreeFolksYP&apos;s</span> Privacy Policy. Please review our
         Privacy Policy, which also governs the Site and informs users of our data collection practices.{' '}
       </p>
 
@@ -46,9 +46,10 @@ const TermsPage = () => (
       </p>
 
       <p>
-        Visiting https://tfyp.org or sending emails to <span className='bold'>TreeFolksYP</span> constitutes electronic communications. You
-        consent to receive electronic communications and you agree that all agreements, notices, disclosures and other communications that
-        we provide to you electronically, via email and on the Site, satisfy any legal requirement that such communications be in writing.{' '}
+        Visiting https://www.tfyp.org or sending emails to <span className='bold'>TreeFolksYP</span> constitutes electronic communications.
+        You consent to receive electronic communications and you agree that all agreements, notices, disclosures and other communications
+        that we provide to you electronically, via email and on the Site, satisfy any legal requirement that such communications be in
+        writing.{' '}
       </p>
 
       <p>&nbsp; </p>
@@ -74,7 +75,7 @@ const TermsPage = () => (
 
       <p>
         <span className='bold'>TreeFolksYP</span> does not knowingly collect, either online or offline, personal information from persons
-        under the age of thirteen. If you are under 18, you may use https://tfyp.org only with permission of a parent or guardian.{' '}
+        under the age of thirteen. If you are under 18, you may use https://www.tfyp.org only with permission of a parent or guardian.{' '}
       </p>
 
       <p>&nbsp; </p>
@@ -92,7 +93,7 @@ const TermsPage = () => (
       </p>
 
       <p>
-        https://tfyp.org may contain links to other websites (&quot;Linked Sites&quot;). The Linked Sites are not under the control of{' '}
+        https://www.tfyp.org may contain links to other websites (&quot;Linked Sites&quot;). The Linked Sites are not under the control of{' '}
         <span className='bold'>TreeFolksYP</span> and <span className='bold'>TreeFolksYP</span> is not responsible for the contents of any
         Linked Site, including without limitation any link contained in a Linked Site, or any changes or updates to a Linked Site.{' '}
         <span className='bold'>TreeFolksYP</span> is providing these links to you only as a convenience, and the inclusion of any link does
@@ -102,12 +103,12 @@ const TermsPage = () => (
       <p>&nbsp; </p>
 
       <p>
-        Certain services made available via https://tfyp.org are delivered by third party sites and organizations. By using any product,
-        service or functionality originating from the https://tfyp.org domain, you hereby acknowledge and consent that{' '}
+        Certain services made available via https://www.tfyp.org are delivered by third party sites and organizations. By using any product,
+        service or functionality originating from the https://www.tfyp.org domain, you hereby acknowledge and consent that{' '}
         <span className='bold'>TreeFolksYP</span> may share such information and data with any third party with whom{' '}
         <span className='bold'>TreeFolksYP</span>
-        has a contractual relationship to provide the requested product, service or functionality on behalf of https://tfyp.org users and
-        customers.{' '}
+        has a contractual relationship to provide the requested product, service or functionality on behalf of https://www.tfyp.org users
+        and customers.{' '}
       </p>
 
       <p>&nbsp; </p>
@@ -117,12 +118,12 @@ const TermsPage = () => (
       </p>
 
       <p>
-        You are granted a non-exclusive, non-transferable, revocable license to access and use https://tfyp.org strictly in accordance with
-        these terms of use. As a condition of your use of the Site, you warrant to <span className='bold'>TreeFolksYP</span> that you will
-        not use the Site for any purpose that is unlawful or prohibited by these Terms. You may not use the Site in any manner which could
-        damage, disable, overburden, or impair the Site or interfere with any other party&apos;s use and enjoyment of the Site. You may not
-        obtain or attempt to obtain any materials or information through any means not intentionally made available or provided for through
-        the Site.{' '}
+        You are granted a non-exclusive, non-transferable, revocable license to access and use https://www.tfyp.org strictly in accordance
+        with these terms of use. As a condition of your use of the Site, you warrant to <span className='bold'>TreeFolksYP</span> that you
+        will not use the Site for any purpose that is unlawful or prohibited by these Terms. You may not use the Site in any manner which
+        could damage, disable, overburden, or impair the Site or interfere with any other party&apos;s use and enjoyment of the Site. You
+        may not obtain or attempt to obtain any materials or information through any means not intentionally made available or provided for
+        through the Site.{' '}
       </p>
 
       <p>&nbsp; </p>
@@ -221,12 +222,12 @@ const TermsPage = () => (
 
       <p>
         <b>
-          Materials Provided to https://tfyp.org or Posted on Any <span className='bold'>TreeFolksYP</span> Web Page
+          Materials Provided to https://www.tfyp.org or Posted on Any <span className='bold'>TreeFolksYP</span> Web Page
         </b>{' '}
       </p>
 
       <p>
-        <span className='bold'>TreeFolksYP</span> does not claim ownership of the materials you provide to https://tfyp.org (including
+        <span className='bold'>TreeFolksYP</span> does not claim ownership of the materials you provide to https://www.tfyp.org (including
         feedback and suggestions) or post, upload, input or submit to any <span className='bold'>TreeFolksYP</span>
         Site or our associated services (collectively &quot;Submissions&quot;). However, by posting, uploading, inputting, providing or
         submitting your Submission you are granting <span className='bold'>TreeFolksYP</span>, our affiliated companies and necessary
@@ -275,7 +276,7 @@ const TermsPage = () => (
         The Service is controlled, operated and administered by <span className='bold'>TreeFolksYP</span> from our offices within the USA.
         If you access the Service from a location outside the USA, you are responsible for compliance with all local laws. You agree that
         you will not use the <span className='bold'>TreeFolksYP</span>
-        Content accessed through https://tfyp.org in any country or in any manner prohibited by any applicable laws, restrictions or
+        Content accessed through https://www.tfyp.org in any country or in any manner prohibited by any applicable laws, restrictions or
         regulations.{' '}
       </p>
 
@@ -419,7 +420,7 @@ const TermsPage = () => (
 
       <p>
         <span className='bold'>TreeFolksYP</span> reserves the right, in its sole discretion, to change the Terms under which
-        https://tfyp.org is offered. The most current version of the Terms will supersede all previous versions.{' '}
+        https://www.tfyp.org is offered. The most current version of the Terms will supersede all previous versions.{' '}
         <span className='bold'>TreeFolksYP</span> encourages you to periodically review the Terms to stay informed of our updates.{' '}
       </p>
 

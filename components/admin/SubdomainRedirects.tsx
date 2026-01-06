@@ -13,6 +13,8 @@ import TextField from '@mui/material/TextField';
 import SplitRow from 'components/layout/SplitRow';
 import TextFieldIsolated from 'components/form/TextFieldIsolated';
 import LoadingButton from 'components/LoadingButton';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 async function addToDatabase(newItem: Partial<SubdomainRedirect>) {
   const result = await axios.post('/api/subdomainRedirects', newItem);
@@ -27,6 +29,8 @@ async function handleUpdate(id: number, attributes: Record<string, unknown>) {
 
 const SubdomainRedirects = () => {
   const [newSubdomainRedirect, setNewSubdomainRedirect] = useState<Partial<SubdomainRedirect>>({});
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [hasChanges, setHasChanges] = useState<Record<number, boolean>>({});
   const {
     data: subdomainRedirects,
     refetch: refetchRoles,
@@ -50,6 +54,7 @@ const SubdomainRedirects = () => {
                 initialValue={subdomainRedirect.redirect}
                 onChange={value => {
                   subdomainRedirect.redirect = value;
+                  setHasChanges(prev => ({ ...prev, [subdomainRedirect.id]: true }));
                 }}
                 label='Redirect'
                 size='small'
@@ -60,8 +65,13 @@ const SubdomainRedirects = () => {
               <SplitRow>
                 <DeleteIconButton onDelete={async () => remove(subdomainRedirect.id)}></DeleteIconButton>
                 <LoadingButton
-                  onClick={() => updateById(subdomainRedirect.id, { redirect: subdomainRedirect.redirect })}
+                  onClick={async () => {
+                    await updateById(subdomainRedirect.id, { redirect: subdomainRedirect.redirect });
+                    setSnackbarOpen(true);
+                    setHasChanges(prev => ({ ...prev, [subdomainRedirect.id]: false }));
+                  }}
                   isLoading={isLoading}
+                  disabled={!hasChanges[subdomainRedirect.id]}
                 >
                   Save
                 </LoadingButton>
@@ -82,6 +92,7 @@ const SubdomainRedirects = () => {
                 return { ...i, subdomain: e.target.value };
               });
             }}
+            inputProps={{ autoCapitalize: 'none' }}
             label='Subdomain Name'
             size='small'
             autoCapitalize='off'
@@ -103,6 +114,7 @@ const SubdomainRedirects = () => {
             multiline
             autoCapitalize='off'
             autoComplete='off'
+            inputProps={{ autoCapitalize: 'none' }}
             sx={{ marginBottom: 3 }}
             helperText='Include https:// in the provided redirect link'
           ></TextField>
@@ -128,6 +140,16 @@ const SubdomainRedirects = () => {
           </SplitRow>
         </AccordionActions>
       </Accordion>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity='success' sx={{ width: '100%' }}>
+          Saved successfully!
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

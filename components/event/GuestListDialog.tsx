@@ -12,6 +12,7 @@ import EventIcon from '@mui/icons-material/Event';
 import CloseIcon from '@mui/icons-material/Close';
 import { PartialUser } from 'interfaces';
 import { UserAvatar } from 'components/sponsor';
+import GuestListItem from './GuestListItem';
 
 interface GuestListDialogProps {
   open: boolean;
@@ -23,6 +24,8 @@ interface GuestListDialogProps {
   showHostsOnly?: boolean;
   onRSVP?: () => void;
   onSignIn?: () => void;
+  currentUser?: PartialUser;
+  title?: string;
 }
 
 const GuestListDialog: React.FC<GuestListDialogProps> = ({
@@ -35,6 +38,8 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
   showHostsOnly = false,
   onRSVP,
   onSignIn,
+  currentUser,
+  title,
 }) => {
   return (
     <Dialog open={open} onClose={onClose} sx={{ borderRadius: '8px' }} maxWidth='sm' fullWidth>
@@ -62,7 +67,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
         <Box sx={{ display: 'flex', flexDirection: 'column', color: 'white' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
             <Typography variant='h4' sx={{ fontWeight: 500 }}>
-              {showHostsOnly ? 'Event Hosts' : 'Guest List'}
+              {title ? title : showHostsOnly ? 'Event Hosts' : 'Guest List'}
             </Typography>
           </Box>
           {!showHostsOnly && (
@@ -72,14 +77,28 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
           )}
         </Box>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent
+        sx={{
+          overflowY: 'auto',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '90px',
+            background: theme => `linear-gradient(to bottom, rgba(255,255,255,0) 0%, ${theme.palette.background.paper} 100%)`,
+            pointerEvents: 'none', // Allows clicking through the gradient
+          },
+        }}
+      >
         {hasRSVP ? (
           <Box>
             {users.length > 0 ? (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {showHostsOnly ? (
                   <Box>
-                    {users.map(user => (
+                    {users.map((user, index) => (
                       <Box
                         key={user.id}
                         sx={{
@@ -89,7 +108,7 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                           mb: 2,
                         }}
                       >
-                        <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
+                        <UserAvatar image={user.image} name={user.displayName || user.name} size={30} colorIndex={index % 6} />
                         <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
                       </Box>
                     ))}
@@ -104,20 +123,9 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                         </Typography>
                         {users
                           .filter((_user, index) => index < goingCount)
-                          .map(user => (
-                            <Box
-                              key={user.id}
-                              sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 2,
-                                mb: 2,
-                              }}
-                            >
-                              <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
-                              <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
-                            </Box>
-                          ))}
+                          .map((user, index) => {
+                            return <GuestListItem key={user.id} user={user} index={index} currentUser={currentUser} />;
+                          })}
                       </Box>
                     )}
 
@@ -129,20 +137,9 @@ const GuestListDialog: React.FC<GuestListDialogProps> = ({
                         </Typography>
                         {users
                           .filter((_user, index) => index >= goingCount && index < goingCount + maybeCount)
-                          .map(user => (
-                            <Box
-                              key={user.id}
-                              sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 2,
-                                mb: 2,
-                              }}
-                            >
-                              <UserAvatar image={user.image} name={user.displayName || user.name} size={30} />
-                              <Typography variant='subtitle2'>{user.displayName || user.name}</Typography>
-                            </Box>
-                          ))}
+                          .map((user, index) => {
+                            return <GuestListItem key={user.id} user={user} index={index} currentUser={currentUser} />;
+                          })}
                       </Box>
                     )}
                   </>

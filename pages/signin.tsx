@@ -181,21 +181,18 @@ export default function signin({
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req } = context;
   const session = await getSession({ req });
-
   if (session) {
+    // Check if there's a callbackUrl in the query parameters
+    const callbackUrl = context.query.callbackUrl as string;
+
+    // If callbackUrl exists and is a relative URL (starts with /), use it
+    const destination = callbackUrl && typeof callbackUrl === 'string' ? callbackUrl : '/account';
     return {
       redirect: {
-        destination:
-          context.query.callbackUrl &&
-          (context.query.callbackUrl.includes('/u/') ||
-            context.query.callbackUrl.includes('/checkin') ||
-            context.query.callbackUrl.includes('/map'))
-            ? context.query.callbackUrl
-            : '/account',
+        destination,
       },
     };
   }
-
   return {
     props: {
       providers: await providers(),

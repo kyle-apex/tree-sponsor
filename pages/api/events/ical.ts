@@ -75,10 +75,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Extract event details from query parameters
     const { id, name, description, location, startDate, endDate } = req.query;
 
+    // If an ID is provided, redirect to the new endpoint
+    if (id) {
+      console.log(`[DEPRECATED] Redirecting to new iCal endpoint for event ID: ${id}`);
+      return res.redirect(307, `/api/events/${id}/ical`);
+    }
+
+    // For backward compatibility, continue with the old implementation
     // Validate required parameters
     if (!name || !startDate) {
       return res.status(400).json({ message: 'Missing required parameters: name and startDate are required' });
     }
+
+    console.log('[DEPRECATED] Using legacy iCal endpoint without event ID');
 
     // Parse dates
     const start = new Date(startDate as string);
