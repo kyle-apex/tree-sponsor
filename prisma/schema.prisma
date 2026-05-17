@@ -577,6 +577,7 @@ model Donation {
   stripeSessionId  String?  
   stripeCustomerId String?
   status           String?
+  eventName        String?
   userId           Int?
   user             User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
   metadata         Json?
