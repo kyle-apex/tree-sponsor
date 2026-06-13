@@ -17,14 +17,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
-    // Calculate total amount from both sources
     const donationAmount = donations.reduce((sum, donation) => sum + (donation.amount ? parseFloat(donation.amount.toString()) : 0), 0);
 
     const totalAmount = donationAmount;
 
-    // Since we don't have direct access to users through donations in the Donation model,
-    // we'll return an empty array for donors
-    const donors: PartialUser[] = [];
+    const donorUserIds = [...new Set(donations.map((d) => d.userId).filter((id): id is number => id != null))];
+    const donors: PartialUser[] = donorUserIds.length
+      ? await prisma.user.findMany({
+          where: { id: { in: donorUserIds } },
+          select: { id: true, name: true, image: true },
+        })
+      : [];
 
     return res.status(200).json({
       totalAmount,
