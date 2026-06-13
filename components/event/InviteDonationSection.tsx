@@ -53,7 +53,7 @@ const InviteDonationSection: React.FC<InviteDonationSectionProps> = ({
             ? `Thank you for your donation to TreeFolks! Your support helps us grow a healthier community.`
             : isDeclined
             ? `We'll miss you at the event, but you can still help us reach our $${goalAmount.toLocaleString()} fundraising goal with a donation to TreeFolks 💚`
-            : `Plant the first seed of support—help us reach our $${goalAmount.toLocaleString()} pre-event goal for a greener Austin with a donation to TreeFolks! 💚`}
+            : `Plant the first seed of support and help us reach our $${goalAmount.toLocaleString()} pre-event goal for a greener Austin with a donation to TreeFolks! 💚`}
         </Typography>
 
         {/* Fundraising Goal Display */}
