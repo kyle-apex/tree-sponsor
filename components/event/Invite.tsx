@@ -186,7 +186,9 @@ const EventInvite = ({
           <InsertInvitationIcon sx={{ fontSize: '14x', color: 'gray' }}></InsertInvitationIcon>
           <Typography variant='subtitle2' sx={{ fontSize: '1rem' }}>
             {event?.startDate
-              ? `${new Date(event.startDate).toLocaleString('default', { weekday: 'long' })} ${formatDateString(event.startDate)}, ${formatTimeRange(event.startDate, event.endDate)}`
+              ? `${new Date(event.startDate).toLocaleString('default', { weekday: 'long' })} ${formatDateString(
+                  event.startDate,
+                )}, ${formatTimeRange(event.startDate, event.endDate)}`
               : 'Time TBD'}
           </Typography>
         </Box>
@@ -296,7 +298,9 @@ const EventInvite = ({
           <Typography sx={{ mt: 2, mb: 2 }}>
             {invitedByUser?.name ? invitedByUser.name : 'TreeFolksYP'} invited you to {event.name} on{' '}
             {event?.startDate
-              ? `${new Date(event.startDate).toLocaleString('default', { weekday: 'long' })} ${formatDateString(event.startDate)}, ${formatTimeRange(event.startDate, event.endDate)}`
+              ? `${new Date(event.startDate).toLocaleString('default', { weekday: 'long' })} ${formatDateString(
+                  event.startDate,
+                )}, ${formatTimeRange(event.startDate, event.endDate)}`
               : 'Time TBD'}
             :
           </Typography>
