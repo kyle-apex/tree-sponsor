@@ -292,7 +292,8 @@ const EventInvite = ({
         )}
         {!eventRSVP && (
           <Typography sx={{ mt: 2, mb: 2 }}>
-            {invitedByUser?.name ? invitedByUser.name : 'TreeFolksYP'} invited you to {event.name} on {formatDateString(event?.startDate)}{' '}
+            {invitedByUser?.name ? invitedByUser.name : 'TreeFolksYP'} invited you to {event.name} on {formatDateString(event?.startDate)}
+            {event?.startDate ? ', ' : ' '}
             {event?.startDate ? formatTimeRange(event.startDate, event.endDate) : 'Time TBD'}:
           </Typography>
         )}
