@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const totalAmount = donationAmount;
 
-    const donorUserIds = [...new Set(donations.map((d) => d.userId).filter((id): id is number => id != null))];
+    const donorUserIds = [...new Set(donations.map(d => d.userId).filter((id): id is number => id != null))];
     const donors: PartialUser[] = donorUserIds.length
       ? await prisma.user.findMany({
           where: { id: { in: donorUserIds } },
