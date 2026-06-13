@@ -292,9 +292,11 @@ const EventInvite = ({
         )}
         {!eventRSVP && (
           <Typography sx={{ mt: 2, mb: 2 }}>
-            {invitedByUser?.name ? invitedByUser.name : 'TreeFolksYP'} invited you to {event.name} on {formatDateString(event?.startDate)}
-            {event?.startDate ? ', ' : ' '}
-            {event?.startDate ? formatTimeRange(event.startDate, event.endDate) : 'Time TBD'}:
+            {invitedByUser?.name ? invitedByUser.name : 'TreeFolksYP'} invited you to {event.name} on{' '}
+            {event?.startDate
+              ? `${new Date(event.startDate).toLocaleString('default', { weekday: 'long' })} ${formatDateString(event.startDate)}, ${formatTimeRange(event.startDate, event.endDate)}`
+              : 'Time TBD'}
+            :
           </Typography>
         )}
         {eventRSVP ? (
