@@ -21,7 +21,7 @@ const MembershipStatus = () => {
 
   const getMembershipStatus = async () => {
     setIsLoading(true);
-    const result = (await parsedGet('/api/membership-status?email=' + email)) as SubscriptionWithDetails;
+    const result = (await parsedGet('/api/membership-status?email=' + encodeURIComponent(email))) as SubscriptionWithDetails;
 
     if (result) setStatus({ subscription: result, isFound: true });
     else setStatus({ subscription: null, isFound: false, email });

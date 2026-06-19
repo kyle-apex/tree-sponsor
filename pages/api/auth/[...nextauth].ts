@@ -3,7 +3,7 @@ import Providers from 'next-auth/providers';
 import { createTransport } from 'nodemailer';
 import Adapters from 'next-auth/adapters';
 import { prisma } from 'utils/prisma/init';
-import { generateProfilePath } from 'utils/user/generate-profile-path';
+import { generateUniqueProfilePath } from 'utils/user/generate-unique-profile-path';
 import { User } from '.prisma/client';
 import { Session, PartialUser } from 'interfaces';
 import { AccessTypes } from 'utils/auth/AccessType';
@@ -140,9 +140,10 @@ export default NextAuth({
         hasUpdate = true;
       }
 
-      if (!user?.profilePath) {
-        user.profilePath = generateProfilePath(user as User);
+      if (user?.id && !user?.profilePath) {
+        user.profilePath = await generateUniqueProfilePath(user as PartialUser, prisma);
         updateData.profilePath = user.profilePath as string;
+        hasUpdate = true;
       }
 
       if (hasUpdate) await prisma.user.update({ where: { id: user.id as number }, data: updateData });
