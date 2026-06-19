@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     })) as PartialEventCheckIn[];
 
-    console.log(`Found ${checkins.length} check-ins for event ${eventId}`);
+    //console.log(`Found ${checkins.length} check-ins for event ${eventId}`);
 
     const checkInCount = checkins?.length || 0;
 
@@ -71,7 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return user;
       });
 
-    console.log(`Returning ${attendees.length} attendees after filtering`);
+    //console.log(`Returning ${attendees.length} attendees after filtering`);
 
     // Sort by role if email is provided (for the checkin page)
     // Otherwise sort by check-in time (for the welcome page)

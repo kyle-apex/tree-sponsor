@@ -7,7 +7,6 @@ export default function formatServerProps(object: any) {
       formatServerProps(obj);
     }
   } else if (object && typeof object == 'object' && !(object instanceof Date) && !(object instanceof Decimal)) {
-    console.log('object', object);
     for (const property in object) {
       const value = object[property];
       if (typeof value == 'object' && value) {

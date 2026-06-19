@@ -27,7 +27,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
   render() {
     // Check if the error is thrown
-    console.log('rendered');
+    //console.log('rendered');
     if (this.state.hasError) {
       // You can render any custom fallback UI
       console.log('err');

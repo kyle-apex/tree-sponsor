@@ -15,6 +15,6 @@ export const getLocationFilterByDistance = (latitude: number, longitude: number,
       { longitude: { lt: longitude + distance / feetPerLongitude } },
     ],
   };
-  console.log('whereFilter', whereFilter);
+  //console.log('whereFilter', whereFilter);
   return whereFilter;
 };
