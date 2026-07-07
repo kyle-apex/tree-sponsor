@@ -19,7 +19,10 @@ export const handleNewSubscription = async (customer: Stripe.Customer, subscript
   const lastName = subscription.metadata?.['Last Name'] || customer.metadata?.['Last Name'] || '';
   const foundFrom = subscription.metadata?.['Found From'] || customer.metadata?.['Found From'] || '';
 
+  console.log(`[new-subscription] Processing new member: ${email} (${firstName} ${lastName}), foundFrom: "${foundFrom}"`);
+
   await updateCustomerName(customer.id, firstName, lastName);
+  console.log(`[new-subscription] Updated Stripe customer name to "${firstName} ${lastName}"`);
 
   // Use the individual member PUT endpoint (upsert) so the member is immediately
   // available in the audience before the journey trigger fires, avoiding batch indexing lag.
@@ -31,17 +34,20 @@ export const handleNewSubscription = async (customer: Stripe.Customer, subscript
       status_if_new: 'subscribed',
       merge_fields: { FNAME: firstName, LNAME: lastName },
     });
+    console.log(`[new-subscription] Mailchimp subscriber upserted for ${email}`);
   } catch (err) {
     console.error('handleNewSubscription: upsert subscriber failed', err);
   }
 
   try {
     await addTagToMembersByName('Member', [email]);
+    console.log(`[new-subscription] "Member" tag added for ${email}`);
   } catch (err) {
     console.error('handleNewSubscription: addTagToMembersByName failed', err);
   }
 
   await triggerNewMemberWelcomeEmail(email);
+  console.log(`[new-subscription] Welcome email journey triggered for ${email}`);
 
   const subject = `New TreeFolksYP Member: ${firstName} ${lastName}`.trim();
   const html = `Great news!<br><br>

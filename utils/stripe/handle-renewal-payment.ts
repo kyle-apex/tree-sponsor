@@ -18,18 +18,24 @@ export const handleRenewalPayment = async (email: string): Promise<void> => {
     return;
   }
 
+  console.log(`[renewal-payment] Processing renewal for ${email}`);
+
   const currentStatus = await getMemberStatus(email);
+  console.log(`[renewal-payment] Mailchimp status for ${email}: ${currentStatus}`);
   const wasUnsubscribed = currentStatus === 'unsubscribed';
 
   if (wasUnsubscribed) {
     await updateMemberStatus(email, 'subscribed');
+    console.log(`[renewal-payment] Temporarily re-subscribed ${email} to send renewal email`);
   }
 
   await triggerRenewalEmail(email);
+  console.log(`[renewal-payment] Renewal email journey triggered for ${email}`);
 
   if (wasUnsubscribed) {
     setTimeout(async () => {
       await updateMemberStatus(email, 'unsubscribed');
+      console.log(`[renewal-payment] Re-unsubscribed ${email} after renewal email`);
     }, 5 * 60 * 1000);
   }
 };
