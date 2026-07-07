@@ -3,6 +3,7 @@ import { buffer } from 'micro';
 import { Stripe, stripe } from 'utils/stripe/init';
 import { updateSubscriptionsForUser } from 'utils/stripe/update-subscriptions-for-user';
 import { handleNewSubscription } from 'utils/stripe/handle-new-subscription';
+import { handleRenewalPayment } from 'utils/stripe/handle-renewal-payment';
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_KEY;
 
@@ -47,6 +48,12 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       if (event.type === 'customer.subscription.created') {
         await handleNewSubscription(customer, subscription);
+      }
+    } else if (event.type === 'invoice.paid') {
+      const invoice = event.data.object as Stripe.Invoice;
+      email = invoice.customer_email;
+      if ((invoice as any).billing_reason === 'subscription_cycle') {
+        await handleRenewalPayment(email);
       }
     } else if (event.type === 'invoice.payment_failed') {
       const invoice = event.data.object as Stripe.Invoice;
