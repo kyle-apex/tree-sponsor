@@ -1,5 +1,6 @@
+import crypto from 'crypto';
 import { Stripe } from './init';
-import addSubscriber from 'utils/mailchimp/add-subscriber';
+import { mailchimpPut } from 'utils/mailchimp';
 import addTagToMembersByName from 'utils/mailchimp/add-tag-to-members-by-name';
 import triggerNewMemberWelcomeEmail from 'utils/mailchimp/trigger-customer-journey';
 import sendEmail from 'utils/email/send-email';
@@ -20,10 +21,18 @@ export const handleNewSubscription = async (customer: Stripe.Customer, subscript
 
   await updateCustomerName(customer.id, firstName, lastName);
 
+  // Use the individual member PUT endpoint (upsert) so the member is immediately
+  // available in the audience before the journey trigger fires, avoiding batch indexing lag.
   try {
-    await addSubscriber(email, { FNAME: firstName, LNAME: lastName });
+    const listId = process.env.MAILCHIMP_LIST_ID;
+    const subscriberHash = crypto.createHash('md5').update(email.toLowerCase()).digest('hex');
+    await mailchimpPut(`lists/${listId}/members/${subscriberHash}`, {
+      email_address: email.toLowerCase(),
+      status_if_new: 'subscribed',
+      merge_fields: { FNAME: firstName, LNAME: lastName },
+    });
   } catch (err) {
-    console.error('handleNewSubscription: addSubscriber failed', err);
+    console.error('handleNewSubscription: upsert subscriber failed', err);
   }
 
   try {

@@ -52,7 +52,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     } else if (event.type === 'invoice.paid') {
       const invoice = event.data.object as Stripe.Invoice;
       email = invoice.customer_email;
-      if ((invoice as any).billing_reason === 'subscription_cycle') {
+      if (invoice.billing_reason === 'subscription_cycle') {
         await handleRenewalPayment(email);
       }
     } else if (event.type === 'invoice.payment_failed') {
