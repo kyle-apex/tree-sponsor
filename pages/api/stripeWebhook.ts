@@ -72,7 +72,11 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         console.log(`[webhook] Renewal invoice has ${invoice.lines.data.length} line item(s), productIds: [${lineProductIds.join(', ')}]`);
         const lineProducts = await Promise.all(lineProductIds.map(id => stripe.products.retrieve(id)));
         const membershipProduct = lineProducts.find(p => isMembershipProduct(p.name));
-        console.log(`[webhook] Renewal products checked: ${lineProducts.map(p => `"${p.name}" (${p.id})`).join(', ')}; membership match: ${membershipProduct ? `"${membershipProduct.name}"` : 'none'}`);
+        console.log(
+          `[webhook] Renewal products checked: ${lineProducts.map(p => `"${p.name}" (${p.id})`).join(', ')}; membership match: ${
+            membershipProduct ? `"${membershipProduct.name}"` : 'none'
+          }`,
+        );
         if (membershipProduct) {
           await handleRenewalPayment(email);
         } else {
