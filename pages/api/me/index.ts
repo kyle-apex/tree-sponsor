@@ -78,7 +78,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           },
         });
 
-
         // Generate invite preview images for each event
         new Promise<void>(resolve => {
           (async () => {
