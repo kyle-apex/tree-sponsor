@@ -31,7 +31,7 @@ export const handleNewSubscription = async (customer: Stripe.Customer, subscript
     await mailchimpPut(`lists/${listId}/members/${subscriberHash}`, {
       email_address: email.toLowerCase(),
       status_if_new: 'subscribed',
-      merge_fields: { FNAME: firstName, LNAME: lastName },
+      merge_fields: { FNAME: firstName, LNAME: lastName, AMOUNT: Math.round((subscription.items.data[0]?.price.unit_amount ?? 0) / 100) },
     });
     console.log(`[new-subscription] Mailchimp subscriber upserted for ${email}`);
   } catch (err) {
@@ -62,7 +62,9 @@ ${foundFrom}
 
   try {
     const emailSent = await sendEmail([WELCOME_EMAIL_RECIPIENT], subject, `New member: ${firstName} ${lastName} (${email})`, html);
-    console.log(`[new-subscription] Welcome notification email to ${WELCOME_EMAIL_RECIPIENT}: ${emailSent ? 'sent' : 'failed (no error thrown)'}`);
+    console.log(
+      `[new-subscription] Welcome notification email to ${WELCOME_EMAIL_RECIPIENT}: ${emailSent ? 'sent' : 'failed (no error thrown)'}`,
+    );
   } catch (err) {
     console.error('handleNewSubscription: sendEmail failed', err);
   }
