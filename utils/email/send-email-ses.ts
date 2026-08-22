@@ -30,6 +30,7 @@ export default async function sendEmailSES(
   html: string,
   fromName = 'TreeFolks Young Professionals',
   previewText?: string,
+  fromEmail?: string,
 ): Promise<boolean> {
   try {
     // Get SES service object
@@ -55,7 +56,7 @@ export default async function sendEmailSES(
     }
 
     // Verify the sender email address is configured
-    const senderEmail = process.env.SES_SENDER_EMAIL || process.env.SUPPORT_EMAIL;
+    const senderEmail = fromEmail || process.env.SES_SENDER_EMAIL || process.env.SUPPORT_EMAIL;
 
     if (!senderEmail) {
       throw new Error('SES_SENDER_EMAIL or SUPPORT_EMAIL environment variable is required');

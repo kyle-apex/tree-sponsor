@@ -31,10 +31,11 @@ export default async function sendEmail(
   html: string,
   fromName = 'TreeFolks Young Professionals',
   previewText?: string,
+  fromEmail?: string,
 ): Promise<boolean> {
   // If USE_SES_FOR_AUTH is true, use SES instead of SendGrid
   if (process.env.USE_SES_FOR_AUTH === 'true') {
-    return sendEmailSES(recipients, subject, body, html, fromName, previewText);
+    return sendEmailSES(recipients, subject, body, html, fromName, previewText, fromEmail);
   }
 
   try {
