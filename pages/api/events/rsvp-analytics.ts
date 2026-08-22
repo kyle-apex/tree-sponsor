@@ -50,7 +50,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const invitePageUrl = `/e/${event.path}/invite`;
 
     // Use a raw query to get page views since the Prisma client doesn't have the PageView model
-    console.log(`Searching for page views with URL: ${invitePageUrl}`);
 
     // Refined raw query to ensure we get all necessary fields and proper joins
     const pageViewsRaw = await prisma.$queryRaw<PageViewRaw[]>`
@@ -61,12 +60,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     `;
 
     const pageViewCount = Array.isArray(pageViewsRaw) ? pageViewsRaw.length : 0;
-    console.log(`Found ${pageViewCount} page views for event ${eventId}`);
-
-    if (pageViewCount === 0) {
-      console.log(`No page views found for invite URL: ${invitePageUrl}`);
-      console.log(`This could be because no one has visited the invite page with a referral parameter.`);
-    }
 
     // Extract user IDs from the 'u' query parameter in page views
     const userAnalyticsMap = new Map<number, UserAnalytics>();
@@ -82,21 +75,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const uMatch = view.queryParams.match(/[?&]*u=([^&]*)/);
       const invitingUserId = uMatch ? uMatch[1] : null;
 
-      if (!invitingUserId) {
-        console.log(`No inviting user ID found in query params: ${view.queryParams}`);
-        console.log(`The query parameter should contain "u=<userId>" to track invitations.`);
-        continue;
-      }
+      if (!invitingUserId) continue;
 
       const userId = Number(invitingUserId);
 
-      if (isNaN(userId)) {
-        console.log(`Invalid user ID (not a number): ${invitingUserId}`);
-        console.log(`The user ID must be a valid number. This page view will be skipped.`);
-        continue;
-      }
-
-      console.log(`Processing page view with inviting user ID: ${userId}`);
+      if (isNaN(userId)) continue;
 
       // Get or initialize user analytics
       if (!userAnalyticsMap.has(userId)) {
@@ -106,13 +89,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           select: { name: true, image: true },
         });
 
-        if (!user) {
-          console.log(`User with ID ${userId} not found in database`);
-          console.log(`This could be because the user was deleted or the ID is invalid.`);
-          continue;
-        }
-
-        console.log(`Found user: ${user.name || 'Unnamed User'} (ID: ${userId})`);
+        if (!user) continue;
 
         userAnalyticsMap.set(userId, {
           userId,
@@ -177,14 +154,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
-    console.log(`Found ${rsvps.length} RSVPs for event ${eventId} created by tracked users`);
-
-    if (rsvps.length === 0 && userIds.length > 0) {
-      console.log(`No RSVPs found for users who invited others. This could mean:`);
-      console.log(`1. Invitees haven't responded to invitations yet`);
-      console.log(`2. The invitations were sent but not through the tracked invite link`);
-    }
-
     // Update RSVP counts for each user
     for (const rsvp of rsvps) {
       if (!rsvp.invitedByUserId) continue;
@@ -198,7 +167,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Convert status to lowercase for case-insensitive comparison
       const status = rsvp.status?.toString() || '';
       const statusLower = status.toLowerCase();
-      console.log(`Processing RSVP with status: ${status} for user ${rsvp.invitedByUserId}`);
 
       // Use lowercase comparison for case-insensitivity
       switch (statusLower) {
@@ -215,29 +183,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           analytics.rsvpsByStatus.invited++;
           break;
         default:
-          console.log(`Unknown RSVP status: ${status} (converted to: ${statusLower})`);
-          console.log(`Valid statuses are: Going, Maybe, Declined, Invited (case-insensitive)`);
       }
     }
 
     // Convert map to array and sort by total RSVPs (descending)
     const userAnalytics = Array.from(userAnalyticsMap.values()).sort((a, b) => b.totalRSVPs - a.totalRSVPs);
-
-    console.log(`Returning analytics for ${userAnalytics.length} users`);
-
-    // If no results, return an empty array with detailed diagnostic messages
-    if (userAnalytics.length === 0) {
-      console.log('No analytics data found. This could be due to:');
-      console.log('1. No page views with "u=" parameter for this event');
-      console.log('2. No RSVPs created by users who invited others');
-      console.log('3. Invalid user IDs in the page view query parameters');
-      console.log('4. Users referenced in page views may have been deleted');
-      console.log(`Event ID: ${eventId}, Event Path: ${event.path}`);
-      console.log(`Invite URL pattern being searched: ${invitePageUrl}`);
-    } else {
-      console.log(`Analytics data processed successfully for ${userAnalytics.length} users`);
-      console.log(`Top inviter: ${userAnalytics[0].userName || 'Unknown'} with ${userAnalytics[0].totalRSVPs} RSVPs`);
-    }
 
     return res.status(200).json(userAnalytics);
   } catch (error) {

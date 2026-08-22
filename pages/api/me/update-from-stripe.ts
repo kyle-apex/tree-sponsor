@@ -6,7 +6,6 @@ import { findAllSubscriptionsForUser } from 'utils/stripe/find-all-subscriptions
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });
-  console.log('doing refresh', session);
   if (!session?.user?.id) return throwUnauthenticated(res);
 
   if (req.method === 'POST') {

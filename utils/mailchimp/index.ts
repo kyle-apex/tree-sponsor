@@ -28,4 +28,9 @@ export const mailchimpPost = async (path: string, params?: any) => {
 export const mailchimpPatch = async (path: string, params?: any) => {
   if (mailchimp) return await mailchimp.patch(path, params);
 };
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
+export const mailchimpPut = async (path: string, params?: any) => {
+  if (mailchimp) return await mailchimp.put(path, params);
+};
 export default mailchimp;

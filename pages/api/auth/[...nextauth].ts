@@ -12,7 +12,6 @@ import { Adapter } from './custom-prisma-nextauth-adapter';
 import sendEmailSES from 'utils/email/send-email-ses';
 
 function getProfilePictureUrl(profile: Profile): string {
-  console.log('profile', profile);
   if (typeof profile?.picture === 'string') return profile.picture;
   else if (profile?.picture) {
     const picture = profile.picture as Record<string, any>;

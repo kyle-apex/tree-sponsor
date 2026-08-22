@@ -90,17 +90,11 @@ FROM PreviousYearsData;`) as any[];
         return (previousValue += memberCountByYear[currentYear]);
       }
     }, 0);
-    console.log('inactiveCount', inactiveCount);
-    console.log('totalCount', totalCount);
-    console.log('activeCount', stats.active);
-
     return {
       percentage: Math.round((1 - inactiveCount / totalCount) * 100),
       bestPercentage: Math.round((1 - inactiveCount / (stats.active + inactiveCount)) * 100),
     };
   });
-
-  console.log('percentageByYear', percentageByYear);
 
   stats.percentageByYear = percentageByYear;
 

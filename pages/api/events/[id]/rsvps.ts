@@ -50,13 +50,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       firstName,
       lastName,
     });
-    console.log('User found or created:', user);
-
     const userId = user?.id;
 
     if (!userId) {
       // remove for testing purposes || new Date() > eventCompletedDate) {
-      console.log('Event is over or userId is missing', userId);
       res.status(200).json({});
       return;
     }
