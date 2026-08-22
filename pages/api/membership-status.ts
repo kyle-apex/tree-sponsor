@@ -17,7 +17,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     orderBy: { lastPaymentDate: 'desc' },
   });
 
-  console.log('subscriptionWithDetails', subscriptionWithDetails);
-
   res.status(200).json(subscriptionWithDetails);
 }

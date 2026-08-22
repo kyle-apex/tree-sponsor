@@ -8,8 +8,6 @@ import { isCurrentUserAuthorized } from 'utils/auth/is-current-user-authorized';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   let session, userId;
 
-  console.log('req', req.method);
-
   if (req.method !== 'GET') {
     session = await getSession({ req });
 

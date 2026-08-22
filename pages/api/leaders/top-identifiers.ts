@@ -12,8 +12,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const yearStart = getYearStartDate(year);
 
   const { startDate, endDate } = getYearDateRange(year);
-  console.log('startDate', startDate, endDate);
-
   let whereFilter: Prisma.TreeWhereInput = { createdDate: { gt: yearStart }, createdByUserId: { not: null } };
 
   if (endDate) {
@@ -21,7 +19,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   //  whereFilter = { createdByUserId: { not: null } };
-  console.log('where', whereFilter);
 
   const responses = await prisma.speciesQuizResponse.groupBy({
     by: ['treeId'],

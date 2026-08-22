@@ -39,8 +39,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   startDate?.setMinutes(0);
   startDate?.setSeconds(0);
 
-  console.log('startDate', startDate, endDate);
-
   let whereFilter: Prisma.SubscriptionWithDetailsWhereInput = { lastPaymentDate: { gt: calendarYear } };
 
   if (endDate || startDateString) {

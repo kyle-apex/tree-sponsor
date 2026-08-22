@@ -15,7 +15,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!session?.user?.id) return throwUnauthenticated(res);
 
   const userId = session.user.id;
-  console.log('userId', userId);
 
   const imageUrl = req.body.image;
 
@@ -40,9 +39,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } else if (req.method === 'PATCH') {
     const profilePath = req.body.profilePath;
     const email2 = req.body.email2;
-    console.log('profilePath', profilePath);
-    console.log('body', req.body);
-    console.log('email', session.user?.email);
 
     // Get the current user's image before updating
     const currentUser = await prisma.user.findUnique({
@@ -82,7 +78,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           },
         });
 
-        console.log(`Found ${upcomingEvents.length} upcoming events with RSVPs for user ${userId}`);
 
         // Generate invite preview images for each event
         new Promise<void>(resolve => {
@@ -90,7 +85,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             for (const event of upcomingEvents || []) {
               try {
                 await createInvitePreviewImage(event.pictureUrl, `${event.id}-${userId}`, req.body.image);
-                console.log(`Successfully created invite preview image for event ${event.id}`);
               } catch (error) {
                 console.error(`Error creating invite preview image for event ${event.id}:`, error);
                 // Continue processing other events even if one fails

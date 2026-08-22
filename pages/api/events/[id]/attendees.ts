@@ -9,8 +9,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const eventId = Number(req.query.id);
   const email = req.query.email ? String(req.query.email) : null;
 
-  console.log(`API request for event ${eventId}, email: ${email || 'none'}`);
-
   // Only get user if email is provided
   const user = email ? await getUserByEmail(email) : null;
   const userId = user?.id;
@@ -19,7 +17,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const event = await prisma.event.findFirst({ where: { id: eventId }, include: { organizers: {} } });
 
     if (!event) {
-      console.log(`Event ${eventId} not found`);
       return res.status(404).json({ error: 'Event not found' });
     }
 

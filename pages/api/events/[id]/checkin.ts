@@ -28,7 +28,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const eventCompletedDate = event.startDate;
   eventCompletedDate.setDate(eventCompletedDate.getDate() + 1);
-  console.log('eventCompletedDate', eventCompletedDate, new Date());
   //eventCompletedDate.setHours(0);
 
   if (req.method === 'GET') {
