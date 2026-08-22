@@ -61,7 +61,15 @@ ${foundFrom}
 <i>By the way, this e-mail was sent automatically, so please excuse me if it is sent at an odd time</i>`;
 
   try {
-    const emailSent = await sendEmail([WELCOME_EMAIL_RECIPIENT], subject, `New member: ${firstName} ${lastName} (${email})`, html, 'TreeFolks Young Professionals', undefined, process.env.SUPPORT_EMAIL);
+    const emailSent = await sendEmail(
+      [WELCOME_EMAIL_RECIPIENT],
+      subject,
+      `New member: ${firstName} ${lastName} (${email})`,
+      html,
+      'TreeFolks Young Professionals',
+      undefined,
+      process.env.SUPPORT_EMAIL,
+    );
     console.log(
       `[new-subscription] Welcome notification email to ${WELCOME_EMAIL_RECIPIENT}: ${emailSent ? 'sent' : 'failed (no error thrown)'}`,
     );
