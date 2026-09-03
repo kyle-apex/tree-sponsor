@@ -390,7 +390,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const form = (await prisma.form.findFirst({
       where: { path: path + '' },
     })) as PartialForm;
-    console.log('form', form);
     form.questions = form.questionsJson as unknown as FormQuestion[];
     formatServerProps(form);
 
