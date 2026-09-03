@@ -62,6 +62,28 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         } else {
           console.log(`[webhook] Skipping new subscription for non-membership product: ${product.name} (${productId})`);
         }
+      } else if (event.type === 'customer.subscription.updated' && subscription.latest_invoice) {
+        const invoiceId = subscription.latest_invoice as string;
+        const invoice = await stripe.invoices.retrieve(invoiceId);
+        console.log(
+          `[webhook] customer.subscription.updated latest_invoice: ${invoiceId}, status: ${invoice.status}, billing_reason: ${invoice.billing_reason}`,
+        );
+        if (invoice.status === 'paid' && invoice.billing_reason === 'subscription_cycle') {
+          const productId = subscription.items.data[0]?.price.product as string;
+          const product = await stripe.products.retrieve(productId);
+          console.log(
+            `[webhook] Renewal via subscription.updated — product: "${product.name}" (${productId}), isMembership: ${isMembershipProduct(
+              product.name,
+            )}`,
+          );
+          if (isMembershipProduct(product.name)) {
+            await handleRenewalPayment(email);
+          } else {
+            console.log(`[webhook] Skipping renewal — non-membership product: ${product.name} (${productId})`);
+          }
+        } else {
+          console.log(`[webhook] Skipping customer.subscription.updated — not a paid renewal cycle`);
+        }
       }
     } else if (event.type === 'invoice.paid') {
       const invoice = event.data.object as Stripe.Invoice;

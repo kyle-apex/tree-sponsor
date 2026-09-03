@@ -19,7 +19,7 @@ const syncUsersFromMailchimp = async (): Promise<void> => {
       sort_field: 'last_changed',
       sort_dir: 'DESC',
     });
-    console.log('Mailchimp response:', response);
+    //console.log('Mailchimp response:', response);
 
     if (!response || !response.members || !Array.isArray(response.members)) {
       console.error('Failed to get members from Mailchimp or invalid response format');
