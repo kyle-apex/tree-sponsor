@@ -62,19 +62,23 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         } else {
           console.log(`[webhook] Skipping new subscription for non-membership product: ${product.name} (${productId})`);
         }
-      } else if (event.type === 'customer.subscription.updated' && subscription.latest_invoice) {
-        const invoiceId = subscription.latest_invoice as string;
-        const invoice = await stripe.invoices.retrieve(invoiceId);
-        console.log(
-          `[webhook] customer.subscription.updated latest_invoice: ${invoiceId}, status: ${invoice.status}, billing_reason: ${invoice.billing_reason}`,
-        );
-        if (invoice.status === 'paid' && invoice.billing_reason === 'subscription_cycle') {
+      }
+    } else if (event.type === 'charge.succeeded') {
+      const charge = event.data.object as Stripe.Charge;
+      const customerId = charge.customer as string;
+      const customer = (await stripe.customers.retrieve(customerId)) as Stripe.Customer;
+      email = customer.email;
+      console.log(`[webhook] charge.succeeded for: ${email} (${customerId}), invoice: ${charge.invoice ?? 'none'}`);
+      if (charge.invoice) {
+        const invoice = await stripe.invoices.retrieve(charge.invoice as string);
+        console.log(`[webhook] charge invoice billing_reason: ${invoice.billing_reason}`);
+        if (invoice.billing_reason === 'subscription_cycle') {
+          const subId = invoice.subscription as string;
+          const subscription = await stripe.subscriptions.retrieve(subId);
           const productId = subscription.items.data[0]?.price.product as string;
           const product = await stripe.products.retrieve(productId);
           console.log(
-            `[webhook] Renewal via subscription.updated — product: "${product.name}" (${productId}), isMembership: ${isMembershipProduct(
-              product.name,
-            )}`,
+            `[webhook] Renewal charge — product: "${product.name}" (${productId}), isMembership: ${isMembershipProduct(product.name)}`,
           );
           if (isMembershipProduct(product.name)) {
             await handleRenewalPayment(email);
@@ -82,28 +86,10 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
             console.log(`[webhook] Skipping renewal — non-membership product: ${product.name} (${productId})`);
           }
         } else {
-          console.log(`[webhook] Skipping customer.subscription.updated — not a paid renewal cycle`);
+          console.log(`[webhook] Skipping charge.succeeded — billing_reason is not subscription_cycle`);
         }
-      }
-    } else if (event.type === 'invoice.paid') {
-      const invoice = event.data.object as Stripe.Invoice;
-      email = invoice.customer_email;
-      console.log(`[webhook] invoice.paid for: ${email}, billing_reason: ${invoice.billing_reason}`);
-      if (invoice.billing_reason === 'subscription_cycle') {
-        const lineProductIds = invoice.lines.data.map(l => l.price?.product as string).filter(Boolean);
-        console.log(`[webhook] Renewal invoice has ${invoice.lines.data.length} line item(s), productIds: [${lineProductIds.join(', ')}]`);
-        const lineProducts = await Promise.all(lineProductIds.map(id => stripe.products.retrieve(id)));
-        const membershipProduct = lineProducts.find(p => isMembershipProduct(p.name));
-        console.log(
-          `[webhook] Renewal products checked: ${lineProducts.map(p => `"${p.name}" (${p.id})`).join(', ')}; membership match: ${
-            membershipProduct ? `"${membershipProduct.name}"` : 'none'
-          }`,
-        );
-        if (membershipProduct) {
-          await handleRenewalPayment(email);
-        } else {
-          console.log(`[webhook] Skipping renewal — no membership product found among line items`);
-        }
+      } else {
+        console.log(`[webhook] Skipping charge.succeeded — no invoice attached`);
       }
     } else if (event.type === 'invoice.payment_failed') {
       const invoice = event.data.object as Stripe.Invoice;
